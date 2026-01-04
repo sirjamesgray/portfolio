@@ -33,16 +33,14 @@ function InteractiveCard({
   className?: string;
 }) {
   return (
-    <motion.div
-      layout
-      transition={{ duration: 0.3, ease: "easeInOut" }}
+    <div
       className={cn(
         "flex items-center gap-3 rounded-xl border border-white/10 bg-card/40 px-5 py-4 backdrop-blur-xl transition-colors duration-500 shrink-0",
         className
       )}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }
 
@@ -158,7 +156,7 @@ function AutoButton() {
       <Button
         size="sm"
         className={cn(
-          "transition-all duration-200",
+          "transition-all duration-200 w-[72px] justify-center",
           clicked && "scale-95 bg-green-600 hover:bg-green-600"
         )}
       >
@@ -501,7 +499,7 @@ function AutoSettings() {
     <InteractiveCard>
       <CogIcon ref={cogRef} size={16} className={cn("transition-colors", open ? "text-primary" : "text-muted-foreground")} />
       <span className="text-sm font-medium">Settings</span>
-      <Badge variant={open ? "default" : "outline"} className="ml-auto text-xs">
+      <Badge variant={open ? "default" : "outline"} className="ml-auto text-xs w-[52px] justify-center">
         {open ? "Open" : "Closed"}
       </Badge>
     </InteractiveCard>
@@ -582,7 +580,7 @@ function AutoSecurity() {
           exit={{ scale: 0.8, opacity: 0 }}
           transition={{ duration: 0.2 }}
         >
-          <Badge variant={locked ? "default" : "destructive"} className="ml-auto text-xs">
+          <Badge variant={locked ? "default" : "destructive"} className="ml-auto text-xs w-[56px] justify-center">
             {locked ? "Secure" : "Warning"}
           </Badge>
         </motion.div>
@@ -615,7 +613,7 @@ function AutoSparkle() {
           animate={{ scale: 1 }}
           exit={{ scale: 0.8 }}
         >
-          <Badge variant={active ? "default" : "secondary"} className={cn("ml-auto text-xs transition-all", active && "bg-amber-500")}>
+          <Badge variant={active ? "default" : "secondary"} className={cn("ml-auto text-xs transition-all w-[48px] justify-center", active && "bg-amber-500")}>
             {active ? "Active" : "Ready"}
           </Badge>
         </motion.div>
@@ -752,7 +750,7 @@ function AutoToggle() {
           animate={{ scale: 1 }}
           exit={{ scale: 0.8 }}
         >
-          <Badge variant={on ? "default" : "outline"} className={cn("ml-auto text-xs", on && "bg-green-500")}>
+          <Badge variant={on ? "default" : "outline"} className={cn("ml-auto text-xs w-[32px] justify-center", on && "bg-green-500")}>
             {on ? "On" : "Off"}
           </Badge>
         </motion.div>
