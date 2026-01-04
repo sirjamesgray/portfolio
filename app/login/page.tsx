@@ -1,11 +1,9 @@
 "use client";
 
-import { createClient } from "@/lib/supabase/client";
-
 export default function LoginPage() {
-  const supabase = createClient();
-
   const signInWithGitHub = async () => {
+    const { createClient } = await import("@/lib/supabase/client");
+    const supabase = createClient();
     await supabase.auth.signInWithOAuth({
       provider: "github",
       options: {
@@ -15,6 +13,8 @@ export default function LoginPage() {
   };
 
   const signInWithGoogle = async () => {
+    const { createClient } = await import("@/lib/supabase/client");
+    const supabase = createClient();
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
