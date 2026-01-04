@@ -1,14 +1,13 @@
 "use client";
 
 import { ArrowRight, Layers, Palette, Code2, Sparkles } from "lucide-react";
+import { Glow } from "@codaworks/react-glow";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { BlurFade } from "@/components/ui/blur-fade";
-import { CursorGrid } from "@/components/cursor-grid";
 import { BentoGrid, BentoCard } from "@/components/ui/bento-grid";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { UIShowcase } from "@/components/ui-showcase";
 import { ExperienceTimeline } from "@/components/experience-timeline";
-import { cn } from "@/lib/utils";
 import { SITE_CONFIG } from "@/lib/constants";
 
 const services = [
@@ -17,8 +16,6 @@ const services = [
     name: "Production-Grade Prototyping",
     description:
       "Skip the throwaway mockups. I build prototypes with real code that evolve into your final product.",
-    href: "#contact",
-    cta: "Learn more",
     background: (
       <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-transparent" />
     ),
@@ -29,8 +26,6 @@ const services = [
     name: "UX-Led Systems Design",
     description:
       "Design systems that scale. 8 years of UX expertise translated into component architectures that teams actually want to use.",
-    href: "#contact",
-    cta: "Learn more",
     background: (
       <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-transparent to-transparent" />
     ),
@@ -41,8 +36,6 @@ const services = [
     name: "Full-Stack Development",
     description:
       "From Next.js to databases, I ship complete solutions. No handoff friction—design and code from the same mind.",
-    href: "#contact",
-    cta: "Learn more",
     background: (
       <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-transparent" />
     ),
@@ -53,8 +46,6 @@ const services = [
     name: "Client Software Solutions",
     description:
       "Custom software for your business. CRM, dashboards, internal tools—built to your exact specifications.",
-    href: "#contact",
-    cta: "Let's talk",
     background: (
       <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-transparent" />
     ),
@@ -64,13 +55,11 @@ const services = [
 
 export default function Home() {
   return (
-    <div className="relative min-h-screen bg-background">
+    <div className="relative min-h-screen bg-gradient-to-br from-background via-background to-blue-950/20 dark:to-blue-950/30">
       {/* Header with theme toggle */}
       <header className="fixed top-0 right-0 z-50 p-4">
         <ThemeToggle />
       </header>
-
-      <CursorGrid />
 
       {/* Hero Section */}
       <section className="relative flex min-h-screen flex-col items-center justify-center px-6 py-24">
@@ -103,14 +92,16 @@ export default function Home() {
 
           <BlurFade delay={0.4}>
             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <a href="#contact">
-                <ShimmerButton className="text-base font-semibold">
-                  <span className="flex items-center gap-2">
-                    Work with me
-                    <ArrowRight className="h-4 w-4" />
-                  </span>
-                </ShimmerButton>
-              </a>
+              <Glow color="hsl(270, 80%, 60%)">
+                <a href="#contact">
+                  <ShimmerButton className="text-base font-semibold glow:ring-2 glow:ring-purple-500/50">
+                    <span className="flex items-center gap-2">
+                      Work with me
+                      <ArrowRight className="h-4 w-4" />
+                    </span>
+                  </ShimmerButton>
+                </a>
+              </Glow>
               <a
                 href="#services"
                 className="text-sm font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
@@ -170,30 +161,22 @@ export default function Home() {
           </BlurFade>
 
           <BlurFade delay={0.3} inView>
-            <a href={`mailto:${SITE_CONFIG.email}`}>
-              <ShimmerButton
-                shimmerColor="#a855f7"
-                background="linear-gradient(135deg, #7c3aed 0%, #6366f1 100%)"
-                className="text-lg font-semibold"
-              >
-                <span className="flex items-center gap-2">
-                  Contact
-                  <ArrowRight className="h-5 w-5" />
-                </span>
-              </ShimmerButton>
-            </a>
-          </BlurFade>
-
-          <BlurFade delay={0.4} inView>
-            <p className="mt-6 text-sm text-muted-foreground">
-              Or email me directly at{" "}
-              <a
-                href={`mailto:${SITE_CONFIG.email}`}
-                className="font-medium text-foreground underline underline-offset-4"
-              >
-                {SITE_CONFIG.email}
-              </a>
-            </p>
+            <div className="flex justify-center">
+              <Glow color="hsl(270, 80%, 60%)">
+                <a href={`mailto:${SITE_CONFIG.email}`}>
+                  <ShimmerButton
+                    shimmerColor="#a855f7"
+                    background="linear-gradient(135deg, #7c3aed 0%, #6366f1 100%)"
+                    className="text-lg font-semibold glow:ring-2 glow:ring-purple-500/50"
+                  >
+                    <span className="flex items-center gap-2">
+                      Contact
+                      <ArrowRight className="h-5 w-5" />
+                    </span>
+                  </ShimmerButton>
+                </a>
+              </Glow>
+            </div>
           </BlurFade>
         </div>
       </section>

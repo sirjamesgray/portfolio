@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { MapPin } from "lucide-react";
+import { Glow } from "@codaworks/react-glow";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { cn } from "@/lib/utils";
 
@@ -88,35 +89,37 @@ export function ExperienceTimeline() {
                       idx % 2 === 0 ? "justify-end" : "justify-end"
                     )}>
                       {idx % 2 === 0 ? (
-                        <div
-                          className={cn(
-                            "w-full max-w-sm rounded-xl border p-4 transition-all duration-300 cursor-default",
-                            hoveredIndex === idx
-                              ? "border-primary/50 bg-primary/5 shadow-lg shadow-primary/10"
-                              : "border-border/50 bg-card/50 backdrop-blur-sm",
-                            job.current && hoveredIndex !== idx && "border-primary/30 bg-primary/5"
-                          )}
-                        >
-                          <div className="flex items-start justify-between gap-2">
-                            <div>
-                              <h3 className="font-semibold text-foreground">
-                                {job.company}
-                              </h3>
-                              <p className="text-sm text-muted-foreground">
-                                {job.role}
-                              </p>
-                            </div>
-                            {job.current && (
-                              <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-                                Current
-                              </span>
+                        <Glow color="hsl(270, 80%, 60%)">
+                          <div
+                            className={cn(
+                              "w-full max-w-sm rounded-xl border p-4 transition-all duration-300 cursor-default backdrop-blur-xl glow:ring-1 glow:ring-purple-500/30 glow:border-purple-500/40",
+                              hoveredIndex === idx
+                                ? "border-primary/50 bg-primary/10 shadow-lg shadow-primary/10"
+                                : "border-white/10 bg-card/40",
+                              job.current && hoveredIndex !== idx && "border-primary/30 bg-primary/10"
                             )}
+                          >
+                            <div className="flex items-start justify-between gap-2">
+                              <div>
+                                <h3 className="font-semibold text-foreground">
+                                  {job.company}
+                                </h3>
+                                <p className="text-sm text-muted-foreground">
+                                  {job.role}
+                                </p>
+                              </div>
+                              {job.current && (
+                                <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                                  Current
+                                </span>
+                              )}
+                            </div>
+                            <div className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
+                              <MapPin className="h-3 w-3" />
+                              <span>{job.location}</span>
+                            </div>
                           </div>
-                          <div className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
-                            <MapPin className="h-3 w-3" />
-                            <span>{job.location}</span>
-                          </div>
-                        </div>
+                        </Glow>
                       ) : (
                         <div className="w-full max-w-sm" />
                       )}
@@ -191,35 +194,37 @@ export function ExperienceTimeline() {
                       idx % 2 === 1 ? "justify-start" : "justify-start"
                     )}>
                       {idx % 2 === 1 ? (
-                        <div
-                          className={cn(
-                            "w-full max-w-sm rounded-xl border p-4 transition-all duration-300 cursor-default",
-                            hoveredIndex === idx
-                              ? "border-primary/50 bg-primary/5 shadow-lg shadow-primary/10"
-                              : "border-border/50 bg-card/50 backdrop-blur-sm",
-                            job.current && hoveredIndex !== idx && "border-primary/30 bg-primary/5"
-                          )}
-                        >
-                          <div className="flex items-start justify-between gap-2">
-                            <div>
-                              <h3 className="font-semibold text-foreground">
-                                {job.company}
-                              </h3>
-                              <p className="text-sm text-muted-foreground">
-                                {job.role}
-                              </p>
-                            </div>
-                            {job.current && (
-                              <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-                                Current
-                              </span>
+                        <Glow color="hsl(270, 80%, 60%)">
+                          <div
+                            className={cn(
+                              "w-full max-w-sm rounded-xl border p-4 transition-all duration-300 cursor-default backdrop-blur-xl glow:ring-1 glow:ring-purple-500/30 glow:border-purple-500/40",
+                              hoveredIndex === idx
+                                ? "border-primary/50 bg-primary/10 shadow-lg shadow-primary/10"
+                                : "border-white/10 bg-card/40",
+                              job.current && hoveredIndex !== idx && "border-primary/30 bg-primary/10"
                             )}
+                          >
+                            <div className="flex items-start justify-between gap-2">
+                              <div>
+                                <h3 className="font-semibold text-foreground">
+                                  {job.company}
+                                </h3>
+                                <p className="text-sm text-muted-foreground">
+                                  {job.role}
+                                </p>
+                              </div>
+                              {job.current && (
+                                <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                                  Current
+                                </span>
+                              )}
+                            </div>
+                            <div className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
+                              <MapPin className="h-3 w-3" />
+                              <span>{job.location}</span>
+                            </div>
                           </div>
-                          <div className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
-                            <MapPin className="h-3 w-3" />
-                            <span>{job.location}</span>
-                          </div>
-                        </div>
+                        </Glow>
                       ) : (
                         <div className="w-full max-w-sm" />
                       )}
@@ -227,41 +232,43 @@ export function ExperienceTimeline() {
                   </div>
 
                   {/* Mobile layout */}
-                  <div className="md:hidden">
-                    <div
-                      className={cn(
-                        "rounded-xl border p-4 transition-all duration-300 cursor-default",
-                        hoveredIndex === idx
-                          ? "border-primary/50 bg-primary/5 shadow-lg shadow-primary/10"
-                          : "border-border/50 bg-card/50 backdrop-blur-sm",
-                        job.current && hoveredIndex !== idx && "border-primary/30 bg-primary/5"
-                      )}
-                    >
-                      <div className="flex items-start justify-between gap-2">
-                        <div>
-                          <h3 className="font-semibold text-foreground">
-                            {job.company}
-                          </h3>
-                          <p className="text-sm text-muted-foreground">
-                            {job.role}
-                          </p>
-                        </div>
-                        {job.current && (
-                          <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-                            Current
-                          </span>
+                  <div className="md:hidden py-2">
+                    <Glow color="hsl(270, 80%, 60%)">
+                      <div
+                        className={cn(
+                          "rounded-xl border p-4 transition-all duration-300 cursor-default backdrop-blur-xl glow:ring-1 glow:ring-purple-500/30 glow:border-purple-500/40",
+                          hoveredIndex === idx
+                            ? "border-primary/50 bg-primary/10 shadow-lg shadow-primary/10"
+                            : "border-white/10 bg-card/40",
+                          job.current && hoveredIndex !== idx && "border-primary/30 bg-primary/10"
                         )}
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div>
+                            <h3 className="font-semibold text-foreground">
+                              {job.company}
+                            </h3>
+                            <p className="text-sm text-muted-foreground">
+                              {job.role}
+                            </p>
+                          </div>
+                          {job.current && (
+                            <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                              Current
+                            </span>
+                          )}
+                        </div>
+                        <div className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
+                          <MapPin className="h-3 w-3" />
+                          <span>{job.location}</span>
+                        </div>
+                        <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
+                          <span className="rounded bg-muted px-2 py-0.5">{job.startDate}</span>
+                          <div className="h-px flex-1 bg-border" />
+                          <span className="rounded bg-muted px-2 py-0.5">{job.endDate}</span>
+                        </div>
                       </div>
-                      <div className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
-                        <MapPin className="h-3 w-3" />
-                        <span>{job.location}</span>
-                      </div>
-                      <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
-                        <span className="rounded bg-muted px-2 py-0.5">{job.startDate}</span>
-                        <div className="h-px flex-1 bg-border" />
-                        <span className="rounded bg-muted px-2 py-0.5">{job.endDate}</span>
-                      </div>
-                    </div>
+                    </Glow>
                   </div>
                 </div>
               </BlurFade>
