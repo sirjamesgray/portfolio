@@ -40,8 +40,10 @@ From [ui.shadcn.com](https://ui.shadcn.com):
 
 ### Animation & Effects
 - **[Framer Motion](https://www.framer.com/motion)** - Animation library
-- **[smokey-fluid-cursor](https://github.com/faraasat/smokey-fluid-cursor)** - Fluid smoke effect following cursor
+- **[@number-flow/react](https://number-flow.barvian.me/)** - Odometer-style animated number transitions
+- **[@codaworks/react-glow](https://github.com/codaworks/react-glow)** - Cursor-following glow effects
 - **[Lucide React](https://lucide.dev)** - Icon library
+- **[lucide-animated](https://lucide-animated.com)** - Animated Lucide icons with ref-based control
 
 ### Theming
 - **[next-themes](https://github.com/pacocoursey/next-themes)** - Dark/light mode with system preference detection
@@ -49,34 +51,35 @@ From [ui.shadcn.com](https://ui.shadcn.com):
 ## Custom Components
 
 ### `CursorGrid`
-Interactive grid background with sparkle effects at intersections. The grid and sparkles brighten as the cursor approaches.
+Interactive grid background with twinkling sparkle effects at intersections:
+- Grid lines with cursor-following spotlight effect
+- Dots at grid intersections that brighten as cursor approaches
+- Random twinkling animation pattern - 3-8 dots twinkle simultaneously
+- Smooth transitions for opacity and scale changes
 
 Location: `components/cursor-grid.tsx`
-
-### `FluidCursor`
-Purple-themed smoky fluid effect that follows the cursor. Only renders on devices with fine pointer (mouse/trackpad).
-
-Location: `components/fluid-cursor.tsx`
 
 ### `ExperienceTimeline`
 Vertical timeline showing work experience with:
 - Alternating left/right cards on desktop
 - Date range highlighting on hover
 - Animated connecting lines
-- Pulsing indicator for current role
+- Cursor-following glow effects on cards
+- Dynamic current month display for ongoing roles
 
 Location: `components/experience-timeline.tsx`
 
 ### `UIShowcase`
-Horizontally scrollable showcase of interactive UI components with auto-triggering animations:
-- Toggle switches (notifications, WiFi, dark mode)
-- Sliders (performance, volume)
-- Progress indicators (download, sync)
-- Buttons with state changes
+Two-row infinite scrolling marquee showcasing 20 interactive UI components with auto-triggering animations:
+- Toggle switches (notifications, WiFi, dark mode with sun/moon icon swap)
+- Sliders with smooth animated transitions (performance, volume)
+- Progress indicators (download, sync, loader)
+- Animated Lucide icons (bell, heart, zap, refresh, etc.)
+- NumberFlow odometer-style number animations
+- Like button with animated counter
 - Badges with cycling highlights
-- Like button with counter
-- Checkboxes
-- User status indicators
+- User status and security lock indicators
+- Calendar and clock displays
 
 Location: `components/ui-showcase.tsx`
 
@@ -84,6 +87,19 @@ Location: `components/ui-showcase.tsx`
 Animated theme toggle button that cycles through light/dark/system modes.
 
 Location: `components/theme-toggle.tsx`
+
+## Features
+
+### Smooth Scroll Navigation
+All anchor links use CSS `scroll-behavior: smooth` for animated page navigation instead of instant jumps.
+
+### Social Links
+Connect section with links to:
+- [X (Twitter)](https://x.com/jamiegraytech)
+- [LinkedIn](https://www.linkedin.com/in/jamiegraytech/)
+
+### Back to Top
+Floating button at the bottom of the page for quick navigation back to the top with hover animation.
 
 ## Project Structure
 

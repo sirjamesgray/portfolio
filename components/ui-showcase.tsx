@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import NumberFlow from "@number-flow/react";
-import { Star, Send, MapPin, Sparkles, ToggleLeft, ToggleRight, Calendar, Clock, Loader2 } from "lucide-react";
+import { Star, Send, MapPin, Sparkles, ToggleLeft, ToggleRight, Calendar, Clock, Loader2, Sun } from "lucide-react";
 import { BellIcon } from "@/components/ui/bell";
 import { HeartIcon, type HeartIconHandle } from "@/components/ui/heart";
 import { ZapIcon } from "@/components/ui/zap";
@@ -327,7 +327,7 @@ function AutoDarkMode() {
   useEffect(() => {
     const interval = setInterval(() => {
       setDark((prev) => {
-        moonRef.current?.startAnimation();
+        setTimeout(() => moonRef.current?.startAnimation(), 0);
         return !prev;
       });
     }, 2700);
@@ -336,8 +336,30 @@ function AutoDarkMode() {
 
   return (
     <InteractiveCard>
-      <MoonIcon ref={moonRef} size={16} className={cn("transition-colors", dark ? "text-indigo-400" : "text-muted-foreground")} />
-      <span className="text-sm font-medium">Dark Mode</span>
+      <AnimatePresence mode="wait">
+        {dark ? (
+          <motion.div
+            key="moon"
+            initial={{ scale: 0.8, opacity: 0, rotate: -90 }}
+            animate={{ scale: 1, opacity: 1, rotate: 0 }}
+            exit={{ scale: 0.8, opacity: 0, rotate: 90 }}
+            transition={{ duration: 0.2 }}
+          >
+            <MoonIcon ref={moonRef} size={16} className="text-indigo-400" />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="sun"
+            initial={{ scale: 0.8, opacity: 0, rotate: 90 }}
+            animate={{ scale: 1, opacity: 1, rotate: 0 }}
+            exit={{ scale: 0.8, opacity: 0, rotate: -90 }}
+            transition={{ duration: 0.2 }}
+          >
+            <Sun className="h-4 w-4 text-amber-500" />
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <span className="text-sm font-medium w-[72px]">{dark ? "Dark Mode" : "Light Mode"}</span>
       <Switch checked={dark} onCheckedChange={setDark} className="ml-auto" />
     </InteractiveCard>
   );
@@ -384,7 +406,7 @@ function AutoProgress() {
         )}
       </AnimatePresence>
       <div className="flex flex-1 flex-col gap-1">
-        <motion.span layout className="text-sm font-medium">{downloading ? "Downloading..." : "Complete!"}</motion.span>
+        <span className="text-sm font-medium w-[95px]">{downloading ? "Downloading..." : "Complete!"}</span>
         <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
           <motion.div
             className="h-full bg-cyan-500 rounded-full"
@@ -428,7 +450,7 @@ function AutoSync() {
           </motion.div>
         )}
       </AnimatePresence>
-      <motion.span layout className="text-sm font-medium">{syncing ? "Syncing..." : "Synced"}</motion.span>
+      <span className="text-sm font-medium w-[58px]">{syncing ? "Syncing..." : "Synced"}</span>
     </InteractiveCard>
   );
 }
@@ -456,7 +478,7 @@ function AutoUserStatus() {
           className="absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full border border-background"
         />
       </div>
-      <motion.span layout className="text-sm font-medium">{online ? "Online" : "Away"}</motion.span>
+      <span className="text-sm font-medium w-[42px]">{online ? "Online" : "Away"}</span>
     </InteractiveCard>
   );
 }
@@ -551,7 +573,7 @@ function AutoSecurity() {
           </motion.div>
         )}
       </AnimatePresence>
-      <motion.span layout className="text-sm font-medium">{locked ? "Locked" : "Unlocked"}</motion.span>
+      <span className="text-sm font-medium w-[60px]">{locked ? "Locked" : "Unlocked"}</span>
       <AnimatePresence mode="wait">
         <motion.div
           key={locked ? "secure" : "warning"}
@@ -688,7 +710,7 @@ function AutoLoader() {
           </motion.div>
         )}
       </AnimatePresence>
-      <motion.span layout className="text-sm font-medium">{loading ? "Loading..." : "Done!"}</motion.span>
+      <span className="text-sm font-medium w-[68px]">{loading ? "Loading..." : "Done!"}</span>
       <span className="ml-auto text-xs text-muted-foreground tabular-nums flex items-center">
         <NumberFlow
           value={progress}

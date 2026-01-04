@@ -6,14 +6,20 @@ import { Glow } from "@codaworks/react-glow";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { cn } from "@/lib/utils";
 
+// Get current month and year for dynamic end date
+const getCurrentDate = () => {
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const now = new Date();
+  return `${months[now.getMonth()]} ${now.getFullYear()}`;
+};
+
 const experience = [
   {
     company: "WeWrite",
     role: "Product Engineer",
-    location: "NYC",
+    location: "DFW",
     startDate: "May 2025",
-    endDate: "Present",
-    current: true,
+    endDate: getCurrentDate(),
   },
   {
     company: "Turbo",
@@ -95,24 +101,16 @@ export function ExperienceTimeline() {
                               "w-full max-w-sm rounded-xl border p-4 transition-all duration-300 cursor-default backdrop-blur-xl glow:ring-1 glow:ring-purple-500/30 glow:border-purple-500/40",
                               hoveredIndex === idx
                                 ? "border-primary/50 bg-primary/10 shadow-lg shadow-primary/10"
-                                : "border-white/10 bg-card/40",
-                              job.current && hoveredIndex !== idx && "border-primary/30 bg-primary/10"
+                                : "border-white/10 bg-card/40"
                             )}
                           >
-                            <div className="flex items-start justify-between gap-2">
-                              <div>
-                                <h3 className="font-semibold text-foreground">
-                                  {job.company}
-                                </h3>
-                                <p className="text-sm text-muted-foreground">
-                                  {job.role}
-                                </p>
-                              </div>
-                              {job.current && (
-                                <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-                                  Current
-                                </span>
-                              )}
+                            <div>
+                              <h3 className="font-semibold text-foreground">
+                                {job.company}
+                              </h3>
+                              <p className="text-sm text-muted-foreground">
+                                {job.role}
+                              </p>
                             </div>
                             <div className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
                               <MapPin className="h-3 w-3" />
@@ -162,17 +160,12 @@ export function ExperienceTimeline() {
                       {/* End dot */}
                       <div
                         className={cn(
-                          "relative h-3 w-3 rounded-full transition-all duration-300 z-10",
+                          "h-3 w-3 rounded-full transition-all duration-300 z-10",
                           hoveredIndex === idx
                             ? "bg-primary scale-125 shadow-lg shadow-primary/50"
-                            : "bg-border",
-                          job.current && hoveredIndex === idx && "bg-green-500 shadow-green-500/50"
+                            : "bg-border"
                         )}
-                      >
-                        {job.current && (
-                          <span className="absolute inset-0 animate-ping rounded-full bg-green-500 opacity-75" />
-                        )}
-                      </div>
+                      />
 
                       {/* End date */}
                       <span
@@ -180,8 +173,7 @@ export function ExperienceTimeline() {
                           "mt-2 rounded-full px-3 py-1 text-xs font-medium transition-all duration-300 whitespace-nowrap",
                           hoveredIndex === idx
                             ? "bg-primary text-primary-foreground scale-105"
-                            : "bg-muted text-muted-foreground",
-                          job.current && hoveredIndex === idx && "bg-green-500"
+                            : "bg-muted text-muted-foreground"
                         )}
                       >
                         {job.endDate}
@@ -200,24 +192,16 @@ export function ExperienceTimeline() {
                               "w-full max-w-sm rounded-xl border p-4 transition-all duration-300 cursor-default backdrop-blur-xl glow:ring-1 glow:ring-purple-500/30 glow:border-purple-500/40",
                               hoveredIndex === idx
                                 ? "border-primary/50 bg-primary/10 shadow-lg shadow-primary/10"
-                                : "border-white/10 bg-card/40",
-                              job.current && hoveredIndex !== idx && "border-primary/30 bg-primary/10"
+                                : "border-white/10 bg-card/40"
                             )}
                           >
-                            <div className="flex items-start justify-between gap-2">
-                              <div>
-                                <h3 className="font-semibold text-foreground">
-                                  {job.company}
-                                </h3>
-                                <p className="text-sm text-muted-foreground">
-                                  {job.role}
-                                </p>
-                              </div>
-                              {job.current && (
-                                <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-                                  Current
-                                </span>
-                              )}
+                            <div>
+                              <h3 className="font-semibold text-foreground">
+                                {job.company}
+                              </h3>
+                              <p className="text-sm text-muted-foreground">
+                                {job.role}
+                              </p>
                             </div>
                             <div className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
                               <MapPin className="h-3 w-3" />
@@ -239,24 +223,16 @@ export function ExperienceTimeline() {
                           "rounded-xl border p-4 transition-all duration-300 cursor-default backdrop-blur-xl glow:ring-1 glow:ring-purple-500/30 glow:border-purple-500/40",
                           hoveredIndex === idx
                             ? "border-primary/50 bg-primary/10 shadow-lg shadow-primary/10"
-                            : "border-white/10 bg-card/40",
-                          job.current && hoveredIndex !== idx && "border-primary/30 bg-primary/10"
+                            : "border-white/10 bg-card/40"
                         )}
                       >
-                        <div className="flex items-start justify-between gap-2">
-                          <div>
-                            <h3 className="font-semibold text-foreground">
-                              {job.company}
-                            </h3>
-                            <p className="text-sm text-muted-foreground">
-                              {job.role}
-                            </p>
-                          </div>
-                          {job.current && (
-                            <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-                              Current
-                            </span>
-                          )}
+                        <div>
+                          <h3 className="font-semibold text-foreground">
+                            {job.company}
+                          </h3>
+                          <p className="text-sm text-muted-foreground">
+                            {job.role}
+                          </p>
                         </div>
                         <div className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
                           <MapPin className="h-3 w-3" />
