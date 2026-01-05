@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { MapPin } from "lucide-react";
 import { Glow } from "@codaworks/react-glow";
 import { BlurFade } from "@/components/ui/blur-fade";
@@ -20,6 +21,7 @@ const experience = [
     location: "DFW",
     startDate: "May 2025",
     endDate: getCurrentDate(),
+    logo: "/logos/wewrite.png",
   },
   {
     company: "Turbo",
@@ -27,6 +29,7 @@ const experience = [
     location: "NYC",
     startDate: "Jun 2024",
     endDate: "May 2025",
+    logo: "/logos/turbo.png",
   },
   {
     company: "Ramp",
@@ -34,6 +37,7 @@ const experience = [
     location: "NYC",
     startDate: "Aug 2024",
     endDate: "Mar 2025",
+    logo: "/logos/ramp.png",
   },
   {
     company: "Vondy",
@@ -41,6 +45,7 @@ const experience = [
     location: "NYC",
     startDate: "Feb 2025",
     endDate: "Apr 2025",
+    logo: "/logos/vondy.png",
   },
   {
     company: "Whop",
@@ -48,6 +53,7 @@ const experience = [
     location: "NYC",
     startDate: "Jul 2023",
     endDate: "May 2024",
+    logo: "/logos/whop.png",
   },
   {
     company: "Saturday App",
@@ -55,6 +61,15 @@ const experience = [
     location: "NYC",
     startDate: "Jan 2023",
     endDate: "Mar 2023",
+    logo: "/logos/saturday.png",
+  },
+  {
+    company: "ParkHub",
+    role: "Product Designer",
+    location: "DFW",
+    startDate: "Jun 2017",
+    endDate: "Jan 2023",
+    logo: "/logos/parkhub.png",
   },
 ];
 
@@ -104,17 +119,29 @@ export function ExperienceTimeline() {
                                 : "border-white/10 bg-card/40"
                             )}
                           >
-                            <div>
-                              <h3 className="font-semibold text-foreground">
-                                {job.company}
-                              </h3>
-                              <p className="text-sm text-muted-foreground">
-                                {job.role}
-                              </p>
-                            </div>
-                            <div className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
-                              <MapPin className="h-3 w-3" />
-                              <span>{job.location}</span>
+                            <div className="flex items-start gap-3">
+                              {job.logo && (
+                                <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-white/5">
+                                  <Image
+                                    src={job.logo}
+                                    alt={`${job.company} logo`}
+                                    fill
+                                    className="object-cover"
+                                  />
+                                </div>
+                              )}
+                              <div className="flex-1">
+                                <h3 className="font-semibold text-foreground">
+                                  {job.company}
+                                </h3>
+                                <p className="text-sm text-muted-foreground">
+                                  {job.role}
+                                </p>
+                                <div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+                                  <MapPin className="h-3 w-3" />
+                                  <span>{job.location}</span>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </Glow>
@@ -195,17 +222,29 @@ export function ExperienceTimeline() {
                                 : "border-white/10 bg-card/40"
                             )}
                           >
-                            <div>
-                              <h3 className="font-semibold text-foreground">
-                                {job.company}
-                              </h3>
-                              <p className="text-sm text-muted-foreground">
-                                {job.role}
-                              </p>
-                            </div>
-                            <div className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
-                              <MapPin className="h-3 w-3" />
-                              <span>{job.location}</span>
+                            <div className="flex items-start gap-3">
+                              {job.logo && (
+                                <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-white/5">
+                                  <Image
+                                    src={job.logo}
+                                    alt={`${job.company} logo`}
+                                    fill
+                                    className="object-cover"
+                                  />
+                                </div>
+                              )}
+                              <div className="flex-1">
+                                <h3 className="font-semibold text-foreground">
+                                  {job.company}
+                                </h3>
+                                <p className="text-sm text-muted-foreground">
+                                  {job.role}
+                                </p>
+                                <div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+                                  <MapPin className="h-3 w-3" />
+                                  <span>{job.location}</span>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </Glow>
@@ -226,19 +265,31 @@ export function ExperienceTimeline() {
                             : "border-white/10 bg-card/40"
                         )}
                       >
-                        <div>
-                          <h3 className="font-semibold text-foreground">
-                            {job.company}
-                          </h3>
-                          <p className="text-sm text-muted-foreground">
-                            {job.role}
-                          </p>
+                        <div className="flex items-start gap-3">
+                          {job.logo && (
+                            <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-white/5">
+                              <Image
+                                src={job.logo}
+                                alt={`${job.company} logo`}
+                                fill
+                                className="object-cover"
+                              />
+                            </div>
+                          )}
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-foreground">
+                              {job.company}
+                            </h3>
+                            <p className="text-sm text-muted-foreground">
+                              {job.role}
+                            </p>
+                            <div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+                              <MapPin className="h-3 w-3" />
+                              <span>{job.location}</span>
+                            </div>
+                          </div>
                         </div>
-                        <div className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
-                          <MapPin className="h-3 w-3" />
-                          <span>{job.location}</span>
-                        </div>
-                        <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
+                        <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
                           <span className="rounded bg-muted px-2 py-0.5">{job.startDate}</span>
                           <div className="h-px flex-1 bg-border" />
                           <span className="rounded bg-muted px-2 py-0.5">{job.endDate}</span>

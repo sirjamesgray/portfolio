@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, ArrowUp, Layers, Palette, Code2, Sparkles } from "lucide-react";
+import { ArrowRight, ArrowUp, Layers, Palette, Code2, Sparkles, Calendar, Mail } from "lucide-react";
 import { Glow } from "@codaworks/react-glow";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { BlurFade } from "@/components/ui/blur-fade";
@@ -183,18 +183,29 @@ export default function Home() {
                   Whether you need a new product, a design system, or help scaling
                   your engineering team&apos;s output—let&apos;s talk about how I can help.
                 </p>
-                <div className="flex justify-center">
-                  <a href={`mailto:${SITE_CONFIG.email}`}>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                  <a
+                    href={SITE_CONFIG.calendly}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <ShimmerButton
                       shimmerColor="#a855f7"
                       background="linear-gradient(135deg, #7c3aed 0%, #6366f1 100%)"
                       className="text-lg font-semibold"
                     >
                       <span className="flex items-center gap-2">
-                        Contact
-                        <ArrowRight className="h-5 w-5" />
+                        <Calendar className="h-5 w-5" />
+                        Book a Call
                       </span>
                     </ShimmerButton>
+                  </a>
+                  <a
+                    href={`mailto:${SITE_CONFIG.email}`}
+                    className="flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-3 text-base font-medium text-foreground backdrop-blur-sm transition-all hover:bg-white/10 hover:border-white/30"
+                  >
+                    <Mail className="h-5 w-5" />
+                    Email Directly
                   </a>
                 </div>
               </div>
