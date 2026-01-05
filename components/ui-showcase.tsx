@@ -14,7 +14,6 @@ import { DownloadIcon, type DownloadIconHandle } from "@/components/ui/download"
 import { UserIcon, type UserIconHandle } from "@/components/ui/user";
 import { CheckIcon } from "@/components/ui/check";
 import { VolumeIcon } from "@/components/ui/volume";
-import { CogIcon } from "@/components/ui/cog";
 import { LockIcon, type LockIconHandle } from "@/components/ui/lock";
 import { LockOpenIcon, type LockOpenIconHandle } from "@/components/ui/lock-open";
 import { Switch } from "@/components/ui/switch";
@@ -35,7 +34,7 @@ function InteractiveCard({
   return (
     <div
       className={cn(
-        "flex items-center gap-3 rounded-xl border border-white/10 bg-card/40 px-5 py-4 backdrop-blur-xl transition-colors duration-500 shrink-0",
+        "flex items-center gap-3 rounded-xl border border-white/10 bg-card/40 px-5 py-4 backdrop-blur-xl transition-colors duration-500 shrink-0 h-[72px]",
         className
       )}
     >
@@ -112,14 +111,19 @@ function AutoCheckboxes() {
   }, []);
 
   return (
-    <InteractiveCard className="flex-col items-start gap-2">
+    <InteractiveCard className="h-auto">
       <div className="flex items-center gap-2">
         <CheckIcon ref={checkRef} size={16} className="text-green-500" />
         <span className="text-sm font-medium">Features</span>
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex gap-3 ml-2">
         {["Analytics", "Reports", "Alerts"].map((label, i) => (
-          <div key={label} className="flex items-center gap-2">
+          <motion.div
+            key={label}
+            className="flex items-center gap-1.5"
+            animate={{ scale: checks[i] ? 1 : 0.95, opacity: checks[i] ? 1 : 0.7 }}
+            transition={{ duration: 0.2 }}
+          >
             <Checkbox
               checked={checks[i]}
               onCheckedChange={(checked) => {
@@ -129,9 +133,10 @@ function AutoCheckboxes() {
                   return next;
                 });
               }}
+              className="transition-all duration-200 data-[state=checked]:bg-green-500 data-[state=checked]:border-green-500"
             />
-            <span className="text-xs text-muted-foreground">{label}</span>
-          </div>
+            <span className={cn("text-xs transition-colors", checks[i] ? "text-foreground" : "text-muted-foreground")}>{label}</span>
+          </motion.div>
         ))}
       </div>
     </InteractiveCard>
@@ -481,30 +486,6 @@ function AutoUserStatus() {
   );
 }
 
-function AutoSettings() {
-  const [open, setOpen] = useState(false);
-  const cogRef = useRef<{ startAnimation: () => void; stopAnimation: () => void }>(null);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setOpen((prev) => {
-        cogRef.current?.startAnimation();
-        return !prev;
-      });
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <InteractiveCard>
-      <CogIcon ref={cogRef} size={16} className={cn("transition-colors", open ? "text-primary" : "text-muted-foreground")} />
-      <span className="text-sm font-medium">Settings</span>
-      <Badge variant={open ? "default" : "outline"} className="ml-auto text-xs w-[52px] justify-center">
-        {open ? "Open" : "Closed"}
-      </Badge>
-    </InteractiveCard>
-  );
-}
 
 function AutoLocation() {
   const [tracking, setTracking] = useState(false);
@@ -767,7 +748,6 @@ const row1Components = [
   <AutoBadges key="badges" />,
   <AutoLike key="like" />,
   <AutoCheckboxes key="checkboxes" />,
-  <AutoSettings key="settings" />,
   <AutoSparkle key="sparkle" />,
   <AutoCalendar key="calendar" />,
   <AutoToggle key="power" />,
@@ -792,12 +772,12 @@ export function UIShowcase() {
     <section className="relative py-6 overflow-hidden">
       <div className="flex flex-col gap-2">
         {/* First row - scrolls left */}
-        <Marquee pauseOnHover className="[--duration:60s]">
+        <Marquee className="[--duration:60s]">
           {row1Components}
         </Marquee>
 
         {/* Second row - scrolls right (reversed) */}
-        <Marquee reverse pauseOnHover className="[--duration:55s]">
+        <Marquee reverse className="[--duration:55s]">
           {row2Components}
         </Marquee>
       </div>

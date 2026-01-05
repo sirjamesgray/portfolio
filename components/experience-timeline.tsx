@@ -6,72 +6,7 @@ import { MapPin } from "lucide-react";
 import { Glow } from "@codaworks/react-glow";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { cn } from "@/lib/utils";
-
-// Get current month and year for dynamic end date
-const getCurrentDate = () => {
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  const now = new Date();
-  return `${months[now.getMonth()]} ${now.getFullYear()}`;
-};
-
-const experience = [
-  {
-    company: "WeWrite",
-    role: "Product Engineer",
-    location: "DFW",
-    startDate: "May 2025",
-    endDate: getCurrentDate(),
-    logo: "/logos/wewrite.png",
-  },
-  {
-    company: "Turbo",
-    role: "Product Designer",
-    location: "NYC",
-    startDate: "Jun 2024",
-    endDate: "May 2025",
-    logo: "/logos/turbo.png",
-  },
-  {
-    company: "Ramp",
-    role: "Product Designer",
-    location: "NYC",
-    startDate: "Aug 2024",
-    endDate: "Mar 2025",
-    logo: "/logos/ramp.png",
-  },
-  {
-    company: "Vondy",
-    role: "Product Designer",
-    location: "NYC",
-    startDate: "Feb 2025",
-    endDate: "Apr 2025",
-    logo: "/logos/vondy.png",
-  },
-  {
-    company: "Whop",
-    role: "Product Designer",
-    location: "NYC",
-    startDate: "Jul 2023",
-    endDate: "May 2024",
-    logo: "/logos/whop.png",
-  },
-  {
-    company: "Saturday App",
-    role: "Product Designer",
-    location: "NYC",
-    startDate: "Jan 2023",
-    endDate: "Mar 2023",
-    logo: "/logos/saturday.png",
-  },
-  {
-    company: "ParkHub",
-    role: "Product Designer",
-    location: "DFW",
-    startDate: "Jun 2017",
-    endDate: "Jan 2023",
-    logo: "/logos/parkhub.png",
-  },
-];
+import { EXPERIENCE } from "@/lib/constants";
 
 export function ExperienceTimeline() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -95,7 +30,7 @@ export function ExperienceTimeline() {
           <div className="absolute left-1/2 top-0 bottom-0 w-px -translate-x-1/2 bg-border hidden md:block" />
 
           <div className="space-y-0">
-            {experience.map((job, idx) => (
+            {EXPERIENCE.map((job, idx) => (
               <BlurFade key={job.company} delay={0.1 + idx * 0.05} inView>
                 <div
                   className="relative"

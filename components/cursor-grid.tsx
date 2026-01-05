@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useId, useMemo, useCallback } from "react";
+import { useEffect, useState, useId, useMemo, useCallback, useRef } from "react";
 import { cn } from "@/lib/utils";
 
 interface CursorGridProps {
@@ -12,11 +12,25 @@ interface TwinkleState {
   [key: number]: number;
 }
 
+interface Pulse {
+  id: number;
+  x: number;
+  y: number;
+  direction: "horizontal" | "vertical";
+  progress: number;
+  speed: number;
+  opacity: number;
+  length: number;
+}
+
 export function CursorGrid({ className, gridSize = 40 }: CursorGridProps) {
   const id = useId();
   const [mousePosition, setMousePosition] = useState({ x: -1000, y: -1000 });
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [twinkleStates, setTwinkleStates] = useState<TwinkleState>({});
+  const [pulses, setPulses] = useState<Pulse[]>([]);
+  const pulseIdCounter = useRef(0);
+  const animationFrameRef = useRef<number | null>(null);
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -99,6 +113,81 @@ export function CursorGrid({ className, gridSize = 40 }: CursorGridProps) {
 
     return () => clearInterval(interval);
   }, [intersections.length]);
+
+  // Generate pulses at random intervals
+  useEffect(() => {
+    if (dimensions.width === 0 || dimensions.height === 0) return;
+
+    const createPulse = () => {
+      const direction = Math.random() > 0.5 ? "horizontal" : "vertical";
+      const cols = Math.ceil(dimensions.width / gridSize);
+      const rows = Math.ceil(dimensions.height / gridSize);
+
+      const newPulse: Pulse = {
+        id: pulseIdCounter.current++,
+        x: direction === "horizontal"
+          ? 0
+          : Math.floor(Math.random() * cols) * gridSize,
+        y: direction === "vertical"
+          ? 0
+          : Math.floor(Math.random() * rows) * gridSize,
+        direction,
+        progress: 0,
+        speed: 0.5 + Math.random() * 1, // pixels per frame
+        opacity: 0.3 + Math.random() * 0.4,
+        length: 40 + Math.random() * 80, // length of the pulse in pixels
+      };
+
+      setPulses(prev => [...prev, newPulse]);
+    };
+
+    // Create initial pulses
+    for (let i = 0; i < 3; i++) {
+      setTimeout(() => createPulse(), i * 500);
+    }
+
+    // Create new pulses at random intervals
+    const interval = setInterval(() => {
+      if (Math.random() > 0.3) { // 70% chance to create a pulse
+        createPulse();
+      }
+    }, 1500);
+
+    return () => clearInterval(interval);
+  }, [dimensions.width, dimensions.height, gridSize]);
+
+  // Animate pulses using requestAnimationFrame
+  useEffect(() => {
+    const animate = () => {
+      setPulses(prev => {
+        const updated = prev
+          .map(pulse => ({
+            ...pulse,
+            progress: pulse.progress + pulse.speed,
+          }))
+          .filter(pulse => {
+            // Remove pulses that have moved off screen
+            if (pulse.direction === "horizontal") {
+              return pulse.progress < dimensions.width + pulse.length;
+            } else {
+              return pulse.progress < dimensions.height + pulse.length;
+            }
+          });
+
+        return updated;
+      });
+
+      animationFrameRef.current = requestAnimationFrame(animate);
+    };
+
+    animationFrameRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, [dimensions.width, dimensions.height]);
 
   // Calculate distance from mouse to determine sparkle brightness
   const getSparkleOpacity = useCallback((px: number, py: number, index: number) => {
@@ -195,6 +284,59 @@ export function CursorGrid({ className, gridSize = 40 }: CursorGridProps) {
           fill={`url(#grid-${id})`}
           mask={`url(#mask-${id})`}
         />
+
+        {/* Animated pulses along grid lines */}
+        <g className="text-purple-500">
+          {pulses.map((pulse) => {
+            const gradientId = `pulse-gradient-${pulse.id}`;
+
+            if (pulse.direction === "horizontal") {
+              return (
+                <g key={pulse.id}>
+                  <defs>
+                    <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="currentColor" stopOpacity="0" />
+                      <stop offset="30%" stopColor="currentColor" stopOpacity={pulse.opacity} />
+                      <stop offset="70%" stopColor="currentColor" stopOpacity={pulse.opacity} />
+                      <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
+                  <line
+                    x1={pulse.progress}
+                    y1={pulse.y}
+                    x2={pulse.progress + pulse.length}
+                    y2={pulse.y}
+                    stroke={`url(#${gradientId})`}
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                </g>
+              );
+            } else {
+              return (
+                <g key={pulse.id}>
+                  <defs>
+                    <linearGradient id={gradientId} x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="currentColor" stopOpacity="0" />
+                      <stop offset="30%" stopColor="currentColor" stopOpacity={pulse.opacity} />
+                      <stop offset="70%" stopColor="currentColor" stopOpacity={pulse.opacity} />
+                      <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
+                  <line
+                    x1={pulse.x}
+                    y1={pulse.progress}
+                    x2={pulse.x}
+                    y2={pulse.progress + pulse.length}
+                    stroke={`url(#${gradientId})`}
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                </g>
+              );
+            }
+          })}
+        </g>
 
         {/* Sparkles at intersections */}
         <g className="text-purple-500">

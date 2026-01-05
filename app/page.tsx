@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, ArrowUp, Layers, Palette, Code2, Sparkles, Calendar, Mail } from "lucide-react";
+import { ArrowRight, ArrowUp, Layers, Palette, Code2, Sparkles, Calendar, Mail, Github, Key, Settings2, HeartHandshake, RefreshCw } from "lucide-react";
 import { Glow } from "@codaworks/react-glow";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { BlurFade } from "@/components/ui/blur-fade";
@@ -71,6 +71,59 @@ const services = [
       "Custom software for your business. CRM, dashboards, internal tools—built to your exact specifications.",
     background: (
       <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-transparent" />
+    ),
+    className: "lg:col-span-2 lg:row-span-1",
+  },
+];
+
+const deliverables = [
+  {
+    Icon: Github,
+    name: "Full GitHub Access",
+    description:
+      "Complete repository access. You own the code, no strings attached.",
+    background: (
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-transparent" />
+    ),
+    className: "lg:col-span-1 lg:row-span-1",
+  },
+  {
+    Icon: Key,
+    name: "All Credentials",
+    description:
+      "Every API key, secret, and credential. Full control from day one.",
+    background: (
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-transparent" />
+    ),
+    className: "lg:col-span-1 lg:row-span-1",
+  },
+  {
+    Icon: Settings2,
+    name: "Complete Control",
+    description:
+      "Your system, your rules. No vendor lock-in, no dependencies.",
+    background: (
+      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-transparent to-transparent" />
+    ),
+    className: "lg:col-span-1 lg:row-span-1",
+  },
+  {
+    Icon: HeartHandshake,
+    name: "Free Support",
+    description:
+      "A few months of support included. I'm invested in your success.",
+    background: (
+      <div className="absolute inset-0 bg-gradient-to-br from-rose-500/10 via-transparent to-transparent" />
+    ),
+    className: "lg:col-span-1 lg:row-span-1",
+  },
+  {
+    Icon: RefreshCw,
+    name: "Ongoing Retainer",
+    description:
+      "Optional continued support and development. Scale as you need.",
+    background: (
+      <div className="absolute inset-0 bg-gradient-to-br from-teal-500/10 via-transparent to-transparent" />
     ),
     className: "lg:col-span-2 lg:row-span-1",
   },
@@ -166,6 +219,33 @@ export default function Home() {
                 <BentoCard key={idx} {...service} />
               ))}
             </BentoGrid>
+          </BlurFade>
+        </div>
+      </section>
+
+      {/* What You Get Section */}
+      <section className="relative px-6 py-24">
+        <div className="mx-auto max-w-6xl">
+          <BlurFade delay={0.1} inView>
+            <div className="mb-12 text-center">
+              <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                What You Get
+              </h2>
+              <p className="mx-auto max-w-2xl text-muted-foreground">
+                Complete ownership and transparency. No black boxes, no vendor lock-in—just
+                professional software delivered the right way.
+              </p>
+            </div>
+          </BlurFade>
+
+          <BlurFade delay={0.2} inView>
+            <Glow color="hsl(270, 80%, 60%)">
+              <BentoGrid className="lg:grid-cols-3 glow:ring-1 glow:ring-purple-500/20">
+                {deliverables.map((deliverable, idx) => (
+                  <BentoCard key={idx} {...deliverable} />
+                ))}
+              </BentoGrid>
+            </Glow>
           </BlurFade>
         </div>
       </section>
