@@ -37,7 +37,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Search, Filter, FolderKanban, Plus, Shield, MoreHorizontal, Eye, User } from "lucide-react"
+import { Search, FolderKanban, Plus, Shield, MoreHorizontal, Eye, User } from "lucide-react"
 import { BlurFade } from "@/components/ui/blur-fade"
 import { ProjectCard } from "@/components/dashboard/project-card"
 
@@ -169,8 +169,7 @@ function getProjectName(project: Project): string {
 
 export function AdminProjectsClient({ projects, stats, customers }: AdminProjectsClientProps) {
   const router = useRouter()
-  const [searchQuery, setSearchQuery] = useState("")
-  const [statusFilter, setStatusFilter] = useState("all")
+  const [searchQuery, setSearchQuery] = useState("-status:canceled")
   const [isNewProjectOpen, setIsNewProjectOpen] = useState(false)
   const [creating, setCreating] = useState(false)
   const [newProject, setNewProject] = useState({
@@ -179,24 +178,72 @@ export function AdminProjectsClient({ projects, stats, customers }: AdminProject
     user_id: "",
   })
 
-  const filteredProjects = projects.filter((project) => {
-    // Status filter
-    if (statusFilter !== "all" && project.status !== statusFilter) {
-      return false
+  // Parse search query for filters like "status:value" or "-status:value"
+  const parseSearchQuery = (query: string) => {
+    const filters: { include: Record<string, string[]>; exclude: Record<string, string[]> } = {
+      include: {},
+      exclude: {},
     }
 
-    // Search filter
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase()
+    // Match filters like "status:value" or "-status:value"
+    const filterRegex = /(-?)(\w+):(\w+)/g
+    let textQuery = query
+    let match
+
+    while ((match = filterRegex.exec(query)) !== null) {
+      const [fullMatch, isExclude, key, value] = match
+      const target = isExclude ? filters.exclude : filters.include
+      if (!target[key]) target[key] = []
+      target[key].push(value.toLowerCase())
+      textQuery = textQuery.replace(fullMatch, "")
+    }
+
+    return {
+      filters,
+      textQuery: textQuery.trim().toLowerCase(),
+    }
+  }
+
+  const { filters, textQuery } = parseSearchQuery(searchQuery)
+
+  const filteredProjects = projects.filter((project) => {
+    // Apply status filters from search query
+    if (filters.include.status?.length) {
+      if (!filters.include.status.includes(project.status.toLowerCase())) {
+        return false
+      }
+    }
+    if (filters.exclude.status?.length) {
+      if (filters.exclude.status.includes(project.status.toLowerCase())) {
+        return false
+      }
+    }
+
+    // Apply type filters from search query
+    if (filters.include.type?.length) {
+      const projectType = (project.project_type || "").toLowerCase()
+      if (!filters.include.type.includes(projectType)) {
+        return false
+      }
+    }
+    if (filters.exclude.type?.length) {
+      const projectType = (project.project_type || "").toLowerCase()
+      if (filters.exclude.type.includes(projectType)) {
+        return false
+      }
+    }
+
+    // Text search filter
+    if (textQuery) {
       const contact = getContact(project.contacts)
       const projectName = getProjectName(project).toLowerCase()
-      const matchesProject = projectName.includes(query)
+      const matchesProject = projectName.includes(textQuery)
       const matchesContact =
-        contact?.name?.toLowerCase().includes(query) ||
-        contact?.email?.toLowerCase().includes(query)
+        contact?.name?.toLowerCase().includes(textQuery) ||
+        contact?.email?.toLowerCase().includes(textQuery)
       const matchesUser =
-        project.user?.name?.toLowerCase().includes(query) ||
-        project.user?.email?.toLowerCase().includes(query)
+        project.user?.name?.toLowerCase().includes(textQuery) ||
+        project.user?.email?.toLowerCase().includes(textQuery)
       return matchesProject || matchesContact || matchesUser
     }
 
@@ -375,32 +422,21 @@ export function AdminProjectsClient({ projects, stats, customers }: AdminProject
 
       {/* Filters */}
       <BlurFade delay={0.2}>
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-          <div className="relative flex-1">
+        <div className="space-y-2">
+          <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
-              placeholder="Search projects..."
+              placeholder="Search... (use status:lead or -status:canceled)"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9"
+              className="pl-9 font-mono text-sm"
             />
           </div>
-          <div className="flex items-center gap-2">
-            <Filter className="h-4 w-4 text-muted-foreground" />
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Filter by status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="lead">Lead</SelectItem>
-                <SelectItem value="contacted">Contacted</SelectItem>
-                <SelectItem value="in_progress">In Progress</SelectItem>
-                <SelectItem value="completed">Completed</SelectItem>
-                <SelectItem value="canceled">Canceled</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          <p className="text-xs text-muted-foreground">
+            Filters: <code className="bg-muted px-1 py-0.5 rounded">status:lead</code>{" "}
+            <code className="bg-muted px-1 py-0.5 rounded">-status:canceled</code>{" "}
+            <code className="bg-muted px-1 py-0.5 rounded">type:website</code>
+          </p>
         </div>
       </BlurFade>
 
