@@ -38,13 +38,22 @@ type WorkflowBranch = {
 
 const workflowSteps: WorkflowStep[] = [
   {
-    id: "calendly_booking",
-    title: "Calendly Booking",
-    description: "Customer books a consultation call via Calendly widget",
+    id: "lead_capture",
+    title: "Lead Capture",
+    description: "Customer starts project questionnaire or books via Calendly",
     icon: <Calendar className="h-5 w-5" />,
     status: "trigger",
-    triggers: ["Calendly webhook fires", "Project created with status: lead"],
-    actions: ["Create contact record", "Create project record", "Log activity"],
+    triggers: [
+      "Start Project questionnaire (5-6 steps)",
+      "Calendly webhook: invitee.created",
+    ],
+    actions: [
+      "Create contact record (name + email)",
+      "Create project with status: lead",
+      "Store project type, budget, timeline, description",
+      "If Calendly: Set meeting_time on project",
+      "Log activity: project_created",
+    ],
   },
   {
     id: "consultation_call",
@@ -52,21 +61,27 @@ const workflowSteps: WorkflowStep[] = [
     description: "Discovery call to understand project requirements",
     icon: <MessageCircle className="h-5 w-5" />,
     status: "action",
-    actions: ["Discuss requirements", "Assess timeline", "Estimate scope"],
+    actions: [
+      "Discuss requirements in detail",
+      "Assess timeline and scope",
+      "Update project requirements (rich text)",
+      "Update status: contacted",
+    ],
   },
   {
     id: "send_quote",
-    title: "Send Quote",
-    description: "Create and send a detailed project quote",
+    title: "Create & Send Quote",
+    description: "Create a detailed project quote in admin dashboard",
     icon: <FileText className="h-5 w-5" />,
     status: "action",
-    triggers: ["Admin creates quote in dashboard"],
+    triggers: ["Admin creates quote via dashboard"],
     actions: [
-      "Create quote with line items",
-      "Set expiration date",
-      "Email quote to customer",
+      "Pre-fill with 'Web Development Services' template",
+      "Set amount and description",
+      "Save as draft or send immediately",
+      "⚠️ Send requires customer email",
       "Update project status: contacted",
-      "Log activity: quote_sent",
+      "Log activity: quote_sent or quote_created",
     ],
   },
   {
@@ -85,9 +100,8 @@ const workflowSteps: WorkflowStep[] = [
     triggers: ["Customer clicks Accept button"],
     actions: [
       "Update quote status: accepted",
+      "Auto-generate draft invoice for quote amount",
       "Set project price from quote",
-      "Create Stripe invoice",
-      "Email invoice to customer",
       "Update project status: in_progress",
       "Log activity: quote_accepted",
     ],
@@ -101,9 +115,27 @@ const workflowSteps: WorkflowStep[] = [
     triggers: ["Customer clicks Reject button"],
     actions: [
       "Update quote status: rejected",
-      "Update project status: canceled",
+      "Update project status: canceled (requires reason)",
       "Log activity: quote_rejected",
-      "Optional: Send follow-up email",
+      "Project can be reactivated later",
+    ],
+  },
+  {
+    id: "create_invoice",
+    title: "Create Invoice",
+    description: "Create invoice (from quote or directly)",
+    icon: <DollarSign className="h-5 w-5" />,
+    status: "action",
+    triggers: [
+      "Auto-created when quote accepted",
+      "Admin creates manually (e.g., agreed via call)",
+    ],
+    actions: [
+      "Set invoice amount",
+      "Save as draft or send via Stripe",
+      "⚠️ Send requires customer email",
+      "Create Stripe customer if needed",
+      "Log activity: invoice_sent or invoice_created",
     ],
   },
   {
@@ -112,12 +144,18 @@ const workflowSteps: WorkflowStep[] = [
     description: "Customer pays the invoice via Stripe",
     icon: <CreditCard className="h-5 w-5" />,
     status: "action",
-    triggers: ["Stripe webhook: invoice.paid"],
+    triggers: [
+      "Stripe webhook: invoice.finalized",
+      "Stripe webhook: invoice.paid",
+      "Stripe webhook: invoice.payment_failed",
+      "Stripe webhook: invoice.voided",
+    ],
     actions: [
-      "Update invoice status: paid",
+      "Update invoice status + invoice_url",
       "Update project amount_paid",
-      "Log activity: payment_received",
-      "Send payment confirmation email",
+      "Set invoice paid_at timestamp",
+      "Log activity: invoice_paid",
+      "Stripe Smart Retries for failed payments",
     ],
   },
   {
@@ -127,10 +165,11 @@ const workflowSteps: WorkflowStep[] = [
     icon: <Code className="h-5 w-5" />,
     status: "action",
     actions: [
-      "Regular progress updates via chat",
+      "Collaborative requirements editing",
       "Push to GitHub repository",
       "Deploy previews to Vercel",
       "Update deliverables section",
+      "Optional: Manual time logging for profitability",
     ],
   },
   {
@@ -144,7 +183,6 @@ const workflowSteps: WorkflowStep[] = [
       "Update project status: completed",
       "Set project end_date",
       "Send completion email",
-      "Request testimonial",
       "Log activity: project_completed",
     ],
   },
@@ -287,7 +325,7 @@ export default function WorkflowPage() {
         </BlurFade>
 
         <div className="grid gap-4">
-          {/* Step 1: Calendly Booking */}
+          {/* Step 1: Lead Capture */}
           <WorkflowCard step={workflowSteps[0]} delay={0.25} />
 
           <div className="flex justify-center">
@@ -301,7 +339,7 @@ export default function WorkflowPage() {
             <ArrowDown className="h-6 w-6 text-muted-foreground" />
           </div>
 
-          {/* Step 3: Send Quote */}
+          {/* Step 3: Create & Send Quote */}
           <WorkflowCard step={workflowSteps[2]} delay={0.35} />
 
           <div className="flex justify-center">
@@ -324,19 +362,29 @@ export default function WorkflowPage() {
                 <ArrowDown className="h-6 w-6 text-muted-foreground" />
               </div>
 
+              {/* Create Invoice (auto-generated or manual) */}
               <WorkflowCard step={workflowSteps[6]} delay={0.5} />
 
               <div className="flex justify-center">
                 <ArrowDown className="h-6 w-6 text-muted-foreground" />
               </div>
 
+              {/* Invoice Payment */}
               <WorkflowCard step={workflowSteps[7]} delay={0.55} />
 
               <div className="flex justify-center">
                 <ArrowDown className="h-6 w-6 text-muted-foreground" />
               </div>
 
+              {/* Project Development */}
               <WorkflowCard step={workflowSteps[8]} delay={0.6} />
+
+              <div className="flex justify-center">
+                <ArrowDown className="h-6 w-6 text-muted-foreground" />
+              </div>
+
+              {/* Project Delivered */}
+              <WorkflowCard step={workflowSteps[9]} delay={0.65} />
             </div>
 
             <div className="space-y-4">

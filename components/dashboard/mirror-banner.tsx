@@ -13,9 +13,10 @@ export function MirrorBanner({ userName, userEmail }: MirrorBannerProps) {
   const router = useRouter()
 
   const exitMirror = async () => {
-    // Call API to clear the httpOnly cookie
-    await fetch("/api/admin/mirror", { method: "DELETE" })
-    router.push("/dashboard")
+    // Call API to clear the httpOnly cookie and get the return URL
+    const response = await fetch("/api/admin/mirror", { method: "DELETE" })
+    const data = await response.json()
+    router.push(data.returnUrl || "/dashboard")
     router.refresh()
   }
 

@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { LogoSVG } from "@/components/logo";
-import { User, ArrowLeft } from "lucide-react";
+import { User, ArrowLeft, LogOut } from "lucide-react";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 
 // Dynamically import 3D logo to avoid SSR issues
@@ -15,7 +15,7 @@ const Logo3D = dynamic(
   () => import("@/components/logo-3d").then((mod) => mod.Logo3D),
   {
     ssr: false,
-    loading: () => <LogoSVG size="md" />,
+    loading: () => null,
   }
 );
 
@@ -58,8 +58,8 @@ export function SiteHeader({ variant = "default" }: SiteHeaderProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Navigation items for reuse
-  const NavItems = () => (
+  // Navigation items for desktop header
+  const DesktopNavItems = () => (
     <>
       {!loading && variant === "default" && (
         <>
@@ -78,7 +78,7 @@ export function SiteHeader({ variant = "default" }: SiteHeaderProps) {
                 </Button>
               </Link>
               <Link href="/start-project">
-                <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600">
+                <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:shadow-[0_0_20px_rgba(16,185,129,0.4)]">
                   Start Project
                 </Button>
               </Link>
@@ -87,6 +87,59 @@ export function SiteHeader({ variant = "default" }: SiteHeaderProps) {
         </>
       )}
       <ThemeToggle />
+    </>
+  );
+
+  const handleLogout = async () => {
+    try {
+      const { createClient } = await import("@/lib/supabase/client");
+      const supabase = createClient();
+      await supabase.auth.signOut();
+      window.location.href = "/";
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
+  // Navigation items for mobile floating footer (no theme toggle)
+  const MobileNavItems = () => (
+    <>
+      {!loading && variant === "default" && (
+        <>
+          {user ? (
+            <>
+              <Button
+                variant="ghost-destructive"
+                size="default"
+                className="flex-1 gap-2 h-11 px-5 text-base rounded-full"
+                onClick={handleLogout}
+              >
+                <LogOut className="h-5 w-5" />
+                Log out
+              </Button>
+              <Link href="/dashboard" className="flex-1">
+                <Button size="default" className="w-full gap-2 h-11 px-5 text-base rounded-full bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:shadow-[0_0_20px_rgba(16,185,129,0.4)]">
+                  <User className="h-5 w-5" />
+                  Dashboard
+                </Button>
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link href="/login" className="flex-1">
+                <Button variant="ghost" size="default" className="w-full h-11 px-5 text-base rounded-full">
+                  Log in
+                </Button>
+              </Link>
+              <Link href="/start-project" className="flex-1">
+                <Button size="default" className="w-full h-11 px-5 text-base rounded-full bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:shadow-[0_0_20px_rgba(16,185,129,0.4)]">
+                  Start Project
+                </Button>
+              </Link>
+            </>
+          )}
+        </>
+      )}
     </>
   );
 
@@ -104,13 +157,18 @@ export function SiteHeader({ variant = "default" }: SiteHeaderProps) {
           </Link>
         ) : (
           <Link href="/" className="flex items-center">
-            <Logo3D size="md" static />
+            <Logo3D size="sm" static />
           </Link>
         )}
         <div className="flex items-center gap-3">
-          <NavItems />
+          <DesktopNavItems />
         </div>
       </header>
+
+      {/* Mobile Theme Toggle - top right, visible on mobile only */}
+      <div className="md:hidden absolute top-4 right-4 z-40">
+        <ThemeToggle />
+      </div>
 
       {/* Mobile Floating Footer - hidden on desktop, appears after scrolling past hero */}
       <AnimatePresence>
@@ -127,8 +185,8 @@ export function SiteHeader({ variant = "default" }: SiteHeaderProps) {
               mass: 1,
             }}
           >
-            <div className="flex items-center justify-center gap-3 p-3 bg-white/70 dark:bg-black/50 backdrop-blur-2xl border border-white/20 dark:border-white/10 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
-              <NavItems />
+            <div className="flex items-center gap-2 p-2 bg-white/70 dark:bg-black/50 backdrop-blur-2xl border border-white/20 dark:border-white/10 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
+              <MobileNavItems />
             </div>
           </motion.div>
         )}

@@ -44,6 +44,7 @@ export function BlurFade({
   const ref = useRef(null)
   const inViewResult = useInView(ref, { once: true, margin: inViewMargin })
   const isInView = !inView || inViewResult
+
   const defaultVariants: Variants = {
     hidden: {
       [direction === "left" || direction === "right" ? "x" : "y"]:
@@ -58,6 +59,7 @@ export function BlurFade({
     },
   }
   const combinedVariants = variant || defaultVariants
+
   return (
     <AnimatePresence>
       <motion.div
@@ -77,5 +79,27 @@ export function BlurFade({
         {children}
       </motion.div>
     </AnimatePresence>
+  )
+}
+
+// Desktop-only version - renders children directly on mobile without animation
+export function BlurFadeDesktop({
+  children,
+  className,
+  ...props
+}: BlurFadeProps) {
+  return (
+    <>
+      {/* Mobile: no animation, just render */}
+      <div className={`md:hidden ${className || ""}`}>
+        {children}
+      </div>
+      {/* Desktop: with animation */}
+      <div className="hidden md:block">
+        <BlurFade className={className} {...props}>
+          {children}
+        </BlurFade>
+      </div>
+    </>
   )
 }

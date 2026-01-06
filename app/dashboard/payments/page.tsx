@@ -1,85 +1,64 @@
-"use client"
+import { cookies } from "next/headers"
+import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
+import { isAdmin } from "@/lib/constants"
+import { PaymentsClient } from "./client"
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { BlurFade } from "@/components/ui/blur-fade"
-import { CreditCard, Clock, Receipt } from "lucide-react"
+export default async function PaymentsPage() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
 
-export default function PaymentsPage() {
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <BlurFade delay={0.1}>
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Payments</h1>
-          <p className="text-muted-foreground">
-            View your invoices and payment history
-          </p>
-        </div>
-      </BlurFade>
+  if (!user) return null
 
-      {/* Coming Soon Card */}
-      <BlurFade delay={0.2}>
-        <Card>
-          <CardContent className="py-12">
-            <div className="flex flex-col items-center text-center">
-              <div className="rounded-full bg-muted p-4 mb-4">
-                <CreditCard className="h-8 w-8 text-muted-foreground" />
-              </div>
-              <h2 className="text-xl font-semibold mb-2">Payments Coming Soon</h2>
-              <p className="text-muted-foreground max-w-md">
-                We&apos;re working on a seamless payment experience. Soon you&apos;ll be able to view invoices, make payments, and track your payment history all in one place.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      </BlurFade>
+  const userIsAdmin = isAdmin(user.email)
 
-      {/* Feature Preview */}
-      <BlurFade delay={0.3}>
-        <div className="grid gap-4 md:grid-cols-3">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium flex items-center gap-2">
-                <Receipt className="h-4 w-4 text-blue-500" />
-                Invoices
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                View and download all your invoices in one place.
-              </p>
-            </CardContent>
-          </Card>
+  // Check for mirror mode
+  const cookieStore = await cookies()
+  const mirrorUserId = cookieStore.get("mirror_user_id")?.value
+  let effectiveUserId = user.id
 
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium flex items-center gap-2">
-                <CreditCard className="h-4 w-4 text-emerald-500" />
-                Easy Payments
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                Pay securely with credit card or bank transfer.
-              </p>
-            </CardContent>
-          </Card>
+  if (mirrorUserId && userIsAdmin) {
+    effectiveUserId = mirrorUserId
+  }
 
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium flex items-center gap-2">
-                <Clock className="h-4 w-4 text-yellow-500" />
-                Payment History
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                Track all your payments and outstanding balances.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      </BlurFade>
-    </div>
-  )
+  // Use admin client when mirroring to bypass RLS
+  const queryClient = (mirrorUserId && userIsAdmin) ? createAdminClient() : supabase
+
+  // Get all projects for this user
+  const { data: projects } = await queryClient
+    .from("projects")
+    .select("id, title")
+    .eq("user_id", effectiveUserId)
+
+  const projectIds = projects?.map(p => p.id) || []
+
+  // Get all invoices for these projects
+  let invoices: Array<{
+    id: string
+    project_id: string
+    amount: number
+    status: string
+    due_date: string | null
+    invoice_url: string | null
+    invoice_pdf: string | null
+    created_at: string
+    project_title: string | null
+  }> = []
+
+  if (projectIds.length > 0) {
+    const { data: invoicesData } = await queryClient
+      .from("invoices")
+      .select("id, project_id, amount, status, due_date, invoice_url, invoice_pdf, created_at")
+      .in("project_id", projectIds)
+      .order("created_at", { ascending: false })
+
+    // Map project titles to invoices
+    const projectMap = new Map(projects?.map(p => [p.id, p.title]) || [])
+    invoices = (invoicesData || []).map(inv => ({
+      ...inv,
+      project_title: projectMap.get(inv.project_id) || null,
+    }))
+  }
+
+  return <PaymentsClient invoices={invoices} />
 }

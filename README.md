@@ -1,6 +1,8 @@
-# Jamie Gray - Portfolio
+# Jamie Gray - Portfolio & Client Management
 
-A modern portfolio and client management site built with Next.js 16, featuring interactive UI components, fluid animations, and Supabase authentication.
+A modern portfolio and client management platform built with Next.js 16. Features interactive UI components, fluid animations, and a complete client lifecycle management system from lead capture through project delivery and payment collection.
+
+**See [SPEC.md](./SPEC.md) for detailed system specifications.**
 
 ## Tech Stack
 
@@ -13,6 +15,10 @@ A modern portfolio and client management site built with Next.js 16, featuring i
 ### Authentication & Backend
 - **[@supabase/ssr](https://supabase.com/docs/guides/auth/server-side)** - Server-side Supabase auth
 - **[@supabase/supabase-js](https://supabase.com/docs/reference/javascript)** - Supabase client library
+
+### Payments & Scheduling
+- **[Stripe](https://stripe.com)** - Invoice creation, payment collection, webhooks
+- **[Calendly](https://calendly.com)** - Consultation scheduling with webhook integration
 
 ### UI Components
 
@@ -101,30 +107,72 @@ Connect section with links to:
 ### Back to Top
 Floating button at the bottom of the page for quick navigation back to the top with hover animation.
 
+## Client Management System
+
+A complete client lifecycle management platform for freelance projects.
+
+### Lead Capture
+- **Start Project Flow:** 6-step questionnaire (project type, budget, timeline, description, consultation scheduling, contact info)
+- **Calendly Integration:** Webhook captures invitee.created/canceled events and auto-creates projects
+- **Smart Auth Detection:** Logged-in users skip contact info step, project auto-links to their account
+
+### Quote & Invoice Management
+- **Quotes:** Create, send, track (draft → sent → accepted/rejected/expired)
+- **Invoices:** Stripe-integrated invoicing with Smart Retries for failed payments
+- **Auto-Generation:** Accepted quotes automatically generate draft invoices
+
+### Project Tracking
+- **Status Flow:** lead → contacted → in_progress → completed (or canceled)
+- **Collaborative Requirements:** Rich text with version history
+- **Deliverables:** GitHub/Vercel URLs visible to clients
+
+### Dashboards
+- **Admin Dashboard:** Full project/contact/quote/invoice management with analytics
+- **Client Dashboard:** Minimal view of their projects, quotes, invoices, and deliverables
+- **Mirror Mode:** Admin can view as any client (with mutation warnings)
+
+### Webhooks
+- `POST /api/webhooks/stripe` - Payment status sync (invoice.paid, invoice.payment_failed, etc.)
+- `POST /api/webhooks/calendly` - Meeting scheduling (invitee.created, invitee.canceled)
+
 ## Project Structure
 
 ```
 ├── app/
-│   ├── page.tsx              # Main landing page
-│   ├── login/page.tsx        # OAuth login (GitHub, Google)
-│   ├── auth/callback/route.ts # OAuth callback handler
-│   └── layout.tsx            # Root layout with providers
+│   ├── page.tsx                    # Main landing page
+│   ├── login/page.tsx              # OAuth login (GitHub, Google)
+│   ├── auth/callback/route.ts      # OAuth callback handler
+│   ├── start-project/              # Multi-step project questionnaire
+│   ├── dashboard/
+│   │   ├── page.tsx                # Dashboard router (admin vs client)
+│   │   ├── admin/                  # Admin dashboard
+│   │   │   ├── projects/           # Project management
+│   │   │   ├── contacts/           # Contact management
+│   │   │   └── workflow/           # Event workflow visualization
+│   │   └── projects/               # Client project view
+│   ├── api/
+│   │   ├── projects/submit/        # Lead form submission
+│   │   ├── quotes/                 # Quote management
+│   │   ├── invoices/               # Invoice management
+│   │   └── webhooks/
+│   │       ├── stripe/             # Stripe payment events
+│   │       └── calendly/           # Calendly scheduling events
+│   └── layout.tsx                  # Root layout with providers
 ├── components/
-│   ├── ui/                   # Reusable UI components
-│   ├── cursor-grid.tsx       # Interactive grid background
-│   ├── fluid-cursor.tsx      # Smoky cursor effect
+│   ├── ui/                         # Reusable UI components
+│   ├── cursor-grid.tsx             # Interactive grid background
 │   ├── experience-timeline.tsx
 │   ├── ui-showcase.tsx
-│   ├── theme-toggle.tsx
-│   └── theme-provider.tsx
+│   └── theme-toggle.tsx
 ├── lib/
-│   ├── constants.ts          # Site configuration
-│   ├── utils.ts              # Utility functions (cn)
+│   ├── constants.ts                # Site configuration + admin emails
+│   ├── stripe.ts                   # Stripe client
 │   └── supabase/
-│       ├── client.ts         # Browser Supabase client
-│       ├── server.ts         # Server Supabase client
-│       └── middleware.ts     # Session handling
-└── middleware.ts             # Next.js middleware for auth
+│       ├── client.ts               # Browser Supabase client
+│       ├── server.ts               # Server Supabase client
+│       ├── admin.ts                # Service role client (bypasses RLS)
+│       └── middleware.ts           # Session handling
+└── middleware.ts                   # Next.js middleware for auth
 ```
 
 ## Getting Started
@@ -152,9 +200,18 @@ cp .env.example .env.local
 Create a `.env.local` file with:
 
 ```env
+# Supabase
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+
+# Stripe
+STRIPE_SECRET_KEY=sk_live_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+STRIPE_WEBHOOK_SECRET_LOCAL=whsec_...  # For local development
+
+# Calendly (optional - for consultation scheduling)
+CALENDLY_WEBHOOK_SIGNING_KEY=your_signing_key
 ```
 
 ### Development
@@ -179,9 +236,13 @@ bun run build
 
 The site is deployed on [Vercel](https://vercel.com). Push to `main` to trigger automatic deployments.
 
-Remember to add environment variables in Vercel project settings:
+Required environment variables in Vercel:
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `STRIPE_SECRET_KEY`
+- `STRIPE_WEBHOOK_SECRET`
+- `CALENDLY_WEBHOOK_SIGNING_KEY` (if using Calendly)
 
 ## Configuration
 

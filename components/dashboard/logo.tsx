@@ -8,12 +8,12 @@ const Logo3D = dynamic(
   () => import("@/components/logo-3d").then((mod) => mod.Logo3D),
   {
     ssr: false,
-    loading: () => <LogoSVG size="md" />,
+    loading: () => null,
   }
 )
 
 export function DashboardLogo() {
-  return <Logo3D size="md" static />
+  return <Logo3D size="sm" static />
 }
 
 export function DashboardLogoSmall() {

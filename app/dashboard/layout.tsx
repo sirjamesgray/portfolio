@@ -5,82 +5,13 @@ import { createAdminClient } from "@/lib/supabase/admin"
 import { isAdmin } from "@/lib/constants"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import {
-  LayoutDashboard,
-  FolderKanban,
-  CreditCard,
-  MessageCircle,
-  Users,
-  FlaskConical,
-  Palette,
-  Shield,
-  Mail,
-  GitBranch,
-} from "lucide-react"
-import { DashboardMobileNav } from "@/components/dashboard/mobile-nav"
 import { MirrorBanner } from "@/components/dashboard/mirror-banner"
 import { LogoutButton } from "@/components/dashboard/logout-button"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { DashboardLogo, DashboardLogoSmall } from "@/components/dashboard/logo"
+import { DashboardLogo } from "@/components/dashboard/logo"
 import { SITE_CONFIG } from "@/lib/constants"
-
-// User navigation items
-const userNavItems = [
-  {
-    name: "Overview",
-    href: "/dashboard",
-    icon: LayoutDashboard,
-  },
-  {
-    name: "My Projects",
-    href: "/dashboard/projects",
-    icon: FolderKanban,
-  },
-  {
-    name: "Payments",
-    href: "/dashboard/payments",
-    icon: CreditCard,
-  },
-  {
-    name: "Chat",
-    href: "/dashboard/chat",
-    icon: MessageCircle,
-  },
-]
-
-// Admin-only navigation items
-const adminNavItems = [
-  {
-    name: "All Projects",
-    href: "/dashboard/admin/projects",
-    icon: FolderKanban,
-  },
-  {
-    name: "All Users",
-    href: "/dashboard/admin/users",
-    icon: Users,
-  },
-  {
-    name: "Email Templates",
-    href: "/dashboard/admin/emails",
-    icon: Mail,
-  },
-  {
-    name: "Workflow",
-    href: "/dashboard/admin/workflow",
-    icon: GitBranch,
-  },
-  {
-    name: "Experiments",
-    href: "/dashboard/admin/experiments",
-    icon: FlaskConical,
-  },
-  {
-    name: "Design System",
-    href: "/dashboard/admin/design-system",
-    icon: Palette,
-  },
-]
+import { getNavItems } from "@/lib/dashboard-nav"
+import { MobileLayout } from "@/components/dashboard/mobile-layout"
 
 export default async function DashboardLayout({
   children,
@@ -121,6 +52,9 @@ export default async function DashboardLayout({
   const displayEmail = mirroredUser ? mirroredUser.email : user.email
   const showAdminTools = userIsAdmin && !mirroredUser
 
+  // Get nav items from centralized config
+  const navItems = getNavItems(showAdminTools)
+
   return (
     <div className="flex min-h-screen bg-background">
       {/* Mirror Banner */}
@@ -144,7 +78,7 @@ export default async function DashboardLayout({
 
           {/* Navigation */}
           <nav className="flex-1 space-y-1 px-3 py-4 overflow-y-auto">
-            {userNavItems.map((item) => {
+            {navItems.map((item) => {
               const Icon = item.icon
               return (
                 <Link key={item.href} href={item.href}>
@@ -158,30 +92,6 @@ export default async function DashboardLayout({
                 </Link>
               )
             })}
-
-            {/* Admin Tools Section - Only visible to admins when not mirroring */}
-            {showAdminTools && (
-              <div className="pt-4 mt-4 border-t">
-                <p className="px-3 mb-2 text-xs font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-1">
-                  <Shield className="h-3 w-3" />
-                  Admin Tools
-                </p>
-                {adminNavItems.map((item) => {
-                  const Icon = item.icon
-                  return (
-                    <Link key={item.href} href={item.href}>
-                      <Button
-                        variant="ghost"
-                        className="w-full justify-start text-muted-foreground hover:text-foreground"
-                      >
-                        <Icon className="mr-2 h-4 w-4" />
-                        {item.name}
-                      </Button>
-                    </Link>
-                  )
-                })}
-              </div>
-            )}
           </nav>
 
           {/* User Info & Logout */}
@@ -195,18 +105,14 @@ export default async function DashboardLayout({
         </div>
       </aside>
 
-      {/* Mobile Header */}
-      <div className={`fixed inset-x-0 z-50 flex h-16 items-center justify-between border-b bg-card px-4 md:hidden ${mirroredUser ? "top-10" : "top-0"}`}>
-        <Link href="/" className="flex items-center gap-2">
-          <DashboardLogoSmall />
-          <span className="text-sm font-semibold">{SITE_CONFIG.name}</span>
-        </Link>
-        <DashboardMobileNav userEmail={displayEmail || ""} isAdmin={showAdminTools} />
-      </div>
+      {/* Mobile Layout with slide transitions */}
+      <MobileLayout hasMirror={!!mirroredUser} userEmail={displayEmail || ""}>
+        {children}
+      </MobileLayout>
 
-      {/* Main Content */}
-      <main className={`flex-1 md:pl-64 ${mirroredUser ? "pt-26 md:pt-10" : "pt-16 md:pt-0"}`}>
-        <div className="container mx-auto p-4 md:p-8">
+      {/* Desktop Main Content */}
+      <main className={`hidden md:block flex-1 md:pl-64 min-w-0 overflow-x-hidden ${mirroredUser ? "pt-10" : ""}`}>
+        <div className="p-8 max-w-full">
           {children}
         </div>
       </main>

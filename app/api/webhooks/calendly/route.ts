@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import crypto from 'crypto';
 
 interface CalendlyInvitee {
@@ -111,8 +111,8 @@ export async function POST(request: NextRequest) {
 
     console.log('Received Calendly webhook:', event);
 
-    // Create Supabase client
-    const supabase = await createClient();
+    // Create Supabase admin client (webhooks don't have user context)
+    const supabase = createAdminClient();
 
     // Handle different event types
     switch (event) {

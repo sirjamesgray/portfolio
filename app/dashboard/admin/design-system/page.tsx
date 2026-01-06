@@ -167,18 +167,18 @@ export default function DesignSystemPage() {
               <h2 className="text-2xl font-bold text-foreground mb-6">Static Logo (Header Version)</h2>
               <p className="text-muted-foreground mb-6 text-sm">
                 Flat CSS/SVG logo for headers - square border with JG inside. Lightweight (no 3D/Canvas).
-                Size <code>md</code> = 36x36px (h-9 w-9), padding of 8px between logo and border.
+                Size <code>sm</code> = 32x32px (h-8 w-8) is used in the dashboard header.
               </p>
               <div className="flex flex-col gap-6 rounded-xl border border-border bg-card/50 p-8">
                 {/* Actual header size */}
                 <div className="flex items-center gap-6">
                   <div className="flex flex-col items-center gap-2">
-                    <span className="text-xs text-muted-foreground">md (header)</span>
-                    <Logo3D size="md" static />
+                    <span className="text-xs text-muted-foreground">sm (header)</span>
+                    <Logo3D size="sm" static />
                   </div>
                   <div className="flex flex-col items-center gap-2">
-                    <span className="text-xs text-muted-foreground">sm</span>
-                    <Logo3D size="sm" static />
+                    <span className="text-xs text-muted-foreground">md</span>
+                    <Logo3D size="md" static />
                   </div>
                   <div className="flex flex-col items-center gap-2">
                     <span className="text-xs text-muted-foreground">lg</span>
@@ -439,11 +439,18 @@ export default function DesignSystemPage() {
               <h2 className="text-2xl font-bold text-foreground mb-6">Buttons</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <ComponentCard title="Button" importPath="@/components/ui/button">
-                  <div className="flex flex-wrap gap-2">
-                    <Button>Default</Button>
-                    <Button variant="secondary">Secondary</Button>
-                    <Button variant="outline">Outline</Button>
-                    <Button variant="ghost">Ghost</Button>
+                  <div className="flex flex-col gap-3">
+                    <div className="flex flex-wrap gap-2">
+                      <Button>Default</Button>
+                      <Button variant="secondary">Secondary</Button>
+                      <Button variant="outline">Outline</Button>
+                      <Button variant="ghost">Ghost</Button>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <Button variant="destructive">Destructive</Button>
+                      <Button variant="outline-destructive">Outline Destructive</Button>
+                      <Button variant="ghost-destructive">Ghost Destructive</Button>
+                    </div>
                   </div>
                 </ComponentCard>
 

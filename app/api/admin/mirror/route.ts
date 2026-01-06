@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  const { userId } = await request.json()
+  const { userId, returnUrl } = await request.json()
 
   if (!userId) {
     return NextResponse.json({ error: "User ID required" }, { status: 400 })
@@ -30,11 +30,29 @@ export async function POST(request: NextRequest) {
     maxAge: 60 * 60 * 2, // 2 hours
   })
 
+  // Store the return URL so we can go back to admin context
+  if (returnUrl) {
+    response.cookies.set("mirror_return_url", returnUrl, {
+      path: "/",
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 2, // 2 hours
+    })
+  }
+
   return response
 }
 
-export async function DELETE() {
-  const response = NextResponse.json({ success: true })
+export async function DELETE(request: NextRequest) {
+  // Get the return URL from the cookie
+  const returnUrl = request.cookies.get("mirror_return_url")?.value
+
+  const response = NextResponse.json({
+    success: true,
+    returnUrl: returnUrl || "/dashboard"
+  })
   response.cookies.delete("mirror_user_id")
+  response.cookies.delete("mirror_return_url")
   return response
 }

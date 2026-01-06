@@ -38,6 +38,20 @@ export type ExperienceItem = {
   logo: string;
 };
 
+// Project types for the onboarding flow and project display
+export const PROJECT_TYPES = {
+  website: "Website",
+  webapp: "Web App",
+  other: "Other",
+} as const;
+
+export type ProjectType = keyof typeof PROJECT_TYPES;
+
+export function formatProjectType(type: string | null): string {
+  if (!type) return "Project";
+  return PROJECT_TYPES[type as ProjectType] || type;
+}
+
 export const EXPERIENCE: ExperienceItem[] = [
   {
     company: "WeWrite",

@@ -1,6 +1,7 @@
 "use client";
 
-import { ArrowRight, ArrowUp, Layers, Palette, Code2, Sparkles, Mail, Github, Key, Settings2, HeartHandshake, RefreshCw, Check, LucideIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ArrowRight, ArrowUp, Layers, Palette, Code2, Sparkles, Mail, Github, Key, Settings2, HeartHandshake, RefreshCw, Check, LucideIcon, User } from "lucide-react";
 import { Glow } from "@codaworks/react-glow";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { BlurFade } from "@/components/ui/blur-fade";
@@ -12,6 +13,7 @@ import { CursorGrid } from "@/components/cursor-grid";
 import { SITE_CONFIG } from "@/lib/constants";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import type { User as SupabaseUser } from "@supabase/supabase-js";
 
 // Dynamically import 3D logo to avoid SSR issues
 const Logo3D = dynamic(
@@ -113,6 +115,22 @@ const deliverables: { Icon: LucideIcon; name: string; description: string }[] = 
 ];
 
 export default function Home() {
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+
+  useEffect(() => {
+    async function checkUser() {
+      try {
+        const { createClient } = await import("@/lib/supabase/client");
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        setUser(user);
+      } catch {
+        setUser(null);
+      }
+    }
+    checkUser();
+  }, []);
+
   return (
     <div id="top" className="relative min-h-screen bg-gradient-to-br from-background via-background to-blue-950/20 dark:to-blue-950/30">
       {/* Twinkling grid background */}
@@ -162,19 +180,26 @@ export default function Home() {
             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Glow color="hsl(145, 80%, 45%)">
                 <Link href="/start-project">
-                  <ShimmerButton className="text-base font-semibold glow:ring-2 glow:ring-emerald-500/50">
+                  <ShimmerButton className="text-base font-semibold glow:ring-2 glow:ring-emerald-500/50 dark:shadow-[0_0_24px_rgba(16,185,129,0.5)]">
                     <span className="flex items-center gap-2">
-                      Start a Project
+                      {user ? "Start New Project" : "Start a Project"}
                       <ArrowRight className="h-4 w-4" />
                     </span>
                   </ShimmerButton>
                 </Link>
               </Glow>
               <Link
-                href="/login"
-                className="text-sm font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+                href={user ? "/dashboard" : "/login"}
+                className="text-sm font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline flex items-center gap-2"
               >
-                Log in
+                {user ? (
+                  <>
+                    <User className="h-4 w-4" />
+                    View Dashboard
+                  </>
+                ) : (
+                  "Log in"
+                )}
               </Link>
             </div>
           </BlurFade>
@@ -272,26 +297,32 @@ export default function Home() {
                 <p className="mb-8 text-lg text-muted-foreground">
                   Tell me about your project and I&apos;ll get back to you within 24 hours. No pressure, no commitment.
                 </p>
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                  <Link href="/start-project">
+                <div className="flex flex-col sm:flex-row items-stretch gap-4 max-w-md mx-auto">
+                  <Link href="/start-project" className="flex-1">
                     <ShimmerButton
                       shimmerColor="#34d399"
                       background="linear-gradient(135deg, #059669 0%, #10b981 100%)"
-                      className="text-lg font-semibold"
+                      className="w-full text-lg font-semibold dark:shadow-[0_0_24px_rgba(16,185,129,0.5)]"
                     >
-                      <span className="flex items-center gap-2">
-                        Start a Project
+                      <span className="flex items-center justify-center gap-2">
+                        {user ? "Start New Project" : "Start a Project"}
                         <ArrowRight className="h-5 w-5" />
                       </span>
                     </ShimmerButton>
                   </Link>
-                  <a
-                    href={`mailto:${SITE_CONFIG.email}`}
-                    className="flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-3 text-base font-medium text-foreground backdrop-blur-sm transition-all hover:bg-white/10 hover:border-white/30"
+                  <Link
+                    href={user ? "/dashboard" : "/login"}
+                    className="flex-1 flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-3 text-base font-medium text-foreground backdrop-blur-sm transition-all hover:bg-white/10 hover:border-white/30"
                   >
-                    <Mail className="h-5 w-5" />
-                    Email Directly
-                  </a>
+                    {user ? (
+                      <>
+                        <User className="h-5 w-5" />
+                        View Dashboard
+                      </>
+                    ) : (
+                      "Log in"
+                    )}
+                  </Link>
                 </div>
               </div>
             </Glow>
@@ -320,6 +351,13 @@ export default function Home() {
                     {social.icon}
                   </a>
                 ))}
+                <a
+                  href={`mailto:${SITE_CONFIG.email}`}
+                  className="text-muted-foreground transition-colors hover:text-foreground"
+                  aria-label="Email"
+                >
+                  <Mail className="h-5 w-5" />
+                </a>
               </div>
             </div>
           </BlurFade>
@@ -338,7 +376,7 @@ export default function Home() {
       </div>
 
       {/* Footer */}
-      <footer className="border-t border-border px-6 py-8">
+      <footer className="border-t border-border px-6 py-8 mb-24 md:mb-0">
         <div className="mx-auto max-w-6xl text-center text-sm text-muted-foreground">
           <p>&copy; {new Date().getFullYear()} Jamie Gray. All rights reserved.</p>
         </div>

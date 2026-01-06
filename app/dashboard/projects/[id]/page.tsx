@@ -1,6 +1,7 @@
 import { redirect, notFound } from "next/navigation"
 import { cookies } from "next/headers"
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { isAdmin } from "@/lib/constants"
 import { ProjectDetailClient } from "./client"
 
@@ -20,11 +21,14 @@ export default async function CustomerProjectPage({ params }: PageProps) {
   // Check for mirror mode
   const cookieStore = await cookies()
   const mirrorUserId = cookieStore.get("mirror_user_id")?.value
-  const effectiveUserId = (mirrorUserId && isAdmin(user.email)) ? mirrorUserId : user.id
-  const userIsAdmin = isAdmin(user.email)
+  const isMirroring = mirrorUserId && isAdmin(user.email)
+  const effectiveUserId = isMirroring ? mirrorUserId : user.id
+
+  // Use admin client when mirroring to bypass RLS
+  const queryClient = isMirroring ? createAdminClient() : supabase
 
   // Fetch the project - only allow if it belongs to the effective user
-  const { data: project, error } = await supabase
+  const { data: project, error } = await queryClient
     .from("projects")
     .select(`
       id,
@@ -40,7 +44,10 @@ export default async function CustomerProjectPage({ params }: PageProps) {
       vercel_url,
       created_at,
       end_date,
-      user_id
+      user_id,
+      requirements,
+      requirements_updated_at,
+      cancellation_reason
     `)
     .eq("id", id)
     .eq("user_id", effectiveUserId)
@@ -51,14 +58,14 @@ export default async function CustomerProjectPage({ params }: PageProps) {
   }
 
   // Fetch quotes for this project
-  const { data: quotes } = await supabase
+  const { data: quotes } = await queryClient
     .from("quotes")
     .select("*")
     .eq("project_id", id)
     .order("created_at", { ascending: false })
 
   // Fetch invoices for this project
-  const { data: invoices } = await supabase
+  const { data: invoices } = await queryClient
     .from("invoices")
     .select("*")
     .eq("project_id", id)
@@ -69,8 +76,6 @@ export default async function CustomerProjectPage({ params }: PageProps) {
       project={project}
       quotes={quotes || []}
       invoices={invoices || []}
-      currentUserId={effectiveUserId}
-      isAdmin={userIsAdmin && !mirrorUserId}
     />
   )
 }

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useMemo } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -28,21 +28,31 @@ export function ProjectChat({ projectId, currentUserId, isAdmin }: ProjectChatPr
   const [sending, setSending] = useState(false)
   const [loading, setLoading] = useState(true)
   const messagesEndRef = useRef<HTMLDivElement>(null)
-  const supabase = createClient()
+  const messagesContainerRef = useRef<HTMLDivElement>(null)
+  const supabase = useMemo(() => createClient(), [])
+  const isInitialLoad = useRef(true)
 
-  // Scroll to bottom when messages change
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  // Scroll to bottom within the chat container only
+  const scrollToBottom = (instant = false) => {
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTo({
+        top: messagesContainerRef.current.scrollHeight,
+        behavior: instant ? "instant" : "smooth"
+      })
+    }
   }
 
+  // Scroll on new messages, but only after initial load
   useEffect(() => {
-    scrollToBottom()
+    if (messages.length > 0 && !isInitialLoad.current) {
+      scrollToBottom()
+    }
   }, [messages])
 
   // Load initial messages
   useEffect(() => {
     async function loadMessages() {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("messages")
         .select("*")
         .eq("project_id", projectId)
@@ -52,6 +62,11 @@ export function ProjectChat({ projectId, currentUserId, isAdmin }: ProjectChatPr
         setMessages(data)
       }
       setLoading(false)
+      // After initial load, scroll to bottom instantly (within container), then allow smooth scrolling
+      setTimeout(() => {
+        scrollToBottom(true)
+        isInitialLoad.current = false
+      }, 100)
     }
 
     loadMessages()
@@ -137,7 +152,7 @@ export function ProjectChat({ projectId, currentUserId, isAdmin }: ProjectChatPr
       </CardHeader>
       <CardContent className="flex-1 flex flex-col p-0 overflow-hidden">
         {/* Messages Area */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-4 space-y-4">
           {loading ? (
             <div className="flex items-center justify-center h-full">
               <p className="text-sm text-muted-foreground">Loading messages...</p>

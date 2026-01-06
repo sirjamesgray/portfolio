@@ -14,6 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
 import {
   Select,
   SelectContent,
@@ -22,17 +23,37 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Search, Filter, MoreHorizontal, Eye, User, Shield, FolderKanban, DollarSign } from "lucide-react"
+import { Search, Filter, FolderKanban, Plus, Shield, MoreHorizontal, Eye, User } from "lucide-react"
 import { BlurFade } from "@/components/ui/blur-fade"
+import { ProjectCard } from "@/components/dashboard/project-card"
 
 type Contact = {
   name: string
   email: string
+}
+
+type Quote = {
+  id: string
+  status: string
+}
+
+type Invoice = {
+  id: string
+  status: string
 }
 
 type UserInfo = {
@@ -44,6 +65,7 @@ type UserInfo = {
 type Project = {
   id: string
   title: string | null
+  description: string | null
   status: string
   project_type: string | null
   price: number | null
@@ -54,6 +76,16 @@ type Project = {
   user_id: string | null
   contacts: Contact | Contact[] | null
   user: UserInfo | null
+  vercel_url: string | null
+  github_url: string | null
+  quotes: Quote[]
+  invoices: Invoice[]
+}
+
+type Customer = {
+  id: string
+  email: string
+  name: string
 }
 
 interface AdminProjectsClientProps {
@@ -64,6 +96,7 @@ interface AdminProjectsClientProps {
     inProgress: number
     completed: number
   }
+  customers: Customer[]
 }
 
 function getContact(contacts: Contact | Contact[] | null | undefined): Contact | null {
@@ -134,10 +167,17 @@ function getProjectName(project: Project): string {
   return "Untitled Project"
 }
 
-export function AdminProjectsClient({ projects, stats }: AdminProjectsClientProps) {
+export function AdminProjectsClient({ projects, stats, customers }: AdminProjectsClientProps) {
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
+  const [isNewProjectOpen, setIsNewProjectOpen] = useState(false)
+  const [creating, setCreating] = useState(false)
+  const [newProject, setNewProject] = useState({
+    title: "",
+    project_type: "website",
+    user_id: "",
+  })
 
   const filteredProjects = projects.filter((project) => {
     // Status filter
@@ -163,15 +203,135 @@ export function AdminProjectsClient({ projects, stats }: AdminProjectsClientProp
     return true
   })
 
+  async function handleCreateProject() {
+    if (!newProject.title.trim()) return
+
+    setCreating(true)
+    try {
+      const response = await fetch("/api/admin/projects", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: newProject.title.trim(),
+          project_type: newProject.project_type,
+          user_id: newProject.user_id || null,
+          status: "lead",
+        }),
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setIsNewProjectOpen(false)
+        setNewProject({
+          title: "",
+          project_type: "website",
+          user_id: "",
+        })
+        router.refresh()
+        router.push(`/dashboard/admin/projects/${data.id}`)
+      } else {
+        const error = await response.json()
+        alert(error.error || "Failed to create project")
+      }
+    } catch (error) {
+      alert("An error occurred. Please try again.")
+    } finally {
+      setCreating(false)
+    }
+  }
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 min-w-0">
       {/* Header */}
       <BlurFade delay={0.1}>
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">All Projects</h1>
-          <p className="text-muted-foreground">
-            Manage and track all customer projects
-          </p>
+        <div className="flex items-start justify-between">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">All Projects</h1>
+            <p className="text-muted-foreground">
+              Manage and track all customer projects
+            </p>
+          </div>
+          <Dialog open={isNewProjectOpen} onOpenChange={setIsNewProjectOpen}>
+            <DialogTrigger asChild>
+              <Button className="gap-2 bg-emerald-600 hover:bg-emerald-700">
+                <Plus className="h-4 w-4" />
+                New Project
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Create New Project</DialogTitle>
+                <DialogDescription>
+                  Create a new project and optionally assign it to a customer.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="title">Project Title</Label>
+                  <Input
+                    id="title"
+                    placeholder="Enter project title..."
+                    value={newProject.title}
+                    onChange={(e) => setNewProject({ ...newProject, title: e.target.value })}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="project_type">Project Type</Label>
+                  <Select
+                    value={newProject.project_type}
+                    onValueChange={(value) => setNewProject({ ...newProject, project_type: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="website">Website</SelectItem>
+                      <SelectItem value="webapp">Web App</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="customer">Assign Customer (Optional)</Label>
+                  <Select
+                    value={newProject.user_id || "none"}
+                    onValueChange={(value) => setNewProject({ ...newProject, user_id: value === "none" ? "" : value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a customer..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">No customer assigned</SelectItem>
+                      {customers.map((customer) => (
+                        <SelectItem key={customer.id} value={customer.id}>
+                          {customer.name} ({customer.email})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-muted-foreground">
+                    You can assign a customer later from the project details page.
+                  </p>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsNewProjectOpen(false)}
+                  disabled={creating}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleCreateProject}
+                  disabled={!newProject.title.trim() || creating}
+                  className="bg-emerald-600 hover:bg-emerald-700"
+                >
+                  {creating ? "Creating..." : "Create Project"}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </BlurFade>
 
@@ -244,17 +404,40 @@ export function AdminProjectsClient({ projects, stats }: AdminProjectsClientProp
         </div>
       </BlurFade>
 
-      {/* Table */}
+      {/* Mobile Cards View */}
       <BlurFade delay={0.25}>
-        <Card>
+        <div className="md:hidden space-y-3">
+          <p className="text-sm text-muted-foreground">
+            {filteredProjects.length} Project{filteredProjects.length !== 1 ? "s" : ""}
+          </p>
+          {filteredProjects.length === 0 ? (
+            <Card>
+              <CardContent className="py-8 text-center">
+                <p className="text-muted-foreground">No projects found</p>
+              </CardContent>
+            </Card>
+          ) : (
+            filteredProjects.map((project) => (
+              <ProjectCard
+                key={project.id}
+                project={project}
+                href={`/dashboard/admin/projects/${project.id}`}
+              />
+            ))
+          )}
+        </div>
+      </BlurFade>
+
+      {/* Desktop Table View */}
+      <BlurFade delay={0.25}>
+        <Card className="hidden md:block overflow-hidden">
           <CardHeader>
             <CardTitle>
               {filteredProjects.length} Project{filteredProjects.length !== 1 ? "s" : ""}
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <Table>
+          <CardContent className="p-0 overflow-x-auto">
+            <Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead className="min-w-[200px]">Project</TableHead>
@@ -404,8 +587,7 @@ export function AdminProjectsClient({ projects, stats }: AdminProjectsClientProp
                     })
                   )}
                 </TableBody>
-              </Table>
-            </div>
+            </Table>
           </CardContent>
         </Card>
       </BlurFade>

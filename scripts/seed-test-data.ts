@@ -24,7 +24,7 @@ async function main() {
     email: "testuser@example.com",
     email_confirm: true,
     user_metadata: {
-      full_name: "Test User",
+      full_name: "Test Customer",
     },
   })
 
@@ -56,7 +56,7 @@ async function createProjectsForUser(userId: string) {
   const { data: contact, error: contactError } = await supabase
     .from("contacts")
     .insert({
-      name: "Test User",
+      name: "Test Customer",
       email: "testuser@example.com",
       user_id: userId,
     })

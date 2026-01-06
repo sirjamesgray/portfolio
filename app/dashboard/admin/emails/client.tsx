@@ -1,19 +1,20 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Mail, Eye, Send, Check } from "lucide-react"
+import { Mail, Eye, Send, Check, X } from "lucide-react"
 import { BlurFade } from "@/components/ui/blur-fade"
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
 
 type EmailTemplate = {
   id: string
@@ -27,8 +28,58 @@ interface AdminEmailsClientProps {
   templates: readonly EmailTemplate[]
 }
 
+function EmailPreview({ template }: { template: EmailTemplate }) {
+  const [html, setHtml] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function renderEmail() {
+      setLoading(true)
+      try {
+        const response = await fetch("/api/admin/emails/preview", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ templateId: template.id, props: template.previewProps }),
+        })
+        if (response.ok) {
+          const data = await response.json()
+          setHtml(data.html)
+        }
+      } catch (error) {
+        console.error("Error rendering email:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    renderEmail()
+  }, [template.id, template.previewProps])
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-full min-h-[400px]">
+        <div className="animate-pulse text-muted-foreground">Loading preview...</div>
+      </div>
+    )
+  }
+
+  if (!html) {
+    return (
+      <div className="flex items-center justify-center h-full min-h-[400px]">
+        <div className="text-muted-foreground">Failed to load preview</div>
+      </div>
+    )
+  }
+
+  return (
+    <iframe
+      srcDoc={html}
+      className="w-full h-full min-h-[600px] bg-white rounded-lg border-0"
+      title={`${template.name} email preview`}
+    />
+  )
+}
+
 export function AdminEmailsClient({ templates }: AdminEmailsClientProps) {
-  const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplate | null>(null)
   const [testSent, setTestSent] = useState<string | null>(null)
 
   const sendTestEmail = async (templateId: string) => {
@@ -119,39 +170,38 @@ export function AdminEmailsClient({ templates }: AdminEmailsClientProps) {
                     <span className="font-medium">Subject:</span> {template.subject}
                   </p>
                   <div className="flex gap-2">
-                    <Dialog>
-                      <DialogTrigger asChild>
+                    <Drawer direction="right">
+                      <DrawerTrigger asChild>
                         <Button
                           variant="outline"
                           size="sm"
                           className="flex-1"
-                          onClick={() => setSelectedTemplate(template)}
                         >
                           <Eye className="h-4 w-4 mr-1" />
                           Preview
                         </Button>
-                      </DialogTrigger>
-                      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-                        <DialogHeader>
-                          <DialogTitle>{template.name} Template</DialogTitle>
-                          <DialogDescription>
-                            Preview of the {template.name.toLowerCase()} email template
-                          </DialogDescription>
-                        </DialogHeader>
-                        <div className="mt-4 p-4 bg-muted rounded-lg">
-                          <p className="text-sm font-medium mb-2">Subject: {template.subject}</p>
-                          <p className="text-sm text-muted-foreground">
-                            Template preview would render here with the React Email component.
-                          </p>
-                          <div className="mt-4 p-4 bg-background rounded border">
-                            <p className="text-xs font-medium mb-2">Preview Props:</p>
-                            <pre className="text-xs overflow-x-auto">
-                              {JSON.stringify(template.previewProps, null, 2)}
-                            </pre>
+                      </DrawerTrigger>
+                      <DrawerContent className="h-full w-full sm:max-w-2xl">
+                        <DrawerHeader className="border-b">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <DrawerTitle>{template.name}</DrawerTitle>
+                              <DrawerDescription>
+                                Subject: {template.subject}
+                              </DrawerDescription>
+                            </div>
+                            <DrawerClose asChild>
+                              <Button variant="ghost" size="icon">
+                                <X className="h-4 w-4" />
+                              </Button>
+                            </DrawerClose>
                           </div>
+                        </DrawerHeader>
+                        <div className="flex-1 overflow-auto p-4 bg-muted/50">
+                          <EmailPreview template={template} />
                         </div>
-                      </DialogContent>
-                    </Dialog>
+                      </DrawerContent>
+                    </Drawer>
                     <Button
                       variant="outline"
                       size="sm"
