@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import { motion, AnimatePresence } from "framer-motion";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { LogoSVG } from "@/components/logo";
@@ -25,6 +26,7 @@ interface SiteHeaderProps {
 export function SiteHeader({ variant = "default" }: SiteHeaderProps) {
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showMobileFooter, setShowMobileFooter] = useState(false);
 
   useEffect(() => {
     async function checkUser() {
@@ -40,6 +42,20 @@ export function SiteHeader({ variant = "default" }: SiteHeaderProps) {
       }
     }
     checkUser();
+  }, []);
+
+  // Track scroll position to show mobile footer after hero section
+  useEffect(() => {
+    const handleScroll = () => {
+      // Show footer after scrolling past ~60% of viewport height (past hero)
+      const scrollThreshold = window.innerHeight * 0.6;
+      setShowMobileFooter(window.scrollY > scrollThreshold);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // Check initial position
+
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // Navigation items for reuse
@@ -96,12 +112,27 @@ export function SiteHeader({ variant = "default" }: SiteHeaderProps) {
         </div>
       </header>
 
-      {/* Mobile Floating Footer - hidden on desktop */}
-      <div className="md:hidden fixed bottom-4 left-4 right-4 z-50">
-        <div className="flex items-center justify-center gap-3 p-3 bg-background/80 backdrop-blur-xl border border-border/50 rounded-full shadow-lg">
-          <NavItems />
-        </div>
-      </div>
+      {/* Mobile Floating Footer - hidden on desktop, appears after scrolling past hero */}
+      <AnimatePresence>
+        {showMobileFooter && (
+          <motion.div
+            className="md:hidden fixed bottom-6 left-4 right-4 z-50"
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
+            transition={{
+              type: "spring",
+              stiffness: 300,
+              damping: 25,
+              mass: 1,
+            }}
+          >
+            <div className="flex items-center justify-center gap-3 p-3 bg-white/70 dark:bg-black/50 backdrop-blur-2xl border border-white/20 dark:border-white/10 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
+              <NavItems />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
