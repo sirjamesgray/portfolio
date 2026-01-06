@@ -170,12 +170,12 @@ export default function Home() {
                   </ShimmerButton>
                 </Link>
               </Glow>
-              <a
-                href="#services"
+              <Link
+                href="/login"
                 className="text-sm font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
               >
-                See what I do
-              </a>
+                Log in
+              </Link>
             </div>
           </BlurFade>
         </div>
