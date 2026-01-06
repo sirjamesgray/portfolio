@@ -5,6 +5,7 @@
 @custom-variant glow (.glow-capture [glow] &);
 
 @theme inline {
+  --breakpoint-xs: 360px;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-brand: var(--brand);
