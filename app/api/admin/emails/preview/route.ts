@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { render } from "@react-email/render"
-import { MagicLinkEmail, WelcomeEmail, ProjectUpdateEmail } from "@/emails"
+import { MagicLinkEmail, WelcomeEmail, ProjectUpdateEmail, ProjectSubmittedEmail } from "@/emails"
 import { createClient } from "@/lib/supabase/server"
 import { isAdmin } from "@/lib/constants"
 
@@ -31,6 +31,13 @@ export async function POST(request: NextRequest) {
           projectName: string
           updateMessage: string
           dashboardUrl: string
+        }))
+        break
+      case "project-submitted":
+        html = await render(ProjectSubmittedEmail(props as {
+          name: string
+          projectType: string
+          loginUrl: string
         }))
         break
       default:
