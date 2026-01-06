@@ -19,7 +19,7 @@ const containerSizes = {
   lg: "h-16 w-16",
   xl: "h-20 w-20",
   qa: "h-[400px] w-[400px]",
-  hero: "h-[600px] w-[600px] md:h-[750px] md:w-[750px] lg:h-[900px] lg:w-[900px]",
+  hero: "h-[90vw] w-[90vw] max-h-[800px] max-w-[800px] md:h-[850px] md:w-[850px] md:max-h-none md:max-w-none lg:h-[1000px] lg:w-[1000px]",
 }
 
 // Color configuration

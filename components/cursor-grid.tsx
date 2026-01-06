@@ -189,47 +189,22 @@ export function CursorGrid({ className, gridSize = 40 }: CursorGridProps) {
     };
   }, [dimensions.width, dimensions.height]);
 
-  // Calculate distance from mouse to determine sparkle brightness
-  const getSparkleOpacity = useCallback((px: number, py: number, index: number) => {
-    const distance = Math.sqrt(
-      Math.pow(mousePosition.x - px, 2) + Math.pow(mousePosition.y - py, 2)
-    );
-    const maxDistance = 200;
-
-    // Base opacity from cursor proximity
-    let opacity = 0.05;
-    if (distance < maxDistance) {
-      const intensity = 1 - distance / maxDistance;
-      opacity = 0.05 + intensity * 0.5;
-    }
-
-    // Add twinkle effect
+  // Calculate sparkle brightness (only from random twinkle, no cursor proximity)
+  const getSparkleOpacity = useCallback((index: number) => {
+    // Only show dots that are twinkling
     if (twinkleStates[index]) {
-      opacity = Math.max(opacity, twinkleStates[index] * 0.6);
+      return twinkleStates[index] * 0.6;
     }
+    return 0;
+  }, [twinkleStates]);
 
-    return opacity;
-  }, [mousePosition.x, mousePosition.y, twinkleStates]);
-
-  const getSparkleScale = useCallback((px: number, py: number, index: number) => {
-    const distance = Math.sqrt(
-      Math.pow(mousePosition.x - px, 2) + Math.pow(mousePosition.y - py, 2)
-    );
-    const maxDistance = 200;
-
-    let scale = 1;
-    if (distance < maxDistance) {
-      const intensity = 1 - distance / maxDistance;
-      scale = 1 + intensity * 1.2;
-    }
-
-    // Add twinkle scale
+  const getSparkleScale = useCallback((index: number) => {
+    // Only scale dots that are twinkling
     if (twinkleStates[index]) {
-      scale = Math.max(scale, 1 + twinkleStates[index] * 0.8);
+      return 1 + twinkleStates[index] * 0.8;
     }
-
-    return scale;
-  }, [mousePosition.x, mousePosition.y, twinkleStates]);
+    return 1;
+  }, [twinkleStates]);
 
   return (
     <div className={cn("pointer-events-none fixed inset-0 z-0", className)}>
@@ -338,12 +313,14 @@ export function CursorGrid({ className, gridSize = 40 }: CursorGridProps) {
           })}
         </g>
 
-        {/* Sparkles at intersections */}
+        {/* Sparkles at intersections - only show twinkling dots */}
         <g className="text-emerald-500 dark:text-emerald-400">
           {intersections.map((point) => {
-            const opacity = getSparkleOpacity(point.x, point.y, point.index);
-            const scale = getSparkleScale(point.x, point.y, point.index);
+            const opacity = getSparkleOpacity(point.index);
+            const scale = getSparkleScale(point.index);
             const isTwinkling = twinkleStates[point.index];
+            // Only render dots that are twinkling for better performance
+            if (!isTwinkling) return null;
             return (
               <circle
                 key={point.index}
@@ -353,9 +330,7 @@ export function CursorGrid({ className, gridSize = 40 }: CursorGridProps) {
                 fill="currentColor"
                 opacity={opacity}
                 style={{
-                  transition: isTwinkling
-                    ? "opacity 0.3s ease-in-out, r 0.3s ease-in-out"
-                    : "opacity 0.5s ease-out, r 0.5s ease-out",
+                  transition: "opacity 0.3s ease-in-out, r 0.3s ease-in-out",
                 }}
               />
             );

@@ -124,7 +124,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative flex min-h-screen flex-col items-center justify-center px-6 py-24">
         {/* Large 3D Logo Background */}
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-20 dark:opacity-15">
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-30 dark:opacity-25">
           <Logo3D size="hero" />
         </div>
 
