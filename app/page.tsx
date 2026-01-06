@@ -1,15 +1,23 @@
 "use client";
 
-import { ArrowRight, ArrowUp, Layers, Palette, Code2, Sparkles, Calendar, Mail, Github, Key, Settings2, HeartHandshake, RefreshCw } from "lucide-react";
+import { ArrowRight, ArrowUp, Layers, Palette, Code2, Sparkles, Mail, Github, Key, Settings2, HeartHandshake, RefreshCw, Check, LucideIcon } from "lucide-react";
 import { Glow } from "@codaworks/react-glow";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { BentoGrid, BentoCard } from "@/components/ui/bento-grid";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { SiteHeader } from "@/components/site-header";
 import { UIShowcase } from "@/components/ui-showcase";
 import { ExperienceTimeline } from "@/components/experience-timeline";
 import { CursorGrid } from "@/components/cursor-grid";
 import { SITE_CONFIG } from "@/lib/constants";
+import Link from "next/link";
+import dynamic from "next/dynamic";
+
+// Dynamically import 3D logo to avoid SSR issues
+const Logo3D = dynamic(
+  () => import("@/components/logo-3d").then((mod) => mod.Logo3D),
+  { ssr: false }
+);
 
 // Social links
 const socials = [
@@ -36,19 +44,19 @@ const socials = [
 const services = [
   {
     Icon: Layers,
-    name: "Production-Grade Prototyping",
+    name: "Websites That Work",
     description:
-      "Skip the throwaway mockups. I build prototypes with real code that evolve into your final product.",
+      "Clean, fast websites that look great on any device. No templates—custom built for your business.",
     background: (
-      <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-transparent" />
     ),
     className: "lg:col-span-2 lg:row-span-1",
   },
   {
     Icon: Palette,
-    name: "UX-Led Systems Design",
+    name: "Simple & Friendly Design",
     description:
-      "Design systems that scale. 8 years of UX expertise translated into component architectures that teams actually want to use.",
+      "Designs that your customers will actually enjoy using. Clear, intuitive, and easy to navigate.",
     background: (
       <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-transparent to-transparent" />
     ),
@@ -56,9 +64,9 @@ const services = [
   },
   {
     Icon: Code2,
-    name: "Full-Stack Development",
+    name: "Built to Last",
     description:
-      "From Next.js to databases, I ship complete solutions. No handoff friction—design and code from the same mind.",
+      "Solid code that won't break. I handle everything from design to launch so you can focus on your business.",
     background: (
       <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-transparent" />
     ),
@@ -66,9 +74,9 @@ const services = [
   },
   {
     Icon: Sparkles,
-    name: "Client Software Solutions",
+    name: "Admin Tools & Dashboards",
     description:
-      "Custom software for your business. CRM, dashboards, internal tools—built to your exact specifications.",
+      "Custom tools to run your business better. Track customers, manage orders, see what's working—all in one place.",
     background: (
       <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-transparent" />
     ),
@@ -76,56 +84,31 @@ const services = [
   },
 ];
 
-const deliverables = [
+const deliverables: { Icon: LucideIcon; name: string; description: string }[] = [
   {
     Icon: Github,
-    name: "Full GitHub Access",
-    description:
-      "Complete repository access. You own the code, no strings attached.",
-    background: (
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-transparent" />
-    ),
-    className: "lg:col-span-1 lg:row-span-1",
+    name: "You Own Everything",
+    description: "All the code is yours. No monthly fees, no lock-in, no surprises.",
   },
   {
     Icon: Key,
-    name: "All Credentials",
-    description:
-      "Every API key, secret, and credential. Full control from day one.",
-    background: (
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-transparent" />
-    ),
-    className: "lg:col-span-1 lg:row-span-1",
+    name: "All Your Logins",
+    description: "Every password and account handed over. You're in full control.",
   },
   {
     Icon: Settings2,
-    name: "Complete Control",
-    description:
-      "Your system, your rules. No vendor lock-in, no dependencies.",
-    background: (
-      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-transparent to-transparent" />
-    ),
-    className: "lg:col-span-1 lg:row-span-1",
+    name: "Easy to Update",
+    description: "Built so you (or anyone) can make changes later without starting over.",
   },
   {
     Icon: HeartHandshake,
     name: "Free Support",
-    description:
-      "A few months of support included. I'm invested in your success.",
-    background: (
-      <div className="absolute inset-0 bg-gradient-to-br from-rose-500/10 via-transparent to-transparent" />
-    ),
-    className: "lg:col-span-1 lg:row-span-1",
+    description: "Questions after launch? I've got you covered for the first few months.",
   },
   {
     Icon: RefreshCw,
-    name: "Ongoing Retainer",
-    description:
-      "Optional continued support and development. Scale as you need.",
-    background: (
-      <div className="absolute inset-0 bg-gradient-to-br from-teal-500/10 via-transparent to-transparent" />
-    ),
-    className: "lg:col-span-2 lg:row-span-1",
+    name: "Ongoing Help Available",
+    description: "Need updates or new features down the road? I'm just a message away.",
   },
 ];
 
@@ -135,14 +118,17 @@ export default function Home() {
       {/* Twinkling grid background */}
       <CursorGrid />
 
-      {/* Header with theme toggle */}
-      <header className="fixed top-0 right-0 z-50 p-4">
-        <ThemeToggle />
-      </header>
+      {/* Header with login/signup */}
+      <SiteHeader />
 
       {/* Hero Section */}
       <section className="relative flex min-h-screen flex-col items-center justify-center px-6 py-24">
-        <div className="mx-auto max-w-4xl text-center">
+        {/* Large 3D Logo Background */}
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-20 dark:opacity-15">
+          <Logo3D size="hero" />
+        </div>
+
+        <div className="relative z-10 mx-auto max-w-4xl text-center">
           <BlurFade delay={0.1}>
             <p className="mb-4 text-sm font-medium uppercase tracking-widest text-muted-foreground">
               Product Engineer
@@ -152,7 +138,7 @@ export default function Home() {
           <BlurFade delay={0.2}>
             <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
               Hi, I&apos;m{" "}
-              <span className="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-emerald-600 via-green-500 to-teal-500 dark:from-emerald-400 dark:via-green-400 dark:to-teal-400 bg-clip-text text-transparent">
                 Jamie Gray
               </span>
             </h1>
@@ -160,26 +146,29 @@ export default function Home() {
 
           <BlurFade delay={0.3}>
             <p className="mx-auto mb-8 max-w-2xl text-lg text-muted-foreground sm:text-xl">
-              I turn complex ideas into elegant software. With{" "}
+              I build{" "}
               <span className="font-semibold text-foreground">
-                8 years of UX design experience
+                websites
               </span>
-              , I bridge the gap between design and engineering to build
-              products that users love.
+               {" "} and {" "}
+              <span className="font-semibold text-foreground">
+                admin tools
+              </span>
+              {" "}for small businesses. Simple, reliable software that helps you work smarter and grow faster.
             </p>
           </BlurFade>
 
           <BlurFade delay={0.4}>
             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <Glow color="hsl(270, 80%, 60%)">
-                <a href="#contact">
-                  <ShimmerButton className="text-base font-semibold glow:ring-2 glow:ring-purple-500/50">
+              <Glow color="hsl(145, 80%, 45%)">
+                <Link href="/start-project">
+                  <ShimmerButton className="text-base font-semibold glow:ring-2 glow:ring-emerald-500/50">
                     <span className="flex items-center gap-2">
-                      Work with me
+                      Start a Project
                       <ArrowRight className="h-4 w-4" />
                     </span>
                   </ShimmerButton>
-                </a>
+                </Link>
               </Glow>
               <a
                 href="#services"
@@ -204,11 +193,10 @@ export default function Home() {
           <BlurFade delay={0.1} inView>
             <div className="mb-12 text-center">
               <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                What I Do
+                How I Can Help
               </h2>
               <p className="mx-auto max-w-2xl text-muted-foreground">
-                End-to-end product engineering for teams who want design and
-                development that actually work together.
+                I take care of the tech so you can focus on running your business.
               </p>
             </div>
           </BlurFade>
@@ -232,19 +220,41 @@ export default function Home() {
                 What You Get
               </h2>
               <p className="mx-auto max-w-2xl text-muted-foreground">
-                Complete ownership and transparency. No black boxes, no vendor lock-in—just
-                professional software delivered the right way.
+                No hidden fees, no complicated contracts. Just straightforward work and complete ownership.
               </p>
             </div>
           </BlurFade>
 
           <BlurFade delay={0.2} inView>
-            <Glow color="hsl(270, 80%, 60%)">
-              <BentoGrid className="lg:grid-cols-3 glow:ring-1 glow:ring-purple-500/20">
-                {deliverables.map((deliverable, idx) => (
-                  <BentoCard key={idx} {...deliverable} />
-                ))}
-              </BentoGrid>
+            <Glow color="hsl(145, 80%, 45%)">
+              <div className="rounded-2xl border border-white/10 bg-card/40 p-8 backdrop-blur-xl glow:ring-1 glow:ring-emerald-500/20 glow:border-emerald-500/40 sm:p-10">
+                <div className="grid gap-6 sm:grid-cols-2 lg:gap-8">
+                  {deliverables.map((deliverable, idx) => {
+                    const Icon = deliverable.Icon;
+                    return (
+                      <div
+                        key={idx}
+                        className="group flex items-start gap-4"
+                      >
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-500 ring-1 ring-emerald-500/20 transition-all group-hover:bg-emerald-500/20 group-hover:ring-emerald-500/40">
+                          <Icon className="h-5 w-5" />
+                        </div>
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            <Check className="h-4 w-4 text-emerald-500" />
+                            <h3 className="font-semibold text-foreground">
+                              {deliverable.name}
+                            </h3>
+                          </div>
+                          <p className="text-sm text-muted-foreground leading-relaxed">
+                            {deliverable.description}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </Glow>
           </BlurFade>
         </div>
@@ -254,32 +264,27 @@ export default function Home() {
       <section id="contact" className="relative px-6 py-24">
         <div className="mx-auto max-w-3xl">
           <BlurFade delay={0.1} inView>
-            <Glow color="hsl(270, 80%, 60%)">
-              <div className="rounded-2xl border border-white/10 bg-card/60 p-8 text-center backdrop-blur-xl glow:ring-1 glow:ring-purple-500/30 glow:border-purple-500/40 sm:p-12">
+            <Glow color="hsl(145, 80%, 45%)">
+              <div className="rounded-2xl border border-white/10 bg-card/60 p-8 text-center backdrop-blur-xl glow:ring-1 glow:ring-emerald-500/30 glow:border-emerald-500/40 sm:p-12">
                 <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                  Ready to build something great?
+                  Ready to get started?
                 </h2>
                 <p className="mb-8 text-lg text-muted-foreground">
-                  Whether you need a new product, a design system, or help scaling
-                  your engineering team&apos;s output—let&apos;s talk about how I can help.
+                  Tell me about your project and I&apos;ll get back to you within 24 hours. No pressure, no commitment.
                 </p>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                  <a
-                    href={SITE_CONFIG.calendly}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+                  <Link href="/start-project">
                     <ShimmerButton
-                      shimmerColor="#a855f7"
-                      background="linear-gradient(135deg, #7c3aed 0%, #6366f1 100%)"
+                      shimmerColor="#34d399"
+                      background="linear-gradient(135deg, #059669 0%, #10b981 100%)"
                       className="text-lg font-semibold"
                     >
                       <span className="flex items-center gap-2">
-                        <Calendar className="h-5 w-5" />
-                        Book a Call
+                        Start a Project
+                        <ArrowRight className="h-5 w-5" />
                       </span>
                     </ShimmerButton>
-                  </a>
+                  </Link>
                   <a
                     href={`mailto:${SITE_CONFIG.email}`}
                     className="flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-3 text-base font-medium text-foreground backdrop-blur-sm transition-all hover:bg-white/10 hover:border-white/30"

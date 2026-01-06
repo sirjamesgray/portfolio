@@ -2,10 +2,25 @@ export const SITE_CONFIG = {
   name: "Jamie Gray",
   title: "Product Engineer",
   email: "contact@jamiegray.net",
+  url: "https://www.jamiegray.net",
   calendly: "https://calendly.com/jamie-gray-tech/30min",
   description:
     "Product Engineer offering software solutions with 8 years of UX design experience. Production-grade prototyping and UX-led systems design.",
 } as const;
+
+// Admin emails for permission checks
+// Security note: This is safe because:
+// 1. Users must authenticate via Google OAuth - they can't fake an email
+// 2. The check happens server-side in the dashboard layout
+// 3. For a personal portfolio, this is simpler than a database role system
+export const ADMIN_EMAILS = [
+  "jamiegray2234@gmail.com",
+] as const;
+
+export function isAdmin(email: string | null | undefined): boolean {
+  if (!email) return false;
+  return ADMIN_EMAILS.includes(email as typeof ADMIN_EMAILS[number]);
+}
 
 // Get current month and year for dynamic end date
 const getCurrentDate = () => {

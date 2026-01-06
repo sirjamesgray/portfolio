@@ -45,10 +45,10 @@ export function ExperienceTimeline() {
                       idx % 2 === 0 ? "justify-end" : "justify-end"
                     )}>
                       {idx % 2 === 0 ? (
-                        <Glow color="hsl(270, 80%, 60%)">
+                        <Glow color="hsl(145, 80%, 45%)">
                           <div
                             className={cn(
-                              "w-full max-w-sm rounded-xl border p-4 transition-all duration-300 cursor-default backdrop-blur-xl glow:ring-1 glow:ring-purple-500/30 glow:border-purple-500/40",
+                              "w-full max-w-sm rounded-xl border p-4 transition-all duration-300 cursor-default backdrop-blur-xl glow:ring-1 glow:ring-emerald-500/30 glow:border-emerald-500/40",
                               hoveredIndex === idx
                                 ? "border-primary/50 bg-primary/10 shadow-lg shadow-primary/10"
                                 : "border-white/10 bg-card/40"
@@ -148,10 +148,10 @@ export function ExperienceTimeline() {
                       idx % 2 === 1 ? "justify-start" : "justify-start"
                     )}>
                       {idx % 2 === 1 ? (
-                        <Glow color="hsl(270, 80%, 60%)">
+                        <Glow color="hsl(145, 80%, 45%)">
                           <div
                             className={cn(
-                              "w-full max-w-sm rounded-xl border p-4 transition-all duration-300 cursor-default backdrop-blur-xl glow:ring-1 glow:ring-purple-500/30 glow:border-purple-500/40",
+                              "w-full max-w-sm rounded-xl border p-4 transition-all duration-300 cursor-default backdrop-blur-xl glow:ring-1 glow:ring-emerald-500/30 glow:border-emerald-500/40",
                               hoveredIndex === idx
                                 ? "border-primary/50 bg-primary/10 shadow-lg shadow-primary/10"
                                 : "border-white/10 bg-card/40"
@@ -191,10 +191,10 @@ export function ExperienceTimeline() {
 
                   {/* Mobile layout */}
                   <div className="md:hidden py-2">
-                    <Glow color="hsl(270, 80%, 60%)">
+                    <Glow color="hsl(145, 80%, 45%)">
                       <div
                         className={cn(
-                          "rounded-xl border p-4 transition-all duration-300 cursor-default backdrop-blur-xl glow:ring-1 glow:ring-purple-500/30 glow:border-purple-500/40",
+                          "rounded-xl border p-4 transition-all duration-300 cursor-default backdrop-blur-xl glow:ring-1 glow:ring-emerald-500/30 glow:border-emerald-500/40",
                           hoveredIndex === idx
                             ? "border-primary/50 bg-primary/10 shadow-lg shadow-primary/10"
                             : "border-white/10 bg-card/40"

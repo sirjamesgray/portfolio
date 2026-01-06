@@ -615,7 +615,7 @@ function AutoCalendar() {
 
   return (
     <InteractiveCard>
-      <Calendar className="h-4 w-4 text-violet-500" />
+      <Calendar className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
       <span className="text-sm font-medium tabular-nums flex items-center gap-0.5">
         Jan <NumberFlow value={day} transformTiming={{ duration: 300, easing: "ease-out" }} />
       </span>

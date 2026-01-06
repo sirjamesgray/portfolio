@@ -286,7 +286,7 @@ export function CursorGrid({ className, gridSize = 40 }: CursorGridProps) {
         />
 
         {/* Animated pulses along grid lines */}
-        <g className="text-purple-500">
+        <g className="text-emerald-500 dark:text-emerald-400">
           {pulses.map((pulse) => {
             const gradientId = `pulse-gradient-${pulse.id}`;
 
@@ -339,7 +339,7 @@ export function CursorGrid({ className, gridSize = 40 }: CursorGridProps) {
         </g>
 
         {/* Sparkles at intersections */}
-        <g className="text-purple-500">
+        <g className="text-emerald-500 dark:text-emerald-400">
           {intersections.map((point) => {
             const opacity = getSparkleOpacity(point.x, point.y, point.index);
             const scale = getSparkleScale(point.x, point.y, point.index);

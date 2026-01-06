@@ -112,7 +112,7 @@ export function TimeMachine() {
         style={{ perspective: "1000px" }}
       >
         {/* Space Background */}
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-purple-950/30 to-slate-950">
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-emerald-950/30 to-slate-950">
           {/* Stars */}
           <svg className="absolute inset-0 w-full h-full">
             {STARS.map((star) => (
@@ -133,7 +133,7 @@ export function TimeMachine() {
           </svg>
 
           {/* Galaxy/Nebula gradient overlay */}
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-900/20 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald-900/20 via-transparent to-transparent" />
 
           {/* Vignette effect */}
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_0%,_rgba(0,0,0,0.6)_100%)]" />
@@ -197,7 +197,7 @@ export function TimeMachine() {
                           <h3 className="text-xl font-semibold text-white mb-1">
                             {job.company}
                           </h3>
-                          <p className="text-purple-300 font-medium">
+                          <p className="text-emerald-300 font-medium">
                             {job.role}
                           </p>
                           <div className="mt-2 flex items-center gap-2 text-sm text-gray-400">
@@ -205,11 +205,11 @@ export function TimeMachine() {
                             <span>{job.location}</span>
                           </div>
                           <div className="mt-3 flex items-center gap-2 text-sm">
-                            <span className="px-2 py-1 rounded bg-purple-500/20 text-purple-300 font-medium">
+                            <span className="px-2 py-1 rounded bg-emerald-500/20 text-emerald-300 font-medium">
                               {job.startDate}
                             </span>
                             <span className="text-gray-500">→</span>
-                            <span className="px-2 py-1 rounded bg-purple-500/20 text-purple-300 font-medium">
+                            <span className="px-2 py-1 rounded bg-emerald-500/20 text-emerald-300 font-medium">
                               {job.endDate}
                             </span>
                           </div>
@@ -260,7 +260,7 @@ export function TimeMachine() {
                   className={cn(
                     "relative z-10 transition-all duration-300",
                     isSelected
-                      ? "w-3 h-3 rounded-full bg-purple-500 shadow-lg shadow-purple-500/50"
+                      ? "w-3 h-3 rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/50"
                       : isPast
                       ? "w-2 h-2 rounded-full bg-white/60"
                       : "w-1.5 h-[2px] bg-white/30 group-hover:bg-white/60"
@@ -311,7 +311,7 @@ export function TimeMachine() {
                 className={cn(
                   "rounded-xl border p-4 transition-all duration-300 backdrop-blur-xl",
                   selectedIndex === idx
-                    ? "border-purple-500/50 bg-purple-500/10"
+                    ? "border-emerald-500/50 bg-emerald-500/10"
                     : "border-white/10 bg-card/40"
                 )}
                 onClick={() => setSelectedIndex(idx)}

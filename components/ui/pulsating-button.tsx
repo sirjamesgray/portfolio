@@ -1,10 +1,11 @@
-import React from "react"
+"use client";
 
-import { cn } from "@/lib/utils"
+import React from "react";
+import { cn } from "@/lib/utils";
 
 interface PulsatingButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  pulseColor?: string
-  duration?: string
+  pulseColor?: string;
+  duration?: string;
 }
 
 export const PulsatingButton = React.forwardRef<
@@ -15,7 +16,7 @@ export const PulsatingButton = React.forwardRef<
     {
       className,
       children,
-      pulseColor = "#808080",
+      pulseColor = "hsl(145, 80%, 45%)",
       duration = "1.5s",
       ...props
     },
@@ -25,7 +26,7 @@ export const PulsatingButton = React.forwardRef<
       <button
         ref={ref}
         className={cn(
-          "bg-primary text-primary-foreground relative flex cursor-pointer items-center justify-center rounded-lg px-4 py-2 text-center",
+          "relative flex cursor-pointer items-center justify-center rounded-lg bg-primary px-4 py-2 text-center text-primary-foreground",
           className
         )}
         style={
@@ -37,10 +38,32 @@ export const PulsatingButton = React.forwardRef<
         {...props}
       >
         <div className="relative z-10">{children}</div>
-        <div className="absolute top-1/2 left-1/2 size-full -translate-x-1/2 -translate-y-1/2 animate-pulse rounded-lg bg-inherit" />
+        <div
+          className="absolute inset-0 rounded-lg"
+          style={{
+            animation: `pulsate var(--duration) ease-out infinite`,
+            background: `var(--pulse-color)`,
+          }}
+        />
+        <style jsx>{`
+          @keyframes pulsate {
+            0% {
+              opacity: 0.6;
+              transform: scale(1);
+            }
+            50% {
+              opacity: 0;
+              transform: scale(1.3);
+            }
+            100% {
+              opacity: 0;
+              transform: scale(1.3);
+            }
+          }
+        `}</style>
       </button>
-    )
+    );
   }
-)
+);
 
-PulsatingButton.displayName = "PulsatingButton"
+PulsatingButton.displayName = "PulsatingButton";
