@@ -159,6 +159,25 @@ function formatDuration(startDate: string, endDate: string | null) {
   return `${Math.floor(diffDays / 365)}y`
 }
 
+function formatRelativeTime(dateString: string) {
+  const date = new Date(dateString)
+  const now = new Date()
+  const diffMs = now.getTime() - date.getTime()
+  const diffMins = Math.floor(diffMs / (1000 * 60))
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+
+  if (diffMins < 1) return "Just now"
+  if (diffMins === 1) return "1 min ago"
+  if (diffMins < 60) return `${diffMins} mins ago`
+  if (diffHours === 1) return "1 hour ago"
+  if (diffHours < 24) return `${diffHours} hours ago`
+  if (diffDays === 1) return "Yesterday"
+  if (diffDays < 7) return `${diffDays} days ago`
+  if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`
+  return date.toLocaleDateString()
+}
+
 function getProjectName(project: Project): string {
   if (project.title) return project.title
   const contact = getContact(project.contacts)
@@ -581,7 +600,7 @@ export function AdminProjectsClient({ projects, stats, customers }: AdminProject
                             </div>
                           </TableCell>
                           <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
-                            {new Date(project.created_at).toLocaleDateString()}
+                            {formatRelativeTime(project.created_at)}
                           </TableCell>
                           <TableCell className="sticky right-0 bg-card">
                             <DropdownMenu>

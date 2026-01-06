@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { createClient } from "@/lib/supabase/server"
+import { resend, EMAIL_FROM } from "@/lib/email/resend"
+import { ProjectSubmittedEmail } from "@/emails/project-submitted"
+import { PROJECT_TYPES, SITE_CONFIG } from "@/lib/constants"
 
 export async function POST(request: Request) {
   try {
@@ -100,6 +103,26 @@ export async function POST(request: Request) {
         has_account: !!userId,
       },
     })
+
+    // Send confirmation email to the customer
+    const projectTypeName = PROJECT_TYPES[projectType as keyof typeof PROJECT_TYPES] || "Project"
+    const customerName = name || email.split("@")[0]
+
+    try {
+      await resend.emails.send({
+        from: EMAIL_FROM,
+        to: email,
+        subject: `Thanks for your ${projectTypeName.toLowerCase()} request!`,
+        react: ProjectSubmittedEmail({
+          name: customerName,
+          projectType: projectTypeName,
+          loginUrl: `${SITE_CONFIG.url}/login`,
+        }),
+      })
+    } catch (emailError) {
+      // Log email error but don't fail the request
+      console.error("Error sending confirmation email:", emailError)
+    }
 
     return NextResponse.json({
       success: true,
