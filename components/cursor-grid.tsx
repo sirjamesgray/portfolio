@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useId, useMemo, useCallback, useRef } from "react";
+import { useEffect, useState, useId, useMemo, useRef } from "react";
 import { cn } from "@/lib/utils";
 
 interface CursorGridProps {
@@ -8,8 +8,14 @@ interface CursorGridProps {
   gridSize?: number;
 }
 
-interface TwinkleState {
-  [key: number]: number;
+// Dot animation states - each dot tracks when it was triggered
+interface DotState {
+  triggeredAt: number; // timestamp when triggered, 0 = never triggered
+  intensity: number;   // random intensity 0.3-1
+}
+
+interface DotStates {
+  [key: number]: DotState;
 }
 
 interface Pulse {
@@ -23,11 +29,18 @@ interface Pulse {
   length: number;
 }
 
+// Animation timing constants
+const FLASH_DURATION = 150;    // ms - quick flash to peak
+const SETTLE_DURATION = 300;   // ms - settle to green state
+const GREEN_HOLD_DURATION = 800; // ms - hold green state
+const DEFLATE_DURATION = 600;  // ms - deflate back to resting gray
+
 export function CursorGrid({ className, gridSize = 40 }: CursorGridProps) {
   const id = useId();
   const [mousePosition, setMousePosition] = useState({ x: -1000, y: -1000 });
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-  const [twinkleStates, setTwinkleStates] = useState<TwinkleState>({});
+  const [dotStates, setDotStates] = useState<DotStates>({});
+  const [currentTime, setCurrentTime] = useState(Date.now());
   const [pulses, setPulses] = useState<Pulse[]>([]);
   const pulseIdCounter = useRef(0);
   const animationFrameRef = useRef<number | null>(null);
@@ -87,29 +100,51 @@ export function CursorGrid({ className, gridSize = 40 }: CursorGridProps) {
     return points;
   }, [dimensions.width, dimensions.height, gridSize]);
 
-  // Random twinkling effect
+  // Animation frame for smooth updates
+  useEffect(() => {
+    let frameId: number;
+    const update = () => {
+      setCurrentTime(Date.now());
+      frameId = requestAnimationFrame(update);
+    };
+    frameId = requestAnimationFrame(update);
+    return () => cancelAnimationFrame(frameId);
+  }, []);
+
+  // Random dot triggering effect
   useEffect(() => {
     if (intersections.length === 0) return;
 
-    const twinkle = () => {
-      // Randomly select 3-8 dots to twinkle
-      const numTwinkles = Math.floor(Math.random() * 6) + 3;
-      const newTwinkles: TwinkleState = {};
+    const triggerDots = () => {
+      const now = Date.now();
+      // Randomly select 3-8 dots to trigger
+      const numTriggers = Math.floor(Math.random() * 6) + 3;
 
-      for (let i = 0; i < numTwinkles; i++) {
-        const randomIndex = Math.floor(Math.random() * intersections.length);
-        // Random intensity between 0.3 and 1
-        newTwinkles[randomIndex] = Math.random() * 0.7 + 0.3;
-      }
+      setDotStates(prev => {
+        const updated = { ...prev };
+        for (let i = 0; i < numTriggers; i++) {
+          const randomIndex = Math.floor(Math.random() * intersections.length);
+          // Only trigger if not currently animating
+          const existing = updated[randomIndex];
+          const elapsed = existing ? now - existing.triggeredAt : Infinity;
+          const totalDuration = FLASH_DURATION + SETTLE_DURATION + GREEN_HOLD_DURATION + DEFLATE_DURATION;
 
-      setTwinkleStates(newTwinkles);
+          if (elapsed > totalDuration) {
+            updated[randomIndex] = {
+              triggeredAt: now,
+              intensity: Math.random() * 0.7 + 0.3,
+            };
+          }
+        }
+        return updated;
+      });
     };
 
-    // Initial twinkle
-    twinkle();
+    // Initial trigger
+    triggerDots();
 
-    // Twinkle at random intervals
-    const interval = setInterval(twinkle, 800);
+    // Trigger at random intervals
+    const interval = setInterval(triggerDots, 800);
 
     return () => clearInterval(interval);
   }, [intersections.length]);
@@ -189,22 +224,71 @@ export function CursorGrid({ className, gridSize = 40 }: CursorGridProps) {
     };
   }, [dimensions.width, dimensions.height]);
 
-  // Calculate sparkle brightness (only from random twinkle, no cursor proximity)
-  const getSparkleOpacity = useCallback((index: number) => {
-    // Only show dots that are twinkling
-    if (twinkleStates[index]) {
-      return twinkleStates[index] * 0.6;
-    }
-    return 0;
-  }, [twinkleStates]);
+  // Calculate dot appearance based on animation phase
+  // Returns { opacity, scale, isGreen } for each dot
+  const getDotAppearance = (index: number): { opacity: number; scale: number; isGreen: boolean } => {
+    const dotState = dotStates[index];
 
-  const getSparkleScale = useCallback((index: number) => {
-    // Only scale dots that are twinkling
-    if (twinkleStates[index]) {
-      return 1 + twinkleStates[index] * 0.8;
+    // Resting state: small, gray, low opacity
+    const RESTING_OPACITY = 0.15;
+    const RESTING_SCALE = 1;
+
+    if (!dotState || dotState.triggeredAt === 0) {
+      return { opacity: RESTING_OPACITY, scale: RESTING_SCALE, isGreen: false };
     }
-    return 1;
-  }, [twinkleStates]);
+
+    const elapsed = currentTime - dotState.triggeredAt;
+    const intensity = dotState.intensity;
+    const totalDuration = FLASH_DURATION + SETTLE_DURATION + GREEN_HOLD_DURATION + DEFLATE_DURATION;
+
+    // Animation complete - back to resting
+    if (elapsed >= totalDuration) {
+      return { opacity: RESTING_OPACITY, scale: RESTING_SCALE, isGreen: false };
+    }
+
+    // Phase 1: Flash (0 - FLASH_DURATION)
+    // Quick scale up with bounce, high opacity
+    if (elapsed < FLASH_DURATION) {
+      const t = elapsed / FLASH_DURATION;
+      // Overshoot bounce: goes to 1.8 then settles to 1.5
+      const bounce = 1 + (0.8 + 0.5 * Math.sin(t * Math.PI)) * intensity;
+      const opacity = 0.3 + 0.7 * intensity;
+      return { opacity, scale: bounce, isGreen: true };
+    }
+
+    // Phase 2: Settle (FLASH_DURATION - FLASH_DURATION + SETTLE_DURATION)
+    // Scale settles from bounce to steady green state
+    if (elapsed < FLASH_DURATION + SETTLE_DURATION) {
+      const t = (elapsed - FLASH_DURATION) / SETTLE_DURATION;
+      const settledScale = 1 + 0.3 * intensity;
+      const bounceScale = 1 + 0.8 * intensity;
+      const scale = bounceScale - (bounceScale - settledScale) * t;
+      const opacity = 0.3 + 0.5 * intensity;
+      return { opacity, scale, isGreen: true };
+    }
+
+    // Phase 3: Green hold (steady green state)
+    if (elapsed < FLASH_DURATION + SETTLE_DURATION + GREEN_HOLD_DURATION) {
+      const scale = 1 + 0.3 * intensity;
+      const opacity = 0.3 + 0.4 * intensity;
+      return { opacity, scale, isGreen: true };
+    }
+
+    // Phase 4: Deflate (fade back to resting gray)
+    const deflateElapsed = elapsed - (FLASH_DURATION + SETTLE_DURATION + GREEN_HOLD_DURATION);
+    const t = deflateElapsed / DEFLATE_DURATION;
+    const eased = t * t * (3 - 2 * t); // smoothstep easing
+
+    const greenScale = 1 + 0.3 * intensity;
+    const greenOpacity = 0.3 + 0.4 * intensity;
+
+    const scale = greenScale - (greenScale - RESTING_SCALE) * eased;
+    const opacity = greenOpacity - (greenOpacity - RESTING_OPACITY) * eased;
+
+    // Transition from green to gray as we deflate
+    const isGreen = t < 0.5;
+    return { opacity, scale, isGreen };
+  };
 
   return (
     <div className={cn("pointer-events-none fixed inset-0 z-0", className)}>
@@ -313,25 +397,18 @@ export function CursorGrid({ className, gridSize = 40 }: CursorGridProps) {
           })}
         </g>
 
-        {/* Sparkles at intersections - only show twinkling dots */}
-        <g className="text-emerald-500 dark:text-emerald-400">
+        {/* Sparkles at intersections - all dots visible with animated states */}
+        <g>
           {intersections.map((point) => {
-            const opacity = getSparkleOpacity(point.index);
-            const scale = getSparkleScale(point.index);
-            const isTwinkling = twinkleStates[point.index];
-            // Only render dots that are twinkling for better performance
-            if (!isTwinkling) return null;
+            const { opacity, scale, isGreen } = getDotAppearance(point.index);
             return (
               <circle
                 key={point.index}
                 cx={point.x}
                 cy={point.y}
-                r={1.5 * scale}
-                fill="currentColor"
+                r={1 * scale}
+                fill={isGreen ? "rgb(16, 185, 129)" : "rgb(156, 163, 175)"}
                 opacity={opacity}
-                style={{
-                  transition: "opacity 0.3s ease-in-out, r 0.3s ease-in-out",
-                }}
               />
             );
           })}
