@@ -19,7 +19,8 @@ const containerSizes = {
   lg: "h-16 w-16",
   xl: "h-20 w-20",
   qa: "h-[400px] w-[400px]",
-  hero: "h-[90vw] w-[90vw] max-h-[800px] max-w-[800px] md:h-[850px] md:w-[850px] md:max-h-none md:max-w-none lg:h-[1000px] lg:w-[1000px]",
+  // Hero uses vh-based sizing to keep logo centered, allowing horizontal clipping on mobile
+  hero: "h-[85vh] w-[85vh] md:h-[850px] md:w-[850px] lg:h-[1000px] lg:w-[1000px]",
 }
 
 // Color configuration
