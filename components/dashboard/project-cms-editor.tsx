@@ -38,7 +38,12 @@ import {
   Save,
   Eye,
   AlertTriangle,
+  Upload,
+  X,
+  Clipboard,
 } from "lucide-react"
+import { useRef, useCallback } from "react"
+import Image from "next/image"
 import Link from "next/link"
 
 type ContentBlock = {
@@ -92,6 +97,10 @@ export function ProjectCMSEditor({ projectId, metadata, onMetadataChange }: Proj
   const [editBlockContent, setEditBlockContent] = useState("")
   const [editBlockImageAlt, setEditBlockImageAlt] = useState("")
   const [updatingBlock, setUpdatingBlock] = useState(false)
+
+  // Hero image upload state
+  const [uploadingHeroImage, setUploadingHeroImage] = useState(false)
+  const heroImageInputRef = useRef<HTMLInputElement>(null)
 
   // Derived state
   const customerOptedOut = metadata.customer_opted_out_of_landing_page || false
@@ -225,6 +234,96 @@ export function ProjectCMSEditor({ projectId, metadata, onMetadataChange }: Proj
     setEditDialogOpen(true)
   }
 
+  // Hero image upload handler
+  const uploadHeroImage = useCallback(async (file: File) => {
+    if (!file.type.startsWith("image/")) {
+      alert("Please select an image file")
+      return
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      alert("Image must be less than 10MB")
+      return
+    }
+
+    setUploadingHeroImage(true)
+    try {
+      const formData = new FormData()
+      formData.append("file", file)
+      formData.append("type", "image")
+      formData.append("title", "Hero Image")
+
+      const response = await fetch(`/api/admin/projects/${projectId}/assets/upload`, {
+        method: "POST",
+        body: formData,
+      })
+
+      if (!response.ok) {
+        throw new Error("Upload failed")
+      }
+
+      const { asset } = await response.json()
+
+      // Update the hero image URL
+      setMetadataForm(prev => ({ ...prev, public_hero_image: asset.url }))
+
+      // Auto-save the metadata
+      const saveResponse = await fetch(`/api/admin/projects/${projectId}/content`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...metadataForm, public_hero_image: asset.url }),
+      })
+
+      if (saveResponse.ok) {
+        onMetadataChange()
+      }
+    } catch (error) {
+      console.error("Failed to upload hero image:", error)
+      alert("Failed to upload image. Please try again.")
+    } finally {
+      setUploadingHeroImage(false)
+    }
+  }, [projectId, metadataForm, onMetadataChange])
+
+  // Handle file input change
+  const handleHeroImageSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      uploadHeroImage(file)
+    }
+    // Reset input so same file can be selected again
+    e.target.value = ""
+  }, [uploadHeroImage])
+
+  // Handle paste for hero image
+  const handleHeroImagePaste = useCallback(async () => {
+    try {
+      const items = await navigator.clipboard.read()
+      for (const item of items) {
+        const imageType = item.types.find(type => type.startsWith("image/"))
+        if (imageType) {
+          const blob = await item.getType(imageType)
+          const file = new File([blob], `pasted-image-${Date.now()}.png`, { type: imageType })
+          uploadHeroImage(file)
+          return
+        }
+      }
+      alert("No image found in clipboard")
+    } catch (error) {
+      console.error("Failed to paste image:", error)
+      alert("Failed to paste image. Make sure you have an image copied to your clipboard.")
+    }
+  }, [uploadHeroImage])
+
+  // Handle drop for hero image
+  const handleHeroImageDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    const file = e.dataTransfer.files?.[0]
+    if (file && file.type.startsWith("image/")) {
+      uploadHeroImage(file)
+    }
+  }, [uploadHeroImage])
+
   const getBlockIcon = (type: string) => {
     switch (type) {
       case "header": return <Type className="h-4 w-4" />
@@ -346,16 +445,121 @@ export function ProjectCMSEditor({ projectId, metadata, onMetadataChange }: Proj
                 />
               </div>
               <div>
-                <label className="text-sm font-medium mb-1.5 block">Hero Image URL</label>
-                <Input
-                  value={metadataForm.public_hero_image}
-                  onChange={(e) => setMetadataForm({ ...metadataForm, public_hero_image: e.target.value })}
-                  placeholder="https://..."
+                <label className="text-sm font-medium mb-1.5 block">Hero Image</label>
+                {/* Hidden file input */}
+                <input
+                  ref={heroImageInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleHeroImageSelect}
+                  className="hidden"
                 />
+
+                {/* Image preview and upload area */}
+                {metadataForm.public_hero_image ? (
+                  <div className="space-y-3">
+                    <div className="relative aspect-video w-full max-w-md rounded-lg overflow-hidden border bg-muted">
+                      <Image
+                        src={metadataForm.public_hero_image}
+                        alt="Hero preview"
+                        fill
+                        className="object-cover"
+                      />
+                      <Button
+                        variant="destructive"
+                        size="icon"
+                        className="absolute top-2 right-2 h-8 w-8"
+                        onClick={() => setMetadataForm({ ...metadataForm, public_hero_image: "" })}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => heroImageInputRef.current?.click()}
+                        disabled={uploadingHeroImage}
+                      >
+                        <Upload className="h-4 w-4 mr-1" />
+                        Replace
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={handleHeroImagePaste}
+                        disabled={uploadingHeroImage}
+                      >
+                        <Clipboard className="h-4 w-4 mr-1" />
+                        Paste
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    className="border-2 border-dashed rounded-lg p-6 text-center hover:border-primary/50 transition-colors cursor-pointer"
+                    onClick={() => heroImageInputRef.current?.click()}
+                    onDrop={handleHeroImageDrop}
+                    onDragOver={(e) => e.preventDefault()}
+                  >
+                    {uploadingHeroImage ? (
+                      <div className="flex flex-col items-center gap-2">
+                        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                        <p className="text-sm text-muted-foreground">Uploading...</p>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center gap-2">
+                        <ImageIcon className="h-8 w-8 text-muted-foreground" />
+                        <p className="text-sm text-muted-foreground">
+                          Click to upload, drag & drop, or paste from clipboard
+                        </p>
+                        <div className="flex gap-2 mt-2">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              heroImageInputRef.current?.click()
+                            }}
+                          >
+                            <Upload className="h-4 w-4 mr-1" />
+                            Upload
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleHeroImagePaste()
+                            }}
+                          >
+                            <Clipboard className="h-4 w-4 mr-1" />
+                            Paste
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Optional manual URL input */}
+                <div className="mt-3">
+                  <label className="text-xs text-muted-foreground mb-1 block">Or enter URL manually:</label>
+                  <Input
+                    value={metadataForm.public_hero_image}
+                    onChange={(e) => setMetadataForm({ ...metadataForm, public_hero_image: e.target.value })}
+                    placeholder="https://..."
+                    className="text-sm"
+                  />
+                </div>
               </div>
             </div>
           ) : (
-            <div className="space-y-2 text-sm">
+            <div className="space-y-3 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Title:</span>
                 <span>{metadataForm.public_title || "—"}</span>
@@ -364,9 +568,20 @@ export function ProjectCMSEditor({ projectId, metadata, onMetadataChange }: Proj
                 <span className="text-muted-foreground">Industry:</span>
                 <span>{metadataForm.public_industry || "—"}</span>
               </div>
-              <div className="flex justify-between">
+              <div>
                 <span className="text-muted-foreground">Hero Image:</span>
-                <span className="truncate max-w-[200px]">{metadataForm.public_hero_image || "—"}</span>
+                {metadataForm.public_hero_image ? (
+                  <div className="mt-2 relative aspect-video w-full max-w-xs rounded-lg overflow-hidden border bg-muted">
+                    <Image
+                      src={metadataForm.public_hero_image}
+                      alt="Hero preview"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                ) : (
+                  <span className="ml-2">—</span>
+                )}
               </div>
             </div>
           )}
