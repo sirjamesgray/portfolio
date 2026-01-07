@@ -51,7 +51,7 @@ export function MobileLayout({ children, hasMirror, userEmail }: MobileLayoutPro
   }
 
   return (
-    <div className="md:hidden fixed inset-0 flex flex-col overflow-hidden bg-muted/50">
+    <div className="md:hidden fixed inset-0 flex flex-col overflow-hidden bg-background">
       {/* Spacer for mirror banner */}
       {hasMirror && <div className="flex-shrink-0 h-10" />}
 

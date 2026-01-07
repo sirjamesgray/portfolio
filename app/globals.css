@@ -179,9 +179,13 @@
   }
   html {
     scroll-behavior: smooth;
+    @apply bg-background;
   }
   body {
     @apply bg-background text-foreground;
+    /* Ensure background extends to iOS Safari safe areas */
+    min-height: 100dvh;
+    min-height: -webkit-fill-available;
   }
 
   /* Disable text selection site-wide */
