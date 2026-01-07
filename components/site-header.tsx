@@ -11,9 +11,11 @@ import { Logo3DStatic } from "@/components/logo-3d";
 
 interface SiteHeaderProps {
   variant?: "default" | "back";
+  backHref?: string;
+  backLabel?: string;
 }
 
-export function SiteHeader({ variant = "default" }: SiteHeaderProps) {
+export function SiteHeader({ variant = "default", backHref = "/", backLabel = "Back" }: SiteHeaderProps) {
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [showMobileFooter, setShowMobileFooter] = useState(false);
@@ -139,11 +141,11 @@ export function SiteHeader({ variant = "default" }: SiteHeaderProps) {
       <header className="hidden md:flex fixed top-0 left-0 right-0 z-50 items-center justify-between p-4 bg-background/80 backdrop-blur-sm border-b border-border/50">
         {variant === "back" ? (
           <Link
-            href="/"
+            href={backHref}
             className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back
+            {backLabel}
           </Link>
         ) : (
           <Link href="/" className="flex items-center h-8 w-8">
@@ -155,8 +157,21 @@ export function SiteHeader({ variant = "default" }: SiteHeaderProps) {
         </div>
       </header>
 
-      {/* Mobile Theme Toggle - top right, visible on mobile only */}
-      <div className="md:hidden absolute top-4 right-4 z-40">
+      {/* Mobile Header - top bar, visible on mobile only */}
+      <div className="md:hidden fixed top-0 left-0 right-0 z-40 flex items-center justify-between p-4 bg-background/80 backdrop-blur-sm border-b border-border/50">
+        {variant === "back" ? (
+          <Link
+            href={backHref}
+            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            {backLabel}
+          </Link>
+        ) : (
+          <Link href="/" className="flex items-center h-8 w-8">
+            <Logo3DStatic size="sm" />
+          </Link>
+        )}
         <ThemeToggle />
       </div>
 

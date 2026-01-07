@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowRight, ArrowUp, Layers, Palette, Code2, Sparkles, Mail, Github, Key, Settings2, HeartHandshake, RefreshCw, Check, LucideIcon, User } from "lucide-react";
+import { ArrowRight, ArrowUp, Layers, Palette, Code2, Sparkles, Mail, Github, Key, Settings2, HeartHandshake, RefreshCw, Check, LucideIcon, User, MessageCircle, Share2, Copy } from "lucide-react";
 import { Glow } from "@codaworks/react-glow";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { BlurFade } from "@/components/ui/blur-fade";
@@ -40,6 +40,11 @@ const socials = [
         <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
       </svg>
     ),
+  },
+  {
+    name: "SMS",
+    href: "sms:8173680224",
+    icon: <MessageCircle className="h-5 w-5" />,
   },
 ];
 
@@ -116,6 +121,43 @@ const deliverables: { Icon: LucideIcon; name: string; description: string }[] = 
 
 export default function Home() {
   const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyUrl = async () => {
+    try {
+      await navigator.clipboard.writeText(SITE_CONFIG.url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Fallback for older browsers
+      const input = document.createElement("input");
+      input.value = SITE_CONFIG.url;
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand("copy");
+      document.body.removeChild(input);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "Jamie Gray - Product Engineer",
+          text: "Check out Jamie Gray's portfolio - custom websites and web apps for small businesses",
+          url: SITE_CONFIG.url,
+        });
+      } catch {
+        // User cancelled or share failed, fall back to copy
+        handleCopyUrl();
+      }
+    } else {
+      // Fallback for browsers that don't support Web Share API
+      handleCopyUrl();
+    }
+  };
 
   useEffect(() => {
     async function checkUser() {
@@ -326,6 +368,44 @@ export default function Home() {
                 </div>
               </div>
             </Glow>
+          </BlurFade>
+        </div>
+      </section>
+
+      {/* Referral Section */}
+      <section className="relative px-6 pb-12">
+        <div className="mx-auto max-w-3xl">
+          <BlurFade delay={0.15} inView>
+            <div className="rounded-2xl border border-white/10 bg-card/40 p-6 text-center backdrop-blur-xl sm:p-8">
+              <p className="mb-4 text-lg text-muted-foreground">
+                Know someone who might need a site? Send them a link!
+              </p>
+              <div className="flex flex-col sm:flex-row items-stretch gap-3 max-w-sm mx-auto">
+                <button
+                  onClick={handleShare}
+                  className="flex-1 flex items-center justify-center gap-2 rounded-full bg-emerald-600 hover:bg-emerald-700 px-6 py-3 text-base font-medium text-white transition-all"
+                >
+                  <Share2 className="h-5 w-5" />
+                  Share this site
+                </button>
+                <button
+                  onClick={handleCopyUrl}
+                  className="flex-1 flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-3 text-base font-medium text-foreground backdrop-blur-sm transition-all hover:bg-white/10 hover:border-white/30"
+                >
+                  {copied ? (
+                    <>
+                      <Check className="h-5 w-5 text-emerald-500" />
+                      Copied!
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="h-5 w-5" />
+                      Copy URL
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
           </BlurFade>
         </div>
       </section>

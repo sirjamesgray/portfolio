@@ -20,6 +20,9 @@ A modern portfolio and client management platform built with Next.js 16. Feature
 - **[Stripe](https://stripe.com)** - Invoice creation, payment collection, webhooks
 - **[Calendly](https://calendly.com)** - Consultation scheduling with webhook integration
 
+### Email
+- **[Resend](https://resend.com)** - Transactional emails for customer and admin notifications
+
 ### UI Components
 
 #### Magic UI Components
@@ -113,8 +116,10 @@ A complete client lifecycle management platform for freelance projects.
 
 ### Lead Capture
 - **Start Project Flow:** 6-step questionnaire (project type, budget, timeline, description, consultation scheduling, contact info)
-- **Calendly Integration:** Webhook captures invitee.created/canceled events and auto-creates projects
+- **Calendly Integration:** Webhook captures invitee.created events and auto-creates projects
 - **Smart Auth Detection:** Logged-in users skip contact info step, project auto-links to their account
+- **Admin Notifications:** Email alerts sent to admin for new project submissions and Calendly bookings
+- **Customer Emails:** Confirmation emails sent automatically with dashboard access links
 
 ### Quote & Invoice Management
 - **Quotes:** Create, send, track (draft → sent → accepted/rejected/expired)
@@ -122,9 +127,11 @@ A complete client lifecycle management platform for freelance projects.
 - **Auto-Generation:** Accepted quotes automatically generate draft invoices
 
 ### Project Tracking
-- **Status Flow:** lead → contacted → in_progress → completed (or canceled)
+- **Status Flow:** consultation → quote_sent → quote_accepted → payment → development → delivered (or canceled)
 - **Collaborative Requirements:** Rich text with version history
+- **Project Assets:** Screenshots and images with upload/paste support
 - **Deliverables:** GitHub/Vercel URLs visible to clients
+- **Landing Page Publishing:** Publish completed projects as case studies on the public landing page
 
 ### Dashboards
 - **Admin Dashboard:** Full project/contact/quote/invoice management with analytics
@@ -212,6 +219,10 @@ STRIPE_WEBHOOK_SECRET_LOCAL=whsec_...  # For local development
 
 # Calendly (optional - for consultation scheduling)
 CALENDLY_WEBHOOK_SIGNING_KEY=your_signing_key
+
+# Resend (for email notifications)
+RESEND_API_KEY=re_...
+EMAIL_FROM=Jamie Gray <hello@jamiegray.net>
 ```
 
 ### Development
@@ -243,6 +254,8 @@ Required environment variables in Vercel:
 - `STRIPE_SECRET_KEY`
 - `STRIPE_WEBHOOK_SECRET`
 - `CALENDLY_WEBHOOK_SIGNING_KEY` (if using Calendly)
+- `RESEND_API_KEY`
+- `EMAIL_FROM`
 
 ## Configuration
 

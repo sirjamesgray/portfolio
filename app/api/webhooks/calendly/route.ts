@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@supabase/supabase-js"
 import crypto from "crypto"
 import { resend, EMAIL_FROM } from "@/lib/email/resend"
+import { SITE_CONFIG, ADMIN_EMAILS } from "@/lib/constants"
 
 // Initialize Supabase admin client for webhook operations
 function getSupabaseAdmin() {
@@ -180,16 +181,14 @@ export async function POST(request: NextRequest) {
     console.log("Created project " + project.id + " for contact " + contactId)
 
     // Log activity
-    await supabase.from("activity_logs").insert({
+    await supabase.from("activity_log").insert({
       project_id: project.id,
-      activity_type: "consultation_scheduled",
-      description: "Consultation scheduled for " + new Date(event.start_time).toLocaleDateString("en-US", {
-        weekday: "long",
-        month: "long",
-        day: "numeric",
-        hour: "numeric",
-        minute: "2-digit",
-      }),
+      action: "consultation_scheduled",
+      details: {
+        scheduled_for: event.start_time,
+        source: "calendly",
+        event_name: event.name,
+      },
     })
 
     // Send welcome email with dashboard link
@@ -216,11 +215,11 @@ export async function POST(request: NextRequest) {
             </p>
 
             <p style="font-size: 16px; line-height: 1.6; color: #374151; margin-bottom: 24px;">
-              In the meantime, I've set up a project dashboard for you where you'll be able to track progress, view quotes, and communicate throughout our work together.
+              In the meantime, I've set up a project dashboard for you where you'll be able to track progress, view quotes, and stay updated on your project.
             </p>
 
             <div style="text-align: center; margin: 32px 0;">
-              <a href="https://jamiegray.net/login"
+              <a href="${SITE_CONFIG.url}/login"
                  style="display: inline-block; background-color: #059669; color: white; font-weight: 500; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-size: 16px;">
                 Access Your Dashboard
               </a>
@@ -241,6 +240,54 @@ export async function POST(request: NextRequest) {
     } catch (emailError) {
       // Non-fatal - log but don't fail the webhook
       console.error("Error sending welcome email:", emailError)
+    }
+
+    // Send admin notification
+    try {
+      await resend.emails.send({
+        from: EMAIL_FROM,
+        to: ADMIN_EMAILS[0],
+        subject: `New Consultation Booked: ${invitee.name}`,
+        html: `
+          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
+            <h1 style="font-size: 24px; font-weight: 600; margin-bottom: 24px;">New Consultation Scheduled</h1>
+
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
+              <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb; font-weight: 500;">Customer</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb;">${invitee.name} (${invitee.email})</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb; font-weight: 500;">Event</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb;">${event.name}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb; font-weight: 500;">Date/Time</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb;">${consultationDate}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb; font-weight: 500;">Timezone</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb;">${invitee.timezone}</td>
+              </tr>
+            </table>
+
+            ${description !== "Consultation scheduled via Calendly for " + event.name ? `
+            <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 12px;">Project Details</h3>
+            <p style="font-size: 14px; line-height: 1.6; color: #374151; background: #f3f4f6; padding: 16px; border-radius: 8px; white-space: pre-wrap;">${description}</p>
+            ` : ""}
+
+            <div style="text-align: center; margin-top: 32px;">
+              <a href="${SITE_CONFIG.url}/dashboard/admin/projects/${project.id}"
+                 style="display: inline-block; background-color: #059669; color: white; font-weight: 500; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-size: 16px;">
+                View Project
+              </a>
+            </div>
+          </div>
+        `,
+      })
+      console.log("Sent admin notification for Calendly booking")
+    } catch (adminEmailError) {
+      console.error("Error sending admin notification:", adminEmailError)
     }
 
     return NextResponse.json({

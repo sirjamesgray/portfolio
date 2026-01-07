@@ -348,6 +348,7 @@ export default function ProjectDetailPage() {
   const [inviting, setInviting] = useState(false)
   const [inviteSuccess, setInviteSuccess] = useState(false)
   const [inviteError, setInviteError] = useState("")
+  const [resendingInvite, setResendingInvite] = useState<string | null>(null)
 
   // Project assets state
   const [assets, setAssets] = useState<ProjectAsset[]>([])
@@ -596,6 +597,34 @@ export default function ProjectDetailPage() {
       setInviteError("An error occurred")
     } finally {
       setInviting(false)
+    }
+  }
+
+  async function handleResendInvite(email: string, name?: string) {
+    setResendingInvite(email)
+    try {
+      const response = await fetch("/api/admin/invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          name,
+          projectId,
+          resendInvite: true,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        alert(`Invite resent to ${email}`)
+      } else {
+        alert(data.error || "Failed to resend invitation")
+      }
+    } catch (error) {
+      alert("An error occurred")
+    } finally {
+      setResendingInvite(null)
     }
   }
 
@@ -2336,14 +2365,30 @@ export default function ProjectDetailPage() {
                         <p className="text-xs text-muted-foreground">{member.user.email}</p>
                       </div>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleRemoveMember(member.user_id, "owner")}
-                      className="text-muted-foreground hover:text-red-600"
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
+                    <div className="flex items-center gap-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleResendInvite(member.user.email, member.user.name)}
+                        disabled={resendingInvite === member.user.email}
+                        className="text-muted-foreground hover:text-foreground"
+                        title="Resend dashboard invite"
+                      >
+                        {resendingInvite === member.user.email ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <RotateCcw className="h-4 w-4" />
+                        )}
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleRemoveMember(member.user_id, "owner")}
+                        className="text-muted-foreground hover:text-red-600"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                 ))}
               </div>

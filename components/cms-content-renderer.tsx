@@ -1,7 +1,7 @@
 "use client"
 
-import { useEffect, useRef } from "react"
-import { createRoot } from "react-dom/client"
+import { useEffect, useRef, useId } from "react"
+import { createRoot, Root } from "react-dom/client"
 import { BeforeAfterSlider } from "./before-after-slider"
 
 interface CMSContentRendererProps {
@@ -11,15 +11,23 @@ interface CMSContentRendererProps {
 
 export function CMSContentRenderer({ html, className }: CMSContentRendererProps) {
   const containerRef = useRef<HTMLDivElement>(null)
-  const rootsRef = useRef<Map<Element, ReturnType<typeof createRoot>>>(new Map())
+  const rootsRef = useRef<Map<string, Root>>(new Map())
+  const mountedRef = useRef(false)
+  const instanceId = useId()
 
   useEffect(() => {
     if (!containerRef.current) return
 
+    // Track which elements we're processing this render
+    const currentElements = new Set<string>()
+
     // Find all before/after elements and render React components into them
     const beforeAfterElements = containerRef.current.querySelectorAll("[data-before-after]")
 
-    beforeAfterElements.forEach((element) => {
+    beforeAfterElements.forEach((element, index) => {
+      const elementId = `${instanceId}-ba-${index}`
+      currentElements.add(elementId)
+
       const beforeImage = element.getAttribute("data-before") || ""
       const afterImage = element.getAttribute("data-after") || ""
       const beforeLabel = element.getAttribute("data-before-label") || "Before"
@@ -32,11 +40,11 @@ export function CMSContentRenderer({ html, className }: CMSContentRendererProps)
         element.innerHTML = ""
         element.className = "my-6"
 
-        // Create a root and render the slider
-        let root = rootsRef.current.get(element)
+        // Get or create a root for this element
+        let root = rootsRef.current.get(elementId)
         if (!root) {
           root = createRoot(element)
-          rootsRef.current.set(element, root)
+          rootsRef.current.set(elementId, root)
         }
 
         root.render(
@@ -52,23 +60,35 @@ export function CMSContentRenderer({ html, className }: CMSContentRendererProps)
       }
     })
 
-    // Cleanup function - defer unmount to avoid race condition with React rendering
-    return () => {
-      const roots = Array.from(rootsRef.current.values())
-      rootsRef.current.clear()
+    mountedRef.current = true
 
-      // Use setTimeout to defer unmount outside of React's render cycle
-      setTimeout(() => {
-        roots.forEach((root) => {
-          try {
-            root.unmount()
-          } catch {
-            // Ignore errors if root was already unmounted
-          }
-        })
-      }, 0)
+    // Cleanup roots that are no longer needed
+    rootsRef.current.forEach((root, id) => {
+      if (!currentElements.has(id)) {
+        root.unmount()
+        rootsRef.current.delete(id)
+      }
+    })
+
+    // Cleanup function
+    return () => {
+      // Only unmount if we're actually unmounting the component
+      // Use a microtask to check if we're still mounted
+      queueMicrotask(() => {
+        if (!mountedRef.current) {
+          rootsRef.current.forEach((root) => {
+            try {
+              root.unmount()
+            } catch {
+              // Ignore errors if already unmounted
+            }
+          })
+          rootsRef.current.clear()
+        }
+      })
+      mountedRef.current = false
     }
-  }, [html])
+  }, [html, instanceId])
 
   return (
     <div

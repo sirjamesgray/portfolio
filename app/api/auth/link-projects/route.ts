@@ -120,10 +120,13 @@ export async function POST() {
 
     // Log activity for each linked project
     for (const projectId of projectIds) {
-      await supabaseAdmin.from("activity_logs").insert({
+      await supabaseAdmin.from("activity_log").insert({
         project_id: projectId,
-        activity_type: "user_linked",
-        description: "Account created and linked to project",
+        action: "user_linked",
+        details: {
+          user_id: user.id,
+          email: userEmail,
+        },
       })
     }
 

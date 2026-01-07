@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation"
 import { createAdminClient } from "@/lib/supabase/admin"
 import Link from "next/link"
-import { ArrowLeft, ArrowRight } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import { BlurFade } from "@/components/ui/blur-fade"
 import { Button } from "@/components/ui/button"
 import { SiteHeader } from "@/components/site-header"
@@ -47,21 +47,10 @@ export default async function PublicProjectPage({ params }: PageProps) {
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-background via-background to-blue-950/20 dark:to-blue-950/30">
       <CursorGrid />
-      <SiteHeader />
+      <SiteHeader variant="back" backHref="/#projects" backLabel="Back to Landing Page" />
 
-      <main className="relative z-10 px-6 py-24">
+      <main className="relative z-10 px-6 pt-24 pb-12">
         <div className="mx-auto max-w-4xl">
-          {/* Back Link */}
-          <BlurFade delay={0.1}>
-            <Link
-              href="/#projects"
-              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Projects
-            </Link>
-          </BlurFade>
-
           {/* Header */}
           <BlurFade delay={0.15}>
             <div className="mb-8">
@@ -112,7 +101,7 @@ export default async function PublicProjectPage({ params }: PageProps) {
                 Interested in a similar project?
               </h3>
               <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                Let's discuss your vision and create something amazing together.
+                Tell me about your vision and I'll bring it to life.
               </p>
               <Link href="/start-project">
                 <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2 px-8 py-6 text-base font-semibold">

@@ -76,7 +76,7 @@ export function ProjectsShowcase() {
             {[0, 1].map((idx) => (
               <div
                 key={idx}
-                className="rounded-2xl border border-white/10 bg-card/40 p-6 animate-pulse"
+                className="rounded-2xl border border-white/10 bg-card/40 p-4 animate-pulse"
               >
                 <div className="flex items-center gap-3 mb-4">
                   <div className="h-12 w-12 rounded-xl bg-white/10" />
@@ -106,7 +106,7 @@ export function ProjectsShowcase() {
                     <Glow color="hsl(145, 80%, 45%)">
                       <div
                         className={cn(
-                          "group relative rounded-2xl border p-6 transition-all duration-300 backdrop-blur-xl overflow-hidden glow:ring-1 glow:ring-emerald-500/30 glow:border-emerald-500/40 cursor-pointer h-full",
+                          "group relative rounded-2xl border p-4 transition-all duration-300 backdrop-blur-xl overflow-hidden glow:ring-1 glow:ring-emerald-500/30 glow:border-emerald-500/40 cursor-pointer h-full",
                           hoveredIndex === idx
                             ? "border-primary/50 bg-primary/5 shadow-lg shadow-primary/10"
                             : "border-white/10 bg-card/40"

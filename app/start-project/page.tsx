@@ -21,7 +21,7 @@ function getAuthRedirectUrl() {
 const projectTypes = [
   { value: "website", label: "Website", description: "Business site, portfolio, landing page" },
   { value: "admin-tool", label: "Admin Tool", description: "Dashboard, internal tool, custom software" },
-  { value: "other", label: "Something else", description: "Let's figure it out together" },
+  { value: "other", label: "Something else", description: "Tell me about it" },
 ];
 
 const budgetRanges = [
@@ -29,7 +29,7 @@ const budgetRanges = [
   { value: "5k-10k", label: "$5,000 - $10,000", description: "Medium complexity projects" },
   { value: "10k-25k", label: "$10,000 - $25,000", description: "Complex apps and systems" },
   { value: "25k-plus", label: "$25,000+", description: "Enterprise and large-scale" },
-  { value: "not-sure", label: "Not sure yet", description: "Let's discuss what's possible" },
+  { value: "not-sure", label: "Not sure yet", description: "I can help you figure it out" },
 ];
 
 const timelines = [
