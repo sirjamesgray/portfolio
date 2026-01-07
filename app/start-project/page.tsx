@@ -9,6 +9,19 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { SITE_CONFIG } from "@/lib/constants";
 
+// Get the correct base URL for auth redirects
+function getAuthRedirectUrl() {
+  // In production, always use the configured site URL
+  if (process.env.NODE_ENV === "production") {
+    return SITE_CONFIG.url;
+  }
+  // In development, use the current origin (localhost)
+  if (typeof window !== "undefined") {
+    return window.location.origin;
+  }
+  return SITE_CONFIG.url;
+}
+
 const projectTypes = [
   { value: "website", label: "Website", description: "Business site, portfolio, landing page" },
   { value: "admin-tool", label: "Admin Tool", description: "Dashboard, internal tool, custom software" },
@@ -73,10 +86,11 @@ export default function StartProjectPage() {
 
     const { createClient } = await import("@/lib/supabase/client");
     const supabase = createClient();
+    const redirectUrl = getAuthRedirectUrl();
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback?next=/dashboard/success`,
+        redirectTo: `${redirectUrl}/auth/callback?next=/dashboard/success`,
       },
     });
   };

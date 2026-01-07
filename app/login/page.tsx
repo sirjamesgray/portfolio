@@ -8,6 +8,20 @@ import { Suspense } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2, Mail } from "lucide-react";
+import { SITE_CONFIG } from "@/lib/constants";
+
+// Get the correct base URL for auth redirects
+function getAuthRedirectUrl() {
+  // In production, always use the configured site URL
+  if (process.env.NODE_ENV === "production") {
+    return SITE_CONFIG.url;
+  }
+  // In development, use the current origin (localhost)
+  if (typeof window !== "undefined") {
+    return window.location.origin;
+  }
+  return SITE_CONFIG.url;
+}
 
 function LoginContent() {
   const searchParams = useSearchParams();
@@ -20,10 +34,11 @@ function LoginContent() {
   const signInWithGoogle = async () => {
     const { createClient } = await import("@/lib/supabase/client");
     const supabase = createClient();
+    const redirectUrl = getAuthRedirectUrl();
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: `${redirectUrl}/auth/callback`,
       },
     });
   };
@@ -36,10 +51,11 @@ function LoginContent() {
     try {
       const { createClient } = await import("@/lib/supabase/client");
       const supabase = createClient();
+      const redirectUrl = getAuthRedirectUrl();
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          emailRedirectTo: `${redirectUrl}/auth/callback`,
         },
       });
 
