@@ -81,7 +81,7 @@ export async function POST(request: Request) {
         timeline: timeline || "flexible",
         requirements: description.trim(),
         requirements_updated_at: new Date().toISOString(),
-        status: "lead",
+        status: "consultation",
       })
       .select("id")
       .single()

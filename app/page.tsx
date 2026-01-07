@@ -9,6 +9,7 @@ import { BentoGrid, BentoCard } from "@/components/ui/bento-grid";
 import { SiteHeader } from "@/components/site-header";
 import { UIShowcase } from "@/components/ui-showcase";
 import { ExperienceTimeline } from "@/components/experience-timeline";
+import { ProjectsShowcase } from "@/components/projects-showcase";
 import { CursorGrid } from "@/components/cursor-grid";
 import { SITE_CONFIG } from "@/lib/constants";
 import Link from "next/link";
@@ -208,6 +209,9 @@ export default function Home() {
 
       {/* Interactive UI Showcase */}
       <UIShowcase />
+
+      {/* Projects Section */}
+      <ProjectsShowcase />
 
       {/* Experience Section */}
       <ExperienceTimeline />

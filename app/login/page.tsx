@@ -11,12 +11,8 @@ import { Loader2, Mail } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/constants";
 
 // Get the correct base URL for auth redirects
+// Always use window.location.origin to preserve the current context (localhost vs production)
 function getAuthRedirectUrl() {
-  // In production, always use the configured site URL
-  if (process.env.NODE_ENV === "production") {
-    return SITE_CONFIG.url;
-  }
-  // In development, use the current origin (localhost)
   if (typeof window !== "undefined") {
     return window.location.origin;
   }
@@ -38,7 +34,7 @@ function LoginContent() {
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${redirectUrl}/auth/callback`,
+        redirectTo: `${redirectUrl}/auth/callback?next=/dashboard`,
       },
     });
   };
@@ -55,7 +51,7 @@ function LoginContent() {
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: `${redirectUrl}/auth/callback`,
+          emailRedirectTo: `${redirectUrl}/auth/callback?next=/dashboard`,
         },
       });
 

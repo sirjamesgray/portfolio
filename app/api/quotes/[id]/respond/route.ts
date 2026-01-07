@@ -91,7 +91,7 @@ export async function POST(
       .update({
         accepted_quote_id: quoteId,
         price: quote.amount,
-        status: "in_progress",
+        status: "quote_accepted",
         updated_at: now,
       })
       .eq("id", quote.project_id)

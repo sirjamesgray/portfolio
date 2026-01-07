@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { Switch } from "@/components/ui/switch"
 import { BlurFade } from "@/components/ui/blur-fade"
 import { ProjectProgress } from "@/components/dashboard/project-progress"
 import {
@@ -36,8 +37,14 @@ import {
   Circle,
   AlertCircle,
   Lock,
+  History,
+  Megaphone,
 } from "lucide-react"
 import { SITE_CONFIG, formatProjectType } from "@/lib/constants"
+
+// ============================================================================
+// Types
+// ============================================================================
 
 type Quote = {
   id: string
@@ -60,6 +67,13 @@ type Invoice = {
   created_at: string
 }
 
+type ActivityLog = {
+  id: string
+  action: string
+  details: string | null
+  created_at: string
+}
+
 type Project = {
   id: string
   title: string | null
@@ -78,13 +92,19 @@ type Project = {
   requirements: string | null
   requirements_updated_at: string | null
   cancellation_reason: string | null
+  customer_opted_out_of_landing_page: boolean | null
 }
 
 interface ProjectDetailClientProps {
   project: Project
   quotes: Quote[]
   invoices: Invoice[]
+  activityLog: ActivityLog[]
 }
+
+// ============================================================================
+// Utility Functions
+// ============================================================================
 
 function getInvoiceStatusColor(status: string) {
   switch (status) {
@@ -143,12 +163,52 @@ function formatTimeline(timeline: string | null) {
   return timelineMap[timeline] || timeline
 }
 
+function formatRelativeTime(dateString: string) {
+  const date = new Date(dateString)
+  const now = new Date()
+  const diffMs = now.getTime() - date.getTime()
+  const diffSeconds = Math.floor(diffMs / 1000)
+  const diffMinutes = Math.floor(diffSeconds / 60)
+  const diffHours = Math.floor(diffMinutes / 60)
+  const diffDays = Math.floor(diffHours / 24)
+
+  if (diffSeconds < 60) return "just now"
+  if (diffMinutes < 60) return `${diffMinutes} minute${diffMinutes !== 1 ? "s" : ""} ago`
+  if (diffHours < 24) return `${diffHours} hour${diffHours !== 1 ? "s" : ""} ago`
+  if (diffDays < 7) return `${diffDays} day${diffDays !== 1 ? "s" : ""} ago`
+  return date.toLocaleDateString()
+}
+
+function formatActivityAction(action: string): string {
+  const actionMap: Record<string, string> = {
+    "requirements_updated": "Requirements updated",
+    "status_changed": "Status changed",
+    "quote_sent": "Quote sent",
+    "quote_created": "Quote created",
+    "quote_accepted": "Quote accepted",
+    "quote_rejected": "Quote declined",
+    "invoice_paid": "Invoice paid",
+    "deliverables_updated": "Deliverables updated",
+    "customer_invited": "Customer invited",
+    "feature_consent_enabled": "Landing page feature enabled",
+    "feature_consent_disabled": "Landing page feature disabled",
+  }
+  return actionMap[action] || action.replace(/_/g, " ")
+}
+
+// ============================================================================
+// Main Component
+// ============================================================================
+
 export function ProjectDetailClient({
   project,
   quotes,
   invoices,
+  activityLog,
 }: ProjectDetailClientProps) {
   const router = useRouter()
+
+  // Quote response state
   const [respondingQuoteId, setRespondingQuoteId] = useState<string | null>(null)
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false)
   const [rejectingQuote, setRejectingQuote] = useState<Quote | null>(null)
@@ -166,30 +226,41 @@ export function ProjectDetailClient({
   const [originalRequirements, setOriginalRequirements] = useState(project.requirements || "")
   const [isSavingRequirements, setIsSavingRequirements] = useState(false)
 
+  // Opt-out state (true = customer opted out)
+  const [featureConsent, setFeatureConsent] = useState(project.customer_opted_out_of_landing_page || false)
+  const [isSavingConsent, setIsSavingConsent] = useState(false)
+
+  // ============================================================================
+  // Derived State
+  // ============================================================================
+
   const price = project.price || 0
   const paid = project.amount_paid || 0
   const owed = price - paid
   const projectName = project.title || `${formatProjectType(project.project_type)} Project`
 
-  // Get pending quotes that need action
+  // Progress indicators
   const pendingQuotes = quotes.filter((q) => q.status === "sent")
-
-  // Calculate progress state
   const hasQuote = quotes.length > 0
   const quoteAccepted = quotes.some((q) => q.status === "accepted")
   const quoteRejected = quotes.some((q) => q.status === "rejected")
   const hasPaid = paid > 0 || invoices.some((i) => i.status === "paid")
   const hasDeliverables = Boolean(project.github_url || project.vercel_url)
 
-  // Project stage for progressive disclosure
+  // Display logic
   const isEarlyStage = !hasQuote && (project.status === "lead" || project.status === "contacted")
-  const isAwaitingQuoteResponse = pendingQuotes.length > 0
   const isActiveProject = quoteAccepted || project.status === "in_progress"
   const showPayments = quoteAccepted || hasPaid || invoices.length > 0
   const showDeliverables = isActiveProject || hasDeliverables
+  const isCanceled = project.status === "canceled"
 
+  // Change tracking
   const hasTitleChanges = titleValue !== originalTitle
   const hasRequirementsChanges = requirementsValue !== originalRequirements
+
+  // ============================================================================
+  // Event Handlers
+  // ============================================================================
 
   async function handleQuoteResponse(quoteId: string, action: "accept" | "reject", message?: string) {
     setRespondingQuoteId(quoteId)
@@ -287,12 +358,42 @@ export function ProjectDetailClient({
     setIsEditingRequirements(false)
   }
 
+  async function handleFeatureConsentToggle(optedOut: boolean) {
+    setIsSavingConsent(true)
+    const previousValue = featureConsent
+    setFeatureConsent(optedOut) // Optimistic update
+
+    try {
+      const response = await fetch(`/api/projects/${project.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ customer_opted_out_of_landing_page: optedOut }),
+      })
+
+      if (response.ok) {
+        router.refresh()
+      } else {
+        setFeatureConsent(previousValue) // Revert on error
+        const error = await response.json()
+        alert(error.error || "Failed to save preference")
+      }
+    } catch {
+      setFeatureConsent(previousValue) // Revert on error
+      alert("An error occurred. Please try again.")
+    } finally {
+      setIsSavingConsent(false)
+    }
+  }
+
+  // ============================================================================
+  // Render
+  // ============================================================================
+
   return (
     <div className="space-y-6">
       {/* Header */}
       <BlurFade delay={0.1}>
         <div className="flex items-start gap-4">
-          {/* Back button - hidden on mobile since MobileLayout provides one */}
           <Button
             variant="ghost"
             size="icon"
@@ -302,7 +403,6 @@ export function ProjectDetailClient({
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <div className="space-y-1 flex-1">
-            {/* Project Name Field */}
             <div className="space-y-1.5">
               <label className="text-sm font-medium text-muted-foreground">
                 Project name
@@ -323,19 +423,10 @@ export function ProjectDetailClient({
                       disabled={!hasTitleChanges || isSavingTitle}
                       className="bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50"
                     >
-                      {isSavingTitle ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <Check className="h-4 w-4" />
-                      )}
+                      {isSavingTitle ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
                       <span className="ml-1">Save</span>
                     </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={handleRevertTitle}
-                      disabled={isSavingTitle}
-                    >
+                    <Button size="sm" variant="outline" onClick={handleRevertTitle} disabled={isSavingTitle}>
                       <RotateCcw className="h-4 w-4" />
                       <span className="ml-1">Cancel</span>
                     </Button>
@@ -366,41 +457,51 @@ export function ProjectDetailClient({
       <BlurFade delay={0.12}>
         <Card>
           <CardContent className="pt-6">
-            <ProjectProgress
-              status={project.status}
-              hasQuote={hasQuote}
-              quoteAccepted={quoteAccepted}
-              quoteRejected={quoteRejected}
-              hasPaid={hasPaid}
-              hasDeliverables={hasDeliverables}
-            />
+            <ProjectProgress status={project.status} />
           </CardContent>
         </Card>
       </BlurFade>
 
+      {/* Next Step Card - Always at top after checklist */}
+      {isEarlyStage && !isCanceled && (
+        <BlurFade delay={0.13}>
+          <Card className="border-emerald-500/50 bg-emerald-500/5">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base flex items-center gap-2">
+                <Calendar className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                Next Step
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <p className="text-sm text-muted-foreground">
+                Schedule a consultation to discuss your project and receive a quote.
+              </p>
+              <a href={SITE_CONFIG.calendly} target="_blank" rel="noopener noreferrer">
+                <Button className="w-full gap-2 bg-emerald-600 hover:bg-emerald-700" size="sm">
+                  <Calendar className="h-4 w-4" />
+                  Schedule Consultation
+                </Button>
+              </a>
+            </CardContent>
+          </Card>
+        </BlurFade>
+      )}
+
       {/* Canceled Project Notice */}
-      {project.status === "canceled" && project.cancellation_reason && (
+      {isCanceled && project.cancellation_reason && (
         <BlurFade delay={0.13}>
           <Card className="border-red-500/50 bg-red-500/5">
             <CardContent className="pt-6">
               <div className="flex items-start gap-3">
                 <AlertCircle className="h-5 w-5 text-red-500 mt-0.5 shrink-0" />
                 <div>
-                  <h3 className="font-medium text-red-600 dark:text-red-400">
-                    Project Canceled
-                  </h3>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {project.cancellation_reason}
-                  </p>
+                  <h3 className="font-medium text-red-600 dark:text-red-400">Project Canceled</h3>
+                  <p className="text-sm text-muted-foreground mt-1">{project.cancellation_reason}</p>
                   <p className="text-xs text-muted-foreground mt-2">
                     If you have questions, please{" "}
-                    <a
-                      href={`mailto:${SITE_CONFIG.email}`}
-                      className="text-primary hover:underline"
-                    >
+                    <a href={`mailto:${SITE_CONFIG.email}`} className="text-primary hover:underline">
                       contact {SITE_CONFIG.name}
-                    </a>
-                    .
+                    </a>.
                   </p>
                 </div>
               </div>
@@ -409,10 +510,11 @@ export function ProjectDetailClient({
         </BlurFade>
       )}
 
+      {/* Main Content Grid */}
       <div className="grid gap-6 lg:grid-cols-[1fr,320px]">
         {/* Main Column */}
         <div className="space-y-6">
-          {/* Pending Quotes - Action Required (Priority) */}
+          {/* Pending Quotes - Action Required */}
           {pendingQuotes.length > 0 && (
             <BlurFade delay={0.15}>
               <Card className="border-yellow-500/50">
@@ -467,7 +569,7 @@ export function ProjectDetailClient({
             </BlurFade>
           )}
 
-          {/* Deliverables - Only show for active projects or when deliverables exist */}
+          {/* Deliverables */}
           {showDeliverables && (
             <BlurFade delay={0.18}>
               <Card className={!hasPaid ? "border-amber-500/30 bg-amber-500/5" : ""}>
@@ -505,7 +607,6 @@ export function ProjectDetailClient({
                     </div>
                   ) : (
                     <>
-                      {/* GitHub Repository */}
                       {project.github_url ? (
                         <Link
                           href={project.github_url}
@@ -523,8 +624,6 @@ export function ProjectDetailClient({
                           <span className="text-xs text-muted-foreground/60 ml-auto">Coming soon</span>
                         </div>
                       )}
-
-                      {/* Live Site */}
                       {project.vercel_url ? (
                         <Link
                           href={project.vercel_url}
@@ -549,19 +648,14 @@ export function ProjectDetailClient({
             </BlurFade>
           )}
 
-          {/* Project Requirements - Editable */}
+          {/* Project Requirements */}
           <BlurFade delay={0.2}>
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-base">Project Requirements</CardTitle>
                   {!isEditingRequirements && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setIsEditingRequirements(true)}
-                      className="gap-1"
-                    >
+                    <Button variant="ghost" size="sm" onClick={() => setIsEditingRequirements(true)} className="gap-1">
                       <Pencil className="h-4 w-4" />
                       Edit
                     </Button>
@@ -585,19 +679,10 @@ export function ProjectDetailClient({
                         disabled={!hasRequirementsChanges || isSavingRequirements}
                         className="bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50"
                       >
-                        {isSavingRequirements ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <Check className="h-4 w-4" />
-                        )}
+                        {isSavingRequirements ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
                         <span className="ml-1">Save</span>
                       </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={handleRevertRequirements}
-                        disabled={isSavingRequirements}
-                      >
+                      <Button size="sm" variant="outline" onClick={handleRevertRequirements} disabled={isSavingRequirements}>
                         <RotateCcw className="h-4 w-4" />
                         <span className="ml-1">Cancel</span>
                       </Button>
@@ -623,6 +708,42 @@ export function ProjectDetailClient({
             </Card>
           </BlurFade>
 
+          {/* Activity Timeline */}
+          {activityLog.length > 0 && (
+            <BlurFade delay={0.22}>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <History className="h-4 w-4" />
+                    Activity
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {activityLog.map((activity, index) => (
+                      <div
+                        key={activity.id}
+                        className={`flex gap-4 ${index !== activityLog.length - 1 ? "pb-4 border-b" : ""}`}
+                      >
+                        <div className="flex flex-col items-center">
+                          <div className="h-2 w-2 rounded-full mt-2 bg-primary" />
+                          {index !== activityLog.length - 1 && <div className="w-px flex-1 bg-border mt-2" />}
+                        </div>
+                        <div className="flex-1 space-y-1 pt-0.5">
+                          <p className="text-sm font-medium">{formatActivityAction(activity.action)}</p>
+                          {activity.details && (
+                            <p className="text-sm text-muted-foreground">{activity.details}</p>
+                          )}
+                          <p className="text-xs text-muted-foreground">{formatRelativeTime(activity.created_at)}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </BlurFade>
+          )}
+
           {/* Contact Jamie */}
           <BlurFade delay={0.25}>
             <Card>
@@ -637,7 +758,6 @@ export function ProjectDetailClient({
                       Email {SITE_CONFIG.name.split(" ")[0]}
                     </Button>
                   </a>
-                  {/* Only show schedule button if not already shown in Next Steps */}
                   {!isEarlyStage && (
                     <a href={SITE_CONFIG.calendly} target="_blank" rel="noopener noreferrer">
                       <Button variant="outline" className="gap-2">
@@ -652,33 +772,8 @@ export function ProjectDetailClient({
           </BlurFade>
         </div>
 
-        {/* Right Sidebar - Project Info */}
-        <div className="space-y-6 order-first lg:order-last">
-          {/* Next Steps - Early Stage Projects (Priority CTA) */}
-          {isEarlyStage && (
-            <BlurFade delay={0.14}>
-              <Card className="border-emerald-500/50 bg-emerald-500/5">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-                    Next Step
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <p className="text-sm text-muted-foreground">
-                    Schedule a consultation to discuss your project and receive a quote.
-                  </p>
-                  <a href={SITE_CONFIG.calendly} target="_blank" rel="noopener noreferrer">
-                    <Button className="w-full gap-2 bg-emerald-600 hover:bg-emerald-700" size="sm">
-                      <Calendar className="h-4 w-4" />
-                      Schedule Consultation
-                    </Button>
-                  </a>
-                </CardContent>
-              </Card>
-            </BlurFade>
-          )}
-
+        {/* Right Sidebar */}
+        <div className="space-y-6">
           {/* Project Details */}
           <BlurFade delay={0.15}>
             <Card>
@@ -706,7 +801,7 @@ export function ProjectDetailClient({
             </Card>
           </BlurFade>
 
-          {/* Pricing & Payments - Only show after quote accepted or payment made */}
+          {/* Pricing & Payments */}
           {showPayments ? (
             <BlurFade delay={0.2}>
               <Card>
@@ -724,9 +819,7 @@ export function ProjectDetailClient({
                     </div>
                     <div className="flex items-center justify-between">
                       <p className="text-sm text-muted-foreground">Amount Paid</p>
-                      <p className="font-bold text-emerald-600 dark:text-emerald-400">
-                        {formatCurrency(paid)}
-                      </p>
+                      <p className="font-bold text-emerald-600 dark:text-emerald-400">{formatCurrency(paid)}</p>
                     </div>
                     <div className="flex items-center justify-between">
                       <p className="text-sm text-muted-foreground">Amount Owed</p>
@@ -749,7 +842,7 @@ export function ProjectDetailClient({
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground">
-                    {isAwaitingQuoteResponse
+                    {pendingQuotes.length > 0
                       ? "Review and accept the quote above to see payment details."
                       : "Schedule a consultation to discuss your project and receive a quote."}
                   </p>
@@ -771,14 +864,9 @@ export function ProjectDetailClient({
                 <CardContent>
                   <div className="space-y-3">
                     {invoices.map((invoice) => (
-                      <div
-                        key={invoice.id}
-                        className="flex items-center justify-between p-3 border rounded-lg"
-                      >
+                      <div key={invoice.id} className="flex items-center justify-between p-3 border rounded-lg">
                         <div className="flex items-center gap-3">
-                          <Badge className={getInvoiceStatusColor(invoice.status)}>
-                            {formatStatus(invoice.status)}
-                          </Badge>
+                          <Badge className={getInvoiceStatusColor(invoice.status)}>{formatStatus(invoice.status)}</Badge>
                           <div>
                             <p className="font-medium text-sm">{formatCurrency(invoice.amount)}</p>
                             <p className="text-xs text-muted-foreground">
@@ -788,13 +876,45 @@ export function ProjectDetailClient({
                         </div>
                         {invoice.invoice_url && invoice.status !== "paid" && (
                           <Link href={invoice.invoice_url} target="_blank">
-                            <Button size="sm" variant="outline">
-                              Pay
-                            </Button>
+                            <Button size="sm" variant="outline">Pay</Button>
                           </Link>
                         )}
                       </div>
                     ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </BlurFade>
+          )}
+
+          {/* Landing Page Opt-Out */}
+          {!isCanceled && (
+            <BlurFade delay={0.28}>
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <Megaphone className="h-4 w-4" />
+                    Portfolio Visibility
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <Switch
+                      checked={featureConsent}
+                      onCheckedChange={handleFeatureConsentToggle}
+                      disabled={isSavingConsent}
+                      className="mt-0.5"
+                    />
+                    <div>
+                      <p className="text-sm font-medium">
+                        Don't feature my project on the landing page
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {featureConsent
+                          ? "Your project will not be shown on the public portfolio."
+                          : "Your project may be featured as a portfolio piece on jamiegray.net."}
+                      </p>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -822,18 +942,10 @@ export function ProjectDetailClient({
             />
           </div>
           <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setRejectDialogOpen(false)}
-              disabled={respondingQuoteId !== null}
-            >
+            <Button variant="outline" onClick={() => setRejectDialogOpen(false)} disabled={respondingQuoteId !== null}>
               Cancel
             </Button>
-            <Button
-              variant="destructive"
-              onClick={handleConfirmReject}
-              disabled={respondingQuoteId !== null}
-            >
+            <Button variant="destructive" onClick={handleConfirmReject} disabled={respondingQuoteId !== null}>
               {respondingQuoteId !== null ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin mr-2" />

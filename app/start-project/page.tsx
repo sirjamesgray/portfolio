@@ -10,12 +10,8 @@ import { createClient } from "@/lib/supabase/client";
 import { SITE_CONFIG } from "@/lib/constants";
 
 // Get the correct base URL for auth redirects
+// Always use window.location.origin to preserve the current context (localhost vs production)
 function getAuthRedirectUrl() {
-  // In production, always use the configured site URL
-  if (process.env.NODE_ENV === "production") {
-    return SITE_CONFIG.url;
-  }
-  // In development, use the current origin (localhost)
   if (typeof window !== "undefined") {
     return window.location.origin;
   }
@@ -128,6 +124,16 @@ export default function StartProjectPage() {
 
   const handleSelect = (field: keyof typeof formData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+
+    // Auto-advance for selection steps (project type, budget, timeline)
+    if (field === "projectType" || field === "budget" || field === "timeline") {
+      // Small delay for visual feedback before advancing
+      setTimeout(() => {
+        if (step < 5) {
+          setStep((s) => (s + 1) as Step);
+        }
+      }, 200);
+    }
   };
 
   const isValidEmail = (email: string) => {

@@ -46,6 +46,20 @@ export async function GET(request: Request) {
       );
     }
 
+    // Link any existing projects (from Calendly bookings) to this user
+    // This is fire-and-forget - we don't want to block the redirect
+    try {
+      await fetch(`${origin}/api/auth/link-projects`, {
+        method: "POST",
+        headers: {
+          cookie: cookieStore.getAll().map(c => `${c.name}=${c.value}`).join("; "),
+        },
+      });
+    } catch (linkError) {
+      // Non-fatal - user can still proceed
+      console.error("Error linking projects:", linkError);
+    }
+
     // Successfully authenticated - redirect to next page
     return NextResponse.redirect(`${origin}${next}`);
   }

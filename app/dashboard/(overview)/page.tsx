@@ -1,4 +1,5 @@
-import { cookies } from "next/headers"
+import { cookies, headers } from "next/headers"
+import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { isAdmin } from "@/lib/constants"
@@ -34,6 +35,12 @@ export default async function DashboardOverviewPage() {
 
   // When mirroring, show customer view
   const showAdminTools = userIsAdmin && !mirrorUserId
+
+  // Redirect admins to projects page (first item in menu)
+  if (showAdminTools) {
+    redirect("/dashboard/admin/projects")
+  }
+
   const displayEmail = mirrorUserId ? effectiveUserEmail : (user.email || "")
 
   // Fetch projects for the effective user with quotes and invoices for progress calculation

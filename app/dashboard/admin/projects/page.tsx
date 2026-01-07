@@ -34,6 +34,8 @@ type Project = {
   contacts: Contact | Contact[] | null
   vercel_url: string | null
   github_url: string | null
+  show_on_landing_page: boolean | null
+  customer_opted_out_of_landing_page: boolean | null
   quotes: Quote[]
   invoices: Invoice[]
 }
@@ -65,6 +67,8 @@ export default async function AdminProjectsPage() {
       user_id,
       vercel_url,
       github_url,
+      show_on_landing_page,
+      customer_opted_out_of_landing_page,
       contacts (
         name,
         email
@@ -134,9 +138,9 @@ export default async function AdminProjectsPage() {
 
   const stats = {
     totalProjects: projects?.length || 0,
-    leads: projects?.filter(p => p.status === "lead").length || 0,
-    inProgress: projects?.filter(p => p.status === "in_progress").length || 0,
-    completed: projects?.filter(p => p.status === "completed").length || 0,
+    consultation: projects?.filter(p => p.status === "consultation").length || 0,
+    development: projects?.filter(p => p.status === "development").length || 0,
+    delivered: projects?.filter(p => p.status === "delivered").length || 0,
   }
 
   // Get list of customers (non-admin users) for new project creation

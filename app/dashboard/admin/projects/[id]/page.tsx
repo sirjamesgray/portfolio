@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ProjectProgress } from "@/components/dashboard/project-progress"
 import { RichTextEditor } from "@/components/dashboard/rich-text-editor"
+import { ProjectCMSEditor } from "@/components/dashboard/project-cms-editor"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -42,6 +43,14 @@ import {
   Receipt,
   Trash2,
   ArchiveRestore,
+  Users,
+  Crown,
+  UserPlus,
+  Globe,
+  Image,
+  Link2,
+  Upload,
+  FileImage,
 } from "lucide-react"
 import {
   Dialog,
@@ -83,6 +92,13 @@ type Project = {
   updated_at: string
   user_id: string | null
   contacts: Contact | Contact[] | null
+  // Landing page controls
+  customer_opted_out_of_landing_page: boolean | null
+  show_on_landing_page: boolean | null
+  public_title: string | null
+  public_description: string | null
+  public_hero_image: string | null
+  public_industry: string | null
 }
 
 type ActivityLog = {
@@ -120,15 +136,46 @@ type RequirementsVersion = {
   created_at: string
 }
 
+type MemberUser = {
+  id: string
+  email: string
+  name: string
+}
+
+type ProjectMember = {
+  id: string
+  user_id: string
+  role: "owner" | "viewer"
+  created_at: string
+  user: MemberUser
+}
+
+type ProjectAsset = {
+  id: string
+  project_id: string
+  type: "previous_site" | "reference_link" | "screenshot" | "image" | "document"
+  title: string | null
+  url: string | null
+  storage_path: string | null
+  thumbnail_url: string | null
+  description: string | null
+  display_order: number
+  created_at: string
+}
+
 function getStatusColor(status: string) {
   switch (status) {
-    case "lead":
+    case "consultation":
       return "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
-    case "contacted":
+    case "quote_sent":
       return "bg-blue-500/10 text-blue-500 border-blue-500/20"
-    case "in_progress":
+    case "quote_accepted":
+      return "bg-indigo-500/10 text-indigo-500 border-indigo-500/20"
+    case "payment":
+      return "bg-purple-500/10 text-purple-500 border-purple-500/20"
+    case "development":
       return "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
-    case "completed":
+    case "delivered":
       return "bg-green-500/10 text-green-500 border-green-500/20"
     case "canceled":
       return "bg-red-500/10 text-red-500 border-red-500/20"
@@ -285,100 +332,104 @@ export default function ProjectDetailPage() {
   const [emailPreviewOpen, setEmailPreviewOpen] = useState(false)
   const [previewQuote, setPreviewQuote] = useState<Quote | null>(null)
 
+  // Project members state
+  const [members, setMembers] = useState<ProjectMember[]>([])
+  const [assignedAdmin, setAssignedAdmin] = useState<MemberUser | null>(null)
+  const [addMemberDialogOpen, setAddMemberDialogOpen] = useState(false)
+  const [newMemberEmail, setNewMemberEmail] = useState("")
+  const [newMemberRole, setNewMemberRole] = useState<"owner" | "viewer">("viewer")
+  const [addingMember, setAddingMember] = useState(false)
+  const [inviteDialogOpen, setInviteDialogOpen] = useState(false)
+  const [inviteEmail, setInviteEmail] = useState("")
+  const [inviteName, setInviteName] = useState("")
+  const [inviting, setInviting] = useState(false)
+  const [inviteSuccess, setInviteSuccess] = useState(false)
+  const [inviteError, setInviteError] = useState("")
+
+  // Project assets state
+  const [assets, setAssets] = useState<ProjectAsset[]>([])
+  const [previousSiteUrl, setPreviousSiteUrl] = useState("")
+  const [originalPreviousSiteUrl, setOriginalPreviousSiteUrl] = useState("")
+  const [savingPreviousSite, setSavingPreviousSite] = useState(false)
+  const [addLinkDialogOpen, setAddLinkDialogOpen] = useState(false)
+  const [newLinkUrl, setNewLinkUrl] = useState("")
+  const [newLinkTitle, setNewLinkTitle] = useState("")
+  const [addingLink, setAddingLink] = useState(false)
+  const [uploadingImage, setUploadingImage] = useState(false)
+
   useEffect(() => {
     fetchProject()
     fetchActivityLog()
     fetchCurrentUser()
     fetchQuotesAndInvoices()
+    fetchMembers()
+    fetchAssets()
   }, [projectId])
+
+  const [currentUserEmail, setCurrentUserEmail] = useState("")
 
   async function fetchCurrentUser() {
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (user) {
       setCurrentUserId(user.id)
+      setCurrentUserEmail(user.email || "")
       setCurrentUserName(user.user_metadata?.full_name || user.email?.split("@")[0] || "Admin")
     }
   }
 
   async function fetchProject() {
-    const supabase = createClient()
-    const { data, error } = await supabase
-      .from("projects")
-      .select(
-        `
-        id,
-        title,
-        status,
-        project_type,
-        price,
-        amount_paid,
-        end_date,
-        github_url,
-        vercel_url,
-        meeting_time,
-        notes,
-        requirements,
-        requirements_updated_at,
-        requirements_updated_by,
-        cancellation_reason,
-        created_at,
-        updated_at,
-        user_id,
-        contacts (
-          name,
-          email,
-          phone,
-          company
-        )
-      `
-      )
-      .eq("id", projectId)
-      .single()
+    try {
+      const response = await fetch(`/api/admin/projects/${projectId}`)
+      if (!response.ok) {
+        console.error("Error fetching project:", response.status)
+        setLoading(false)
+        return
+      }
+      const { project: data } = await response.json()
 
-    if (error) {
+      if (!data) {
+        setLoading(false)
+        return
+      }
+
+      setProject(data)
+      const titleVal = data.title || ""
+      setTitle(titleVal)
+      setOriginalTitle(titleVal)
+      // Use requirements if available, otherwise fall back to notes (for migration)
+      const reqContent = data.requirements || data.notes || ""
+      setRequirements(reqContent)
+      setOriginalRequirements(reqContent)
+      const statusVal = data.status
+      setStatus(statusVal)
+      setOriginalStatus(statusVal)
+      const endDateVal = data.end_date ? data.end_date.split("T")[0] : ""
+      setEndDate(endDateVal)
+      setOriginalEndDate(endDateVal)
+      const githubVal = data.github_url || ""
+      setGithubUrl(githubVal)
+      setOriginalGithubUrl(githubVal)
+      const vercelVal = data.vercel_url || ""
+      setVercelUrl(vercelVal)
+      setOriginalVercelUrl(vercelVal)
+      setLoading(false)
+    } catch (error) {
       console.error("Error fetching project:", error)
       setLoading(false)
-      return
     }
-
-    setProject(data)
-    const titleVal = data.title || ""
-    setTitle(titleVal)
-    setOriginalTitle(titleVal)
-    // Use requirements if available, otherwise fall back to notes (for migration)
-    const reqContent = data.requirements || data.notes || ""
-    setRequirements(reqContent)
-    setOriginalRequirements(reqContent)
-    const statusVal = data.status
-    setStatus(statusVal)
-    setOriginalStatus(statusVal)
-    const endDateVal = data.end_date ? data.end_date.split("T")[0] : ""
-    setEndDate(endDateVal)
-    setOriginalEndDate(endDateVal)
-    const githubVal = data.github_url || ""
-    setGithubUrl(githubVal)
-    setOriginalGithubUrl(githubVal)
-    const vercelVal = data.vercel_url || ""
-    setVercelUrl(vercelVal)
-    setOriginalVercelUrl(vercelVal)
-    setLoading(false)
   }
 
   async function fetchActivityLog() {
-    const supabase = createClient()
-    const { data, error } = await supabase
-      .from("activity_log")
-      .select("id, action, details, created_at")
-      .eq("project_id", projectId)
-      .order("created_at", { ascending: false })
-
-    if (error) {
+    try {
+      const response = await fetch(`/api/admin/projects/${projectId}/activity`)
+      if (response.ok) {
+        const data = await response.json()
+        setActivityLog(data.activityLog || [])
+      }
+    } catch (error) {
       console.error("Error fetching activity log:", error)
-      return
     }
-
-    setActivityLog(data || [])
   }
 
   async function fetchQuotesAndInvoices() {
@@ -395,18 +446,268 @@ export default function ProjectDetailPage() {
   }
 
   async function fetchRequirementsVersions() {
-    const supabase = createClient()
-    const { data, error } = await supabase
-      .from("requirements_versions")
-      .select("id, content, updated_by_name, created_at")
-      .eq("project_id", projectId)
-      .order("created_at", { ascending: false })
-      .limit(20)
-
-    if (!error && data) {
-      setRequirementsVersions(data)
+    try {
+      const response = await fetch(`/api/admin/projects/${projectId}/requirements-versions`)
+      if (response.ok) {
+        const data = await response.json()
+        setRequirementsVersions(data.versions || [])
+      }
+    } catch (error) {
+      console.error("Error fetching requirements versions:", error)
     }
   }
+
+  async function fetchMembers() {
+    try {
+      const response = await fetch(`/api/admin/projects/${projectId}/members`)
+      if (response.ok) {
+        const data = await response.json()
+        setMembers(data.members || [])
+        setAssignedAdmin(data.assignedAdmin || null)
+      }
+    } catch (error) {
+      console.error("Error fetching members:", error)
+    }
+  }
+
+  async function handleAddMember() {
+    if (!newMemberEmail.trim()) return
+
+    setAddingMember(true)
+    try {
+      const response = await fetch(`/api/admin/projects/${projectId}/members`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: newMemberEmail.trim(),
+          role: newMemberRole,
+        }),
+      })
+
+      if (response.ok) {
+        setNewMemberEmail("")
+        setNewMemberRole("viewer")
+        setAddMemberDialogOpen(false)
+        fetchMembers()
+        if (newMemberRole === "owner") {
+          fetchProject() // Refresh project to get new user_id
+        }
+      } else {
+        const error = await response.json()
+        alert(error.error || "Failed to add member")
+      }
+    } catch (error) {
+      alert("An error occurred")
+    } finally {
+      setAddingMember(false)
+    }
+  }
+
+  async function handleRemoveMember(userId: string, role: string) {
+    if (!confirm("Are you sure you want to remove this member?")) return
+
+    try {
+      const response = await fetch(`/api/admin/projects/${projectId}/members`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, role }),
+      })
+
+      if (response.ok) {
+        fetchMembers()
+        if (role === "owner") {
+          fetchProject()
+        }
+      } else {
+        const error = await response.json()
+        alert(error.error || "Failed to remove member")
+      }
+    } catch (error) {
+      alert("An error occurred")
+    }
+  }
+
+  async function handleAssignAdmin(email: string) {
+    try {
+      const response = await fetch(`/api/admin/projects/${projectId}/members`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          role: "admin",
+        }),
+      })
+
+      if (response.ok) {
+        fetchMembers()
+      } else {
+        const error = await response.json()
+        alert(error.error || "Failed to assign admin")
+      }
+    } catch (error) {
+      alert("An error occurred")
+    }
+  }
+
+  async function handleInviteCustomer() {
+    if (!inviteEmail.trim()) return
+
+    setInviting(true)
+    setInviteError("")
+    setInviteSuccess(false)
+
+    try {
+      const response = await fetch("/api/admin/invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: inviteEmail.trim(),
+          name: inviteName.trim() || undefined,
+          projectId,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        setInviteSuccess(true)
+        // Refresh members list
+        fetchMembers()
+        fetchProject()
+        // Reset form after a delay
+        setTimeout(() => {
+          setInviteDialogOpen(false)
+          setInviteEmail("")
+          setInviteName("")
+          setInviteSuccess(false)
+        }, 2000)
+      } else {
+        setInviteError(data.error || "Failed to send invitation")
+      }
+    } catch (error) {
+      setInviteError("An error occurred")
+    } finally {
+      setInviting(false)
+    }
+  }
+
+  async function fetchAssets() {
+    try {
+      const response = await fetch(`/api/admin/projects/${projectId}/assets`)
+      if (response.ok) {
+        const data = await response.json()
+        setAssets(data.assets || [])
+        setPreviousSiteUrl(data.previousSiteUrl || "")
+        setOriginalPreviousSiteUrl(data.previousSiteUrl || "")
+      }
+    } catch (error) {
+      console.error("Error fetching assets:", error)
+    }
+  }
+
+  async function handleSavePreviousSite() {
+    setSavingPreviousSite(true)
+    try {
+      const response = await fetch(`/api/admin/projects/${projectId}/assets`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ previousSiteUrl }),
+      })
+
+      if (response.ok) {
+        setOriginalPreviousSiteUrl(previousSiteUrl)
+      } else {
+        alert("Failed to save")
+      }
+    } catch (error) {
+      alert("An error occurred")
+    } finally {
+      setSavingPreviousSite(false)
+    }
+  }
+
+  async function handleAddLink() {
+    if (!newLinkUrl.trim()) return
+
+    setAddingLink(true)
+    try {
+      const response = await fetch(`/api/admin/projects/${projectId}/assets`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "reference_link",
+          url: newLinkUrl.trim(),
+          title: newLinkTitle.trim() || newLinkUrl.trim(),
+        }),
+      })
+
+      if (response.ok) {
+        setNewLinkUrl("")
+        setNewLinkTitle("")
+        setAddLinkDialogOpen(false)
+        fetchAssets()
+      } else {
+        alert("Failed to add link")
+      }
+    } catch (error) {
+      alert("An error occurred")
+    } finally {
+      setAddingLink(false)
+    }
+  }
+
+  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setUploadingImage(true)
+    try {
+      const formData = new FormData()
+      formData.append("file", file)
+      formData.append("type", "screenshot")
+      formData.append("title", file.name)
+
+      const response = await fetch(`/api/admin/projects/${projectId}/assets/upload`, {
+        method: "POST",
+        body: formData,
+      })
+
+      if (response.ok) {
+        fetchAssets()
+      } else {
+        const error = await response.json()
+        alert(error.error || "Failed to upload image")
+      }
+    } catch (error) {
+      alert("An error occurred")
+    } finally {
+      setUploadingImage(false)
+      // Reset the input
+      e.target.value = ""
+    }
+  }
+
+  async function handleDeleteAsset(assetId: string) {
+    if (!confirm("Delete this item?")) return
+
+    try {
+      const response = await fetch(`/api/admin/projects/${projectId}/assets`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ assetId }),
+      })
+
+      if (response.ok) {
+        fetchAssets()
+      } else {
+        alert("Failed to delete")
+      }
+    } catch (error) {
+      alert("An error occurred")
+    }
+  }
+
+  const previousSiteChanged = previousSiteUrl !== originalPreviousSiteUrl
 
   function revertTitle() {
     setTitle(originalTitle)
@@ -421,74 +722,87 @@ export default function ProjectDetailPage() {
   async function handleSaveTitle() {
     if (!project || !titleChanged) return
     setSavingTitle(true)
-    const supabase = createClient()
-    const now = new Date().toISOString()
 
-    const { error } = await supabase
-      .from("projects")
-      .update({ title: title || null, updated_at: now })
-      .eq("id", projectId)
+    try {
+      const response = await fetch(`/api/admin/projects/${projectId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: title || null }),
+      })
 
-    if (error) {
+      if (!response.ok) {
+        console.error("Error saving title:", response.status)
+        setSavingTitle(false)
+        return
+      }
+
+      setOriginalTitle(title)
+      setIsEditingTitle(false)
+      setProject({ ...project, title: title || null })
+    } catch (error) {
       console.error("Error saving title:", error)
+    } finally {
       setSavingTitle(false)
-      return
     }
-
-    setOriginalTitle(title)
-    setIsEditingTitle(false)
-    setProject({ ...project, title: title || null })
-    setSavingTitle(false)
   }
 
   async function handleSaveRequirements() {
     if (!project || !requirementsChanged) return
     setSavingRequirements(true)
-    const supabase = createClient()
     const now = new Date().toISOString()
 
-    const { error } = await supabase
-      .from("projects")
-      .update({
+    try {
+      const response = await fetch(`/api/admin/projects/${projectId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          requirements,
+          requirements_updated_at: now,
+          requirements_updated_by: currentUserId,
+        }),
+      })
+
+      if (!response.ok) {
+        console.error("Error saving requirements:", response.status)
+        setSavingRequirements(false)
+        return
+      }
+
+      // Save requirements version history and activity log via API
+      if (requirements) {
+        await fetch(`/api/admin/projects/${projectId}/requirements-versions`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            content: requirements,
+            updated_by_name: currentUserName,
+          }),
+        })
+
+        await fetch(`/api/admin/projects/${projectId}/activity`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: "requirements_updated",
+            details: `Requirements updated by ${currentUserName}`,
+          }),
+        })
+      }
+
+      setOriginalRequirements(requirements)
+      setIsEditingRequirements(false)
+      setProject({
+        ...project,
         requirements,
         requirements_updated_at: now,
         requirements_updated_by: currentUserId,
-        updated_at: now,
       })
-      .eq("id", projectId)
-
-    if (error) {
+      fetchActivityLog()
+    } catch (error) {
       console.error("Error saving requirements:", error)
+    } finally {
       setSavingRequirements(false)
-      return
     }
-
-    // Save requirements version history
-    if (requirements) {
-      await supabase.from("requirements_versions").insert({
-        project_id: projectId,
-        content: requirements,
-        updated_by: currentUserId,
-        updated_by_name: currentUserName,
-      })
-
-      await supabase.from("activity_log").insert({
-        project_id: projectId,
-        action: "requirements_updated",
-        details: `Requirements updated by ${currentUserName}`,
-      })
-    }
-
-    setOriginalRequirements(requirements)
-    setIsEditingRequirements(false)
-    setProject({
-      ...project,
-      requirements,
-      requirements_updated_at: now,
-      requirements_updated_by: currentUserId,
-    })
-    fetchActivityLog()
-    setSavingRequirements(false)
   }
 
   function revertDeliverables() {
@@ -499,41 +813,47 @@ export default function ProjectDetailPage() {
   async function handleSaveDeliverables() {
     if (!project || !deliverablesChanged) return
     setSavingDeliverables(true)
-    const supabase = createClient()
-    const now = new Date().toISOString()
 
-    const { error } = await supabase
-      .from("projects")
-      .update({
+    try {
+      const response = await fetch(`/api/admin/projects/${projectId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          github_url: githubUrl || null,
+          vercel_url: vercelUrl || null,
+        }),
+      })
+
+      if (!response.ok) {
+        console.error("Error saving deliverables:", response.status)
+        setSavingDeliverables(false)
+        return
+      }
+
+      setOriginalGithubUrl(githubUrl)
+      setOriginalVercelUrl(vercelUrl)
+      setProject({
+        ...project,
         github_url: githubUrl || null,
         vercel_url: vercelUrl || null,
-        updated_at: now,
       })
-      .eq("id", projectId)
 
-    if (error) {
+      // Log activity via API
+      await fetch(`/api/admin/projects/${projectId}/activity`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "deliverables_updated",
+          details: `Deliverables updated by ${currentUserName}`,
+        }),
+      })
+
+      fetchActivityLog()
+    } catch (error) {
       console.error("Error saving deliverables:", error)
+    } finally {
       setSavingDeliverables(false)
-      return
     }
-
-    setOriginalGithubUrl(githubUrl)
-    setOriginalVercelUrl(vercelUrl)
-    setProject({
-      ...project,
-      github_url: githubUrl || null,
-      vercel_url: vercelUrl || null,
-    })
-
-    // Log activity
-    await supabase.from("activity_log").insert({
-      project_id: projectId,
-      action: "deliverables_updated",
-      details: `Deliverables updated by ${currentUserName}`,
-    })
-
-    fetchActivityLog()
-    setSavingDeliverables(false)
   }
 
   async function handleViewAsCustomer() {
@@ -717,7 +1037,7 @@ export default function ProjectDetailPage() {
         // Refresh the page to show restored state
         router.refresh()
         // Also update local state
-        setStatus("lead")
+        setStatus("consultation")
         fetchProject()
         fetchActivityLog()
       } else {
@@ -812,14 +1132,7 @@ export default function ProjectDetailPage() {
       {/* Progress Tracker */}
       <Card>
         <CardContent className="pt-6">
-          <ProjectProgress
-            status={status}
-            hasQuote={hasQuote}
-            quoteAccepted={quoteAccepted}
-            quoteRejected={quoteRejected}
-            hasPaid={hasPaid}
-            hasDeliverables={hasDeliverables}
-          />
+          <ProjectProgress status={status} />
         </CardContent>
       </Card>
 
@@ -1006,12 +1319,24 @@ export default function ProjectDetailPage() {
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-3">
-            <a href={`mailto:${contact?.email || "contact@jamiegray.net"}`}>
-              <Button variant="outline" className="gap-2">
+            {contact?.email ? (
+              <a href={`mailto:${contact.email}`}>
+                <Button variant="outline" className="gap-2">
+                  <Mail className="h-4 w-4" />
+                  Email {contact?.name || "Customer"}
+                </Button>
+              </a>
+            ) : (
+              <Button
+                variant="outline"
+                className="gap-2"
+                disabled
+                title="No email address available for this customer"
+              >
                 <Mail className="h-4 w-4" />
-                Email {contact?.name || "Customer"}
+                Email Customer
               </Button>
-            </a>
+            )}
             <a href="https://cal.com/jamiegray/30min" target="_blank" rel="noopener noreferrer">
               <Button variant="outline" className="gap-2">
                 <CalendarDays className="h-4 w-4" />
@@ -1305,6 +1630,236 @@ export default function ProjectDetailPage() {
         </CardContent>
       </Card>
 
+      {/* Previous Website & References */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <Globe className="h-5 w-5" />
+              Previous Website & References
+            </CardTitle>
+            <div className="flex gap-2">
+              <Dialog open={addLinkDialogOpen} onOpenChange={setAddLinkDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button size="sm" variant="outline" className="gap-2">
+                    <Link2 className="h-4 w-4" />
+                    Add Link
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>Add Reference Link</DialogTitle>
+                    <DialogDescription>
+                      Add a reference link, competitor site, or inspiration.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4 py-4">
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">URL</label>
+                      <Input
+                        type="url"
+                        value={newLinkUrl}
+                        onChange={(e) => setNewLinkUrl(e.target.value)}
+                        placeholder="https://example.com"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">Title (optional)</label>
+                      <Input
+                        value={newLinkTitle}
+                        onChange={(e) => setNewLinkTitle(e.target.value)}
+                        placeholder="Competitor site, Inspiration, etc."
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setAddLinkDialogOpen(false)} disabled={addingLink}>
+                      Cancel
+                    </Button>
+                    <Button onClick={handleAddLink} disabled={!newLinkUrl.trim() || addingLink}>
+                      {addingLink ? "Adding..." : "Add Link"}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+              <Button size="sm" variant="outline" className="gap-2" asChild>
+                <label className="cursor-pointer">
+                  <Upload className="h-4 w-4" />
+                  {uploadingImage ? "Uploading..." : "Upload Image"}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                    disabled={uploadingImage}
+                  />
+                </label>
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Previous Site URL */}
+          <div>
+            <label className="text-sm font-medium mb-2 block flex items-center gap-2">
+              <Globe className="h-4 w-4 text-muted-foreground" />
+              Previous Website URL
+            </label>
+            <div className="flex gap-2">
+              <Input
+                type="url"
+                value={previousSiteUrl}
+                onChange={(e) => setPreviousSiteUrl(e.target.value)}
+                placeholder="https://old-site.com"
+                className="flex-1"
+              />
+              {previousSiteUrl && (
+                <Button
+                  size="icon"
+                  variant="outline"
+                  onClick={() => window.open(previousSiteUrl, "_blank")}
+                >
+                  <ExternalLink className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+            {previousSiteChanged && (
+              <div className="flex justify-end gap-2 mt-2">
+                <Button
+                  size="sm"
+                  onClick={handleSavePreviousSite}
+                  disabled={savingPreviousSite}
+                >
+                  {savingPreviousSite ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save"}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setPreviousSiteUrl(originalPreviousSiteUrl)}
+                  disabled={savingPreviousSite}
+                >
+                  Cancel
+                </Button>
+              </div>
+            )}
+          </div>
+
+          {/* Reference Links */}
+          {assets.filter(a => a.type === "reference_link").length > 0 && (
+            <div>
+              <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
+                <Link2 className="h-4 w-4 text-muted-foreground" />
+                Reference Links
+              </h4>
+              <div className="space-y-2">
+                {assets.filter(a => a.type === "reference_link").map((asset) => (
+                  <div
+                    key={asset.id}
+                    className="flex items-center justify-between p-3 border rounded-lg bg-muted/30"
+                  >
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <Link2 className="h-4 w-4 text-muted-foreground shrink-0" />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-medium truncate">{asset.title || "Link"}</p>
+                        <a
+                          href={asset.url || "#"}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs text-primary hover:underline truncate block"
+                        >
+                          {asset.url}
+                        </a>
+                      </div>
+                    </div>
+                    <div className="flex gap-1 shrink-0">
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-8 w-8"
+                        onClick={() => window.open(asset.url || "", "_blank")}
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-8 w-8 text-muted-foreground hover:text-red-600"
+                        onClick={() => handleDeleteAsset(asset.id)}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Screenshots & Images */}
+          {assets.filter(a => ["screenshot", "image"].includes(a.type)).length > 0 && (
+            <div>
+              <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
+                <FileImage className="h-4 w-4 text-muted-foreground" />
+                Screenshots & Images
+              </h4>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {assets.filter(a => ["screenshot", "image"].includes(a.type)).map((asset) => (
+                  <div
+                    key={asset.id}
+                    className="group relative aspect-video rounded-lg overflow-hidden border bg-muted"
+                  >
+                    {asset.url ? (
+                      <img
+                        src={asset.url}
+                        alt={asset.title || "Screenshot"}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Image className="h-8 w-8 text-muted-foreground" />
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                      <Button
+                        size="icon"
+                        variant="secondary"
+                        className="h-8 w-8"
+                        onClick={() => window.open(asset.url || "", "_blank")}
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="icon"
+                        variant="destructive"
+                        className="h-8 w-8"
+                        onClick={() => handleDeleteAsset(asset.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    {asset.title && (
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
+                        <p className="text-xs text-white truncate">{asset.title}</p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Empty state */}
+          {!previousSiteUrl && assets.length === 0 && (
+            <div className="text-center py-8 text-muted-foreground">
+              <Globe className="h-12 w-12 mx-auto mb-3 opacity-20" />
+              <p className="text-sm">No previous website or references added yet</p>
+              <p className="text-xs mt-1">Add the client's current website URL, reference links, or upload screenshots</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+
       <div className="grid gap-6 lg:grid-cols-2">
         {/* 4. Project Status Card */}
         <Card>
@@ -1319,10 +1874,12 @@ export default function ProjectDetailPage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="lead">Lead</SelectItem>
-                  <SelectItem value="contacted">Contacted</SelectItem>
-                  <SelectItem value="in_progress">In Progress</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
+                  <SelectItem value="consultation">Consultation</SelectItem>
+                  <SelectItem value="quote_sent">Quote Sent</SelectItem>
+                  <SelectItem value="quote_accepted">Quote Accepted</SelectItem>
+                  <SelectItem value="payment">Payment</SelectItem>
+                  <SelectItem value="development">Development</SelectItem>
+                  <SelectItem value="delivered">Delivered</SelectItem>
                   <SelectItem value="canceled">Canceled</SelectItem>
                 </SelectContent>
               </Select>
@@ -1462,6 +2019,256 @@ export default function ProjectDetailPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Project Team */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              Project Team
+            </CardTitle>
+            <div className="flex gap-2">
+              <Dialog open={inviteDialogOpen} onOpenChange={(open) => {
+                setInviteDialogOpen(open)
+                if (!open) {
+                  setInviteEmail("")
+                  setInviteName("")
+                  setInviteError("")
+                  setInviteSuccess(false)
+                }
+              }}>
+                <DialogTrigger asChild>
+                  <Button size="sm" variant="outline" className="gap-2">
+                    <Send className="h-4 w-4" />
+                    Invite Customer
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>Invite Customer to Project</DialogTitle>
+                    <DialogDescription>
+                      Send an invitation email to a new customer. They will be added to this project once they accept.
+                    </DialogDescription>
+                  </DialogHeader>
+                  {inviteSuccess ? (
+                    <div className="py-8 text-center">
+                      <div className="mx-auto w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mb-4">
+                        <Check className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+                      </div>
+                      <p className="text-lg font-medium">Invitation Sent!</p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {inviteEmail} will receive an email invitation
+                      </p>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="space-y-4 py-4">
+                        <div>
+                          <label className="text-sm font-medium mb-2 block">Email Address *</label>
+                          <Input
+                            type="email"
+                            value={inviteEmail}
+                            onChange={(e) => setInviteEmail(e.target.value)}
+                            placeholder="customer@example.com"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-sm font-medium mb-2 block">Name (optional)</label>
+                          <Input
+                            value={inviteName}
+                            onChange={(e) => setInviteName(e.target.value)}
+                            placeholder="Customer name"
+                          />
+                        </div>
+                        {inviteError && (
+                          <p className="text-sm text-red-500">{inviteError}</p>
+                        )}
+                      </div>
+                      <DialogFooter>
+                        <Button variant="outline" onClick={() => setInviteDialogOpen(false)} disabled={inviting}>
+                          Cancel
+                        </Button>
+                        <Button onClick={handleInviteCustomer} disabled={!inviteEmail.trim() || inviting} className="gap-2">
+                          {inviting ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Send className="h-4 w-4" />
+                          )}
+                          {inviting ? "Sending..." : "Send Invitation"}
+                        </Button>
+                      </DialogFooter>
+                    </>
+                  )}
+                </DialogContent>
+              </Dialog>
+              <Dialog open={addMemberDialogOpen} onOpenChange={setAddMemberDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button size="sm" variant="outline" className="gap-2">
+                    <UserPlus className="h-4 w-4" />
+                    Add Member
+                  </Button>
+                </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Add Team Member</DialogTitle>
+                  <DialogDescription>
+                    Add a customer or viewer to this project. They must have an existing account.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">Email Address</label>
+                    <Input
+                      type="email"
+                      value={newMemberEmail}
+                      onChange={(e) => setNewMemberEmail(e.target.value)}
+                      placeholder="user@example.com"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">Role</label>
+                    <Select value={newMemberRole} onValueChange={(v) => setNewMemberRole(v as "owner" | "viewer")}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="owner">Customer (Owner)</SelectItem>
+                        <SelectItem value="viewer">Viewer</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {newMemberRole === "owner"
+                        ? "The main customer who can view and respond to quotes"
+                        : "Additional users who can view the project"}
+                    </p>
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setAddMemberDialogOpen(false)} disabled={addingMember}>
+                    Cancel
+                  </Button>
+                  <Button onClick={handleAddMember} disabled={!newMemberEmail.trim() || addingMember}>
+                    {addingMember ? "Adding..." : "Add Member"}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Assigned Admin */}
+          <div>
+            <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
+              <Shield className="h-4 w-4 text-amber-500" />
+              Assigned Admin
+            </h4>
+            {assignedAdmin ? (
+              <div className="flex items-center justify-between p-3 border rounded-lg bg-muted/30">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-full bg-amber-500/10 flex items-center justify-center">
+                    <Shield className="h-4 w-4 text-amber-500" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">{assignedAdmin.name}</p>
+                    <p className="text-xs text-muted-foreground">{assignedAdmin.email}</p>
+                  </div>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleRemoveMember(assignedAdmin.id, "admin")}
+                  className="text-muted-foreground hover:text-red-600"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            ) : (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => currentUserEmail && handleAssignAdmin(currentUserEmail)}
+                disabled={!currentUserEmail}
+                className="gap-2"
+              >
+                <Plus className="h-4 w-4" />
+                Assign myself
+              </Button>
+            )}
+          </div>
+
+          {/* Customer (Owner) */}
+          <div>
+            <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
+              <Crown className="h-4 w-4 text-emerald-500" />
+              Customer (Owner)
+            </h4>
+            {members.filter(m => m.role === "owner").length > 0 ? (
+              <div className="space-y-2">
+                {members.filter(m => m.role === "owner").map((member) => (
+                  <div key={member.id} className="flex items-center justify-between p-3 border rounded-lg bg-muted/30">
+                    <div className="flex items-center gap-3">
+                      <div className="h-8 w-8 rounded-full bg-emerald-500/10 flex items-center justify-center">
+                        <Crown className="h-4 w-4 text-emerald-500" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium">{member.user.name}</p>
+                        <p className="text-xs text-muted-foreground">{member.user.email}</p>
+                      </div>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleRemoveMember(member.user_id, "owner")}
+                      className="text-muted-foreground hover:text-red-600"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground italic">No customer assigned</p>
+            )}
+          </div>
+
+          {/* Viewers */}
+          <div>
+            <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
+              <Eye className="h-4 w-4 text-blue-500" />
+              Viewers
+            </h4>
+            {members.filter(m => m.role === "viewer").length > 0 ? (
+              <div className="space-y-2">
+                {members.filter(m => m.role === "viewer").map((member) => (
+                  <div key={member.id} className="flex items-center justify-between p-3 border rounded-lg bg-muted/30">
+                    <div className="flex items-center gap-3">
+                      <div className="h-8 w-8 rounded-full bg-blue-500/10 flex items-center justify-center">
+                        <User className="h-4 w-4 text-blue-500" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium">{member.user.name}</p>
+                        <p className="text-xs text-muted-foreground">{member.user.email}</p>
+                      </div>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleRemoveMember(member.user_id, "viewer")}
+                      className="text-muted-foreground hover:text-red-600"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground italic">No viewers added</p>
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Activity Timeline */}
       <Card>
@@ -1699,6 +2506,20 @@ export default function ProjectDetailPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Landing Page Content (CMS Editor) - At bottom of page */}
+      <ProjectCMSEditor
+        projectId={projectId}
+        metadata={{
+          public_title: project.public_title,
+          public_description: project.public_description,
+          public_hero_image: project.public_hero_image,
+          public_industry: project.public_industry,
+          show_on_landing_page: project.show_on_landing_page,
+          customer_opted_out_of_landing_page: project.customer_opted_out_of_landing_page,
+        }}
+        onMetadataChange={fetchProject}
+      />
     </div>
   )
 }

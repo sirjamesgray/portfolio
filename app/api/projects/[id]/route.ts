@@ -19,7 +19,7 @@ export async function PATCH(
   }
 
   const body = await request.json()
-  const { title, description, requirements } = body
+  const { title, description, requirements, customer_opted_out_of_landing_page } = body
 
   // Build update object with only provided fields
   const updates: Record<string, unknown> = {}
@@ -29,6 +29,9 @@ export async function PATCH(
     updates.requirements = requirements
     updates.requirements_updated_at = new Date().toISOString()
     updates.requirements_updated_by = user.id
+  }
+  if (customer_opted_out_of_landing_page !== undefined) {
+    updates.customer_opted_out_of_landing_page = customer_opted_out_of_landing_page
   }
 
   if (Object.keys(updates).length === 0) {
@@ -73,12 +76,36 @@ export async function PATCH(
     .from("projects")
     .update(updates)
     .eq("id", id)
-    .select("id, title, description, requirements")
+    .select("id, title, description, requirements, customer_opted_out_of_landing_page")
     .single()
 
   if (error) {
     console.error("Error updating project:", error)
     return NextResponse.json({ error: "Failed to update project" }, { status: 500 })
+  }
+
+  // Log activity for opt-out toggle
+  if (customer_opted_out_of_landing_page !== undefined) {
+    const adminSupabase = createAdminClient()
+    const userName = user.user_metadata?.full_name || user.email?.split("@")[0] || "Customer"
+    await adminSupabase.from("activity_log").insert({
+      project_id: id,
+      action: customer_opted_out_of_landing_page ? "customer_opted_out" : "customer_opted_in",
+      details: customer_opted_out_of_landing_page
+        ? `${userName} opted out of landing page feature`
+        : `${userName} removed opt-out (project may be featured)`,
+    })
+  }
+
+  // Log activity for requirements update
+  if (requirements !== undefined) {
+    const adminSupabase = createAdminClient()
+    const userName = user.user_metadata?.full_name || user.email?.split("@")[0] || "User"
+    await adminSupabase.from("activity_log").insert({
+      project_id: id,
+      action: "requirements_updated",
+      details: `${userName} updated project requirements`,
+    })
   }
 
   return NextResponse.json({ success: true, project })

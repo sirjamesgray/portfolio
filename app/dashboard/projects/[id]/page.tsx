@@ -47,7 +47,8 @@ export default async function CustomerProjectPage({ params }: PageProps) {
       user_id,
       requirements,
       requirements_updated_at,
-      cancellation_reason
+      cancellation_reason,
+      customer_opted_out_of_landing_page
     `)
     .eq("id", id)
     .eq("user_id", effectiveUserId)
@@ -71,11 +72,20 @@ export default async function CustomerProjectPage({ params }: PageProps) {
     .eq("project_id", id)
     .order("created_at", { ascending: false })
 
+  // Fetch activity log for this project
+  const { data: activityLog } = await queryClient
+    .from("activity_log")
+    .select("*")
+    .eq("project_id", id)
+    .order("created_at", { ascending: false })
+    .limit(20)
+
   return (
     <ProjectDetailClient
       project={project}
       quotes={quotes || []}
       invoices={invoices || []}
+      activityLog={activityLog || []}
     />
   )
 }

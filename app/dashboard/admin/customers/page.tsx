@@ -76,7 +76,7 @@ export default async function AdminCustomersPage() {
     }).length || 0,
     activeProjects: projects?.filter((p) => {
       const user = authUsers?.users?.find((u) => u.id === p.user_id)
-      return user && !isAdmin(user.email) && p.status === "in_progress"
+      return user && !isAdmin(user.email) && p.status === "development"
     }).length || 0,
     customersWithProjects: customers.filter((c) => c.projects.length > 0).length,
   }

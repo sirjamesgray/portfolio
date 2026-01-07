@@ -51,58 +51,40 @@ const steps: Step[] = [
   { id: "delivered", label: "Delivered", icon: <Rocket className="h-3.5 w-3.5" /> },
 ]
 
+// Map status to step ID
+const statusToStep: Record<string, string> = {
+  consultation: "booked",
+  quote_sent: "quote",
+  quote_accepted: "accepted",
+  payment: "paid",
+  development: "development",
+  delivered: "delivered",
+  canceled: "canceled",
+}
+
+const stepOrder = ["booked", "quote", "accepted", "paid", "development", "delivered"]
+
 function getProjectProgress(project: ProjectCardData): { currentStep: string; completedSteps: Set<string>; isCanceled: boolean } {
-  const completedSteps = new Set<string>()
-  const hasQuote = (project.quotes?.length ?? 0) > 0
-  const quoteAccepted = project.quotes?.some(q => q.status === "accepted") ?? false
-  const quoteRejected = project.quotes?.some(q => q.status === "rejected") ?? false
-  const hasPaid = project.invoices?.some(i => i.status === "paid") ?? false
-  const hasDeliverables = !!(project.vercel_url || project.github_url)
+  const completed = new Set<string>()
   const status = project.status
+  const quoteRejected = project.quotes?.some(q => q.status === "rejected") ?? false
 
-  // Consultation is always complete once project exists
-  completedSteps.add("booked")
+  const currentStepId = statusToStep[status] || "booked"
+  const currentIndex = stepOrder.indexOf(currentStepId)
 
-  // Quote sent
-  if (hasQuote || status !== "lead") {
-    completedSteps.add("quote")
+  // All steps before the current one are completed
+  for (let i = 0; i < currentIndex; i++) {
+    completed.add(stepOrder[i])
   }
 
-  // Quote accepted
-  if (quoteAccepted || status === "in_progress" || status === "completed") {
-    completedSteps.add("accepted")
+  // If delivered, mark all steps as completed
+  if (status === "delivered") {
+    stepOrder.forEach(step => completed.add(step))
   }
-
-  // Payment received
-  if (hasPaid) {
-    completedSteps.add("paid")
-  }
-
-  // Development in progress
-  if (status === "in_progress" || status === "completed") {
-    if (hasPaid || hasDeliverables) {
-      completedSteps.add("development")
-    }
-  }
-
-  // Project delivered
-  if (status === "completed") {
-    completedSteps.add("delivered")
-  }
-
-  // Calculate current step
-  let currentStep = "booked"
-  if (status === "completed") currentStep = "delivered"
-  else if (status === "canceled" || quoteRejected) currentStep = "canceled"
-  else if (status === "in_progress") {
-    currentStep = hasPaid ? "development" : "paid"
-  } else if (quoteAccepted) currentStep = "paid"
-  else if (hasQuote && !quoteAccepted && !quoteRejected) currentStep = "accepted"
-  else if (status === "contacted" || hasQuote) currentStep = "quote"
 
   return {
-    currentStep,
-    completedSteps,
+    currentStep: status === "canceled" || quoteRejected ? "canceled" : currentStepId,
+    completedSteps: completed,
     isCanceled: status === "canceled" || quoteRejected,
   }
 }

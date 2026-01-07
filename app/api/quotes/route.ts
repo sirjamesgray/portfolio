@@ -108,11 +108,11 @@ export async function POST(request: NextRequest) {
     await adminSupabase
       .from("projects")
       .update({
-        status: "contacted",
+        status: "quote_sent",
         updated_at: now.toISOString(),
       })
       .eq("id", projectId)
-      .eq("status", "lead") // Only update if still in lead status
+      .eq("status", "consultation") // Only update if still in consultation status
   }
 
   return NextResponse.json({

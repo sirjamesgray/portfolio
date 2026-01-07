@@ -5,15 +5,11 @@ import { Check, Calendar, FileText, CreditCard, Code, Rocket, X, ChevronDown } f
 import { cn } from "@/lib/utils"
 import { motion, AnimatePresence } from "framer-motion"
 
-type ProjectStatus = "lead" | "contacted" | "in_progress" | "completed" | "canceled"
+type ProjectStatus = "consultation" | "quote_sent" | "quote_accepted" | "payment" | "development" | "delivered" | "canceled"
 
 interface ProjectProgressProps {
   status: ProjectStatus | string
-  hasQuote?: boolean
-  quoteAccepted?: boolean
-  quoteRejected?: boolean
-  hasPaid?: boolean
-  hasDeliverables?: boolean
+  quoteRejected?: boolean // Keep for backward compat - project may have rejected quote
   className?: string
 }
 
@@ -63,90 +59,51 @@ const steps: Step[] = [
   },
 ]
 
-function getCompletedSteps(
-  status: string,
-  hasQuote: boolean,
-  quoteAccepted: boolean,
-  quoteRejected: boolean,
-  hasPaid: boolean,
-  hasDeliverables: boolean
-): Set<string> {
+// Map status to step ID
+const statusToStep: Record<string, string> = {
+  consultation: "booked",
+  quote_sent: "quote",
+  quote_accepted: "accepted",
+  payment: "paid",
+  development: "development",
+  delivered: "delivered",
+  canceled: "canceled",
+}
+
+// Order of steps for comparison
+const stepOrder = ["booked", "quote", "accepted", "paid", "development", "delivered"]
+
+function getCompletedSteps(status: string): Set<string> {
   const completed = new Set<string>()
+  const currentStepId = statusToStep[status] || "booked"
+  const currentIndex = stepOrder.indexOf(currentStepId)
 
-  // Consultation is always complete once project exists
-  completed.add("booked")
-
-  // Quote sent
-  if (hasQuote || status !== "lead") {
-    completed.add("quote")
+  // All steps before the current one are completed
+  for (let i = 0; i < currentIndex; i++) {
+    completed.add(stepOrder[i])
   }
 
-  // Quote accepted (or rejected ends the flow)
-  if (quoteAccepted || status === "in_progress" || status === "completed") {
-    completed.add("accepted")
-  }
-
-  // Payment received
-  if (hasPaid) {
-    completed.add("paid")
-  }
-
-  // Development in progress
-  if (status === "in_progress" || status === "completed") {
-    if (hasPaid || hasDeliverables) {
-      completed.add("development")
-    }
-  }
-
-  // Project delivered
-  if (status === "completed") {
-    completed.add("delivered")
+  // If delivered, mark all steps as completed
+  if (status === "delivered") {
+    stepOrder.forEach(step => completed.add(step))
   }
 
   return completed
 }
 
-function getCurrentStep(
-  status: string,
-  hasQuote: boolean,
-  quoteAccepted: boolean,
-  quoteRejected: boolean,
-  hasPaid: boolean
-): string {
-  if (status === "completed") return "delivered"
+function getCurrentStep(status: string): string {
   if (status === "canceled") return "canceled"
-
-  if (status === "in_progress") {
-    if (!hasPaid) return "paid"
-    return "development"
-  }
-
-  if (quoteAccepted) return "paid"
-  if (hasQuote && !quoteAccepted && !quoteRejected) return "accepted"
-  if (status === "contacted" || hasQuote) return "quote"
-
-  return "booked"
+  return statusToStep[status] || "booked"
 }
 
 export function ProjectProgress({
   status,
-  hasQuote = false,
-  quoteAccepted = false,
   quoteRejected = false,
-  hasPaid = false,
-  hasDeliverables = false,
   className,
 }: ProjectProgressProps) {
   const [isExpanded, setIsExpanded] = useState(false)
-  const completedSteps = getCompletedSteps(
-    status,
-    hasQuote,
-    quoteAccepted,
-    quoteRejected,
-    hasPaid,
-    hasDeliverables
-  )
-  const currentStep = getCurrentStep(status, hasQuote, quoteAccepted, quoteRejected, hasPaid)
+  const completedSteps = getCompletedSteps(status)
+  const currentStep = getCurrentStep(status)
   const isCanceled = status === "canceled" || quoteRejected
 
   // Find the next step after current

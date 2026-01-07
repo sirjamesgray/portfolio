@@ -17,7 +17,7 @@ export function ExperienceTimeline() {
         <BlurFade delay={0.1} inView>
           <div className="mb-12 text-center">
             <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              Experience
+              UX Design Experience
             </h2>
             <p className="mx-auto max-w-2xl text-muted-foreground">
               8 years of designing and building products at high-growth startups.

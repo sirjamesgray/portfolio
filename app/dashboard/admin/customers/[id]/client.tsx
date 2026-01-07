@@ -60,7 +60,7 @@ interface CustomerDetailClientProps {
   stats: {
     totalProjects: number
     activeProjects: number
-    completedProjects: number
+    deliveredProjects: number
     totalRevenue: number
   }
 }
@@ -152,10 +152,10 @@ export function CustomerDetailClient({
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Completed</CardTitle>
+              <CardTitle className="text-sm font-medium">Delivered</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.completedProjects}</div>
+              <div className="text-2xl font-bold">{stats.deliveredProjects}</div>
             </CardContent>
           </Card>
           <Card>

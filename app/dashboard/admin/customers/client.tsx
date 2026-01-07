@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import {
   Table,
   TableBody,
@@ -20,7 +21,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { FolderKanban, Search, MoreHorizontal, Eye, User, Users } from "lucide-react"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { FolderKanban, Search, MoreHorizontal, Eye, User, Users, UserPlus, Mail, Loader2, Check } from "lucide-react"
 import { BlurFade } from "@/components/ui/blur-fade"
 
 type Project = {
@@ -51,13 +61,17 @@ interface CustomersClientProps {
 
 function getStatusBadgeColor(status: string) {
   switch (status) {
-    case "lead":
+    case "consultation":
       return "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
-    case "contacted":
+    case "quote_sent":
       return "bg-blue-500/10 text-blue-500 border-blue-500/20"
-    case "in_progress":
+    case "quote_accepted":
+      return "bg-indigo-500/10 text-indigo-500 border-indigo-500/20"
+    case "payment":
+      return "bg-purple-500/10 text-purple-500 border-purple-500/20"
+    case "development":
       return "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
-    case "completed":
+    case "delivered":
       return "bg-green-500/10 text-green-500 border-green-500/20"
     case "canceled":
       return "bg-red-500/10 text-red-500 border-red-500/20"
@@ -69,6 +83,49 @@ function getStatusBadgeColor(status: string) {
 export function CustomersClient({ customers, stats }: CustomersClientProps) {
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState("")
+  const [inviteDialogOpen, setInviteDialogOpen] = useState(false)
+  const [inviteEmail, setInviteEmail] = useState("")
+  const [inviteName, setInviteName] = useState("")
+  const [inviting, setInviting] = useState(false)
+  const [inviteSuccess, setInviteSuccess] = useState(false)
+  const [inviteError, setInviteError] = useState("")
+
+  async function handleInviteCustomer() {
+    if (!inviteEmail.trim()) return
+
+    setInviting(true)
+    setInviteError("")
+
+    try {
+      const response = await fetch("/api/admin/invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: inviteEmail.trim(),
+          name: inviteName.trim() || undefined,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        setInviteSuccess(true)
+        setTimeout(() => {
+          setInviteDialogOpen(false)
+          setInviteEmail("")
+          setInviteName("")
+          setInviteSuccess(false)
+          router.refresh()
+        }, 2000)
+      } else {
+        setInviteError(data.error || "Failed to send invitation")
+      }
+    } catch (error) {
+      setInviteError("An error occurred")
+    } finally {
+      setInviting(false)
+    }
+  }
 
   const filteredCustomers = searchQuery
     ? customers.filter(
@@ -102,11 +159,99 @@ export function CustomersClient({ customers, stats }: CustomersClientProps) {
     <div className="space-y-6">
       {/* Header */}
       <BlurFade delay={0.1}>
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Customers</h1>
-          <p className="text-muted-foreground">
-            Manage customers and view their projects
-          </p>
+        <div className="flex items-start justify-between">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Customers</h1>
+            <p className="text-muted-foreground">
+              Manage customers and view their projects
+            </p>
+          </div>
+          <Dialog open={inviteDialogOpen} onOpenChange={(open) => {
+            setInviteDialogOpen(open)
+            if (!open) {
+              setInviteEmail("")
+              setInviteName("")
+              setInviteError("")
+              setInviteSuccess(false)
+            }
+          }}>
+            <DialogTrigger asChild>
+              <Button className="gap-2 bg-emerald-600 hover:bg-emerald-700">
+                <UserPlus className="h-4 w-4" />
+                Invite Customer
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <Mail className="h-5 w-5" />
+                  Invite Customer
+                </DialogTitle>
+                <DialogDescription>
+                  Send an invitation email to a new customer. They'll receive a link to create their account.
+                </DialogDescription>
+              </DialogHeader>
+              {inviteSuccess ? (
+                <div className="py-8 text-center">
+                  <div className="mx-auto w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center mb-4">
+                    <Check className="h-6 w-6 text-emerald-500" />
+                  </div>
+                  <p className="font-medium">Invitation sent!</p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {inviteEmail} will receive an email with a signup link.
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <div className="space-y-4 py-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="invite-email">Email Address</Label>
+                      <Input
+                        id="invite-email"
+                        type="email"
+                        value={inviteEmail}
+                        onChange={(e) => setInviteEmail(e.target.value)}
+                        placeholder="customer@example.com"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="invite-name">Name (optional)</Label>
+                      <Input
+                        id="invite-name"
+                        value={inviteName}
+                        onChange={(e) => setInviteName(e.target.value)}
+                        placeholder="John Doe"
+                      />
+                    </div>
+                    {inviteError && (
+                      <p className="text-sm text-red-500">{inviteError}</p>
+                    )}
+                  </div>
+                  <DialogFooter>
+                    <Button
+                      variant="outline"
+                      onClick={() => setInviteDialogOpen(false)}
+                      disabled={inviting}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={handleInviteCustomer}
+                      disabled={!inviteEmail.trim() || inviting}
+                      className="gap-2 bg-emerald-600 hover:bg-emerald-700"
+                    >
+                      {inviting ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Mail className="h-4 w-4" />
+                      )}
+                      {inviting ? "Sending..." : "Send Invitation"}
+                    </Button>
+                  </DialogFooter>
+                </>
+              )}
+            </DialogContent>
+          </Dialog>
         </div>
       </BlurFade>
 

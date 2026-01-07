@@ -68,11 +68,11 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
 
   const adminSupabase = createAdminClient()
 
-  // Restore the project: set status back to lead and clear cancellation reason
+  // Restore the project: set status back to consultation and clear cancellation reason
   const { error: updateError } = await adminSupabase
     .from("projects")
     .update({
-      status: "lead",
+      status: "consultation",
       cancellation_reason: null,
       updated_at: new Date().toISOString(),
     })

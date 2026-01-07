@@ -37,7 +37,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Search, FolderKanban, Plus, Shield, MoreHorizontal, Eye, User } from "lucide-react"
+import { Search, FolderKanban, Plus, Shield, MoreHorizontal, Eye, User, Trash2, X, Megaphone } from "lucide-react"
 import { BlurFade } from "@/components/ui/blur-fade"
 import { ProjectCard } from "@/components/dashboard/project-card"
 
@@ -78,6 +78,8 @@ type Project = {
   user: UserInfo | null
   vercel_url: string | null
   github_url: string | null
+  show_on_landing_page: boolean | null
+  customer_opted_out_of_landing_page: boolean | null
   quotes: Quote[]
   invoices: Invoice[]
 }
@@ -92,9 +94,9 @@ interface AdminProjectsClientProps {
   projects: Project[]
   stats: {
     totalProjects: number
-    leads: number
-    inProgress: number
-    completed: number
+    consultation: number
+    development: number
+    delivered: number
   }
   customers: Customer[]
 }
@@ -107,13 +109,17 @@ function getContact(contacts: Contact | Contact[] | null | undefined): Contact |
 
 function getStatusColor(status: string) {
   switch (status) {
-    case "lead":
+    case "consultation":
       return "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
-    case "contacted":
+    case "quote_sent":
       return "bg-blue-500/10 text-blue-500 border-blue-500/20"
-    case "in_progress":
+    case "quote_accepted":
+      return "bg-indigo-500/10 text-indigo-500 border-indigo-500/20"
+    case "payment":
+      return "bg-purple-500/10 text-purple-500 border-purple-500/20"
+    case "development":
       return "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
-    case "completed":
+    case "delivered":
       return "bg-green-500/10 text-green-500 border-green-500/20"
     case "canceled":
       return "bg-red-500/10 text-red-500 border-red-500/20"
@@ -248,6 +254,8 @@ export function AdminProjectsClient({ projects, stats, customers }: AdminProject
     project_type: "website",
     user_id: "",
   })
+  const [deleteProjectId, setDeleteProjectId] = useState<string | null>(null)
+  const [deleting, setDeleting] = useState(false)
 
   // Parse search query for filters like "status:value" or "-status:value"
   const parseSearchQuery = (query: string) => {
@@ -333,7 +341,7 @@ export function AdminProjectsClient({ projects, stats, customers }: AdminProject
           title: newProject.title.trim(),
           project_type: newProject.project_type,
           user_id: newProject.user_id || null,
-          status: "lead",
+          status: "consultation",
         }),
       })
 
@@ -357,6 +365,31 @@ export function AdminProjectsClient({ projects, stats, customers }: AdminProject
       setCreating(false)
     }
   }
+
+  async function handleDeleteProject() {
+    if (!deleteProjectId) return
+
+    setDeleting(true)
+    try {
+      const response = await fetch(`/api/admin/projects/${deleteProjectId}`, {
+        method: "DELETE",
+      })
+
+      if (response.ok) {
+        setDeleteProjectId(null)
+        router.refresh()
+      } else {
+        const error = await response.json()
+        alert(error.error || "Failed to delete project")
+      }
+    } catch (error) {
+      alert("An error occurred. Please try again.")
+    } finally {
+      setDeleting(false)
+    }
+  }
+
+  const projectToDelete = deleteProjectId ? projects.find(p => p.id === deleteProjectId) : null
 
   return (
     <div className="space-y-6 min-w-0">
@@ -466,26 +499,26 @@ export function AdminProjectsClient({ projects, stats, customers }: AdminProject
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">New Leads</CardTitle>
+              <CardTitle className="text-sm font-medium">Consultation</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.leads}</div>
+              <div className="text-2xl font-bold">{stats.consultation}</div>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">In Progress</CardTitle>
+              <CardTitle className="text-sm font-medium">Development</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.inProgress}</div>
+              <div className="text-2xl font-bold">{stats.development}</div>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Completed</CardTitle>
+              <CardTitle className="text-sm font-medium">Delivered</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.completed}</div>
+              <div className="text-2xl font-bold">{stats.delivered}</div>
             </CardContent>
           </Card>
         </div>
@@ -497,17 +530,52 @@ export function AdminProjectsClient({ projects, stats, customers }: AdminProject
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
-              placeholder="Search... (use status:lead or -status:canceled)"
+              placeholder="Search... (use status:development or -status:canceled)"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 font-mono text-sm"
+              className="pl-9 pr-9 font-mono text-sm"
             />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
           </div>
-          <p className="text-xs text-muted-foreground">
-            Filters: <code className="bg-muted px-1 py-0.5 rounded">status:lead</code>{" "}
-            <code className="bg-muted px-1 py-0.5 rounded">-status:canceled</code>{" "}
-            <code className="bg-muted px-1 py-0.5 rounded">type:website</code>
-          </p>
+          <div className="flex flex-wrap gap-1.5 text-xs text-muted-foreground items-center">
+            <span>Filters:</span>
+            {[
+              "status:consultation",
+              "status:development",
+              "status:delivered",
+              "-status:canceled",
+              "type:website",
+              "type:webapp",
+            ].map((filter) => (
+              <button
+                key={filter}
+                onClick={() => {
+                  const currentQuery = searchQuery.trim()
+                  if (currentQuery.includes(filter)) {
+                    // Remove filter if already present
+                    setSearchQuery(currentQuery.replace(filter, "").replace(/\s+/g, " ").trim())
+                  } else {
+                    // Add filter
+                    setSearchQuery(currentQuery ? `${currentQuery} ${filter}` : filter)
+                  }
+                }}
+                className={`px-1.5 py-0.5 rounded font-mono transition-colors ${
+                  searchQuery.includes(filter)
+                    ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400"
+                    : "bg-muted hover:bg-muted/80 hover:text-foreground"
+                }`}
+              >
+                {filter}
+              </button>
+            ))}
+          </div>
         </div>
       </BlurFade>
 
@@ -552,6 +620,7 @@ export function AdminProjectsClient({ projects, stats, customers }: AdminProject
                     <TableHead className="min-w-[180px]">Email</TableHead>
                     <TableHead className="min-w-[120px]">Type</TableHead>
                     <TableHead className="min-w-[100px]">Status</TableHead>
+                    <TableHead className="min-w-[80px]">Featured</TableHead>
                     <TableHead className="min-w-[80px]">Invoice</TableHead>
                     <TableHead className="min-w-[80px]">Deliver</TableHead>
                     <TableHead className="min-w-[100px]">Price</TableHead>
@@ -564,7 +633,7 @@ export function AdminProjectsClient({ projects, stats, customers }: AdminProject
                 <TableBody>
                   {filteredProjects.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={12} className="text-center py-8">
+                      <TableCell colSpan={13} className="text-center py-8">
                         <p className="text-muted-foreground">No projects found</p>
                       </TableCell>
                     </TableRow>
@@ -620,6 +689,17 @@ export function AdminProjectsClient({ projects, stats, customers }: AdminProject
                             <Badge className={getStatusColor(project.status)}>
                               {formatStatus(project.status)}
                             </Badge>
+                          </TableCell>
+                          <TableCell>
+                            {project.show_on_landing_page && !project.customer_opted_out_of_landing_page ? (
+                              <Megaphone className="h-4 w-4 text-emerald-500" />
+                            ) : project.show_on_landing_page && project.customer_opted_out_of_landing_page ? (
+                              <span title="Customer opted out">
+                                <Megaphone className="h-4 w-4 text-amber-500" />
+                              </span>
+                            ) : (
+                              <span className="text-muted-foreground">—</span>
+                            )}
                           </TableCell>
                           <TableCell>
                             {(() => {
@@ -712,6 +792,16 @@ export function AdminProjectsClient({ projects, stats, customers }: AdminProject
                                   <User className="mr-2 h-4 w-4" />
                                   Customer View
                                 </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    setDeleteProjectId(project.id)
+                                  }}
+                                  className="text-red-600 focus:text-red-600"
+                                >
+                                  <Trash2 className="mr-2 h-4 w-4" />
+                                  Delete Project
+                                </DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>
                           </TableCell>
@@ -724,6 +814,49 @@ export function AdminProjectsClient({ projects, stats, customers }: AdminProject
           </CardContent>
         </Card>
       </BlurFade>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={!!deleteProjectId} onOpenChange={(open) => !open && setDeleteProjectId(null)}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className="text-red-600 flex items-center gap-2">
+              <Trash2 className="h-5 w-5" />
+              Delete Project
+            </DialogTitle>
+            <DialogDescription>
+              This action cannot be undone. This will permanently delete the project
+              and all associated data including quotes, invoices, activity logs, and requirements.
+            </DialogDescription>
+          </DialogHeader>
+          {projectToDelete && (
+            <div className="py-4">
+              <div className="bg-muted rounded-lg p-4">
+                <p className="font-medium">{getProjectName(projectToDelete)}</p>
+                <p className="text-sm text-muted-foreground">
+                  {projectToDelete.user?.email || getContact(projectToDelete.contacts)?.email || "No email"}
+                </p>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setDeleteProjectId(null)}
+              disabled={deleting}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDeleteProject}
+              disabled={deleting}
+              className="gap-2"
+            >
+              {deleting ? "Deleting..." : "Delete Project"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

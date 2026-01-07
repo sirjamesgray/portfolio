@@ -110,8 +110,8 @@ export default async function CustomerDetailPage({
   // Calculate stats
   const stats = {
     totalProjects: projects.length,
-    activeProjects: projects.filter(p => p.status === "in_progress").length,
-    completedProjects: projects.filter(p => p.status === "completed").length,
+    activeProjects: projects.filter(p => p.status === "development").length,
+    deliveredProjects: projects.filter(p => p.status === "delivered").length,
     totalRevenue: projects.reduce((sum, p) => sum + (p.amount_paid || 0), 0),
   }
 

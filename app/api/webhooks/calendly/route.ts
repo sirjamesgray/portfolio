@@ -1,334 +1,263 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createAdminClient } from '@/lib/supabase/admin';
-import crypto from 'crypto';
+import { NextRequest, NextResponse } from "next/server"
+import { createClient } from "@supabase/supabase-js"
+import crypto from "crypto"
+import { resend, EMAIL_FROM } from "@/lib/email/resend"
 
-interface CalendlyInvitee {
-  uri: string;
-  email: string;
-  name: string;
-  created_at: string;
-  updated_at: string;
-  canceled: boolean;
-  questions_and_answers?: Array<{
-    question: string;
-    answer: string;
-  }>;
+// Initialize Supabase admin client for webhook operations
+function getSupabaseAdmin() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+  if (!supabaseUrl || !supabaseServiceKey) {
+    throw new Error("Missing Supabase environment variables")
+  }
+
+  return createClient(supabaseUrl, supabaseServiceKey)
 }
 
-interface CalendlyEvent {
-  uri: string;
-  name: string;
-  start_time: string;
-  end_time: string;
-  event_type: {
-    name: string;
-    uri: string;
-  };
-}
-
-interface CalendlyWebhookPayload {
-  event: string;
-  payload: {
-    event: string;
-    invitee: CalendlyInvitee;
-    event_type?: {
-      name: string;
-      uri: string;
-    };
-    scheduled_event?: CalendlyEvent;
-    uri?: string;
-  };
-}
-
-/**
- * Verifies the Calendly webhook signature
- * Calendly uses HMAC-SHA256 with a signing key
- */
+// Verify Calendly webhook signature
 function verifyWebhookSignature(
   payload: string,
-  signature: string | null,
+  signature: string,
   signingKey: string
 ): boolean {
-  if (!signature) {
-    return false;
-  }
+  const hmac = crypto.createHmac("sha256", signingKey)
+  hmac.update(payload)
+  const expectedSignature = hmac.digest("hex")
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expectedSignature)
+  )
+}
 
-  try {
-    const hmac = crypto.createHmac('sha256', signingKey);
-    hmac.update(payload);
-    const expectedSignature = hmac.digest('base64');
-
-    // Use timingSafeEqual to prevent timing attacks
-    const signatureBuffer = Buffer.from(signature);
-    const expectedBuffer = Buffer.from(expectedSignature);
-
-    if (signatureBuffer.length !== expectedBuffer.length) {
-      return false;
+type CalendlyEvent = {
+  event: string
+  payload: {
+    event: {
+      uri: string
+      name: string
+      start_time: string
+      end_time: string
     }
-
-    return crypto.timingSafeEqual(signatureBuffer, expectedBuffer);
-  } catch (error) {
-    console.error('Error verifying webhook signature:', error);
-    return false;
+    invitee: {
+      uri: string
+      name: string
+      email: string
+      timezone: string
+      questions_and_answers?: Array<{
+        question: string
+        answer: string
+      }>
+    }
   }
 }
 
-/**
- * Handles Calendly webhook events
- */
 export async function POST(request: NextRequest) {
   try {
-    // Get the signing key from environment variables
-    const signingKey = process.env.CALENDLY_WEBHOOK_SIGNING_KEY;
+    const signingKey = process.env.CALENDLY_WEBHOOK_SIGNING_KEY
 
-    if (!signingKey) {
-      console.error('CALENDLY_WEBHOOK_SIGNING_KEY is not configured');
-      return NextResponse.json(
-        { error: 'Webhook signing key not configured' },
-        { status: 500 }
-      );
-    }
+    // Get the raw body for signature verification
+    const rawBody = await request.text()
+    const body: CalendlyEvent = JSON.parse(rawBody)
 
-    // Get the raw body as text for signature verification
-    const rawBody = await request.text();
-
-    // Get the signature from headers
-    // Calendly sends the signature in the 'Calendly-Webhook-Signature' header
-    const signature = request.headers.get('calendly-webhook-signature');
-
-    // Verify the webhook signature
-    if (!verifyWebhookSignature(rawBody, signature, signingKey)) {
-      console.error('Invalid webhook signature');
-      return NextResponse.json(
-        { error: 'Invalid signature' },
-        { status: 401 }
-      );
-    }
-
-    // Parse the payload
-    const webhookPayload: CalendlyWebhookPayload = JSON.parse(rawBody);
-    const { event, payload } = webhookPayload;
-
-    console.log('Received Calendly webhook:', event);
-
-    // Create Supabase admin client (webhooks don't have user context)
-    const supabase = createAdminClient();
-
-    // Handle different event types
-    switch (event) {
-      case 'invitee.created':
-        await handleInviteeCreated(supabase, payload);
-        break;
-
-      case 'invitee.canceled':
-        await handleInviteeCanceled(supabase, payload);
-        break;
-
-      default:
-        console.log('Unhandled event type:', event);
-        return NextResponse.json(
-          { message: 'Event type not handled' },
-          { status: 200 }
-        );
-    }
-
-    return NextResponse.json(
-      { message: 'Webhook processed successfully' },
-      { status: 200 }
-    );
-
-  } catch (error) {
-    console.error('Error processing webhook:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
-  }
-}
-
-/**
- * Handles invitee.created event
- * Creates a contact if not exists and creates a new project with 'lead' status
- */
-async function handleInviteeCreated(supabase: any, payload: any) {
-  const { invitee, scheduled_event } = payload;
-
-  if (!invitee || !scheduled_event) {
-    throw new Error('Missing invitee or scheduled_event data');
-  }
-
-  const inviteeEmail = invitee.email;
-  const inviteeName = invitee.name;
-  const inviteeUri = invitee.uri;
-  const meetingTime = scheduled_event.start_time;
-  const eventTypeName = scheduled_event.event_type?.name || 'Unknown Event';
-  const eventUri = scheduled_event.uri;
-
-  // Extract custom question answers
-  const customAnswers = invitee.questions_and_answers || [];
-  const notesFromAnswers = customAnswers
-    .map((qa: any) => `${qa.question}: ${qa.answer}`)
-    .join('\n');
-
-  try {
-    // Step 1: Check if contact exists, if not create one
-    let { data: existingContact, error: contactFetchError } = await supabase
-      .from('contacts')
-      .select('id')
-      .eq('email', inviteeEmail)
-      .single();
-
-    let contactId: string;
-
-    if (contactFetchError && contactFetchError.code === 'PGRST116') {
-      // Contact doesn't exist, create new one
-      const { data: newContact, error: contactCreateError } = await supabase
-        .from('contacts')
-        .insert({
-          name: inviteeName,
-          email: inviteeEmail,
-        })
-        .select('id')
-        .single();
-
-      if (contactCreateError) {
-        throw new Error(`Failed to create contact: ${contactCreateError.message}`);
+    // Verify webhook signature if signing key is configured
+    if (signingKey) {
+      const signature = request.headers.get("Calendly-Webhook-Signature")
+      if (!signature) {
+        console.error("Missing Calendly webhook signature")
+        return NextResponse.json({ error: "Missing signature" }, { status: 401 })
       }
 
-      contactId = newContact.id;
-      console.log('Created new contact:', contactId);
-    } else if (contactFetchError) {
-      throw new Error(`Failed to fetch contact: ${contactFetchError.message}`);
+      // Calendly signature format: t=timestamp,v1=signature
+      const signatureParts = signature.split(",")
+      const timestampPart = signatureParts.find((p) => p.startsWith("t="))
+      const signaturePart = signatureParts.find((p) => p.startsWith("v1="))
+
+      if (!timestampPart || !signaturePart) {
+        console.error("Invalid signature format")
+        return NextResponse.json({ error: "Invalid signature format" }, { status: 401 })
+      }
+
+      const timestamp = timestampPart.replace("t=", "")
+      const sig = signaturePart.replace("v1=", "")
+
+      // Verify the signature
+      const signedPayload = timestamp + "." + rawBody
+      if (!verifyWebhookSignature(signedPayload, sig, signingKey)) {
+        console.error("Invalid webhook signature")
+        return NextResponse.json({ error: "Invalid signature" }, { status: 401 })
+      }
     } else {
-      // Contact exists, update the name if needed
-      contactId = existingContact.id;
-
-      await supabase
-        .from('contacts')
-        .update({
-          name: inviteeName,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', contactId);
-
-      console.log('Updated existing contact:', contactId);
+      console.warn("CALENDLY_WEBHOOK_SIGNING_KEY not configured - skipping signature verification")
     }
 
-    // Step 2: Create a new project with 'lead' status
-    const { data: newProject, error: projectCreateError } = await supabase
-      .from('projects')
+    // Only handle invitee.created events
+    if (body.event !== "invitee.created") {
+      return NextResponse.json({ message: "Event type ignored" })
+    }
+
+    const { invitee, event } = body.payload
+    const supabase = getSupabaseAdmin()
+
+    // Check if contact already exists
+    const { data: existingContact } = await supabase
+      .from("contacts")
+      .select("id")
+      .eq("email", invitee.email)
+      .single()
+
+    let contactId: string
+
+    if (existingContact) {
+      contactId = existingContact.id
+      console.log("Found existing contact:", contactId)
+    } else {
+      // Create new contact
+      const { data: newContact, error: contactError } = await supabase
+        .from("contacts")
+        .insert({
+          name: invitee.name,
+          email: invitee.email,
+          source: "calendly",
+        })
+        .select("id")
+        .single()
+
+      if (contactError || !newContact) {
+        console.error("Error creating contact:", contactError)
+        return NextResponse.json({ error: "Failed to create contact" }, { status: 500 })
+      }
+
+      contactId = newContact.id
+      console.log("Created new contact:", contactId)
+    }
+
+    // Extract project details from questions if available
+    let projectType = "consultation"
+    let description = "Consultation scheduled via Calendly for " + event.name
+
+    if (invitee.questions_and_answers) {
+      for (const qa of invitee.questions_and_answers) {
+        const question = qa.question.toLowerCase()
+        if (question.includes("project") || question.includes("type")) {
+          projectType = qa.answer.toLowerCase().includes("web")
+            ? "website"
+            : qa.answer.toLowerCase().includes("app")
+            ? "web_app"
+            : qa.answer.toLowerCase().includes("mobile")
+            ? "mobile_app"
+            : qa.answer.toLowerCase().includes("design")
+            ? "design"
+            : "other"
+        }
+        if (question.includes("describe") || question.includes("about") || question.includes("details")) {
+          description = qa.answer
+        }
+      }
+    }
+
+    // Create project in consultation status
+    const { data: project, error: projectError } = await supabase
+      .from("projects")
       .insert({
         contact_id: contactId,
-        calendly_event_uri: eventUri,
-        status: 'lead',
-        meeting_time: meetingTime,
-        event_type: eventTypeName,
-        notes: notesFromAnswers || null,
+        title: invitee.name + "'s Project",
+        project_type: projectType,
+        status: "consultation",
+        description,
+        consultation_scheduled_at: event.start_time,
+        calendly_event_uri: event.uri,
+        calendly_invitee_uri: invitee.uri,
       })
-      .select('id')
-      .single();
+      .select("id")
+      .single()
 
-    if (projectCreateError) {
-      throw new Error(`Failed to create project: ${projectCreateError.message}`);
+    if (projectError || !project) {
+      console.error("Error creating project:", projectError)
+      return NextResponse.json({ error: "Failed to create project" }, { status: 500 })
     }
 
-    console.log('Created new project:', newProject.id);
+    console.log("Created project " + project.id + " for contact " + contactId)
 
-    // Step 3: Log the activity
-    const { error: activityLogError } = await supabase
-      .from('activity_log')
-      .insert({
-        project_id: newProject.id,
-        action: 'meeting_scheduled',
-        details: {
-          event: 'invitee.created',
-          invitee_uri: inviteeUri,
-          event_uri: eventUri,
-          event_type: eventTypeName,
-          meeting_time: meetingTime,
-          custom_answers: customAnswers,
-        },
-      });
+    // Log activity
+    await supabase.from("activity_logs").insert({
+      project_id: project.id,
+      activity_type: "consultation_scheduled",
+      description: "Consultation scheduled for " + new Date(event.start_time).toLocaleDateString("en-US", {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+      }),
+    })
 
-    if (activityLogError) {
-      console.error('Failed to log activity:', activityLogError.message);
-      // Don't throw here - activity log failure shouldn't fail the whole operation
+    // Send welcome email with dashboard link
+    const consultationDate = new Date(event.start_time).toLocaleDateString("en-US", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      timeZoneName: "short",
+    })
+
+    try {
+      await resend.emails.send({
+        from: EMAIL_FROM,
+        to: invitee.email,
+        subject: "Your project dashboard is ready",
+        html: `
+          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
+            <h1 style="font-size: 24px; font-weight: 600; margin-bottom: 24px;">Hey ${invitee.name.split(" ")[0]}!</h1>
+
+            <p style="font-size: 16px; line-height: 1.6; color: #374151; margin-bottom: 16px;">
+              Thanks for booking a consultation. I'm looking forward to chatting with you on <strong>${consultationDate}</strong>.
+            </p>
+
+            <p style="font-size: 16px; line-height: 1.6; color: #374151; margin-bottom: 24px;">
+              In the meantime, I've set up a project dashboard for you where you'll be able to track progress, view quotes, and communicate throughout our work together.
+            </p>
+
+            <div style="text-align: center; margin: 32px 0;">
+              <a href="https://jamiegray.net/login"
+                 style="display: inline-block; background-color: #059669; color: white; font-weight: 500; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-size: 16px;">
+                Access Your Dashboard
+              </a>
+            </div>
+
+            <p style="font-size: 14px; line-height: 1.6; color: #6b7280; margin-top: 32px;">
+              Just sign in with the same email you used to book (${invitee.email}) and your project will be waiting for you.
+            </p>
+
+            <p style="font-size: 16px; line-height: 1.6; color: #374151; margin-top: 24px;">
+              Talk soon,<br/>
+              <strong>Jamie</strong>
+            </p>
+          </div>
+        `,
+      })
+      console.log("Sent welcome email to " + invitee.email)
+    } catch (emailError) {
+      // Non-fatal - log but don't fail the webhook
+      console.error("Error sending welcome email:", emailError)
     }
 
-    console.log('Successfully processed invitee.created event');
-
+    return NextResponse.json({
+      success: true,
+      contactId,
+      projectId: project.id,
+    })
   } catch (error) {
-    console.error('Error in handleInviteeCreated:', error);
-    throw error;
+    console.error("Calendly webhook error:", error)
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
   }
 }
 
-/**
- * Handles invitee.canceled event
- * Updates the project status to 'canceled'
- */
-async function handleInviteeCanceled(supabase: any, payload: any) {
-  const { invitee, scheduled_event } = payload;
-
-  if (!invitee || !scheduled_event) {
-    throw new Error('Missing invitee or scheduled_event data');
-  }
-
-  const eventUri = scheduled_event.uri;
-
-  try {
-    // Find the project by calendly_event_uri
-    const { data: project, error: projectFetchError } = await supabase
-      .from('projects')
-      .select('id')
-      .eq('calendly_event_uri', eventUri)
-      .single();
-
-    if (projectFetchError) {
-      if (projectFetchError.code === 'PGRST116') {
-        console.warn('No project found for canceled event:', eventUri);
-        return; // Don't fail if project doesn't exist
-      }
-      throw new Error(`Failed to fetch project: ${projectFetchError.message}`);
-    }
-
-    // Update the project status to 'canceled'
-    const { error: projectUpdateError } = await supabase
-      .from('projects')
-      .update({
-        status: 'canceled',
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', project.id);
-
-    if (projectUpdateError) {
-      throw new Error(`Failed to update project: ${projectUpdateError.message}`);
-    }
-
-    console.log('Updated project to canceled:', project.id);
-
-    // Log the activity
-    const { error: activityLogError } = await supabase
-      .from('activity_log')
-      .insert({
-        project_id: project.id,
-        action: 'meeting_canceled',
-        details: {
-          event: 'invitee.canceled',
-          event_uri: eventUri,
-          canceled_at: new Date().toISOString(),
-        },
-      });
-
-    if (activityLogError) {
-      console.error('Failed to log activity:', activityLogError.message);
-      // Don't throw here - activity log failure shouldn't fail the whole operation
-    }
-
-    console.log('Successfully processed invitee.canceled event');
-
-  } catch (error) {
-    console.error('Error in handleInviteeCanceled:', error);
-    throw error;
-  }
+// Calendly may send GET requests to verify the endpoint
+export async function GET() {
+  return NextResponse.json({ status: "ok" })
 }
