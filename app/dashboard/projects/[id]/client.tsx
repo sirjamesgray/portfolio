@@ -35,6 +35,7 @@ import {
   Globe,
   Circle,
   AlertCircle,
+  Lock,
 } from "lucide-react"
 import { SITE_CONFIG, formatProjectType } from "@/lib/constants"
 
@@ -469,47 +470,79 @@ export function ProjectDetailClient({
           {/* Deliverables - Only show for active projects or when deliverables exist */}
           {showDeliverables && (
             <BlurFade delay={0.18}>
-              <Card>
+              <Card className={!hasPaid ? "border-amber-500/30 bg-amber-500/5" : ""}>
                 <CardHeader>
-                  <CardTitle className="text-base">Deliverables</CardTitle>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-base flex items-center gap-2">
+                      {!hasPaid && <Lock className="h-4 w-4 text-amber-600 dark:text-amber-400" />}
+                      Deliverables
+                    </CardTitle>
+                    {!hasPaid && (
+                      <Badge className="bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20">
+                        Locked
+                      </Badge>
+                    )}
+                  </div>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  {/* GitHub Repository */}
-                  {project.github_url ? (
-                    <Link
-                      href={project.github_url}
-                      target="_blank"
-                      className="flex items-center gap-2 text-sm text-foreground hover:text-emerald-600 transition-colors"
-                    >
-                      <Github className="h-4 w-4" />
-                      <span className="truncate">{project.github_url}</span>
-                      <ExternalLink className="h-3 w-3 shrink-0" />
-                    </Link>
-                  ) : (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Circle className="h-4 w-4" />
-                      <span>GitHub repository</span>
-                      <span className="text-xs text-muted-foreground/60 ml-auto">Coming soon</span>
+                  {!hasPaid ? (
+                    <div className="space-y-3">
+                      <p className="text-sm text-muted-foreground">
+                        Deliverables will be unlocked after your first payment is received.
+                      </p>
+                      <div className="space-y-2 opacity-50">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Github className="h-4 w-4" />
+                          <span>GitHub repository</span>
+                          <Lock className="h-3 w-3 ml-auto" />
+                        </div>
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Globe className="h-4 w-4" />
+                          <span>Live site URL</span>
+                          <Lock className="h-3 w-3 ml-auto" />
+                        </div>
+                      </div>
                     </div>
-                  )}
+                  ) : (
+                    <>
+                      {/* GitHub Repository */}
+                      {project.github_url ? (
+                        <Link
+                          href={project.github_url}
+                          target="_blank"
+                          className="flex items-center gap-2 text-sm text-foreground hover:text-emerald-600 transition-colors"
+                        >
+                          <Github className="h-4 w-4" />
+                          <span className="truncate">{project.github_url}</span>
+                          <ExternalLink className="h-3 w-3 shrink-0" />
+                        </Link>
+                      ) : (
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Circle className="h-4 w-4" />
+                          <span>GitHub repository</span>
+                          <span className="text-xs text-muted-foreground/60 ml-auto">Coming soon</span>
+                        </div>
+                      )}
 
-                  {/* Live Site */}
-                  {project.vercel_url ? (
-                    <Link
-                      href={project.vercel_url}
-                      target="_blank"
-                      className="flex items-center gap-2 text-sm text-foreground hover:text-emerald-600 transition-colors"
-                    >
-                      <Globe className="h-4 w-4" />
-                      <span className="truncate">{project.vercel_url}</span>
-                      <ExternalLink className="h-3 w-3 shrink-0" />
-                    </Link>
-                  ) : (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Circle className="h-4 w-4" />
-                      <span>Live site URL</span>
-                      <span className="text-xs text-muted-foreground/60 ml-auto">Coming soon</span>
-                    </div>
+                      {/* Live Site */}
+                      {project.vercel_url ? (
+                        <Link
+                          href={project.vercel_url}
+                          target="_blank"
+                          className="flex items-center gap-2 text-sm text-foreground hover:text-emerald-600 transition-colors"
+                        >
+                          <Globe className="h-4 w-4" />
+                          <span className="truncate">{project.vercel_url}</span>
+                          <ExternalLink className="h-3 w-3 shrink-0" />
+                        </Link>
+                      ) : (
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Circle className="h-4 w-4" />
+                          <span>Live site URL</span>
+                          <span className="text-xs text-muted-foreground/60 ml-auto">Coming soon</span>
+                        </div>
+                      )}
+                    </>
                   )}
                 </CardContent>
               </Card>

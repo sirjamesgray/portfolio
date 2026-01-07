@@ -26,9 +26,9 @@ import {
   Building,
   Copy,
   Check,
+  X,
   Github,
   ExternalLink,
-  DollarSign,
   Timer,
   FileText,
   Eye,
@@ -233,8 +233,6 @@ export default function ProjectDetailPage() {
   const [title, setTitle] = useState("")
   const [requirements, setRequirements] = useState("")
   const [status, setStatus] = useState("")
-  const [price, setPrice] = useState("")
-  const [amountPaid, setAmountPaid] = useState("")
   const [endDate, setEndDate] = useState("")
   const [githubUrl, setGithubUrl] = useState("")
   const [vercelUrl, setVercelUrl] = useState("")
@@ -243,8 +241,6 @@ export default function ProjectDetailPage() {
   const [originalTitle, setOriginalTitle] = useState("")
   const [originalRequirements, setOriginalRequirements] = useState("")
   const [originalStatus, setOriginalStatus] = useState("")
-  const [originalPrice, setOriginalPrice] = useState("")
-  const [originalAmountPaid, setOriginalAmountPaid] = useState("")
   const [originalEndDate, setOriginalEndDate] = useState("")
   const [originalGithubUrl, setOriginalGithubUrl] = useState("")
   const [originalVercelUrl, setOriginalVercelUrl] = useState("")
@@ -256,10 +252,12 @@ export default function ProjectDetailPage() {
   // Saving states
   const [savingTitle, setSavingTitle] = useState(false)
   const [savingRequirements, setSavingRequirements] = useState(false)
+  const [savingDeliverables, setSavingDeliverables] = useState(false)
 
   // Change detection
   const titleChanged = title !== originalTitle
   const requirementsChanged = requirements !== originalRequirements
+  const deliverablesChanged = githubUrl !== originalGithubUrl || vercelUrl !== originalVercelUrl
   const [mirrorLoading, setMirrorLoading] = useState(false)
   const [requirementsVersions, setRequirementsVersions] = useState<RequirementsVersion[]>([])
   const [showVersionHistory, setShowVersionHistory] = useState(false)
@@ -355,12 +353,6 @@ export default function ProjectDetailPage() {
     const statusVal = data.status
     setStatus(statusVal)
     setOriginalStatus(statusVal)
-    const priceVal = data.price?.toString() || ""
-    setPrice(priceVal)
-    setOriginalPrice(priceVal)
-    const amountPaidVal = data.amount_paid?.toString() || ""
-    setAmountPaid(amountPaidVal)
-    setOriginalAmountPaid(amountPaidVal)
     const endDateVal = data.end_date ? data.end_date.split("T")[0] : ""
     setEndDate(endDateVal)
     setOriginalEndDate(endDateVal)
@@ -497,6 +489,51 @@ export default function ProjectDetailPage() {
     })
     fetchActivityLog()
     setSavingRequirements(false)
+  }
+
+  function revertDeliverables() {
+    setGithubUrl(originalGithubUrl)
+    setVercelUrl(originalVercelUrl)
+  }
+
+  async function handleSaveDeliverables() {
+    if (!project || !deliverablesChanged) return
+    setSavingDeliverables(true)
+    const supabase = createClient()
+    const now = new Date().toISOString()
+
+    const { error } = await supabase
+      .from("projects")
+      .update({
+        github_url: githubUrl || null,
+        vercel_url: vercelUrl || null,
+        updated_at: now,
+      })
+      .eq("id", projectId)
+
+    if (error) {
+      console.error("Error saving deliverables:", error)
+      setSavingDeliverables(false)
+      return
+    }
+
+    setOriginalGithubUrl(githubUrl)
+    setOriginalVercelUrl(vercelUrl)
+    setProject({
+      ...project,
+      github_url: githubUrl || null,
+      vercel_url: vercelUrl || null,
+    })
+
+    // Log activity
+    await supabase.from("activity_log").insert({
+      project_id: projectId,
+      action: "deliverables_updated",
+      details: `Deliverables updated by ${currentUserName}`,
+    })
+
+    fetchActivityLog()
+    setSavingDeliverables(false)
   }
 
   async function handleViewAsCustomer() {
@@ -737,15 +774,12 @@ export default function ProjectDetailPage() {
   }
 
   const contact = getContact(project.contacts)
-  const priceNum = price ? parseFloat(price) : 0
-  const paidNum = amountPaid ? parseFloat(amountPaid) : 0
-  const owed = priceNum - paidNum
 
   // Progress state calculations
   const hasQuote = quotes.length > 0
   const quoteAccepted = quotes.some((q) => q.status === "accepted")
   const quoteRejected = quotes.some((q) => q.status === "rejected")
-  const hasPaid = paidNum > 0 || invoices.some((i) => i.status === "paid")
+  const hasPaid = invoices.some((i) => i.status === "paid")
   const hasDeliverables = Boolean(githubUrl || vercelUrl)
 
   return (
@@ -1175,11 +1209,25 @@ export default function ProjectDetailPage() {
           <CardTitle className="flex items-center gap-2">
             <FileText className="h-5 w-5" />
             Deliverables
+            <span className="text-sm font-normal text-muted-foreground ml-auto">
+              {githubUrl && vercelUrl ? (
+                <span className="text-emerald-500">2/2</span>
+              ) : githubUrl || vercelUrl ? (
+                <span className="text-yellow-500">1/2</span>
+              ) : (
+                <span className="text-red-500">0/2</span>
+              )}
+            </span>
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
             <label className="text-sm font-medium mb-2 block flex items-center gap-2">
+              {githubUrl ? (
+                <Check className="h-4 w-4 text-emerald-500" />
+              ) : (
+                <X className="h-4 w-4 text-red-500" />
+              )}
               <Github className="h-4 w-4" />
               GitHub Repository
             </label>
@@ -1202,6 +1250,11 @@ export default function ProjectDetailPage() {
           </div>
           <div>
             <label className="text-sm font-medium mb-2 block flex items-center gap-2">
+              {vercelUrl ? (
+                <Check className="h-4 w-4 text-emerald-500" />
+              ) : (
+                <X className="h-4 w-4 text-red-500" />
+              )}
               <ExternalLink className="h-4 w-4" />
               Vercel Preview
             </label>
@@ -1222,6 +1275,33 @@ export default function ProjectDetailPage() {
               </a>
             )}
           </div>
+          {/* Save/Revert buttons */}
+          {deliverablesChanged && (
+            <div className="flex items-center gap-2 pt-2 border-t">
+              <Button
+                size="sm"
+                onClick={handleSaveDeliverables}
+                disabled={savingDeliverables}
+                className="bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50"
+              >
+                {savingDeliverables ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Check className="h-4 w-4" />
+                )}
+                <span className="ml-1">Save</span>
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={revertDeliverables}
+                disabled={savingDeliverables}
+              >
+                <RotateCcw className="h-4 w-4" />
+                <span className="ml-1">Revert</span>
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -1377,52 +1457,6 @@ export default function ProjectDetailPage() {
                     {contact?.company || "N/A"}
                   </p>
                 </CopyableField>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* 6. Pricing Card */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <DollarSign className="h-5 w-5" />
-              Pricing
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <label className="text-sm font-medium mb-2 block">Total Price</label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
-                <Input
-                  type="number"
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
-                  placeholder="0"
-                  className="pl-7"
-                />
-              </div>
-            </div>
-            <div>
-              <label className="text-sm font-medium mb-2 block">Amount Paid</label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
-                <Input
-                  type="number"
-                  value={amountPaid}
-                  onChange={(e) => setAmountPaid(e.target.value)}
-                  placeholder="0"
-                  className="pl-7"
-                />
-              </div>
-            </div>
-            <div className="pt-2 border-t">
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-medium">Amount Owed</span>
-                <span className={`text-lg font-bold ${owed > 0 ? "text-orange-600 dark:text-orange-400" : "text-emerald-600 dark:text-emerald-400"}`}>
-                  {formatCurrency(owed)}
-                </span>
               </div>
             </div>
           </CardContent>

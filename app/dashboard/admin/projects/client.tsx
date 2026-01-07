@@ -186,6 +186,58 @@ function getProjectName(project: Project): string {
   return "Untitled Project"
 }
 
+type InvoiceStatus = "no_quote" | "quote_pending" | "invoice_draft" | "invoice_sent" | "invoice_paid"
+
+function getInvoiceStatus(project: Project): InvoiceStatus {
+  // Check if any invoice is paid
+  if (project.invoices?.some((i) => i.status === "paid")) {
+    return "invoice_paid"
+  }
+  // Check if any invoice is sent/pending
+  if (project.invoices?.some((i) => i.status === "sent" || i.status === "pending")) {
+    return "invoice_sent"
+  }
+  // Check if any invoice is draft
+  if (project.invoices?.some((i) => i.status === "draft")) {
+    return "invoice_draft"
+  }
+  // Check if there's a quote (but no invoice)
+  if (project.quotes?.length > 0) {
+    return "quote_pending"
+  }
+  return "no_quote"
+}
+
+function getInvoiceStatusDisplay(status: InvoiceStatus): { label: string; color: string } {
+  switch (status) {
+    case "invoice_paid":
+      return { label: "Paid", color: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" }
+    case "invoice_sent":
+      return { label: "Sent", color: "bg-blue-500/10 text-blue-500 border-blue-500/20" }
+    case "invoice_draft":
+      return { label: "Draft", color: "bg-gray-500/10 text-gray-500 border-gray-500/20" }
+    case "quote_pending":
+      return { label: "Quote", color: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20" }
+    case "no_quote":
+      return { label: "—", color: "text-muted-foreground" }
+  }
+}
+
+function getDeliverablesStatus(project: Project): { count: number; total: number; color: string } {
+  let count = 0
+  if (project.github_url) count++
+  if (project.vercel_url) count++
+  const total = 2
+
+  if (count === total) {
+    return { count, total, color: "text-emerald-500" }
+  } else if (count > 0) {
+    return { count, total, color: "text-yellow-500" }
+  } else {
+    return { count, total, color: "text-red-500" }
+  }
+}
+
 export function AdminProjectsClient({ projects, stats, customers }: AdminProjectsClientProps) {
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState("-status:canceled")
@@ -500,6 +552,8 @@ export function AdminProjectsClient({ projects, stats, customers }: AdminProject
                     <TableHead className="min-w-[180px]">Email</TableHead>
                     <TableHead className="min-w-[120px]">Type</TableHead>
                     <TableHead className="min-w-[100px]">Status</TableHead>
+                    <TableHead className="min-w-[80px]">Invoice</TableHead>
+                    <TableHead className="min-w-[80px]">Deliver</TableHead>
                     <TableHead className="min-w-[100px]">Price</TableHead>
                     <TableHead className="min-w-[140px]">Paid / Owed</TableHead>
                     <TableHead className="min-w-[100px]">Duration</TableHead>
@@ -510,7 +564,7 @@ export function AdminProjectsClient({ projects, stats, customers }: AdminProject
                 <TableBody>
                   {filteredProjects.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={10} className="text-center py-8">
+                      <TableCell colSpan={12} className="text-center py-8">
                         <p className="text-muted-foreground">No projects found</p>
                       </TableCell>
                     </TableRow>
@@ -566,6 +620,30 @@ export function AdminProjectsClient({ projects, stats, customers }: AdminProject
                             <Badge className={getStatusColor(project.status)}>
                               {formatStatus(project.status)}
                             </Badge>
+                          </TableCell>
+                          <TableCell>
+                            {(() => {
+                              const invoiceStatus = getInvoiceStatus(project)
+                              const display = getInvoiceStatusDisplay(invoiceStatus)
+                              if (invoiceStatus === "no_quote") {
+                                return <span className={display.color}>{display.label}</span>
+                              }
+                              return (
+                                <Badge className={display.color}>
+                                  {display.label}
+                                </Badge>
+                              )
+                            })()}
+                          </TableCell>
+                          <TableCell>
+                            {(() => {
+                              const deliverables = getDeliverablesStatus(project)
+                              return (
+                                <span className={`text-sm font-medium ${deliverables.color}`}>
+                                  {deliverables.count}/{deliverables.total}
+                                </span>
+                              )
+                            })()}
                           </TableCell>
                           <TableCell>
                             <span className="text-sm font-medium whitespace-nowrap">
