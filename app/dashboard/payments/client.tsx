@@ -6,6 +6,7 @@ import { BlurFade } from "@/components/ui/blur-fade"
 import { Badge } from "@/components/ui/badge"
 import { CreditCard, Receipt, ExternalLink, Download, CheckCircle2, Clock, AlertCircle } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { MobileBackButton } from "@/components/dashboard/mobile-back-button"
 
 type Invoice = {
   id: string
@@ -169,6 +170,7 @@ export function PaymentsClient({ invoices }: PaymentsClientProps) {
   if (invoices.length === 0) {
     return (
       <div className="space-y-6">
+        <MobileBackButton />
         <BlurFade delay={0.1}>
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Payments</h1>
@@ -199,6 +201,7 @@ export function PaymentsClient({ invoices }: PaymentsClientProps) {
 
   return (
     <div className="space-y-6">
+      <MobileBackButton />
       {/* Header */}
       <BlurFade delay={0.05}>
         <div>

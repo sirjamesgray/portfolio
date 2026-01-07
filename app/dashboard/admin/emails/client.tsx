@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Mail, Eye, Send, Check, X } from "lucide-react"
 import { BlurFade } from "@/components/ui/blur-fade"
+import { MobileBackButton } from "@/components/dashboard/mobile-back-button"
 import {
   Drawer,
   DrawerClose,
@@ -101,6 +102,7 @@ export function AdminEmailsClient({ templates }: AdminEmailsClientProps) {
 
   return (
     <div className="space-y-6">
+      <MobileBackButton />
       {/* Header */}
       <BlurFade delay={0.1}>
         <div>

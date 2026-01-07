@@ -45,6 +45,8 @@ export async function GET(
       public_description,
       public_hero_image,
       public_industry,
+      public_content_html,
+      icon_url,
       contacts (
         name,
         email,

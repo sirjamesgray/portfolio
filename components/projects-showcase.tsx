@@ -18,6 +18,7 @@ type FeaturedProject = {
   public_industry: string | null;
   project_type: string | null;
   vercel_url: string | null;
+  icon_url: string | null;
 };
 
 // Color palette for project cards
@@ -128,7 +129,9 @@ export function ProjectsShowcase() {
                                 src={project.public_hero_image}
                                 alt={displayTitle}
                                 fill
+                                sizes="(max-width: 768px) 100vw, 50vw"
                                 className="object-cover transition-transform duration-300 group-hover:scale-105"
+                                loading={idx < 2 ? "eager" : "lazy"}
                               />
                             </div>
                           )}
@@ -137,12 +140,22 @@ export function ProjectsShowcase() {
                           <div className="flex items-start justify-between mb-4">
                             <div className="flex items-center gap-3">
                               <div className={cn(
-                                "flex h-12 w-12 items-center justify-center rounded-xl transition-all duration-300",
+                                "flex h-12 w-12 items-center justify-center rounded-xl transition-all duration-300 overflow-hidden",
                                 hoveredIndex === idx
                                   ? "bg-primary/20 text-primary"
                                   : "bg-white/10 text-muted-foreground"
                               )}>
-                                <Briefcase className="h-6 w-6" />
+                                {project.icon_url ? (
+                                  <Image
+                                    src={project.icon_url}
+                                    alt={displayTitle}
+                                    width={48}
+                                    height={48}
+                                    className="object-cover w-full h-full"
+                                  />
+                                ) : (
+                                  <Briefcase className="h-6 w-6" />
+                                )}
                               </div>
                               <div>
                                 <h3 className="font-semibold text-lg text-foreground">

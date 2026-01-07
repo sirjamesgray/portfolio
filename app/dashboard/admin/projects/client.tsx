@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import Image from "next/image"
 import {
   Table,
   TableBody,
@@ -40,6 +41,7 @@ import {
 import { Search, FolderKanban, Plus, Shield, MoreHorizontal, Eye, User, Trash2, X, Megaphone } from "lucide-react"
 import { BlurFade } from "@/components/ui/blur-fade"
 import { ProjectCard } from "@/components/dashboard/project-card"
+import { PageHeader } from "@/components/dashboard/page-header"
 
 type Contact = {
   name: string
@@ -80,6 +82,7 @@ type Project = {
   github_url: string | null
   show_on_landing_page: boolean | null
   customer_opted_out_of_landing_page: boolean | null
+  icon_url: string | null
   quotes: Quote[]
   invoices: Invoice[]
 }
@@ -394,21 +397,17 @@ export function AdminProjectsClient({ projects, stats, customers }: AdminProject
   return (
     <div className="space-y-6 min-w-0">
       {/* Header */}
-      <BlurFade delay={0.1}>
-        <div className="flex items-start justify-between">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">All Projects</h1>
-            <p className="text-muted-foreground">
-              Manage and track all customer projects
-            </p>
-          </div>
-          <Dialog open={isNewProjectOpen} onOpenChange={setIsNewProjectOpen}>
-            <DialogTrigger asChild>
-              <Button className="gap-2 bg-emerald-600 hover:bg-emerald-700">
-                <Plus className="h-4 w-4" />
-                New Project
-              </Button>
-            </DialogTrigger>
+      <PageHeader
+        title="All Projects"
+        description="Manage and track all customer projects"
+      >
+        <Dialog open={isNewProjectOpen} onOpenChange={setIsNewProjectOpen}>
+          <DialogTrigger asChild>
+            <Button className="gap-2 bg-emerald-600 hover:bg-emerald-700">
+              <Plus className="h-4 w-4" />
+              New Project
+            </Button>
+          </DialogTrigger>
             <DialogContent className="sm:max-w-[500px]">
               <DialogHeader>
                 <DialogTitle>Create New Project</DialogTitle>
@@ -483,46 +482,7 @@ export function AdminProjectsClient({ projects, stats, customers }: AdminProject
               </DialogFooter>
             </DialogContent>
           </Dialog>
-        </div>
-      </BlurFade>
-
-      {/* Stats */}
-      <BlurFade delay={0.15}>
-        <div className="grid gap-4 md:grid-cols-4">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Total Projects</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.totalProjects}</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Consultation</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.consultation}</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Development</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.development}</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Delivered</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.delivered}</div>
-            </CardContent>
-          </Card>
-        </div>
-      </BlurFade>
+      </PageHeader>
 
       {/* Filters */}
       <BlurFade delay={0.2}>
@@ -654,8 +614,18 @@ export function AdminProjectsClient({ projects, stats, customers }: AdminProject
                         >
                           <TableCell>
                             <div className="flex items-center gap-3">
-                              <div className="h-9 w-9 rounded-lg bg-muted flex items-center justify-center shrink-0">
-                                <FolderKanban className="h-4 w-4 text-muted-foreground" />
+                              <div className="h-9 w-9 rounded-lg bg-muted flex items-center justify-center shrink-0 overflow-hidden">
+                                {project.icon_url ? (
+                                  <Image
+                                    src={project.icon_url}
+                                    alt={getProjectName(project)}
+                                    width={36}
+                                    height={36}
+                                    className="object-cover w-full h-full"
+                                  />
+                                ) : (
+                                  <FolderKanban className="h-4 w-4 text-muted-foreground" />
+                                )}
                               </div>
                               <div className="flex items-center gap-2">
                                 <p className="font-medium whitespace-nowrap">

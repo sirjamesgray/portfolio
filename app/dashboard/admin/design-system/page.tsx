@@ -4,6 +4,7 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import { Copy, Check, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { MobileBackButton } from "@/components/dashboard/mobile-back-button";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { PulsatingButton } from "@/components/ui/pulsating-button";
 import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button";
@@ -21,6 +22,22 @@ import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 import { LOGO_3D_COLORS } from "@/lib/logo-colors";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { BeforeAfterSlider } from "@/components/before-after-slider";
 
 // Animated icons
 import { BellIcon } from "@/components/ui/bell";
@@ -38,9 +55,11 @@ import { ArrowRightIcon } from "@/components/ui/arrow-right";
 import { LockIcon } from "@/components/ui/lock";
 import { LockOpenIcon } from "@/components/ui/lock-open";
 
-// Dynamically import 3D logos to avoid SSR issues
-const Logo3D = dynamic(
-  () => import("@/components/logo-3d").then((mod) => mod.Logo3D),
+import { Logo3DStatic, Logo3DRotating } from "@/components/logo-3d";
+
+// Dynamically import rotating 3D logos to avoid SSR issues (only for the rotating version)
+const Logo3DRotatingDynamic = dynamic(
+  () => import("@/components/logo-3d").then((mod) => mod.Logo3DRotating),
   {
     ssr: false,
     loading: () => (
@@ -151,6 +170,7 @@ export default function DesignSystemPage() {
     <div className="min-h-screen bg-background">
       {/* Main Content */}
       <main className="pb-24 px-6">
+        <MobileBackButton />
         <div className="mx-auto max-w-6xl">
           <BlurFade delay={0.1} inView>
             <div className="mb-12 text-center">
@@ -174,26 +194,26 @@ export default function DesignSystemPage() {
                 <div className="flex items-center gap-6">
                   <div className="flex flex-col items-center gap-2">
                     <span className="text-xs text-muted-foreground">sm (header)</span>
-                    <Logo3D size="sm" static />
+                    <Logo3DStatic size="sm" />
                   </div>
                   <div className="flex flex-col items-center gap-2">
                     <span className="text-xs text-muted-foreground">md</span>
-                    <Logo3D size="md" static />
+                    <Logo3DStatic size="md" />
                   </div>
                   <div className="flex flex-col items-center gap-2">
                     <span className="text-xs text-muted-foreground">lg</span>
-                    <Logo3D size="lg" static />
+                    <Logo3DStatic size="lg" />
                   </div>
                   <div className="flex flex-col items-center gap-2">
                     <span className="text-xs text-muted-foreground">xl</span>
-                    <Logo3D size="xl" static />
+                    <Logo3DStatic size="xl" />
                   </div>
                 </div>
                 {/* Large preview */}
                 <div className="flex justify-center items-center pt-6 border-t border-border">
                   <div className="flex flex-col items-center gap-2">
                     <span className="text-xs text-muted-foreground">qa (preview size)</span>
-                    <Logo3D size="qa" static />
+                    <Logo3DStatic size="qa" />
                   </div>
                 </div>
               </div>
@@ -211,7 +231,7 @@ export default function DesignSystemPage() {
               </p>
               <div className="flex justify-center items-center rounded-xl border border-border bg-card/50 p-8 min-h-[500px]">
                 <div className="opacity-20 dark:opacity-15">
-                  <Logo3D size="qa" />
+                  <Logo3DRotatingDynamic size="qa" />
                 </div>
               </div>
             </section>
@@ -438,7 +458,30 @@ export default function DesignSystemPage() {
             <section className="mb-16">
               <h2 className="text-2xl font-bold text-foreground mb-6">Buttons</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <ComponentCard title="Button" importPath="@/components/ui/button">
+                {/* Primary Green Buttons - Most Common */}
+                <ComponentCard title="Primary Green (CTA)" importPath="@/components/ui/button" className="md:col-span-2 lg:col-span-3 border-emerald-500/30">
+                  <div className="flex flex-col gap-4 w-full">
+                    <p className="text-xs text-muted-foreground text-center">
+                      Our main CTA style: <code className="bg-muted px-1 rounded">bg-emerald-600 hover:bg-emerald-700</code>
+                    </p>
+                    <div className="flex flex-wrap items-center justify-center gap-3">
+                      <Button className="bg-emerald-600 hover:bg-emerald-700">
+                        Default
+                      </Button>
+                      <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 gap-2">
+                        <ArrowRightIcon className="h-4 w-4" />
+                        Large with Icon
+                      </Button>
+                      <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 gap-2 px-8 py-6 text-base font-semibold">
+                        Start Your Project
+                        <ArrowRightIcon className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </ComponentCard>
+
+                {/* Standard shadcn variants */}
+                <ComponentCard title="Button Variants" importPath="@/components/ui/button">
                   <div className="flex flex-col gap-3">
                     <div className="flex flex-wrap gap-2">
                       <Button>Default</Button>
@@ -516,6 +559,80 @@ export default function DesignSystemPage() {
                     <Badge>Default</Badge>
                     <Badge variant="secondary">Secondary</Badge>
                     <Badge variant="outline">Outline</Badge>
+                  </div>
+                </ComponentCard>
+              </div>
+            </section>
+          </BlurFade>
+
+          {/* Dropdowns & Popovers Section */}
+          <BlurFade delay={0.32} inView>
+            <section className="mb-16">
+              <h2 className="text-2xl font-bold text-foreground mb-6">Dropdowns & Popovers</h2>
+              <p className="text-muted-foreground mb-6 text-sm">
+                Glassmorphic dropdowns with <code>backdrop-blur-xl</code> and solid dark background in dark mode.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <ComponentCard title="DropdownMenu" importPath="@/components/ui/dropdown-menu">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline">Open Menu</Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem>Profile</DropdownMenuItem>
+                      <DropdownMenuItem>Settings</DropdownMenuItem>
+                      <DropdownMenuItem>Billing</DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem>Log out</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </ComponentCard>
+
+                <ComponentCard title="Select" importPath="@/components/ui/select">
+                  <Select>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Select option" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="option1">Option 1</SelectItem>
+                      <SelectItem value="option2">Option 2</SelectItem>
+                      <SelectItem value="option3">Option 3</SelectItem>
+                      <SelectItem value="option4">Option 4</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </ComponentCard>
+
+                <ComponentCard title="Popover Style" importPath="globals.css" className="lg:col-span-1">
+                  <div className="text-center text-sm text-muted-foreground">
+                    <p className="mb-2">Dark mode popover:</p>
+                    <code className="text-xs bg-muted px-2 py-1 rounded block">
+                      --popover: oklch(0.15 0 0 / 95%)
+                    </code>
+                    <p className="mt-2 text-xs">+ backdrop-blur-xl</p>
+                  </div>
+                </ComponentCard>
+              </div>
+            </section>
+          </BlurFade>
+
+          {/* Media Components Section */}
+          <BlurFade delay={0.33} inView>
+            <section className="mb-16">
+              <h2 className="text-2xl font-bold text-foreground mb-6">Media Components</h2>
+              <div className="grid grid-cols-1 gap-6">
+                <ComponentCard title="BeforeAfterSlider" importPath="@/components/before-after-slider" className="col-span-full">
+                  <div className="w-full max-w-2xl">
+                    <p className="text-xs text-muted-foreground text-center mb-4">
+                      Hover to control slider position. Images use <code>object-contain</code> to show full images without cropping.
+                    </p>
+                    <BeforeAfterSlider
+                      beforeImage="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=450&fit=crop"
+                      afterImage="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=450&fit=crop"
+                      beforeLabel="Before"
+                      afterLabel="After"
+                    />
                   </div>
                 </ComponentCard>
               </div>

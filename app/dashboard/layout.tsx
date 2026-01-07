@@ -30,27 +30,47 @@ export default async function DashboardLayout({
 
   const userIsAdmin = isAdmin(user.email)
 
-  // Check for mirror mode
+  // Check for mirror mode (user-based or project-based)
   const cookieStore = await cookies()
   const mirrorUserId = cookieStore.get("mirror_user_id")?.value
-  let mirroredUser: { id: string; email: string; name: string } | null = null
+  const mirrorProjectId = cookieStore.get("mirror_project_id")?.value
 
-  if (mirrorUserId && userIsAdmin) {
-    // Look up the mirrored user
+  let mirroredUser: { id: string; email: string; name: string } | null = null
+  let mirroredProject: { id: string; title: string } | null = null
+
+  if (userIsAdmin) {
     const adminSupabase = createAdminClient()
-    const { data } = await adminSupabase.auth.admin.getUserById(mirrorUserId)
-    if (data?.user) {
-      mirroredUser = {
-        id: data.user.id,
-        email: data.user.email || "",
-        name: data.user.user_metadata?.full_name || data.user.email?.split("@")[0] || "Unknown",
+
+    if (mirrorUserId) {
+      // User-based mirroring (from customer page)
+      const { data } = await adminSupabase.auth.admin.getUserById(mirrorUserId)
+      if (data?.user) {
+        mirroredUser = {
+          id: data.user.id,
+          email: data.user.email || "",
+          name: data.user.user_metadata?.full_name || data.user.email?.split("@")[0] || "Unknown",
+        }
+      }
+    } else if (mirrorProjectId) {
+      // Project-based preview (from project page)
+      const { data } = await adminSupabase
+        .from("projects")
+        .select("id, title")
+        .eq("id", mirrorProjectId)
+        .single()
+      if (data) {
+        mirroredProject = {
+          id: data.id,
+          title: data.title || "Untitled Project",
+        }
       }
     }
   }
 
   // When mirroring, hide admin tools to show what the user actually sees
+  const isMirroring = !!mirroredUser || !!mirroredProject
   const displayEmail = mirroredUser ? mirroredUser.email : user.email
-  const showAdminTools = userIsAdmin && !mirroredUser
+  const showAdminTools = userIsAdmin && !isMirroring
 
   // Get nav items from centralized config
   const navItems = getNavItems(showAdminTools)
@@ -61,9 +81,12 @@ export default async function DashboardLayout({
       {mirroredUser && (
         <MirrorBanner userName={mirroredUser.name} userEmail={mirroredUser.email} />
       )}
+      {mirroredProject && (
+        <MirrorBanner userName={mirroredProject.title} userEmail="Project Preview" isProjectPreview />
+      )}
 
       {/* Desktop Sidebar */}
-      <aside className={`fixed inset-y-0 left-0 z-50 hidden w-64 border-r bg-card md:block ${mirroredUser ? "top-10" : ""}`}>
+      <aside className={`fixed inset-y-0 left-0 z-50 hidden w-64 border-r bg-card md:block ${isMirroring ? "top-11" : ""}`}>
         <div className="flex h-full flex-col">
           {/* Logo/Header */}
           <div className="flex h-16 items-center border-b px-4">
@@ -105,13 +128,13 @@ export default async function DashboardLayout({
         </div>
       </aside>
 
-      {/* Mobile Layout with slide transitions */}
-      <MobileLayout hasMirror={!!mirroredUser} userEmail={displayEmail || ""}>
+      {/* Mobile Layout with slide transitions - only on screens < 768px */}
+      <MobileLayout hasMirror={isMirroring} userEmail={displayEmail || ""}>
         {children}
       </MobileLayout>
 
-      {/* Desktop Main Content */}
-      <main className={`hidden md:block flex-1 md:pl-64 min-w-0 overflow-x-hidden ${mirroredUser ? "pt-10" : ""}`}>
+      {/* Desktop Main Content - only on screens >= 768px */}
+      <main className={`hidden md:block flex-1 md:pl-64 min-w-0 overflow-x-hidden ${isMirroring ? "pt-11" : ""}`}>
         <div className="p-8 max-w-full">
           {children}
         </div>

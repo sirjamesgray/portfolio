@@ -15,6 +15,7 @@ import {
   Eye,
 } from "lucide-react"
 import { ProjectCard } from "@/components/dashboard/project-card"
+import { MobileBackButton } from "@/components/dashboard/mobile-back-button"
 
 type Quote = {
   id: string
@@ -104,6 +105,7 @@ export function CustomerDetailClient({
 
   return (
     <div className="space-y-6">
+      <MobileBackButton href="/dashboard/admin/customers" label="Customers" />
       {/* Header */}
       <BlurFade delay={0.1}>
         <div className="flex items-start justify-between">

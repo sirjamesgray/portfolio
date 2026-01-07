@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/dialog"
 import { FolderKanban, Search, MoreHorizontal, Eye, User, Users, UserPlus, Mail, Loader2, Check } from "lucide-react"
 import { BlurFade } from "@/components/ui/blur-fade"
+import { PageHeader } from "@/components/dashboard/page-header"
 
 type Project = {
   id: string
@@ -158,15 +159,11 @@ export function CustomersClient({ customers, stats }: CustomersClientProps) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <BlurFade delay={0.1}>
-        <div className="flex items-start justify-between">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Customers</h1>
-            <p className="text-muted-foreground">
-              Manage customers and view their projects
-            </p>
-          </div>
-          <Dialog open={inviteDialogOpen} onOpenChange={(open) => {
+      <PageHeader
+        title="Customers"
+        description="Manage customers and view their projects"
+      >
+        <Dialog open={inviteDialogOpen} onOpenChange={(open) => {
             setInviteDialogOpen(open)
             if (!open) {
               setInviteEmail("")
@@ -252,46 +249,7 @@ export function CustomersClient({ customers, stats }: CustomersClientProps) {
               )}
             </DialogContent>
           </Dialog>
-        </div>
-      </BlurFade>
-
-      {/* Stats */}
-      <BlurFade delay={0.15}>
-        <div className="grid gap-4 md:grid-cols-4">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Total Customers</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.totalCustomers}</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Total Projects</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.totalProjects}</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Active Projects</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.activeProjects}</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">With Projects</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.customersWithProjects}</div>
-            </CardContent>
-          </Card>
-        </div>
-      </BlurFade>
+      </PageHeader>
 
       {/* Search */}
       <BlurFade delay={0.2}>

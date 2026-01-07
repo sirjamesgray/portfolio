@@ -7,7 +7,6 @@ import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { BentoGrid, BentoCard } from "@/components/ui/bento-grid";
 import { SiteHeader } from "@/components/site-header";
-import { UIShowcase } from "@/components/ui-showcase";
 import { ExperienceTimeline } from "@/components/experience-timeline";
 import { ProjectsShowcase } from "@/components/projects-showcase";
 import { CursorGrid } from "@/components/cursor-grid";
@@ -206,9 +205,6 @@ export default function Home() {
           </BlurFade>
         </div>
       </section>
-
-      {/* Interactive UI Showcase */}
-      <UIShowcase />
 
       {/* Projects Section */}
       <ProjectsShowcase />

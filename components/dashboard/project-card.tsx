@@ -1,8 +1,9 @@
 "use client"
 
 import { useRouter } from "next/navigation"
+import Image from "next/image"
 import { Card } from "@/components/ui/card"
-import { ChevronRight, Calendar, FileText, Check, CreditCard, Code, Rocket, X } from "lucide-react"
+import { ChevronRight, Calendar, FileText, Check, CreditCard, Code, Rocket, X, FolderKanban } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { formatProjectType } from "@/lib/constants"
 
@@ -27,6 +28,7 @@ export type ProjectCardData = {
   invoices?: Invoice[]
   vercel_url?: string | null
   github_url?: string | null
+  icon_url?: string | null
 }
 
 interface ProjectCardProps {
@@ -169,15 +171,30 @@ export function ProjectCard({ project, href, className }: ProjectCardProps) {
       <div className="p-4 space-y-3">
         {/* Header */}
         <div className="flex items-start justify-between">
-          <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-base">
-              {project.title || formatProjectType(project.project_type)}
-            </h3>
-            {project.description && (
-              <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
-                {project.description}
-              </p>
-            )}
+          <div className="flex items-start gap-3 flex-1 min-w-0">
+            <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center shrink-0 overflow-hidden">
+              {project.icon_url ? (
+                <Image
+                  src={project.icon_url}
+                  alt={project.title || "Project"}
+                  width={40}
+                  height={40}
+                  className="object-cover w-full h-full"
+                />
+              ) : (
+                <FolderKanban className="h-5 w-5 text-muted-foreground" />
+              )}
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="font-semibold text-base">
+                {project.title || formatProjectType(project.project_type)}
+              </h3>
+              {project.description && (
+                <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
+                  {project.description}
+                </p>
+              )}
+            </div>
           </div>
           <ChevronRight className="h-5 w-5 text-muted-foreground/50 flex-shrink-0 ml-2" />
         </div>

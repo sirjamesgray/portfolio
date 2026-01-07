@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useId, useMemo, useRef } from "react";
+import { useEffect, useState, useId, useMemo, useRef, useCallback } from "react";
 import { cn } from "@/lib/utils";
 
 interface CursorGridProps {
@@ -8,14 +8,11 @@ interface CursorGridProps {
   gridSize?: number;
 }
 
-// Dot animation states - each dot tracks when it was triggered
-interface DotState {
-  triggeredAt: number; // timestamp when triggered, 0 = never triggered
-  intensity: number;   // random intensity 0.3-1
-}
-
-interface DotStates {
-  [key: number]: DotState;
+// Only track actively animating dots (sparse representation)
+interface ActiveDot {
+  index: number;
+  triggeredAt: number;
+  intensity: number;
 }
 
 interface Pulse {
@@ -30,33 +27,53 @@ interface Pulse {
 }
 
 // Animation timing constants
-const FLASH_DURATION = 150;    // ms - quick flash to peak
-const SETTLE_DURATION = 300;   // ms - settle to green state
-const GREEN_HOLD_DURATION = 800; // ms - hold green state
-const DEFLATE_DURATION = 600;  // ms - deflate back to resting gray
+const FLASH_DURATION = 150;
+const SETTLE_DURATION = 300;
+const GREEN_HOLD_DURATION = 800;
+const DEFLATE_DURATION = 600;
+const TOTAL_DURATION = FLASH_DURATION + SETTLE_DURATION + GREEN_HOLD_DURATION + DEFLATE_DURATION;
+
+// Throttle animation updates to ~30fps instead of 60fps for better performance
+const ANIMATION_INTERVAL = 33;
 
 export function CursorGrid({ className, gridSize = 40 }: CursorGridProps) {
   const id = useId();
   const [mousePosition, setMousePosition] = useState({ x: -1000, y: -1000 });
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-  const [dotStates, setDotStates] = useState<DotStates>({});
-  const [currentTime, setCurrentTime] = useState(Date.now());
+  const [activeDots, setActiveDots] = useState<ActiveDot[]>([]);
   const [pulses, setPulses] = useState<Pulse[]>([]);
   const pulseIdCounter = useRef(0);
-  const animationFrameRef = useRef<number | null>(null);
+  const lastAnimationTime = useRef(0);
+
+  // Calculate grid dimensions
+  const gridDimensions = useMemo(() => {
+    const cols = Math.ceil(dimensions.width / gridSize) + 1;
+    const rows = Math.ceil(dimensions.height / gridSize) + 1;
+    return { cols, rows, total: cols * rows };
+  }, [dimensions.width, dimensions.height, gridSize]);
 
   useEffect(() => {
     const updateDimensions = () => {
       setDimensions({ width: window.innerWidth, height: window.innerHeight });
     };
 
+    // Throttle mouse move updates
+    let lastMoveTime = 0;
     const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
+      const now = Date.now();
+      if (now - lastMoveTime > 16) { // ~60fps max for mouse
+        setMousePosition({ x: e.clientX, y: e.clientY });
+        lastMoveTime = now;
+      }
     };
 
     const handleTouchMove = (e: TouchEvent) => {
       if (e.touches[0]) {
-        setMousePosition({ x: e.touches[0].clientX, y: e.touches[0].clientY });
+        const now = Date.now();
+        if (now - lastMoveTime > 16) {
+          setMousePosition({ x: e.touches[0].clientX, y: e.touches[0].clientY });
+          lastMoveTime = now;
+        }
       }
     };
 
@@ -68,9 +85,9 @@ export function CursorGrid({ className, gridSize = 40 }: CursorGridProps) {
 
     updateDimensions();
     window.addEventListener("resize", updateDimensions);
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("touchmove", handleTouchMove);
-    window.addEventListener("touchstart", handleTouchStart);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    window.addEventListener("touchmove", handleTouchMove, { passive: true });
+    window.addEventListener("touchstart", handleTouchStart, { passive: true });
 
     return () => {
       window.removeEventListener("resize", updateDimensions);
@@ -80,76 +97,75 @@ export function CursorGrid({ className, gridSize = 40 }: CursorGridProps) {
     };
   }, []);
 
-  // Generate grid intersection points
-  const intersections = useMemo(() => {
-    const points: { x: number; y: number; index: number }[] = [];
-    const cols = Math.ceil(dimensions.width / gridSize) + 1;
-    const rows = Math.ceil(dimensions.height / gridSize) + 1;
-
-    let index = 0;
-    for (let row = 0; row <= rows; row++) {
-      for (let col = 0; col <= cols; col++) {
-        points.push({
-          x: col * gridSize,
-          y: row * gridSize,
-          index,
-        });
-        index++;
-      }
-    }
-    return points;
-  }, [dimensions.width, dimensions.height, gridSize]);
-
-  // Animation frame for smooth updates
+  // Combined animation loop - handles both dots and pulses in one rAF
   useEffect(() => {
+    if (gridDimensions.total === 0) return;
+
     let frameId: number;
-    const update = () => {
-      setCurrentTime(Date.now());
-      frameId = requestAnimationFrame(update);
-    };
-    frameId = requestAnimationFrame(update);
-    return () => cancelAnimationFrame(frameId);
-  }, []);
+    let lastTriggerTime = 0;
 
-  // Random dot triggering effect
-  useEffect(() => {
-    if (intersections.length === 0) return;
-
-    const triggerDots = () => {
+    const animate = (timestamp: number) => {
       const now = Date.now();
-      // Randomly select 3-8 dots to trigger
-      const numTriggers = Math.floor(Math.random() * 6) + 3;
 
-      setDotStates(prev => {
-        const updated = { ...prev };
-        for (let i = 0; i < numTriggers; i++) {
-          const randomIndex = Math.floor(Math.random() * intersections.length);
-          // Only trigger if not currently animating
-          const existing = updated[randomIndex];
-          const elapsed = existing ? now - existing.triggeredAt : Infinity;
-          const totalDuration = FLASH_DURATION + SETTLE_DURATION + GREEN_HOLD_DURATION + DEFLATE_DURATION;
+      // Only update if enough time has passed (throttle to ~30fps)
+      if (now - lastAnimationTime.current >= ANIMATION_INTERVAL) {
+        lastAnimationTime.current = now;
 
-          if (elapsed > totalDuration) {
-            updated[randomIndex] = {
-              triggeredAt: now,
-              intensity: Math.random() * 0.7 + 0.3,
-            };
-          }
+        // Update active dots - remove completed animations
+        setActiveDots(prev => prev.filter(dot => now - dot.triggeredAt < TOTAL_DURATION));
+
+        // Update pulses
+        setPulses(prev => {
+          if (prev.length === 0) return prev;
+          return prev
+            .map(pulse => ({
+              ...pulse,
+              progress: pulse.progress + pulse.speed * 2, // Compensate for lower framerate
+            }))
+            .filter(pulse => {
+              if (pulse.direction === "horizontal") {
+                return pulse.progress < dimensions.width + pulse.length;
+              } else {
+                return pulse.progress < dimensions.height + pulse.length;
+              }
+            });
+        });
+
+        // Trigger new dots periodically (every ~800ms)
+        if (now - lastTriggerTime > 800) {
+          lastTriggerTime = now;
+          const numTriggers = Math.floor(Math.random() * 6) + 3;
+
+          setActiveDots(prev => {
+            const activeIndices = new Set(prev.map(d => d.index));
+            const newDots: ActiveDot[] = [];
+
+            for (let i = 0; i < numTriggers; i++) {
+              const randomIndex = Math.floor(Math.random() * gridDimensions.total);
+              if (!activeIndices.has(randomIndex)) {
+                newDots.push({
+                  index: randomIndex,
+                  triggeredAt: now,
+                  intensity: Math.random() * 0.7 + 0.3,
+                });
+                activeIndices.add(randomIndex);
+              }
+            }
+
+            return [...prev, ...newDots];
+          });
         }
-        return updated;
-      });
+      }
+
+      frameId = requestAnimationFrame(animate);
     };
 
-    // Initial trigger
-    triggerDots();
+    frameId = requestAnimationFrame(animate);
 
-    // Trigger at random intervals
-    const interval = setInterval(triggerDots, 800);
+    return () => cancelAnimationFrame(frameId);
+  }, [gridDimensions.total, dimensions.width, dimensions.height]);
 
-    return () => clearInterval(interval);
-  }, [intersections.length]);
-
-  // Generate pulses at random intervals
+  // Create pulses at intervals (separate from animation loop to reduce complexity)
   useEffect(() => {
     if (dimensions.width === 0 || dimensions.height === 0) return;
 
@@ -160,17 +176,13 @@ export function CursorGrid({ className, gridSize = 40 }: CursorGridProps) {
 
       const newPulse: Pulse = {
         id: pulseIdCounter.current++,
-        x: direction === "horizontal"
-          ? 0
-          : Math.floor(Math.random() * cols) * gridSize,
-        y: direction === "vertical"
-          ? 0
-          : Math.floor(Math.random() * rows) * gridSize,
+        x: direction === "horizontal" ? 0 : Math.floor(Math.random() * cols) * gridSize,
+        y: direction === "vertical" ? 0 : Math.floor(Math.random() * rows) * gridSize,
         direction,
         progress: 0,
-        speed: 0.5 + Math.random() * 1, // pixels per frame
+        speed: 0.5 + Math.random() * 1,
         opacity: 0.3 + Math.random() * 0.4,
-        length: 40 + Math.random() * 80, // length of the pulse in pixels
+        length: 40 + Math.random() * 80,
       };
 
       setPulses(prev => [...prev, newPulse]);
@@ -178,124 +190,73 @@ export function CursorGrid({ className, gridSize = 40 }: CursorGridProps) {
 
     // Create initial pulses
     for (let i = 0; i < 3; i++) {
-      setTimeout(() => createPulse(), i * 500);
+      setTimeout(createPulse, i * 500);
     }
 
-    // Create new pulses at random intervals
     const interval = setInterval(() => {
-      if (Math.random() > 0.3) { // 70% chance to create a pulse
-        createPulse();
-      }
+      if (Math.random() > 0.3) createPulse();
     }, 1500);
 
     return () => clearInterval(interval);
   }, [dimensions.width, dimensions.height, gridSize]);
 
-  // Animate pulses using requestAnimationFrame
-  useEffect(() => {
-    const animate = () => {
-      setPulses(prev => {
-        const updated = prev
-          .map(pulse => ({
-            ...pulse,
-            progress: pulse.progress + pulse.speed,
-          }))
-          .filter(pulse => {
-            // Remove pulses that have moved off screen
-            if (pulse.direction === "horizontal") {
-              return pulse.progress < dimensions.width + pulse.length;
-            } else {
-              return pulse.progress < dimensions.height + pulse.length;
-            }
-          });
+  // Calculate dot appearance - memoized calculation function
+  const getDotAppearance = useCallback((triggeredAt: number, intensity: number, now: number) => {
+    const elapsed = now - triggeredAt;
 
-        return updated;
-      });
-
-      animationFrameRef.current = requestAnimationFrame(animate);
-    };
-
-    animationFrameRef.current = requestAnimationFrame(animate);
-
-    return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-    };
-  }, [dimensions.width, dimensions.height]);
-
-  // Calculate dot appearance based on animation phase
-  // Returns { opacity, scale, isGreen } for each dot
-  const getDotAppearance = (index: number): { opacity: number; scale: number; isGreen: boolean } => {
-    const dotState = dotStates[index];
-
-    // Resting state: small, gray, low opacity
-    const RESTING_OPACITY = 0.15;
-    const RESTING_SCALE = 1;
-
-    if (!dotState || dotState.triggeredAt === 0) {
-      return { opacity: RESTING_OPACITY, scale: RESTING_SCALE, isGreen: false };
-    }
-
-    const elapsed = currentTime - dotState.triggeredAt;
-    const intensity = dotState.intensity;
-    const totalDuration = FLASH_DURATION + SETTLE_DURATION + GREEN_HOLD_DURATION + DEFLATE_DURATION;
-
-    // Animation complete - back to resting
-    if (elapsed >= totalDuration) {
-      return { opacity: RESTING_OPACITY, scale: RESTING_SCALE, isGreen: false };
-    }
-
-    // Phase 1: Flash (0 - FLASH_DURATION)
-    // Quick scale up with bounce, high opacity
     if (elapsed < FLASH_DURATION) {
       const t = elapsed / FLASH_DURATION;
-      // Overshoot bounce: goes to 1.8 then settles to 1.5
       const bounce = 1 + (0.8 + 0.5 * Math.sin(t * Math.PI)) * intensity;
-      const opacity = 0.3 + 0.7 * intensity;
-      return { opacity, scale: bounce, isGreen: true };
+      return { opacity: 0.3 + 0.7 * intensity, scale: bounce, isGreen: true };
     }
 
-    // Phase 2: Settle (FLASH_DURATION - FLASH_DURATION + SETTLE_DURATION)
-    // Scale settles from bounce to steady green state
     if (elapsed < FLASH_DURATION + SETTLE_DURATION) {
       const t = (elapsed - FLASH_DURATION) / SETTLE_DURATION;
       const settledScale = 1 + 0.3 * intensity;
       const bounceScale = 1 + 0.8 * intensity;
-      const scale = bounceScale - (bounceScale - settledScale) * t;
-      const opacity = 0.3 + 0.5 * intensity;
-      return { opacity, scale, isGreen: true };
+      return { opacity: 0.3 + 0.5 * intensity, scale: bounceScale - (bounceScale - settledScale) * t, isGreen: true };
     }
 
-    // Phase 3: Green hold (steady green state)
     if (elapsed < FLASH_DURATION + SETTLE_DURATION + GREEN_HOLD_DURATION) {
-      const scale = 1 + 0.3 * intensity;
-      const opacity = 0.3 + 0.4 * intensity;
-      return { opacity, scale, isGreen: true };
+      return { opacity: 0.3 + 0.4 * intensity, scale: 1 + 0.3 * intensity, isGreen: true };
     }
 
-    // Phase 4: Deflate (fade back to resting gray)
     const deflateElapsed = elapsed - (FLASH_DURATION + SETTLE_DURATION + GREEN_HOLD_DURATION);
     const t = deflateElapsed / DEFLATE_DURATION;
-    const eased = t * t * (3 - 2 * t); // smoothstep easing
-
+    const eased = t * t * (3 - 2 * t);
     const greenScale = 1 + 0.3 * intensity;
     const greenOpacity = 0.3 + 0.4 * intensity;
 
-    const scale = greenScale - (greenScale - RESTING_SCALE) * eased;
-    const opacity = greenOpacity - (greenOpacity - RESTING_OPACITY) * eased;
+    return {
+      opacity: greenOpacity - (greenOpacity - 0.15) * eased,
+      scale: greenScale - (greenScale - 1) * eased,
+      isGreen: t < 0.5,
+    };
+  }, []);
 
-    // Transition from green to gray as we deflate
-    const isGreen = t < 0.5;
-    return { opacity, scale, isGreen };
-  };
+  // Memoize the active dots rendering
+  const now = Date.now();
+  const renderedDots = useMemo(() => {
+    return activeDots.map(dot => {
+      const { opacity, scale, isGreen } = getDotAppearance(dot.triggeredAt, dot.intensity, now);
+      const col = dot.index % gridDimensions.cols;
+      const row = Math.floor(dot.index / gridDimensions.cols);
+      return (
+        <circle
+          key={dot.index}
+          cx={col * gridSize}
+          cy={row * gridSize}
+          r={1 * scale}
+          fill={isGreen ? "rgb(16, 185, 129)" : "rgb(156, 163, 175)"}
+          opacity={opacity}
+        />
+      );
+    });
+  }, [activeDots, gridDimensions.cols, gridSize, getDotAppearance, now]);
 
   return (
     <div className={cn("pointer-events-none fixed inset-0 z-0", className)}>
-      <svg
-        aria-hidden="true"
-        className="absolute inset-0 h-full w-full"
-      >
+      <svg aria-hidden="true" className="absolute inset-0 h-full w-full">
         <defs>
           <pattern
             id={`grid-${id}`}
@@ -311,14 +272,7 @@ export function CursorGrid({ className, gridSize = 40 }: CursorGridProps) {
               className="text-border/30"
             />
           </pattern>
-          <radialGradient
-            id={`spotlight-${id}`}
-            cx="50%"
-            cy="50%"
-            r="50%"
-            fx="50%"
-            fy="50%"
-          >
+          <radialGradient id={`spotlight-${id}`} cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
             <stop offset="0%" stopColor="white" stopOpacity="1" />
             <stop offset="100%" stopColor="white" stopOpacity="0" />
           </radialGradient>
@@ -329,9 +283,7 @@ export function CursorGrid({ className, gridSize = 40 }: CursorGridProps) {
               cy={mousePosition.y}
               r="300"
               fill={`url(#spotlight-${id})`}
-              style={{
-                transition: "cx 0.15s ease-out, cy 0.15s ease-out",
-              }}
+              style={{ transition: "cx 0.15s ease-out, cy 0.15s ease-out" }}
             />
           </mask>
         </defs>
@@ -348,71 +300,40 @@ export function CursorGrid({ className, gridSize = 40 }: CursorGridProps) {
         <g className="text-emerald-500 dark:text-emerald-400">
           {pulses.map((pulse) => {
             const gradientId = `pulse-gradient-${pulse.id}`;
+            const isHorizontal = pulse.direction === "horizontal";
 
-            if (pulse.direction === "horizontal") {
-              return (
-                <g key={pulse.id}>
-                  <defs>
-                    <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="currentColor" stopOpacity="0" />
-                      <stop offset="30%" stopColor="currentColor" stopOpacity={pulse.opacity} />
-                      <stop offset="70%" stopColor="currentColor" stopOpacity={pulse.opacity} />
-                      <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
-                    </linearGradient>
-                  </defs>
-                  <line
-                    x1={pulse.progress}
-                    y1={pulse.y}
-                    x2={pulse.progress + pulse.length}
-                    y2={pulse.y}
-                    stroke={`url(#${gradientId})`}
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                </g>
-              );
-            } else {
-              return (
-                <g key={pulse.id}>
-                  <defs>
-                    <linearGradient id={gradientId} x1="0%" y1="0%" x2="0%" y2="100%">
-                      <stop offset="0%" stopColor="currentColor" stopOpacity="0" />
-                      <stop offset="30%" stopColor="currentColor" stopOpacity={pulse.opacity} />
-                      <stop offset="70%" stopColor="currentColor" stopOpacity={pulse.opacity} />
-                      <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
-                    </linearGradient>
-                  </defs>
-                  <line
-                    x1={pulse.x}
-                    y1={pulse.progress}
-                    x2={pulse.x}
-                    y2={pulse.progress + pulse.length}
-                    stroke={`url(#${gradientId})`}
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                </g>
-              );
-            }
-          })}
-        </g>
-
-        {/* Sparkles at intersections - all dots visible with animated states */}
-        <g>
-          {intersections.map((point) => {
-            const { opacity, scale, isGreen } = getDotAppearance(point.index);
             return (
-              <circle
-                key={point.index}
-                cx={point.x}
-                cy={point.y}
-                r={1 * scale}
-                fill={isGreen ? "rgb(16, 185, 129)" : "rgb(156, 163, 175)"}
-                opacity={opacity}
-              />
+              <g key={pulse.id}>
+                <defs>
+                  <linearGradient
+                    id={gradientId}
+                    x1="0%"
+                    y1="0%"
+                    x2={isHorizontal ? "100%" : "0%"}
+                    y2={isHorizontal ? "0%" : "100%"}
+                  >
+                    <stop offset="0%" stopColor="currentColor" stopOpacity="0" />
+                    <stop offset="30%" stopColor="currentColor" stopOpacity={pulse.opacity} />
+                    <stop offset="70%" stopColor="currentColor" stopOpacity={pulse.opacity} />
+                    <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
+                  </linearGradient>
+                </defs>
+                <line
+                  x1={isHorizontal ? pulse.progress : pulse.x}
+                  y1={isHorizontal ? pulse.y : pulse.progress}
+                  x2={isHorizontal ? pulse.progress + pulse.length : pulse.x}
+                  y2={isHorizontal ? pulse.y : pulse.progress + pulse.length}
+                  stroke={`url(#${gradientId})`}
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </g>
             );
           })}
         </g>
+
+        {/* Only render actively animating dots (sparse rendering) */}
+        <g>{renderedDots}</g>
       </svg>
     </div>
   );

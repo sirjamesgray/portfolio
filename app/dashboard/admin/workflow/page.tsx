@@ -3,6 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { BlurFade } from "@/components/ui/blur-fade"
+import { MobileBackButton } from "@/components/dashboard/mobile-back-button"
 import {
   Calendar,
   FileText,
@@ -280,6 +281,7 @@ function WorkflowCard({ step, delay }: { step: WorkflowStep; delay: number }) {
 export default function WorkflowPage() {
   return (
     <div className="space-y-8">
+      <MobileBackButton />
       <BlurFade delay={0.1}>
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Event Workflow</h1>

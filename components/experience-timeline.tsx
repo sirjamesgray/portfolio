@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { MapPin } from "lucide-react";
+import { MapPin, ArrowRight } from "lucide-react";
 import { Glow } from "@codaworks/react-glow";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { cn } from "@/lib/utils";
@@ -61,6 +61,7 @@ export function ExperienceTimeline() {
                                     src={job.logo}
                                     alt={`${job.company} logo`}
                                     fill
+                                    sizes="40px"
                                     className="object-cover"
                                   />
                                 </div>
@@ -164,6 +165,7 @@ export function ExperienceTimeline() {
                                     src={job.logo}
                                     alt={`${job.company} logo`}
                                     fill
+                                    sizes="40px"
                                     className="object-cover"
                                   />
                                 </div>
@@ -201,33 +203,40 @@ export function ExperienceTimeline() {
                         )}
                       >
                         <div className="flex items-start gap-3">
+                          {/* Logo on the left */}
                           {job.logo && (
                             <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-white/5">
                               <Image
                                 src={job.logo}
                                 alt={`${job.company} logo`}
                                 fill
+                                sizes="40px"
                                 className="object-cover"
                               />
                             </div>
                           )}
-                          <div className="flex-1">
-                            <h3 className="font-semibold text-foreground">
-                              {job.company}
-                            </h3>
+                          {/* Text content container on the right */}
+                          <div className="flex-1 min-w-0">
+                            {/* Location in top right */}
+                            <div className="flex items-start justify-between gap-2">
+                              <h3 className="font-semibold text-foreground">
+                                {job.company}
+                              </h3>
+                              <div className="flex items-center gap-1 text-xs text-muted-foreground shrink-0">
+                                <MapPin className="h-3 w-3" />
+                                <span>{job.location}</span>
+                              </div>
+                            </div>
                             <p className="text-sm text-muted-foreground">
                               {job.role}
                             </p>
-                            <div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
-                              <MapPin className="h-3 w-3" />
-                              <span>{job.location}</span>
+                            {/* Date timeline with arrow */}
+                            <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
+                              <span className="rounded bg-muted px-2 py-0.5">{job.startDate}</span>
+                              <ArrowRight className="h-3 w-3 shrink-0" />
+                              <span className="rounded bg-muted px-2 py-0.5">{job.endDate}</span>
                             </div>
                           </div>
-                        </div>
-                        <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
-                          <span className="rounded bg-muted px-2 py-0.5">{job.startDate}</span>
-                          <div className="h-px flex-1 bg-border" />
-                          <span className="rounded bg-muted px-2 py-0.5">{job.endDate}</span>
                         </div>
                       </div>
                     </Glow>

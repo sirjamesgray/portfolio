@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/table"
 import { Shield, UserCircle } from "lucide-react"
 import { BlurFade } from "@/components/ui/blur-fade"
+import { MobileBackButton } from "@/components/dashboard/mobile-back-button"
 
 type Admin = {
   id: string
@@ -29,6 +30,7 @@ interface AdminsClientProps {
 export function AdminsClient({ admins, currentUserId }: AdminsClientProps) {
   return (
     <div className="space-y-6">
+      <MobileBackButton />
       {/* Header */}
       <BlurFade delay={0.1}>
         <div>

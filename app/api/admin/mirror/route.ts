@@ -14,21 +14,38 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  const { userId, returnUrl } = await request.json()
+  const { userId, projectId, returnUrl } = await request.json()
 
-  if (!userId) {
-    return NextResponse.json({ error: "User ID required" }, { status: 400 })
+  // Must have either userId (mirror as specific user) or projectId (preview project as customer)
+  if (!userId && !projectId) {
+    return NextResponse.json({ error: "User ID or Project ID required" }, { status: 400 })
   }
 
-  // Set a cookie to store the mirrored user ID
   const response = NextResponse.json({ success: true })
-  response.cookies.set("mirror_user_id", userId, {
-    path: "/",
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    maxAge: 60 * 60 * 2, // 2 hours
-  })
+
+  // Clear any existing mirror cookies first
+  response.cookies.delete("mirror_user_id")
+  response.cookies.delete("mirror_project_id")
+
+  if (userId) {
+    // Mirror as specific user (from customer page)
+    response.cookies.set("mirror_user_id", userId, {
+      path: "/",
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 2, // 2 hours
+    })
+  } else if (projectId) {
+    // Preview project as any customer (from project page)
+    response.cookies.set("mirror_project_id", projectId, {
+      path: "/",
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 2, // 2 hours
+    })
+  }
 
   // Store the return URL so we can go back to admin context
   if (returnUrl) {
@@ -53,6 +70,7 @@ export async function DELETE(request: NextRequest) {
     returnUrl: returnUrl || "/dashboard"
   })
   response.cookies.delete("mirror_user_id")
+  response.cookies.delete("mirror_project_id")
   response.cookies.delete("mirror_return_url")
   return response
 }

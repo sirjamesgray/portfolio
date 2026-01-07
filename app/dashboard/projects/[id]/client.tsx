@@ -41,6 +41,7 @@ import {
   Megaphone,
 } from "lucide-react"
 import { SITE_CONFIG, formatProjectType } from "@/lib/constants"
+import { MobileBackButton } from "@/components/dashboard/mobile-back-button"
 
 // ============================================================================
 // Types
@@ -391,6 +392,7 @@ export function ProjectDetailClient({
 
   return (
     <div className="space-y-6">
+      <MobileBackButton />
       {/* Header */}
       <BlurFade delay={0.1}>
         <div className="flex items-start gap-4">
@@ -887,32 +889,32 @@ export function ProjectDetailClient({
             </BlurFade>
           )}
 
-          {/* Landing Page Opt-Out */}
+          {/* Landing Page Feature Consent */}
           {!isCanceled && (
             <BlurFade delay={0.28}>
               <Card>
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center gap-2">
                     <Megaphone className="h-4 w-4" />
-                    Portfolio Visibility
+                    Mind if I show off this project?
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div className="flex items-start gap-3">
                     <Switch
-                      checked={featureConsent}
-                      onCheckedChange={handleFeatureConsentToggle}
+                      checked={!featureConsent}
+                      onCheckedChange={(checked) => handleFeatureConsentToggle(!checked)}
                       disabled={isSavingConsent}
                       className="mt-0.5"
                     />
                     <div>
                       <p className="text-sm font-medium">
-                        Don't feature my project on the landing page
+                        {!featureConsent ? "Yes, feature it!" : "Keep it private"}
                       </p>
                       <p className="text-xs text-muted-foreground mt-1">
-                        {featureConsent
-                          ? "Your project will not be shown on the public portfolio."
-                          : "Your project may be featured as a portfolio piece on jamiegray.net."}
+                        {!featureConsent
+                          ? "Your project may be featured as a portfolio piece on jamiegray.net."
+                          : "Your project will not be shown on the public portfolio."}
                       </p>
                     </div>
                   </div>

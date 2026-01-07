@@ -36,6 +36,7 @@ type Project = {
   github_url: string | null
   show_on_landing_page: boolean | null
   customer_opted_out_of_landing_page: boolean | null
+  icon_url: string | null
   quotes: Quote[]
   invoices: Invoice[]
 }
@@ -69,6 +70,7 @@ export default async function AdminProjectsPage() {
       github_url,
       show_on_landing_page,
       customer_opted_out_of_landing_page,
+      icon_url,
       contacts (
         name,
         email

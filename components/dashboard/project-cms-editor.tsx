@@ -103,9 +103,12 @@ export function ProjectCMSEditor({ projectId, metadata, onMetadataChange }: Proj
   const heroImageInputRef = useRef<HTMLInputElement>(null)
 
   // Derived state
-  const customerOptedOut = metadata.customer_opted_out_of_landing_page || false
-  const showOnLandingPage = metadata.show_on_landing_page || false
-  const isVisibleOnLandingPage = showOnLandingPage && !customerOptedOut
+  // customer_opted_out is explicitly true only if customer chose to opt out
+  // null or false means they're fine with being shown
+  const customerOptedOut = metadata.customer_opted_out_of_landing_page === true
+  const showOnLandingPage = metadata.show_on_landing_page === true
+  // Project shows on landing page if admin enabled it (regardless of customer opt-out, which is informational)
+  const isVisibleOnLandingPage = showOnLandingPage
 
   useEffect(() => {
     fetchBlocks()
@@ -295,23 +298,45 @@ export function ProjectCMSEditor({ projectId, metadata, onMetadataChange }: Proj
     e.target.value = ""
   }, [uploadHeroImage])
 
-  // Handle paste for hero image
+  // Handle paste for hero image (from paste event)
+  const handlePasteEvent = useCallback((e: ClipboardEvent) => {
+    const items = e.clipboardData?.items
+    if (!items) return
+
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i]
+      if (item.type.startsWith("image/")) {
+        e.preventDefault()
+        const blob = item.getAsFile()
+        if (blob) {
+          uploadHeroImage(blob)
+        }
+        return
+      }
+    }
+  }, [uploadHeroImage])
+
+  // Handle paste button click - try clipboard API first, fallback to prompt
   const handleHeroImagePaste = useCallback(async () => {
     try {
-      const items = await navigator.clipboard.read()
-      for (const item of items) {
-        const imageType = item.types.find(type => type.startsWith("image/"))
-        if (imageType) {
-          const blob = await item.getType(imageType)
-          const file = new File([blob], `pasted-image-${Date.now()}.png`, { type: imageType })
-          uploadHeroImage(file)
-          return
+      // Try the modern clipboard API first
+      if (navigator.clipboard && navigator.clipboard.read) {
+        const items = await navigator.clipboard.read()
+        for (const item of items) {
+          const imageType = item.types.find(type => type.startsWith("image/"))
+          if (imageType) {
+            const blob = await item.getType(imageType)
+            const file = new File([blob], `pasted-image-${Date.now()}.png`, { type: imageType })
+            uploadHeroImage(file)
+            return
+          }
         }
       }
-      alert("No image found in clipboard")
+      // If no image found or API not available, show helpful message
+      alert("To paste an image:\n\n1. Copy an image to your clipboard\n2. Click inside the dashed upload area\n3. Press Ctrl+V (or Cmd+V on Mac)")
     } catch (error) {
-      console.error("Failed to paste image:", error)
-      alert("Failed to paste image. Make sure you have an image copied to your clipboard.")
+      // Clipboard API failed (likely permissions), show fallback instructions
+      alert("To paste an image:\n\n1. Copy an image to your clipboard\n2. Click inside the dashed upload area\n3. Press Ctrl+V (or Cmd+V on Mac)")
     }
   }, [uploadHeroImage])
 
@@ -499,10 +524,12 @@ export function ProjectCMSEditor({ projectId, metadata, onMetadataChange }: Proj
                   </div>
                 ) : (
                   <div
-                    className="border-2 border-dashed rounded-lg p-6 text-center hover:border-primary/50 transition-colors cursor-pointer"
+                    className="border-2 border-dashed rounded-lg p-6 text-center hover:border-primary/50 focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors cursor-pointer"
                     onClick={() => heroImageInputRef.current?.click()}
                     onDrop={handleHeroImageDrop}
                     onDragOver={(e) => e.preventDefault()}
+                    onPaste={(e) => handlePasteEvent(e.nativeEvent)}
+                    tabIndex={0}
                   >
                     {uploadingHeroImage ? (
                       <div className="flex flex-col items-center gap-2">
@@ -513,7 +540,7 @@ export function ProjectCMSEditor({ projectId, metadata, onMetadataChange }: Proj
                       <div className="flex flex-col items-center gap-2">
                         <ImageIcon className="h-8 w-8 text-muted-foreground" />
                         <p className="text-sm text-muted-foreground">
-                          Click to upload, drag & drop, or paste from clipboard
+                          Click to upload, drag & drop, or click here and press Ctrl+V to paste
                         </p>
                         <div className="flex gap-2 mt-2">
                           <Button

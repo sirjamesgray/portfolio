@@ -1,11 +1,11 @@
-import { cookies, headers } from "next/headers"
-import { redirect } from "next/navigation"
+import { cookies } from "next/headers"
 import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { isAdmin } from "@/lib/constants"
 import { DashboardOverviewClient } from "./client"
 import { MobileMenu } from "@/components/dashboard/mobile-menu"
 import { MobileCustomerOverview } from "@/components/dashboard/mobile-customer-overview"
+import { AdminDesktopRedirect } from "@/components/dashboard/admin-desktop-redirect"
 
 export default async function DashboardOverviewPage() {
   const supabase = await createClient()
@@ -18,6 +18,7 @@ export default async function DashboardOverviewPage() {
   // Check for mirror mode
   const cookieStore = await cookies()
   const mirrorUserId = cookieStore.get("mirror_user_id")?.value
+  const mirrorProjectId = cookieStore.get("mirror_project_id")?.value
   let effectiveUserId = user.id
   let effectiveUserName = user.user_metadata?.full_name || user.email?.split("@")[0] || ""
   let effectiveUserEmail = user.email || ""
@@ -34,12 +35,8 @@ export default async function DashboardOverviewPage() {
   }
 
   // When mirroring, show customer view
-  const showAdminTools = userIsAdmin && !mirrorUserId
-
-  // Redirect admins to projects page (first item in menu)
-  if (showAdminTools) {
-    redirect("/dashboard/admin/projects")
-  }
+  const isMirroring = !!(mirrorUserId || mirrorProjectId)
+  const showAdminTools = userIsAdmin && !isMirroring
 
   const displayEmail = mirrorUserId ? effectiveUserEmail : (user.email || "")
 
@@ -108,12 +105,16 @@ export default async function DashboardOverviewPage() {
         )}
       </div>
 
-      {/* Desktop: Show regular overview */}
+      {/* Desktop: Redirect admins to projects page, show overview for customers */}
       <div className="hidden md:block">
-        <DashboardOverviewClient
-          userName={effectiveUserName}
-          projects={projects || []}
-        />
+        {showAdminTools ? (
+          <AdminDesktopRedirect />
+        ) : (
+          <DashboardOverviewClient
+            userName={effectiveUserName}
+            projects={projects || []}
+          />
+        )}
       </div>
     </>
   )

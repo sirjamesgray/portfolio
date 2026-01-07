@@ -1,9 +1,7 @@
 "use client"
 
-import { useRouter } from "next/navigation"
-import { ChevronLeft, LogOut, Sun, Moon } from "lucide-react"
+import { LogOut, Sun, Moon } from "lucide-react"
 import { useTheme } from "next-themes"
-import { Button } from "@/components/ui/button"
 import { DashboardLogoSmall } from "@/components/dashboard/logo"
 import { SITE_CONFIG } from "@/lib/constants"
 import {
@@ -16,42 +14,24 @@ import {
 
 interface MobileHeaderProps {
   userEmail: string
-  showBack?: boolean
-  title?: string
 }
 
-export function MobileHeader({ userEmail, showBack = false, title }: MobileHeaderProps) {
-  const router = useRouter()
+export function MobileHeader({ userEmail }: MobileHeaderProps) {
   const { theme, setTheme } = useTheme()
 
   const handleLogout = async () => {
     window.location.href = "/auth/signout"
   }
 
+  // Always show the logo - back buttons are in the body content area
   return (
     <div className="bg-card border-b border-border px-4 py-3 flex items-center justify-between flex-shrink-0">
       <div className="flex items-center gap-3">
-        {showBack ? (
-          <>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => router.back()}
-              className="h-8 w-8 -ml-2"
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </Button>
-            {title && <span className="font-semibold truncate">{title}</span>}
-          </>
-        ) : (
-          <>
-            <DashboardLogoSmall />
-            <div>
-              <h1 className="text-lg font-semibold">{SITE_CONFIG.name}</h1>
-              <p className="text-xs text-muted-foreground">Web Development</p>
-            </div>
-          </>
-        )}
+        <DashboardLogoSmall />
+        <div>
+          <h1 className="text-lg font-semibold">{SITE_CONFIG.name}</h1>
+          <p className="text-xs text-muted-foreground">Web Development</p>
+        </div>
       </div>
 
       {/* Avatar Dropdown */}

@@ -88,7 +88,7 @@ export async function POST(
   return NextResponse.json({ block })
 }
 
-// PATCH - Update project metadata or reorder blocks
+// PATCH - Update project metadata, content HTML, or reorder blocks
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -103,11 +103,11 @@ export async function PATCH(
   }
 
   const body = await request.json()
-  const { public_title, public_description, public_hero_image, public_industry, reorder } = body
+  const { public_title, public_description, public_hero_image, public_industry, public_content_html, icon_url, reorder } = body
 
   const adminSupabase = createAdminClient()
 
-  // Handle reordering
+  // Handle reordering (legacy block system)
   if (reorder && Array.isArray(reorder)) {
     for (let i = 0; i < reorder.length; i++) {
       await adminSupabase
@@ -125,6 +125,8 @@ export async function PATCH(
   if (public_description !== undefined) updates.public_description = public_description
   if (public_hero_image !== undefined) updates.public_hero_image = public_hero_image
   if (public_industry !== undefined) updates.public_industry = public_industry
+  if (public_content_html !== undefined) updates.public_content_html = public_content_html
+  if (icon_url !== undefined) updates.icon_url = icon_url
 
   if (Object.keys(updates).length === 0) {
     return NextResponse.json({ error: "No fields to update" }, { status: 400 })

@@ -7,6 +7,7 @@ import { BlurFade } from "@/components/ui/blur-fade"
 import { Button } from "@/components/ui/button"
 import { MessageCircle, FolderKanban } from "lucide-react"
 import Link from "next/link"
+import { MobileBackButton } from "@/components/dashboard/mobile-back-button"
 
 export default async function ChatPage() {
   const supabase = await createClient()
@@ -41,6 +42,7 @@ export default async function ChatPage() {
 
   return (
     <div className="space-y-6">
+      <MobileBackButton />
       <BlurFade delay={0.1}>
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Chat</h1>

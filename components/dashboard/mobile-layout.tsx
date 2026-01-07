@@ -16,9 +16,6 @@ export function MobileLayout({ children, hasMirror, userEmail }: MobileLayoutPro
   const [direction, setDirection] = useState<1 | -1>(1)
   const prevPathRef = useRef(pathname)
 
-  // Determine if we're at the dashboard root (menu page)
-  const isAtRoot = pathname === "/dashboard"
-
   useEffect(() => {
     const prevPath = prevPathRef.current
     const prevDepth = prevPath.split("/").filter(Boolean).length
@@ -51,15 +48,12 @@ export function MobileLayout({ children, hasMirror, userEmail }: MobileLayoutPro
   }
 
   return (
-    <div className="md:hidden fixed inset-0 flex flex-col overflow-hidden bg-background">
+    <div className="md:hidden fixed inset-0 flex flex-col overflow-hidden bg-background z-40">
       {/* Spacer for mirror banner */}
-      {hasMirror && <div className="flex-shrink-0 h-10" />}
+      {hasMirror && <div className="flex-shrink-0 h-11" />}
 
       {/* Persistent Header - stays fixed above sliding content */}
-      <MobileHeader
-        userEmail={userEmail}
-        showBack={!isAtRoot}
-      />
+      <MobileHeader userEmail={userEmail} />
 
       {/* Content with slide animation */}
       <div className="flex-1 relative overflow-hidden">

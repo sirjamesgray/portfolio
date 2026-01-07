@@ -2,22 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
-import { LogoSVG } from "@/components/logo";
 import { User, ArrowLeft, LogOut } from "lucide-react";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
-
-// Dynamically import 3D logo to avoid SSR issues
-const Logo3D = dynamic(
-  () => import("@/components/logo-3d").then((mod) => mod.Logo3D),
-  {
-    ssr: false,
-    loading: () => null,
-  }
-);
+import { Logo3DStatic } from "@/components/logo-3d";
 
 interface SiteHeaderProps {
   variant?: "default" | "back";
@@ -156,8 +146,8 @@ export function SiteHeader({ variant = "default" }: SiteHeaderProps) {
             Back
           </Link>
         ) : (
-          <Link href="/" className="flex items-center">
-            <Logo3D size="sm" static />
+          <Link href="/" className="flex items-center h-8 w-8">
+            <Logo3DStatic size="sm" />
           </Link>
         )}
         <div className="flex items-center gap-3">

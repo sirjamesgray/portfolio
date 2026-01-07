@@ -18,41 +18,80 @@ export default async function CustomerProjectPage({ params }: PageProps) {
     redirect("/login")
   }
 
-  // Check for mirror mode
+  // Check for mirror mode (user-based or project-based)
   const cookieStore = await cookies()
   const mirrorUserId = cookieStore.get("mirror_user_id")?.value
-  const isMirroring = mirrorUserId && isAdmin(user.email)
-  const effectiveUserId = isMirroring ? mirrorUserId : user.id
+  const mirrorProjectId = cookieStore.get("mirror_project_id")?.value
+
+  const userIsAdmin = isAdmin(user.email)
+  const isMirroringUser = mirrorUserId && userIsAdmin
+  const isMirroringProject = mirrorProjectId && userIsAdmin && mirrorProjectId === id
 
   // Use admin client when mirroring to bypass RLS
-  const queryClient = isMirroring ? createAdminClient() : supabase
+  const queryClient = (isMirroringUser || isMirroringProject) ? createAdminClient() : supabase
 
-  // Fetch the project - only allow if it belongs to the effective user
-  const { data: project, error } = await queryClient
-    .from("projects")
-    .select(`
-      id,
-      title,
-      description,
-      project_type,
-      status,
-      price,
-      amount_paid,
-      budget,
-      timeline,
-      github_url,
-      vercel_url,
-      created_at,
-      end_date,
-      user_id,
-      requirements,
-      requirements_updated_at,
-      cancellation_reason,
-      customer_opted_out_of_landing_page
-    `)
-    .eq("id", id)
-    .eq("user_id", effectiveUserId)
-    .single()
+  let project
+  let error
+
+  if (isMirroringProject) {
+    // Project-based preview: fetch project by ID only (no user_id filter)
+    const result = await queryClient
+      .from("projects")
+      .select(`
+        id,
+        title,
+        description,
+        project_type,
+        status,
+        price,
+        amount_paid,
+        budget,
+        timeline,
+        github_url,
+        vercel_url,
+        created_at,
+        end_date,
+        user_id,
+        requirements,
+        requirements_updated_at,
+        cancellation_reason,
+        customer_opted_out_of_landing_page
+      `)
+      .eq("id", id)
+      .single()
+    project = result.data
+    error = result.error
+  } else {
+    // User-based access: fetch project by ID and user_id
+    const effectiveUserId = isMirroringUser ? mirrorUserId : user.id
+    const result = await queryClient
+      .from("projects")
+      .select(`
+        id,
+        title,
+        description,
+        project_type,
+        status,
+        price,
+        amount_paid,
+        budget,
+        timeline,
+        github_url,
+        vercel_url,
+        created_at,
+        end_date,
+        user_id,
+        requirements,
+        requirements_updated_at,
+        cancellation_reason,
+        customer_opted_out_of_landing_page
+      `)
+      .eq("id", id)
+      .eq("user_id", effectiveUserId)
+      .single()
+    project = result.data
+    error = result.error
+  }
 
   if (error || !project) {
     notFound()

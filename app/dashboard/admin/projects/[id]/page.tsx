@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ProjectProgress } from "@/components/dashboard/project-progress"
 import { RichTextEditor } from "@/components/dashboard/rich-text-editor"
-import { ProjectCMSEditor } from "@/components/dashboard/project-cms-editor"
+import { LandingPageStatusCard } from "@/components/dashboard/landing-page-status-card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -47,10 +47,11 @@ import {
   Crown,
   UserPlus,
   Globe,
-  Image,
+  Image as ImageIcon,
   Link2,
   Upload,
   FileImage,
+  FolderKanban,
 } from "lucide-react"
 import {
   Dialog,
@@ -64,6 +65,7 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { useRouter, useParams } from "next/navigation"
 import Link from "next/link"
+import Image from "next/image"
 
 type Contact = {
   name: string
@@ -99,6 +101,7 @@ type Project = {
   public_description: string | null
   public_hero_image: string | null
   public_industry: string | null
+  icon_url: string | null
 }
 
 type ActivityLog = {
@@ -357,6 +360,10 @@ export default function ProjectDetailPage() {
   const [addingLink, setAddingLink] = useState(false)
   const [uploadingImage, setUploadingImage] = useState(false)
 
+  // Icon upload state
+  const [iconUrl, setIconUrl] = useState("")
+  const [uploadingIcon, setUploadingIcon] = useState(false)
+
   useEffect(() => {
     fetchProject()
     fetchActivityLog()
@@ -413,6 +420,7 @@ export default function ProjectDetailPage() {
       const vercelVal = data.vercel_url || ""
       setVercelUrl(vercelVal)
       setOriginalVercelUrl(vercelVal)
+      setIconUrl(data.icon_url || "")
       setLoading(false)
     } catch (error) {
       console.error("Error fetching project:", error)
@@ -707,6 +715,70 @@ export default function ProjectDetailPage() {
     }
   }
 
+  async function handleIconUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    if (!file.type.startsWith("image/")) {
+      alert("Please select an image file")
+      return
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Icon must be less than 5MB")
+      return
+    }
+
+    setUploadingIcon(true)
+    try {
+      const formData = new FormData()
+      formData.append("file", file)
+      formData.append("type", "image")
+      formData.append("title", "Project Icon")
+
+      const response = await fetch(`/api/admin/projects/${projectId}/assets/upload`, {
+        method: "POST",
+        body: formData,
+      })
+
+      if (!response.ok) throw new Error("Upload failed")
+
+      const { asset } = await response.json()
+
+      // Save the icon_url to the project
+      const saveResponse = await fetch(`/api/admin/projects/${projectId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ icon_url: asset.url }),
+      })
+
+      if (saveResponse.ok) {
+        setIconUrl(asset.url)
+      }
+    } catch (error) {
+      console.error("Failed to upload icon:", error)
+      alert("Failed to upload icon. Please try again.")
+    } finally {
+      setUploadingIcon(false)
+      e.target.value = ""
+    }
+  }
+
+  async function handleRemoveIcon() {
+    try {
+      const response = await fetch(`/api/admin/projects/${projectId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ icon_url: null }),
+      })
+
+      if (response.ok) {
+        setIconUrl("")
+      }
+    } catch (error) {
+      console.error("Failed to remove icon:", error)
+    }
+  }
+
   const previousSiteChanged = previousSiteUrl !== originalPreviousSiteUrl
 
   function revertTitle() {
@@ -857,18 +929,14 @@ export default function ProjectDetailPage() {
   }
 
   async function handleViewAsCustomer() {
-    if (!project?.user_id) {
-      alert("This project has no assigned customer to mirror")
-      return
-    }
-
     setMirrorLoading(true)
     try {
+      // Use project-based preview (works for projects with or without assigned customers)
       const response = await fetch("/api/admin/mirror", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId: project.user_id,
+          projectId: projectId,
           returnUrl: `/dashboard/admin/projects/${projectId}`,
         }),
       })
@@ -877,7 +945,7 @@ export default function ProjectDetailPage() {
         router.push(`/dashboard/projects/${projectId}`)
         router.refresh()
       } else {
-        alert("Failed to enter mirror mode")
+        alert("Failed to enter preview mode")
       }
     } catch (error) {
       alert("An error occurred")
@@ -1105,27 +1173,30 @@ export default function ProjectDetailPage() {
   return (
     <div className="space-y-6">
       {/* Header with Admin Badge */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <Link href="/dashboard/admin/projects">
-            <Button variant="ghost">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Projects
+            <Button variant="ghost" size="sm" className="h-8 px-2 sm:px-3">
+              <ArrowLeft className="mr-1 sm:mr-2 h-4 w-4" />
+              <span className="hidden sm:inline">Back to Projects</span>
+              <span className="sm:hidden">Back</span>
             </Button>
           </Link>
-          <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20 gap-1">
+          <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20 gap-1 text-xs">
             <Shield className="h-3 w-3" />
-            Admin View
+            <span className="hidden sm:inline">Admin View</span>
+            <span className="sm:hidden">Admin</span>
           </Badge>
         </div>
         <Button
           variant="outline"
           size="sm"
           onClick={handleViewAsCustomer}
-          disabled={mirrorLoading || !project?.user_id}
+          disabled={mirrorLoading}
+          className="h-8 text-xs sm:text-sm"
         >
-          <Eye className="mr-2 h-4 w-4" />
-          {mirrorLoading ? "Loading..." : "View as Customer"}
+          <Eye className="mr-1 sm:mr-2 h-4 w-4" />
+          {mirrorLoading ? "..." : <><span className="hidden sm:inline">Preview as Customer</span><span className="sm:hidden">Preview</span></>}
         </Button>
       </div>
 
@@ -1136,57 +1207,105 @@ export default function ProjectDetailPage() {
         </CardContent>
       </Card>
 
-      {/* Project Title */}
-      <div className="space-y-2">
-        {isEditingTitle ? (
-          <div className="space-y-2">
-            <Input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Project Title"
-              className="text-2xl font-bold h-12 px-3 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-              autoFocus
-            />
-            <div className="flex items-center gap-2">
+      {/* Project Title with Icon */}
+      <div className="flex items-start gap-4">
+        {/* Project Icon */}
+        <div className="relative group/icon shrink-0">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleIconUpload}
+            className="hidden"
+            id="icon-upload"
+          />
+          <label
+            htmlFor="icon-upload"
+            className="block cursor-pointer"
+          >
+            <div className="h-14 w-14 rounded-xl bg-muted flex items-center justify-center overflow-hidden border-2 border-transparent hover:border-primary/50 transition-colors">
+              {uploadingIcon ? (
+                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+              ) : iconUrl ? (
+                <Image
+                  src={iconUrl}
+                  alt="Project icon"
+                  width={56}
+                  height={56}
+                  className="object-cover w-full h-full"
+                />
+              ) : (
+                <FolderKanban className="h-6 w-6 text-muted-foreground" />
+              )}
+            </div>
+          </label>
+          {iconUrl && (
+            <button
+              onClick={(e) => {
+                e.preventDefault()
+                handleRemoveIcon()
+              }}
+              className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover/icon:opacity-100 transition-opacity"
+            >
+              <X className="h-3 w-3" />
+            </button>
+          )}
+          <p className="text-[10px] text-muted-foreground text-center mt-1 opacity-0 group-hover/icon:opacity-100 transition-opacity">
+            {iconUrl ? "Change" : "Add icon"}
+          </p>
+        </div>
+
+        {/* Title */}
+        <div className="flex-1 space-y-2">
+          {isEditingTitle ? (
+            <div className="space-y-2">
+              <Input
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Project Title"
+                className="text-2xl font-bold h-12 px-3 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                autoFocus
+              />
+              <div className="flex items-center gap-2">
+                <Button
+                  size="sm"
+                  onClick={handleSaveTitle}
+                  disabled={!titleChanged || savingTitle}
+                  className="bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50"
+                >
+                  {savingTitle ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Check className="h-4 w-4" />
+                  )}
+                  <span className="ml-1">Save</span>
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={revertTitle}
+                  disabled={savingTitle}
+                >
+                  <RotateCcw className="h-4 w-4" />
+                  <span className="ml-1">Cancel</span>
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 group">
+              <h1 className="text-3xl font-bold tracking-tight">
+                {title || (contact?.name ? `${contact.name}'s Project` : "Untitled Project")}
+              </h1>
               <Button
-                size="sm"
-                onClick={handleSaveTitle}
-                disabled={!titleChanged || savingTitle}
-                className="bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50"
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                onClick={() => setIsEditingTitle(true)}
               >
-                {savingTitle ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Check className="h-4 w-4" />
-                )}
-                <span className="ml-1">Save</span>
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={revertTitle}
-                disabled={savingTitle}
-              >
-                <RotateCcw className="h-4 w-4" />
-                <span className="ml-1">Cancel</span>
+                <Pencil className="h-4 w-4" />
               </Button>
             </div>
-          </div>
-        ) : (
-          <div className="flex items-center gap-2 group">
-            <h1 className="text-3xl font-bold tracking-tight">
-              {title || (contact?.name ? `${contact.name}'s Project` : "Untitled Project")}
-            </h1>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
-              onClick={() => setIsEditingTitle(true)}
-            >
-              <Pencil className="h-4 w-4" />
-            </Button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* 1. Project Requirements */}
@@ -1795,15 +1914,15 @@ export default function ProjectDetailPage() {
             </div>
           )}
 
-          {/* Screenshots & Images */}
-          {assets.filter(a => ["screenshot", "image"].includes(a.type)).length > 0 && (
+          {/* Reference Screenshots */}
+          {assets.filter(a => a.type === "screenshot").length > 0 && (
             <div>
               <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
                 <FileImage className="h-4 w-4 text-muted-foreground" />
-                Screenshots & Images
+                Reference Screenshots
               </h4>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {assets.filter(a => ["screenshot", "image"].includes(a.type)).map((asset) => (
+                {assets.filter(a => a.type === "screenshot").map((asset) => (
                   <div
                     key={asset.id}
                     className="group relative aspect-video rounded-lg overflow-hidden border bg-muted"
@@ -1816,7 +1935,7 @@ export default function ProjectDetailPage() {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <Image className="h-8 w-8 text-muted-foreground" />
+                        <ImageIcon className="h-8 w-8 text-muted-foreground" />
                       </div>
                     )}
                     <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
@@ -1849,11 +1968,11 @@ export default function ProjectDetailPage() {
           )}
 
           {/* Empty state */}
-          {!previousSiteUrl && assets.length === 0 && (
+          {!previousSiteUrl && assets.filter(a => ["reference_link", "screenshot"].includes(a.type)).length === 0 && (
             <div className="text-center py-8 text-muted-foreground">
               <Globe className="h-12 w-12 mx-auto mb-3 opacity-20" />
               <p className="text-sm">No previous website or references added yet</p>
-              <p className="text-xs mt-1">Add the client's current website URL, reference links, or upload screenshots</p>
+              <p className="text-xs mt-1">Add the client's current website URL, reference links, or upload screenshots of their existing site</p>
             </div>
           )}
         </CardContent>
@@ -2507,18 +2626,23 @@ export default function ProjectDetailPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Landing Page Content (CMS Editor) - At bottom of page */}
-      <ProjectCMSEditor
+      {/* Landing Page Status */}
+      <LandingPageStatusCard
         projectId={projectId}
         metadata={{
-          public_title: project.public_title,
-          public_description: project.public_description,
-          public_hero_image: project.public_hero_image,
-          public_industry: project.public_industry,
           show_on_landing_page: project.show_on_landing_page,
           customer_opted_out_of_landing_page: project.customer_opted_out_of_landing_page,
         }}
-        onMetadataChange={fetchProject}
+        onToggle={async (enabled) => {
+          const response = await fetch(`/api/admin/projects/${projectId}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ show_on_landing_page: enabled }),
+          })
+          if (response.ok) {
+            fetchProject()
+          }
+        }}
       />
     </div>
   )

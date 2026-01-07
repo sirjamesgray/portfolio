@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 
 export async function GET() {
-  const supabase = await createClient()
+  // Use admin client to bypass RLS - this is a public endpoint for featured projects
+  const supabase = createAdminClient()
 
-  // Fetch projects that are shown on landing page (admin enabled AND customer hasn't opted out)
+  // Fetch projects that admin has enabled for landing page
+  // Note: customer_opted_out_of_landing_page is informational only for admin awareness
+  // Admin has final say on what's shown
   const { data: projects, error } = await supabase
     .from("projects")
     .select(`
@@ -15,10 +18,10 @@ export async function GET() {
       public_hero_image,
       public_industry,
       project_type,
-      vercel_url
+      vercel_url,
+      icon_url
     `)
     .eq("show_on_landing_page", true)
-    .or("customer_opted_out_of_landing_page.is.null,customer_opted_out_of_landing_page.eq.false")
     .order("created_at", { ascending: false })
 
   if (error) {
