@@ -5,22 +5,30 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
-import { User, ArrowLeft, LogOut } from "lucide-react";
+import { User, ArrowLeft, LogOut, Calendar } from "lucide-react";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 import { Logo3DStatic } from "@/components/logo-3d";
+import { SITE_CONFIG } from "@/lib/constants";
 
 interface SiteHeaderProps {
   variant?: "default" | "back";
   backHref?: string;
   backLabel?: string;
+  customerDashboardEnabled?: boolean;
 }
 
-export function SiteHeader({ variant = "default", backHref = "/", backLabel = "Back" }: SiteHeaderProps) {
+export function SiteHeader({ variant = "default", backHref = "/", backLabel = "Back", customerDashboardEnabled = true }: SiteHeaderProps) {
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [showMobileFooter, setShowMobileFooter] = useState(false);
 
   useEffect(() => {
+    // Only check user if dashboard is enabled
+    if (!customerDashboardEnabled) {
+      setLoading(false);
+      return;
+    }
+
     async function checkUser() {
       try {
         const { createClient } = await import("@/lib/supabase/client");
@@ -34,7 +42,10 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
       }
     }
     checkUser();
-  }, []);
+  }, [customerDashboardEnabled]);
+
+  // When dashboard is disabled, show Calendly flow instead
+  const showDashboardLinks = customerDashboardEnabled && user;
 
   // Track scroll position to show mobile footer after hero section
   useEffect(() => {
@@ -55,14 +66,14 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
     <>
       {!loading && variant === "default" && (
         <>
-          {user ? (
+          {showDashboardLinks ? (
             <Link href="/dashboard">
               <Button variant="ghost" size="sm" className="gap-2">
                 <User className="h-4 w-4" />
                 Dashboard
               </Button>
             </Link>
-          ) : (
+          ) : customerDashboardEnabled ? (
             <>
               <Link href="/login">
                 <Button variant="ghost" size="sm">
@@ -74,6 +85,20 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
                   Start Project
                 </Button>
               </Link>
+            </>
+          ) : (
+            <>
+              <Link href="/pricing">
+                <Button variant="ghost" size="sm">
+                  View pricing
+                </Button>
+              </Link>
+              <a href={SITE_CONFIG.calendly} target="_blank" rel="noopener noreferrer">
+                <Button size="sm" className="gap-2 bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:shadow-[0_0_20px_rgba(16,185,129,0.4)]">
+                  <Calendar className="h-4 w-4" />
+                  Book now
+                </Button>
+              </a>
             </>
           )}
         </>
@@ -98,7 +123,7 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
     <>
       {!loading && variant === "default" && (
         <>
-          {user ? (
+          {showDashboardLinks ? (
             <>
               <Button
                 variant="ghost-destructive"
@@ -116,7 +141,7 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
                 </Button>
               </Link>
             </>
-          ) : (
+          ) : customerDashboardEnabled ? (
             <>
               <Link href="/login" className="flex-1">
                 <Button variant="ghost" size="default" className="w-full h-11 px-5 text-base rounded-full">
@@ -128,6 +153,20 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
                   Start Project
                 </Button>
               </Link>
+            </>
+          ) : (
+            <>
+              <Link href="/pricing" className="flex-1">
+                <Button variant="ghost" size="default" className="w-full h-11 px-5 text-base rounded-full">
+                  View pricing
+                </Button>
+              </Link>
+              <a href={SITE_CONFIG.calendly} target="_blank" rel="noopener noreferrer" className="flex-1">
+                <Button size="default" className="w-full gap-2 h-11 px-5 text-base rounded-full bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:shadow-[0_0_20px_rgba(16,185,129,0.4)]">
+                  <Calendar className="h-5 w-5" />
+                  Book now
+                </Button>
+              </a>
             </>
           )}
         </>

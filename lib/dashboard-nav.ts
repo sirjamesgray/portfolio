@@ -8,6 +8,7 @@ import {
   Palette,
   Mail,
   GitBranch,
+  Flag,
   LucideIcon,
 } from "lucide-react"
 
@@ -69,6 +70,11 @@ export const adminNavItems: NavItem[] = [
     name: "Design System",
     href: "/dashboard/admin/design-system",
     icon: Palette,
+  },
+  {
+    name: "Feature Flags",
+    href: "/dashboard/admin/feature-flags",
+    icon: Flag,
   },
 ]
 
