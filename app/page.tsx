@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowRight, ArrowUp, Layers, Palette, Code2, Sparkles, Mail, Github, Key, Settings2, HeartHandshake, RefreshCw, Check, LucideIcon, User, MessageCircle, Share2, Copy } from "lucide-react";
+import { ArrowRight, ArrowUp, Layers, Palette, Code2, Sparkles, Mail, Github, Key, Settings2, HeartHandshake, RefreshCw, Check, LucideIcon, User, MessageCircle, Share2, Copy, Calendar } from "lucide-react";
 import { Glow } from "@codaworks/react-glow";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { BlurFade } from "@/components/ui/blur-fade";
@@ -230,19 +230,25 @@ export default function Home() {
                   </ShimmerButton>
                 </Link>
               </Glow>
-              <Link
-                href={user ? "/dashboard" : "/login"}
-                className="text-sm font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline flex items-center gap-2"
-              >
-                {user ? (
-                  <>
-                    <User className="h-4 w-4" />
-                    View Dashboard
-                  </>
-                ) : (
-                  "Log in"
-                )}
-              </Link>
+              {user ? (
+                <Link
+                  href="/dashboard"
+                  className="text-sm font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline flex items-center gap-2"
+                >
+                  <User className="h-4 w-4" />
+                  View Dashboard
+                </Link>
+              ) : (
+                <a
+                  href={SITE_CONFIG.calendly}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline flex items-center gap-2"
+                >
+                  <Calendar className="h-4 w-4" />
+                  Book a call
+                </a>
+              )}
             </div>
           </BlurFade>
         </div>
@@ -352,19 +358,25 @@ export default function Home() {
                       </span>
                     </ShimmerButton>
                   </Link>
-                  <Link
-                    href={user ? "/dashboard" : "/login"}
-                    className="flex-1 flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-3 text-base font-medium text-foreground backdrop-blur-sm transition-all hover:bg-white/10 hover:border-white/30"
-                  >
-                    {user ? (
-                      <>
-                        <User className="h-5 w-5" />
-                        View Dashboard
-                      </>
-                    ) : (
-                      "Log in"
-                    )}
-                  </Link>
+                  {user ? (
+                    <Link
+                      href="/dashboard"
+                      className="flex-1 flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-3 text-base font-medium text-foreground backdrop-blur-sm transition-all hover:bg-white/10 hover:border-white/30"
+                    >
+                      <User className="h-5 w-5" />
+                      View Dashboard
+                    </Link>
+                  ) : (
+                    <a
+                      href={SITE_CONFIG.calendly}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-3 text-base font-medium text-foreground backdrop-blur-sm transition-all hover:bg-white/10 hover:border-white/30"
+                    >
+                      <Calendar className="h-5 w-5" />
+                      Book a call
+                    </a>
+                  )}
                 </div>
               </div>
             </Glow>
