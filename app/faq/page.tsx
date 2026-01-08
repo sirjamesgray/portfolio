@@ -9,7 +9,7 @@ import { faqs } from "@/lib/faq-data";
 
 export const metadata: Metadata = {
   title: "FAQ | Jamie Gray",
-  description: "Frequently asked questions about sprint-based web development.",
+  description: "Answers to common questions about working together on your website project.",
 };
 
 export default function FAQPage() {

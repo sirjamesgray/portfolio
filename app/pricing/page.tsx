@@ -1,11 +1,14 @@
 import { Metadata } from "next";
 import { PricingPageClient } from "./client";
+import { isCustomerDashboardEnabled } from "@/lib/feature-flags";
 
 export const metadata: Metadata = {
   title: "Pricing | Jamie Gray",
-  description: "Sprint-based web development. Ship fast with fixed-price packages.",
+  description: "Simple, flat-rate pricing for your website project. No hidden fees, no surprises.",
 };
 
-export default function PricingPage() {
-  return <PricingPageClient />;
+export default async function PricingPage() {
+  const customerDashboardEnabled = await isCustomerDashboardEnabled();
+
+  return <PricingPageClient customerDashboardEnabled={customerDashboardEnabled} />;
 }

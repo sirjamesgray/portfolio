@@ -94,24 +94,24 @@ const services = [
   },
 ];
 
-const sprintPricing = [
+const projectPricing = [
   {
     value: "1-week-mvp",
-    name: "1-Week MVP",
-    description: "Ship a prototype fast",
+    name: "1-Week Starter",
+    description: "Get something live quickly",
     icon: Zap,
   },
   {
     value: "2-week-build",
-    name: "2-Week Build",
-    description: "Launch a real product",
+    name: "2-Week Standard",
+    description: "A complete, polished website",
     icon: Rocket,
     popular: true,
   },
   {
     value: "3-week-ship",
-    name: "3-Week Ship",
-    description: "Build something ambitious",
+    name: "3-Week Premium",
+    description: "For bigger, more complex needs",
     icon: Ship,
   },
 ];
@@ -255,27 +255,6 @@ export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
 
           <BlurFade delay={0.4}>
             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <Glow color="hsl(145, 80%, 45%)">
-                {customerDashboardEnabled ? (
-                  <Link href="/start-project">
-                    <ShimmerButton className="text-base font-semibold glow:ring-2 glow:ring-emerald-500/50 dark:shadow-[0_0_24px_rgba(16,185,129,0.5)]">
-                      <span className="flex items-center gap-2">
-                        {showDashboardLinks ? "Start New Project" : "Start a Project"}
-                        <ArrowRight className="h-4 w-4" />
-                      </span>
-                    </ShimmerButton>
-                  </Link>
-                ) : (
-                  <a href={SITE_CONFIG.calendly} target="_blank" rel="noopener noreferrer">
-                    <ShimmerButton className="text-base font-semibold glow:ring-2 glow:ring-emerald-500/50 dark:shadow-[0_0_24px_rgba(16,185,129,0.5)]">
-                      <span className="flex items-center gap-2">
-                        Book now
-                        <Calendar className="h-4 w-4" />
-                      </span>
-                    </ShimmerButton>
-                  </a>
-                )}
-              </Glow>
               {showDashboardLinks ? (
                 <Link
                   href="/dashboard"
@@ -292,6 +271,27 @@ export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
                   View pricing
                 </Link>
               )}
+              <Glow color="hsl(145, 80%, 45%)">
+                {customerDashboardEnabled ? (
+                  <Link href="/start-project">
+                    <ShimmerButton className="text-base font-semibold glow:ring-2 glow:ring-emerald-500/50 dark:shadow-[0_0_24px_rgba(16,185,129,0.5)]">
+                      <span className="flex items-center gap-2">
+                        {showDashboardLinks ? "Start New Project" : "Start a Project"}
+                        <ArrowRight className="h-4 w-4" />
+                      </span>
+                    </ShimmerButton>
+                  </Link>
+                ) : (
+                  <a href={SITE_CONFIG.calendly} target="_blank" rel="noopener noreferrer">
+                    <ShimmerButton className="text-base font-semibold glow:ring-2 glow:ring-emerald-500/50 dark:shadow-[0_0_24px_rgba(16,185,129,0.5)]">
+                      <span className="flex items-center gap-2">
+                        Schedule call
+                        <Calendar className="h-4 w-4" />
+                      </span>
+                    </ShimmerButton>
+                  </a>
+                )}
+              </Glow>
             </div>
           </BlurFade>
         </div>
@@ -306,29 +306,29 @@ export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
           <BlurFade delay={0.1} inView>
             <div className="mb-10 text-center">
               <h2 className="mb-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                Sprint Packages
+                Simple Pricing
               </h2>
               <p className="mx-auto max-w-xl text-muted-foreground">
-                Fixed-price sprints. Ship fast. No surprises.
+                One flat price. No hidden fees. Know exactly what you&apos;re paying.
               </p>
             </div>
           </BlurFade>
 
           <BlurFade delay={0.2} inView>
             <div className="grid gap-4 sm:grid-cols-3">
-              {sprintPricing.map((sprint) => {
-                const Icon = sprint.icon;
+              {projectPricing.map((project) => {
+                const Icon = project.icon;
                 return (
                   <Link
-                    key={sprint.value}
-                    href={`/pricing#${sprint.value}`}
+                    key={project.value}
+                    href={`/pricing#${project.value}`}
                     className={`group relative flex items-center gap-4 rounded-2xl border p-5 transition-all hover:border-emerald-500/50 hover:bg-emerald-500/5 ${
-                      sprint.popular
+                      project.popular
                         ? "border-emerald-500/30 bg-emerald-500/5"
                         : "border-border bg-card/50"
                     }`}
                   >
-                    {sprint.popular && (
+                    {project.popular && (
                       <div className="absolute -top-2.5 left-4">
                         <span className="bg-emerald-600 dark:bg-emerald-500 text-white text-xs font-medium px-2 py-0.5 rounded-full">
                           Popular
@@ -336,15 +336,15 @@ export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
                       </div>
                     )}
                     <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${
-                      sprint.popular
+                      project.popular
                         ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400"
                         : "bg-muted text-muted-foreground group-hover:bg-emerald-500/20 group-hover:text-emerald-600 dark:group-hover:text-emerald-400"
                     } transition-colors`}>
                       <Icon className="h-5 w-5" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-foreground">{sprint.name}</h3>
-                      <p className="text-sm text-muted-foreground">{sprint.description}</p>
+                      <h3 className="font-semibold text-foreground">{project.name}</h3>
+                      <p className="text-sm text-muted-foreground">{project.description}</p>
                     </div>
                     <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors shrink-0" />
                   </Link>
@@ -476,7 +476,7 @@ export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
                         className="w-full text-lg font-semibold dark:shadow-[0_0_24px_rgba(16,185,129,0.5)]"
                       >
                         <span className="flex items-center justify-center gap-2">
-                          Book now
+                          Schedule call
                           <Calendar className="h-5 w-5" />
                         </span>
                       </ShimmerButton>
