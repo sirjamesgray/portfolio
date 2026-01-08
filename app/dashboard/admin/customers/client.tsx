@@ -30,7 +30,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { FolderKanban, Search, MoreHorizontal, Eye, User, Users, UserPlus, Mail, Loader2, Check } from "lucide-react"
+import { FolderKanban, Search, MoreHorizontal, Eye, User, Users, UserPlus, Mail, Loader2, Check, MailCheck, MailX } from "lucide-react"
 import { BlurFade } from "@/components/ui/blur-fade"
 import { PageHeader } from "@/components/dashboard/page-header"
 
@@ -47,6 +47,7 @@ type Customer = {
   name: string
   created_at: string
   last_sign_in: string | null
+  email_verified: boolean
   projects: Project[]
 }
 
@@ -293,7 +294,14 @@ export function CustomersClient({ customers, stats }: CustomersClientProps) {
                         </div>
                         <div className="min-w-0">
                           <p className="font-semibold truncate">{customer.name}</p>
-                          <p className="text-sm text-muted-foreground truncate">{customer.email}</p>
+                          <div className="flex items-center gap-1.5">
+                            <p className="text-sm text-muted-foreground truncate">{customer.email}</p>
+                            {customer.email_verified ? (
+                              <span title="Invite accepted"><MailCheck className="h-3.5 w-3.5 text-emerald-500 shrink-0" /></span>
+                            ) : (
+                              <span title="Invite pending"><MailX className="h-3.5 w-3.5 text-amber-500 shrink-0" /></span>
+                            )}
+                          </div>
                         </div>
                       </div>
                       <DropdownMenu>
@@ -393,7 +401,14 @@ export function CustomersClient({ customers, stats }: CustomersClientProps) {
                             </div>
                             <div>
                               <p className="font-medium">{customer.name}</p>
-                              <p className="text-sm text-muted-foreground">{customer.email}</p>
+                              <div className="flex items-center gap-1.5">
+                                <p className="text-sm text-muted-foreground">{customer.email}</p>
+                                {customer.email_verified ? (
+                                  <span title="Invite accepted"><MailCheck className="h-3.5 w-3.5 text-emerald-500 shrink-0" /></span>
+                                ) : (
+                                  <span title="Invite pending"><MailX className="h-3.5 w-3.5 text-amber-500 shrink-0" /></span>
+                                )}
+                              </div>
                             </div>
                           </div>
                         </TableCell>

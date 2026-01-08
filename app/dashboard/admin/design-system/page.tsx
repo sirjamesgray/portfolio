@@ -37,6 +37,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { BeforeAfterSlider } from "@/components/before-after-slider";
 
 // Animated icons
@@ -617,8 +618,52 @@ export default function DesignSystemPage() {
             </section>
           </BlurFade>
 
-          {/* Media Components Section */}
+          {/* Accordion Section */}
           <BlurFade delay={0.33} inView>
+            <section className="mb-16">
+              <h2 className="text-2xl font-bold text-foreground mb-6">Accordion</h2>
+              <p className="text-muted-foreground mb-6 text-sm">
+                Collapsible FAQ-style component with smooth expand/collapse animations. Uses Radix UI primitives.
+              </p>
+              <div className="grid grid-cols-1 gap-6">
+                <ComponentCard title="Accordion" importPath="@/components/ui/accordion" className="col-span-full">
+                  <div className="w-full max-w-lg">
+                    <div className="rounded-xl border border-border bg-card/50">
+                      <Accordion type="single" collapsible className="w-full">
+                        <AccordionItem value="item-1" className="px-4 border-b border-border">
+                          <AccordionTrigger className="text-foreground font-semibold text-left hover:no-underline">
+                            Is this component animated?
+                          </AccordionTrigger>
+                          <AccordionContent className="text-muted-foreground text-sm">
+                            Yes! The accordion uses CSS animations for smooth expand/collapse transitions.
+                          </AccordionContent>
+                        </AccordionItem>
+                        <AccordionItem value="item-2" className="px-4 border-b border-border">
+                          <AccordionTrigger className="text-foreground font-semibold text-left hover:no-underline">
+                            Can multiple items be open?
+                          </AccordionTrigger>
+                          <AccordionContent className="text-muted-foreground text-sm">
+                            Use <code className="bg-muted px-1 rounded">type=&quot;multiple&quot;</code> to allow multiple open items, or <code className="bg-muted px-1 rounded">type=&quot;single&quot; collapsible</code> for single item behavior.
+                          </AccordionContent>
+                        </AccordionItem>
+                        <AccordionItem value="item-3" className="px-4 border-b-0">
+                          <AccordionTrigger className="text-foreground font-semibold text-left hover:no-underline">
+                            Where is this used?
+                          </AccordionTrigger>
+                          <AccordionContent className="text-muted-foreground text-sm">
+                            Used on the landing page FAQ section and the dedicated FAQ page for collapsible Q&A.
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
+                    </div>
+                  </div>
+                </ComponentCard>
+              </div>
+            </section>
+          </BlurFade>
+
+          {/* Media Components Section */}
+          <BlurFade delay={0.34} inView>
             <section className="mb-16">
               <h2 className="text-2xl font-bold text-foreground mb-6">Media Components</h2>
               <div className="grid grid-cols-1 gap-6">
@@ -640,7 +685,7 @@ export default function DesignSystemPage() {
           </BlurFade>
 
           {/* Animation Components Section */}
-          <BlurFade delay={0.35} inView>
+          <BlurFade delay={0.36} inView>
             <section className="mb-16">
               <h2 className="text-2xl font-bold text-foreground mb-6">Animation Components</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -672,7 +717,7 @@ export default function DesignSystemPage() {
           </BlurFade>
 
           {/* Background Patterns Section */}
-          <BlurFade delay={0.4} inView>
+          <BlurFade delay={0.41} inView>
             <section className="mb-16">
               <h2 className="text-2xl font-bold text-foreground mb-6">Background Patterns</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -692,7 +737,7 @@ export default function DesignSystemPage() {
           </BlurFade>
 
           {/* Layout Components Section */}
-          <BlurFade delay={0.45} inView>
+          <BlurFade delay={0.46} inView>
             <section className="mb-16">
               <h2 className="text-2xl font-bold text-foreground mb-6">Layout Components</h2>
               <ComponentCard title="BentoGrid + BentoCard" importPath="@/components/ui/bento-grid" className="col-span-full">
@@ -723,7 +768,7 @@ export default function DesignSystemPage() {
           </BlurFade>
 
           {/* Animated Icons Section */}
-          <BlurFade delay={0.5} inView>
+          <BlurFade delay={0.51} inView>
             <section className="mb-16">
               <h2 className="text-2xl font-bold text-foreground mb-6">Animated Icons (Lucide Animated)</h2>
               <p className="text-muted-foreground mb-6 text-sm">
@@ -759,7 +804,7 @@ export default function DesignSystemPage() {
           </BlurFade>
 
           {/* Custom Components Section */}
-          <BlurFade delay={0.55} inView>
+          <BlurFade delay={0.56} inView>
             <section className="mb-16">
               <h2 className="text-2xl font-bold text-foreground mb-6">Custom Components</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -791,7 +836,7 @@ export default function DesignSystemPage() {
           </BlurFade>
 
           {/* Usage Notes */}
-          <BlurFade delay={0.6} inView>
+          <BlurFade delay={0.61} inView>
             <section className="rounded-xl border border-border bg-card/50 p-6">
               <h2 className="text-xl font-bold text-foreground mb-4">Usage Notes</h2>
               <ul className="space-y-2 text-sm text-muted-foreground">

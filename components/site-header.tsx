@@ -168,16 +168,16 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
             {backLabel}
           </Link>
         ) : (
-          <Link href="/" className="flex items-center h-8 w-8">
+          <Link href="/" className="flex items-center justify-center h-11 w-11 -ml-1.5 active:opacity-70 transition-opacity">
             <Logo3DStatic size="sm" />
           </Link>
         )}
         <ThemeToggle />
       </div>
 
-      {/* Mobile Floating Footer - hidden on desktop, appears after scrolling past hero */}
+      {/* Mobile Floating Footer - hidden on desktop, appears after scrolling past hero, only on landing page */}
       <AnimatePresence>
-        {showMobileFooter && (
+        {showMobileFooter && variant === "default" && (
           <motion.div
             className="md:hidden fixed bottom-6 left-4 right-4 z-50"
             initial={{ y: 100, opacity: 0 }}

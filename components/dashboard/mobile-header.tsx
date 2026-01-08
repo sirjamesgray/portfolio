@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { LogOut, Sun, Moon } from "lucide-react"
 import { useTheme } from "next-themes"
 import { DashboardLogoSmall } from "@/components/dashboard/logo"
@@ -26,13 +27,13 @@ export function MobileHeader({ userEmail }: MobileHeaderProps) {
   // Always show the logo - back buttons are in the body content area
   return (
     <div className="bg-card border-b border-border px-4 py-3 flex items-center justify-between flex-shrink-0">
-      <div className="flex items-center gap-3">
+      <Link href="/" className="flex items-center gap-3 active:opacity-70 transition-opacity">
         <DashboardLogoSmall />
         <div>
           <h1 className="text-lg font-semibold">{SITE_CONFIG.name}</h1>
           <p className="text-xs text-muted-foreground">Web Development</p>
         </div>
-      </div>
+      </Link>
 
       {/* Avatar Dropdown */}
       <DropdownMenu>

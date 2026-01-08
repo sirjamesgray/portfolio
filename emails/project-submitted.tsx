@@ -11,6 +11,7 @@ import {
   Section,
   Text,
 } from "@react-email/components"
+import { EmailLogo } from "./components"
 
 interface ProjectSubmittedEmailProps {
   name: string
@@ -26,11 +27,7 @@ export function ProjectSubmittedEmail({ name, projectType, loginUrl }: ProjectSu
       <Body style={main}>
         <Container style={container}>
           {/* Logo/Brand Header */}
-          <Section style={logoSection}>
-            <div style={logoCircle}>
-              <Text style={logoText}>JG</Text>
-            </div>
-          </Section>
+          <EmailLogo />
 
           {/* Main Content */}
           <Section style={contentSection}>
@@ -120,32 +117,6 @@ const container = {
   maxWidth: "540px",
   boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)",
   overflow: "hidden" as const,
-}
-
-const logoSection = {
-  backgroundColor: "#10b981",
-  padding: "32px 0",
-  textAlign: "center" as const,
-}
-
-const logoCircle = {
-  width: "64px",
-  height: "64px",
-  backgroundColor: "#ffffff",
-  borderRadius: "50%",
-  margin: "0 auto",
-  display: "flex" as const,
-  alignItems: "center" as const,
-  justifyContent: "center" as const,
-}
-
-const logoText = {
-  color: "#10b981",
-  fontSize: "24px",
-  fontWeight: "700",
-  margin: "0",
-  lineHeight: "64px",
-  textAlign: "center" as const,
 }
 
 const contentSection = {

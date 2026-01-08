@@ -162,7 +162,7 @@ export async function POST(request: Request) {
 
             <div style="text-align: center; margin-top: 32px;">
               <a href="${SITE_CONFIG.url}/dashboard/admin/projects/${project.id}"
-                 style="display: inline-block; background-color: #059669; color: white; font-weight: 500; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-size: 16px;">
+                 style="display: inline-block; background-color: #10b981; color: white; font-weight: 600; padding: 16px 40px; border-radius: 12px; text-decoration: none; font-size: 16px; box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.4);">
                 View Project
               </a>
             </div>

@@ -196,16 +196,59 @@ files
 - Contact form that **auto-creates a project** in "lead" status
 - Service showcase with Magic UI components
 
+### Pricing Model
+
+**Sprint-Based Packages:**
+- **1-Week MVP Sprint** - $2,500
+  - Landing page or simple app
+  - Core functionality only
+  - Basic styling
+  - Deployed & live
+  - Ideal for: Validating an idea quickly
+
+- **2-Week Build Sprint** - $5,000 (Most Popular)
+  - Full-featured app or website
+  - Custom design implementation
+  - Database & authentication
+  - Deployed & live
+  - Ideal for: Launching a real product
+
+- **3-Week Ship Sprint** - $9,000
+  - Complex functionality
+  - Integrations & APIs
+  - Admin dashboard
+  - Performance optimization
+  - Deployed & live
+  - Ideal for: Comprehensive builds
+
+**All Sprints Include:**
+- Daily async updates
+- Direct Slack/Discord access
+- Source code ownership
+- Deployment setup
+- 1 week of bug fixes post-launch
+
+**Not Included (Available Separately):**
+- Ongoing maintenance (available as retainer)
+- Content writing
+- SEO optimization
+- Marketing strategy
+
+**Retainers:**
+- Monthly retainers available for ongoing maintenance, new features, and technical support
+- Starting at $1,500/month
+
 ### Lead Capture Flow
 
 **Via Start Project Questionnaire:**
-1. Visitor completes 4-step questionnaire (project type, budget, timeline, description)
-2. Step 5: Schedule a consultation via Calendly
+1. Visitor completes 3-step questionnaire:
+   - Step 1: Sprint type (1-week MVP, 2-week build, or "help me decide")
+   - Step 2: Timeline (ASAP, within a month, flexible)
+   - Step 3: Free-text description ("What's the idea?")
+2. Click "Book a Call" opens Calendly in new tab
    - Calendly captures name/email and creates contact via webhook
    - Project created with meeting_time set
-3. Or skip scheduling:
-   - If logged in: Submit directly, project linked to user account
-   - If not logged in: Step 6 collects name/email manually
+3. If logged in: Project record also created with sprint preference
 4. System creates contact record (if new email)
 5. System auto-creates project in "lead" status
 6. Admin notified of new lead

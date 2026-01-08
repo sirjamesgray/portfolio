@@ -55,6 +55,7 @@ export default async function AdminCustomersPage() {
       name: authUser.user_metadata?.full_name || authUser.email?.split("@")[0] || "Unknown",
       created_at: authUser.created_at,
       last_sign_in: authUser.last_sign_in_at || null,
+      email_verified: !!authUser.email_confirmed_at,
       projects: ((projects || []) as Project[])
         .filter((p) => p.user_id === authUser.id)
         .map((p) => ({

@@ -13,6 +13,8 @@ import {
   Clock,
   FolderKanban,
   Eye,
+  MailCheck,
+  MailX,
 } from "lucide-react"
 import { ProjectCard } from "@/components/dashboard/project-card"
 import { MobileBackButton } from "@/components/dashboard/mobile-back-button"
@@ -52,6 +54,7 @@ type Customer = {
   name: string
   created_at: string
   last_sign_in: string | null
+  email_verified: boolean
   phone: string | null
 }
 
@@ -214,10 +217,23 @@ export function CustomerDetailClient({
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <Mail className="h-4 w-4 text-muted-foreground" />
+                  {customer.email_verified ? (
+                    <MailCheck className="h-4 w-4 text-emerald-500" />
+                  ) : (
+                    <MailX className="h-4 w-4 text-amber-500" />
+                  )}
                   <div>
                     <p className="text-xs text-muted-foreground">Email</p>
-                    <p className="text-sm font-medium">{customer.email}</p>
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-medium">{customer.email}</p>
+                      <span className={`text-xs px-1.5 py-0.5 rounded ${
+                        customer.email_verified
+                          ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                          : "bg-amber-500/10 text-amber-600 dark:text-amber-400"
+                      }`}>
+                        {customer.email_verified ? "Accepted" : "Pending"}
+                      </span>
+                    </div>
                   </div>
                 </div>
                 {customer.phone && (

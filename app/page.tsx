@@ -1,16 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowRight, ArrowUp, Layers, Palette, Code2, Sparkles, Mail, Github, Key, Settings2, HeartHandshake, RefreshCw, Check, LucideIcon, User, MessageCircle, Share2, Copy, Calendar } from "lucide-react";
+import { ArrowRight, ArrowUp, Layers, Palette, Code2, Sparkles, Mail, Github, Key, Settings2, HeartHandshake, RefreshCw, Check, LucideIcon, User, MessageCircle, Share2, Copy, Calendar, Zap, Rocket, Ship } from "lucide-react";
 import { Glow } from "@codaworks/react-glow";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { BentoGrid, BentoCard } from "@/components/ui/bento-grid";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
 import { SiteHeader } from "@/components/site-header";
 import { ExperienceTimeline } from "@/components/experience-timeline";
 import { ProjectsShowcase } from "@/components/projects-showcase";
 import { CursorGrid } from "@/components/cursor-grid";
 import { SITE_CONFIG } from "@/lib/constants";
+import { faqs } from "@/lib/faq-data";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
@@ -88,6 +91,28 @@ const services = [
       <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-transparent" />
     ),
     className: "lg:col-span-2 lg:row-span-1",
+  },
+];
+
+const sprintPricing = [
+  {
+    value: "1-week-mvp",
+    name: "1-Week MVP",
+    description: "Ship a prototype fast",
+    icon: Zap,
+  },
+  {
+    value: "2-week-build",
+    name: "2-Week Build",
+    description: "Launch a real product",
+    icon: Rocket,
+    popular: true,
+  },
+  {
+    value: "3-week-ship",
+    name: "3-Week Ship",
+    description: "Build something ambitious",
+    icon: Ship,
   },
 ];
 
@@ -257,6 +282,72 @@ export default function Home() {
       {/* Projects Section */}
       <ProjectsShowcase />
 
+      {/* Pricing Teaser Section */}
+      <section id="pricing" className="relative px-6 py-24">
+        <div className="mx-auto max-w-5xl">
+          <BlurFade delay={0.1} inView>
+            <div className="mb-10 text-center">
+              <h2 className="mb-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                Sprint Packages
+              </h2>
+              <p className="mx-auto max-w-xl text-muted-foreground">
+                Fixed-price sprints. Ship fast. No surprises.
+              </p>
+            </div>
+          </BlurFade>
+
+          <BlurFade delay={0.2} inView>
+            <div className="grid gap-4 sm:grid-cols-3">
+              {sprintPricing.map((sprint) => {
+                const Icon = sprint.icon;
+                return (
+                  <Link
+                    key={sprint.value}
+                    href={`/pricing#${sprint.value}`}
+                    className={`group relative flex items-center gap-4 rounded-2xl border p-5 transition-all hover:border-emerald-500/50 hover:bg-emerald-500/5 ${
+                      sprint.popular
+                        ? "border-emerald-500/30 bg-emerald-500/5"
+                        : "border-border bg-card/50"
+                    }`}
+                  >
+                    {sprint.popular && (
+                      <div className="absolute -top-2.5 left-4">
+                        <span className="bg-emerald-600 dark:bg-emerald-500 text-white text-xs font-medium px-2 py-0.5 rounded-full">
+                          Popular
+                        </span>
+                      </div>
+                    )}
+                    <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${
+                      sprint.popular
+                        ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400"
+                        : "bg-muted text-muted-foreground group-hover:bg-emerald-500/20 group-hover:text-emerald-600 dark:group-hover:text-emerald-400"
+                    } transition-colors`}>
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-foreground">{sprint.name}</h3>
+                      <p className="text-sm text-muted-foreground">{sprint.description}</p>
+                    </div>
+                    <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors shrink-0" />
+                  </Link>
+                );
+              })}
+            </div>
+          </BlurFade>
+
+          <BlurFade delay={0.3} inView>
+            <div className="mt-8 text-center">
+              <Link href="/pricing">
+                <Button className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
+                  View Pricing & Get Started
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+          </BlurFade>
+        </div>
+      </section>
+
       {/* Experience Section */}
       <ExperienceTimeline />
 
@@ -380,6 +471,50 @@ export default function Home() {
                 </div>
               </div>
             </Glow>
+          </BlurFade>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section id="faq" className="relative px-6 py-24">
+        <div className="mx-auto max-w-3xl">
+          <BlurFade delay={0.1} inView>
+            <div className="mb-10 text-center">
+              <h2 className="mb-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                Questions?
+              </h2>
+              <p className="text-muted-foreground">
+                Quick answers to common questions.
+              </p>
+            </div>
+          </BlurFade>
+
+          <BlurFade delay={0.2} inView>
+            <div className="rounded-xl border border-border bg-card/50">
+              <Accordion type="single" collapsible className="w-full">
+                {faqs.slice(0, 3).map((faq, idx) => (
+                  <AccordionItem key={idx} value={`faq-${idx}`} className="px-5 border-b border-border last:border-b-0">
+                    <AccordionTrigger className="text-foreground font-semibold text-left hover:no-underline">
+                      {faq.question}
+                    </AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground text-sm leading-relaxed">
+                      {faq.answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </div>
+          </BlurFade>
+
+          <BlurFade delay={0.3} inView>
+            <div className="mt-6 text-center">
+              <Link
+                href="/faq"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1"
+              >
+                View all FAQs <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
           </BlurFade>
         </div>
       </section>

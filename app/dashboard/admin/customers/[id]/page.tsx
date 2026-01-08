@@ -121,6 +121,7 @@ export default async function CustomerDetailPage({
     name: customer.user_metadata?.full_name || customer.email?.split("@")[0] || "Unknown",
     created_at: customer.created_at,
     last_sign_in: customer.last_sign_in_at || null,
+    email_verified: !!customer.email_confirmed_at,
     phone: customer.phone || null,
   }
 

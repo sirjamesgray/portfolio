@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { isAdmin, SITE_CONFIG } from "@/lib/constants"
 import { resend, EMAIL_FROM } from "@/lib/email/resend"
+import { emailLogoHtml } from "@/emails/components"
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient()
@@ -119,35 +120,38 @@ export async function POST(request: NextRequest) {
         ? `Reminder: Access your project dashboard`
         : `You're invited to view ${projectTitle}`,
       html: `
-        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
-          <h1 style="font-size: 24px; font-weight: 600; margin-bottom: 24px;">Hey ${customerName.split(" ")[0]}!</h1>
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+          ${emailLogoHtml}
+          <div style="padding: 40px 40px 32px;">
+            <h1 style="font-size: 24px; font-weight: 600; margin: 0 0 24px; text-align: center;">Hey ${customerName.split(" ")[0]}!</h1>
 
-          <p style="font-size: 16px; line-height: 1.6; color: #374151; margin-bottom: 16px;">
-            ${resendInvite
-              ? `Just a reminder - you have access to a project dashboard where you can track progress on ${projectTitle}.`
-              : `I've set up a project dashboard for you where you can track progress, view quotes, and stay updated on ${projectTitle}.`
-            }
-          </p>
+            <p style="font-size: 16px; line-height: 1.6; color: #374151; margin: 0 0 16px;">
+              ${resendInvite
+                ? `Just a reminder - you have access to a project dashboard where you can track progress on ${projectTitle}.`
+                : `I've set up a project dashboard for you where you can track progress, view quotes, and stay updated on ${projectTitle}.`
+              }
+            </p>
 
-          <p style="font-size: 16px; line-height: 1.6; color: #374151; margin-bottom: 24px;">
-            Click the button below to access your dashboard. This link will sign you in automatically.
-          </p>
+            <p style="font-size: 16px; line-height: 1.6; color: #374151; margin: 0 0 24px;">
+              Click the button below to access your dashboard. This link will sign you in automatically.
+            </p>
 
-          <div style="text-align: center; margin: 32px 0;">
-            <a href="${linkData.properties.action_link}"
-               style="display: inline-block; background-color: #059669; color: white; font-weight: 500; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-size: 16px;">
-              Access Your Dashboard
-            </a>
+            <div style="text-align: center; margin: 32px 0;">
+              <a href="${linkData.properties.action_link}"
+                 style="display: inline-block; background-color: #10b981; color: white; font-weight: 600; padding: 16px 40px; border-radius: 12px; text-decoration: none; font-size: 16px; box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.4);">
+                Access Your Dashboard
+              </a>
+            </div>
+
+            <p style="font-size: 14px; line-height: 1.6; color: #6b7280; margin: 32px 0 0; text-align: center;">
+              This link expires in 24 hours. If you need a new link, just let me know.
+            </p>
           </div>
-
-          <p style="font-size: 14px; line-height: 1.6; color: #6b7280; margin-top: 32px;">
-            This link expires in 24 hours. If you need a new link, just let me know.
-          </p>
-
-          <p style="font-size: 16px; line-height: 1.6; color: #374151; margin-top: 24px;">
-            Talk soon,<br/>
-            <strong>Jamie</strong>
-          </p>
+          <div style="border-top: 1px solid #e4e4e7; padding: 24px 40px; text-align: center;">
+            <p style="font-size: 15px; line-height: 24px; color: #52525b; margin: 0 0 8px;">Talk soon!</p>
+            <p style="font-size: 16px; font-weight: 600; color: #18181b; margin: 0;">Jamie Gray</p>
+            <p style="font-size: 13px; color: #71717a; margin: 4px 0 0;">Product Engineer</p>
+          </div>
         </div>
       `,
     })

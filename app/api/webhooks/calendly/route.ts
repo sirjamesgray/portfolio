@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js"
 import crypto from "crypto"
 import { resend, EMAIL_FROM } from "@/lib/email/resend"
 import { SITE_CONFIG, ADMIN_EMAILS } from "@/lib/constants"
+import { emailLogoHtml } from "@/emails/components"
 
 // Initialize Supabase admin client for webhook operations
 function getSupabaseAdmin() {
@@ -207,32 +208,35 @@ export async function POST(request: NextRequest) {
         to: invitee.email,
         subject: "Your project dashboard is ready",
         html: `
-          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
-            <h1 style="font-size: 24px; font-weight: 600; margin-bottom: 24px;">Hey ${invitee.name.split(" ")[0]}!</h1>
+          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+            ${emailLogoHtml}
+            <div style="padding: 40px 40px 32px;">
+              <h1 style="font-size: 24px; font-weight: 600; margin: 0 0 24px; text-align: center;">Hey ${invitee.name.split(" ")[0]}!</h1>
 
-            <p style="font-size: 16px; line-height: 1.6; color: #374151; margin-bottom: 16px;">
-              Thanks for booking a consultation. I'm looking forward to chatting with you on <strong>${consultationDate}</strong>.
-            </p>
+              <p style="font-size: 16px; line-height: 1.6; color: #374151; margin: 0 0 16px;">
+                Thanks for booking a consultation. I'm looking forward to chatting with you on <strong>${consultationDate}</strong>.
+              </p>
 
-            <p style="font-size: 16px; line-height: 1.6; color: #374151; margin-bottom: 24px;">
-              In the meantime, I've set up a project dashboard for you where you'll be able to track progress, view quotes, and stay updated on your project.
-            </p>
+              <p style="font-size: 16px; line-height: 1.6; color: #374151; margin: 0 0 24px;">
+                In the meantime, I've set up a project dashboard for you where you'll be able to track progress, view quotes, and stay updated on your project.
+              </p>
 
-            <div style="text-align: center; margin: 32px 0;">
-              <a href="${SITE_CONFIG.url}/login"
-                 style="display: inline-block; background-color: #059669; color: white; font-weight: 500; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-size: 16px;">
-                Access Your Dashboard
-              </a>
+              <div style="text-align: center; margin: 32px 0;">
+                <a href="${SITE_CONFIG.url}/login"
+                   style="display: inline-block; background-color: #10b981; color: white; font-weight: 600; padding: 16px 40px; border-radius: 12px; text-decoration: none; font-size: 16px; box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.4);">
+                  Access Your Dashboard
+                </a>
+              </div>
+
+              <p style="font-size: 14px; line-height: 1.6; color: #6b7280; margin: 32px 0 0; text-align: center;">
+                Just sign in with the same email you used to book (${invitee.email}) and your project will be waiting for you.
+              </p>
             </div>
-
-            <p style="font-size: 14px; line-height: 1.6; color: #6b7280; margin-top: 32px;">
-              Just sign in with the same email you used to book (${invitee.email}) and your project will be waiting for you.
-            </p>
-
-            <p style="font-size: 16px; line-height: 1.6; color: #374151; margin-top: 24px;">
-              Talk soon,<br/>
-              <strong>Jamie</strong>
-            </p>
+            <div style="border-top: 1px solid #e4e4e7; padding: 24px 40px; text-align: center;">
+              <p style="font-size: 15px; line-height: 24px; color: #52525b; margin: 0 0 8px;">Talk soon!</p>
+              <p style="font-size: 16px; font-weight: 600; color: #18181b; margin: 0;">Jamie Gray</p>
+              <p style="font-size: 13px; color: #71717a; margin: 4px 0 0;">Product Engineer</p>
+            </div>
           </div>
         `,
       })
@@ -278,7 +282,7 @@ export async function POST(request: NextRequest) {
 
             <div style="text-align: center; margin-top: 32px;">
               <a href="${SITE_CONFIG.url}/dashboard/admin/projects/${project.id}"
-                 style="display: inline-block; background-color: #059669; color: white; font-weight: 500; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-size: 16px;">
+                 style="display: inline-block; background-color: #10b981; color: white; font-weight: 600; padding: 16px 40px; border-radius: 12px; text-decoration: none; font-size: 16px; box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.4);">
                 View Project
               </a>
             </div>
