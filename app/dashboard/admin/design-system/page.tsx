@@ -182,6 +182,91 @@ export default function DesignSystemPage() {
             </div>
           </BlurFade>
 
+          {/* Favicon */}
+          <BlurFade delay={0.11} inView>
+            <section className="mb-16">
+              <h2 className="text-2xl font-bold text-foreground mb-6">Favicon</h2>
+              <p className="text-muted-foreground mb-6 text-sm">
+                App favicon with JG logo on black background. Generated via <code>app/icon.tsx</code> and <code>app/apple-icon.tsx</code>.
+              </p>
+              <div className="flex flex-col gap-6 rounded-xl border border-border bg-card/50 p-8">
+                <div className="flex flex-wrap items-center gap-8">
+                  {/* Favicon preview */}
+                  <div className="flex flex-col items-center gap-2">
+                    <span className="text-xs text-muted-foreground">Favicon (32x32)</span>
+                    <div className="h-8 w-8 bg-black rounded flex items-center justify-center">
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 174 174"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M13.501 132.5V95.2568H21.501V132.5C21.501 146.031 32.47 157 46.001 157C59.5317 157 70.501 146.031 70.501 132.5V64.4727C70.5008 37.3964 45.5465 17 13.499 17V9H78.501V132.5C78.501 150.449 63.95 165 46.001 165C28.0517 165 13.501 150.449 13.501 132.5Z"
+                          fill="#34d399"
+                        />
+                        <path
+                          d="M107.501 132.5V41.5C107.501 27.969 118.47 17 132.001 17C145.532 17 156.501 27.969 156.501 41.5V59.4727H164.501V41.5C164.501 23.5507 149.95 9 132.001 9C114.052 9 99.501 23.5507 99.501 41.5V132.5C99.501 150.481 114.26 165 132.177 165C149.624 165 164.044 151.083 164.49 133.681L164.501 132.85V95.2568H118.791V103.257C130.272 103.257 139.759 106.164 146.276 111.21C152.684 116.17 156.501 123.393 156.501 132.85L156.493 133.472C156.158 146.492 145.338 157 132.177 157C118.614 157 107.501 145.999 107.501 132.5Z"
+                          fill="#34d399"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  {/* Apple touch icon preview */}
+                  <div className="flex flex-col items-center gap-2">
+                    <span className="text-xs text-muted-foreground">Apple Touch Icon (180x180)</span>
+                    <div className="h-[45px] w-[45px] bg-black rounded-xl flex items-center justify-center">
+                      <svg
+                        width="40"
+                        height="40"
+                        viewBox="0 0 174 174"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M13.501 132.5V95.2568H21.501V132.5C21.501 146.031 32.47 157 46.001 157C59.5317 157 70.501 146.031 70.501 132.5V64.4727C70.5008 37.3964 45.5465 17 13.499 17V9H78.501V132.5C78.501 150.449 63.95 165 46.001 165C28.0517 165 13.501 150.449 13.501 132.5Z"
+                          fill="#34d399"
+                        />
+                        <path
+                          d="M107.501 132.5V41.5C107.501 27.969 118.47 17 132.001 17C145.532 17 156.501 27.969 156.501 41.5V59.4727H164.501V41.5C164.501 23.5507 149.95 9 132.001 9C114.052 9 99.501 23.5507 99.501 41.5V132.5C99.501 150.481 114.26 165 132.177 165C149.624 165 164.044 151.083 164.49 133.681L164.501 132.85V95.2568H118.791V103.257C130.272 103.257 139.759 106.164 146.276 111.21C152.684 116.17 156.501 123.393 156.501 132.85L156.493 133.472C156.158 146.492 145.338 157 132.177 157C118.614 157 107.501 145.999 107.501 132.5Z"
+                          fill="#34d399"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  {/* Large preview */}
+                  <div className="flex flex-col items-center gap-2">
+                    <span className="text-xs text-muted-foreground">Preview (128x128)</span>
+                    <div className="h-32 w-32 bg-black rounded-xl flex items-center justify-center">
+                      <svg
+                        width="112"
+                        height="112"
+                        viewBox="0 0 174 174"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M13.501 132.5V95.2568H21.501V132.5C21.501 146.031 32.47 157 46.001 157C59.5317 157 70.501 146.031 70.501 132.5V64.4727C70.5008 37.3964 45.5465 17 13.499 17V9H78.501V132.5C78.501 150.449 63.95 165 46.001 165C28.0517 165 13.501 150.449 13.501 132.5Z"
+                          fill="#34d399"
+                        />
+                        <path
+                          d="M107.501 132.5V41.5C107.501 27.969 118.47 17 132.001 17C145.532 17 156.501 27.969 156.501 41.5V59.4727H164.501V41.5C164.501 23.5507 149.95 9 132.001 9C114.052 9 99.501 23.5507 99.501 41.5V132.5C99.501 150.481 114.26 165 132.177 165C149.624 165 164.044 151.083 164.49 133.681L164.501 132.85V95.2568H118.791V103.257C130.272 103.257 139.759 106.164 146.276 111.21C152.684 116.17 156.501 123.393 156.501 132.85L156.493 133.472C156.158 146.492 145.338 157 132.177 157C118.614 157 107.501 145.999 107.501 132.5Z"
+                          fill="#34d399"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <div className="pt-4 border-t border-border">
+                  <p className="text-xs text-muted-foreground">
+                    <strong>Colors:</strong> Background <code className="bg-muted px-1 rounded">#000000</code>, Logo <code className="bg-muted px-1 rounded">#34d399</code> (emerald-400)
+                  </p>
+                </div>
+              </div>
+            </section>
+          </BlurFade>
+
           {/* 3D Grid Logo - Static (Header Version) */}
           <BlurFade delay={0.12} inView>
             <section className="mb-16">
