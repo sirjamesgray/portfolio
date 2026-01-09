@@ -2,56 +2,76 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
-import { Check, X, Zap, Rocket, Ship, ArrowRight, Calendar, RefreshCw, Plus } from "lucide-react";
+import { Check, X, Zap, Rocket, Ship, ArrowRight, Calendar, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { SiteHeader } from "@/components/site-header";
 import { SITE_CONFIG, CTA_CONFIG } from "@/lib/constants";
+
+// Centralized feature definitions - single source of truth for desktop and mobile
+const TIER_FEATURES = {
+  starter: [
+    "Multiple pages",
+    "Clean, professional design",
+    "Mobile-friendly & responsive",
+    "Deployed & live on the internet",
+  ],
+  standard: [
+    "Content management system",
+    "User accounts & sign-in",
+    "Contact forms & notifications",
+  ],
+  premium: [
+    "Third-party integrations",
+    "Admin dashboard",
+    "Performance optimization",
+  ],
+} as const;
+
+// All features in order for comparison view
+const ALL_FEATURES = [
+  ...TIER_FEATURES.starter,
+  ...TIER_FEATURES.standard,
+  ...TIER_FEATURES.premium,
+] as const;
 
 const projects = [
   {
     value: "1-week-mvp",
     name: "1-Week Starter",
     price: "$2,500",
-    description: "Get something live quickly",
+    description: "A polished website, fast",
     icon: Zap,
-    features: [
-      "Simple website or landing page",
-      "Clean, professional design",
-      "Mobile-friendly",
-      "Live on the internet",
-    ],
-    ideal: "Testing a new idea",
+    // Starter only shows its own features
+    features: TIER_FEATURES.starter,
+    // For desktop additive display
+    additiveFeatures: TIER_FEATURES.starter,
+    previousTier: null,
   },
   {
     value: "2-week-build",
     name: "2-Week Standard",
     price: "$5,000",
-    description: "A complete, polished website",
+    description: "Add a database & user accounts",
     icon: Rocket,
-    features: [
-      "Full website with multiple pages",
-      "Custom design to match your brand",
-      "Contact forms & user accounts",
-      "Live on the internet",
-    ],
-    ideal: "Most small businesses",
+    // Standard's unique features
+    features: TIER_FEATURES.standard,
+    // Desktop shows starter + standard
+    additiveFeatures: [...TIER_FEATURES.starter, ...TIER_FEATURES.standard],
+    previousTier: "1-Week Starter",
     popular: true,
   },
   {
     value: "3-week-ship",
     name: "3-Week Premium",
     price: "$9,000",
-    description: "For bigger, more complex needs",
+    description: "Integrations & advanced features",
     icon: Ship,
-    features: [
-      "Advanced features & functionality",
-      "Connect to other tools you use",
-      "Admin area to manage your site",
-      "Speed & performance tuning",
-      "Live on the internet",
-    ],
-    ideal: "Growing businesses",
+    // Premium's unique features
+    features: TIER_FEATURES.premium,
+    // Desktop shows all tiers combined
+    additiveFeatures: [...TIER_FEATURES.starter, ...TIER_FEATURES.standard, ...TIER_FEATURES.premium],
+    previousTier: "2-Week Standard",
   },
 ];
 
@@ -162,18 +182,51 @@ export function PricingPageClient({ customerDashboardEnabled }: PricingPageClien
                       <span className="text-muted-foreground ml-1">flat</span>
                     </div>
 
-                    <ul className="space-y-3 mb-6">
-                      {project.features.map((feature) => (
-                        <li key={feature} className="flex items-start gap-2">
-                          <Check className="h-5 w-5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
-                          <span className="text-foreground">{feature}</span>
-                        </li>
-                      ))}
+                    {/* Desktop: Show all features with included/not-included styling */}
+                    <ul className="hidden md:block space-y-3 mb-6">
+                      {ALL_FEATURES.map((feature) => {
+                        const isIncluded = project.additiveFeatures.includes(feature);
+                        const isNewInTier = project.features.includes(feature);
+                        return (
+                          <li key={feature} className="flex items-start gap-2">
+                            {isIncluded ? (
+                              isNewInTier ? (
+                                // New feature for this tier - prominent green circle with white check
+                                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-600 dark:bg-emerald-500 shrink-0 mt-0.5">
+                                  <Check className="h-3 w-3 text-white" />
+                                </span>
+                              ) : (
+                                // Inherited from previous tier - standard check
+                                <Check className="h-5 w-5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                              )
+                            ) : (
+                              // Not included - grey X
+                              <X className="h-5 w-5 text-muted-foreground/50 shrink-0 mt-0.5" />
+                            )}
+                            <span className={isIncluded ? "text-foreground" : "text-muted-foreground/50"}>
+                              {feature}
+                            </span>
+                          </li>
+                        );
+                      })}
                     </ul>
 
-                    <p className="text-sm text-muted-foreground mb-6">
-                      <span className="font-medium">Best for:</span> {project.ideal}
-                    </p>
+                    {/* Mobile: Show tier-specific features + "includes previous" note */}
+                    <div className="md:hidden mb-6">
+                      {project.previousTier && (
+                        <p className="text-sm text-muted-foreground mb-3 italic">
+                          Everything in {project.previousTier}, plus:
+                        </p>
+                      )}
+                      <ul className="space-y-3">
+                        {project.features.map((feature) => (
+                          <li key={feature} className="flex items-start gap-2">
+                            <Check className="h-5 w-5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                            <span className="text-foreground">{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
 
                     <Link href={`/start-project?sprint=${project.value}`}>
                       <Button
@@ -206,7 +259,9 @@ export function PricingPageClient({ customerDashboardEnabled }: PricingPageClien
                 <ul className="space-y-3">
                   {included.map((item) => (
                     <li key={item} className="flex items-start gap-2">
-                      <Check className="h-5 w-5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-600 dark:bg-emerald-500 shrink-0 mt-0.5">
+                        <Check className="h-3 w-3 text-white" />
+                      </span>
                       <span className="text-foreground">{item}</span>
                     </li>
                   ))}
@@ -214,15 +269,15 @@ export function PricingPageClient({ customerDashboardEnabled }: PricingPageClien
               </div>
 
               {/* Optional Add-ons */}
-              <div className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-6">
+              <div className="rounded-2xl border border-border bg-card/50 p-6">
                 <h3 className="text-lg font-semibold text-foreground text-center">
                   Optional Add-ons
                 </h3>
-                <div className="border-b border-amber-500/30 my-4" />
+                <div className="border-b border-border my-4" />
                 <ul className="space-y-3">
                   {optional.map((item) => (
                     <li key={item} className="flex items-start gap-2">
-                      <Plus className="h-5 w-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                      <Check className="h-5 w-5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
                       <span className="text-foreground">{item}</span>
                     </li>
                   ))}

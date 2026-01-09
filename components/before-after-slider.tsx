@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect } from "react"
 import { createPortal } from "react-dom"
-import { X, Maximize2 } from "lucide-react"
+import { X } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface BeforeAfterSliderProps {
@@ -447,7 +447,7 @@ export function BeforeAfterSlider({
       <div
         ref={containerRef}
         className={cn(
-          "relative w-full aspect-[4/3] rounded-xl overflow-hidden cursor-ew-resize select-none group",
+          "relative w-full aspect-[4/3] rounded-xl overflow-hidden cursor-ew-resize select-none",
           isFullscreen && "invisible",
           className
         )}
@@ -467,13 +467,6 @@ export function BeforeAfterSlider({
         }}
       >
         {renderSliderContent(false)}
-
-        {/* Fullscreen Hint */}
-        <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/20 transition-colors pointer-events-none">
-          <div className="p-3 bg-black/50 backdrop-blur-sm rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity">
-            <Maximize2 className="h-6 w-6" />
-          </div>
-        </div>
       </div>
 
       {/* Fullscreen Modal - rendered via portal to escape overflow:hidden containers */}

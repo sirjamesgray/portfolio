@@ -6,8 +6,9 @@ import { BlurFade } from "@/components/ui/blur-fade"
 import { Button } from "@/components/ui/button"
 import { SiteHeader } from "@/components/site-header"
 import { CursorGrid } from "@/components/cursor-grid"
-import { formatProjectType } from "@/lib/constants"
+import { formatProjectType, CTA_CONFIG } from "@/lib/constants"
 import { CMSContentRenderer } from "@/components/cms-content-renderer"
+import { isCustomerDashboardEnabled } from "@/lib/feature-flags"
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -15,6 +16,9 @@ interface PageProps {
 
 export default async function PublicProjectPage({ params }: PageProps) {
   const { id } = await params
+  const dashboardEnabled = await isCustomerDashboardEnabled()
+  const cta = dashboardEnabled ? CTA_CONFIG.dashboardEnabled : CTA_CONFIG.dashboardDisabled
+
   // Use admin client to bypass RLS - this is a public page for featured projects
   const supabase = createAdminClient()
 
@@ -47,7 +51,7 @@ export default async function PublicProjectPage({ params }: PageProps) {
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-background via-background to-blue-950/20 dark:to-blue-950/30">
       <CursorGrid />
-      <SiteHeader variant="back" backHref="/#projects" backLabel="Back to Landing Page" />
+      <SiteHeader variant="back" backHref="/#projects" backLabel="Back to Landing Page" customerDashboardEnabled={dashboardEnabled} />
 
       <main className="relative z-10 px-6 pt-24 pb-12">
         <div className="mx-auto max-w-4xl">
@@ -103,9 +107,9 @@ export default async function PublicProjectPage({ params }: PageProps) {
               <p className="text-muted-foreground mb-6 max-w-md mx-auto">
                 Tell me about your vision and I'll bring it to life.
               </p>
-              <Link href="/start-project">
+              <Link href={cta.href}>
                 <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2 px-8 py-6 text-base font-semibold">
-                  Start Your Project
+                  {cta.text}
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
