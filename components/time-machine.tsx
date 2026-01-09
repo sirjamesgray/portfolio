@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { MapPin } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -8,31 +8,37 @@ import { BlurFade } from "@/components/ui/blur-fade";
 import { cn } from "@/lib/utils";
 import { EXPERIENCE } from "@/lib/constants";
 
-// Seeded random number generator for consistent stars
-function seededRandom(seed: number) {
-  const x = Math.sin(seed) * 10000;
-  return x - Math.floor(x);
+interface Star {
+  id: number;
+  x: number;
+  y: number;
+  size: number;
+  opacity: number;
+  twinkleDelay: number;
 }
 
-// Generate stars with seeded random for SSR consistency
-function generateStars(count: number) {
+// Generate stars (called only on client to avoid hydration mismatch)
+function generateStars(count: number): Star[] {
   return Array.from({ length: count }, (_, i) => ({
     id: i,
-    x: seededRandom(i * 1) * 100,
-    y: seededRandom(i * 2 + 100) * 100,
-    size: seededRandom(i * 3 + 200) * 2 + 0.5,
-    opacity: seededRandom(i * 4 + 300) * 0.7 + 0.3,
-    twinkleDelay: seededRandom(i * 5 + 400) * 3,
+    x: Math.random() * 100,
+    y: Math.random() * 100,
+    size: Math.random() * 2 + 0.5,
+    opacity: Math.random() * 0.7 + 0.3,
+    twinkleDelay: Math.random() * 3,
   }));
 }
 
-// Pre-generate stars at module level for SSR consistency
-const STARS = generateStars(100);
-
 export function TimeMachine() {
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [stars, setStars] = useState<Star[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
+
+  // Generate stars only on client side to avoid hydration mismatch
+  useEffect(() => {
+    setStars(generateStars(100));
+  }, []);
 
   // Handle scroll wheel to navigate through cards
   const handleWheel = useCallback((e: WheelEvent) => {
@@ -113,9 +119,9 @@ export function TimeMachine() {
       >
         {/* Space Background */}
         <div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-emerald-950/30 to-slate-950">
-          {/* Stars */}
+          {/* Stars - rendered only on client */}
           <svg className="absolute inset-0 w-full h-full">
-            {STARS.map((star) => (
+            {stars.map((star) => (
               <circle
                 key={star.id}
                 cx={`${star.x}%`}

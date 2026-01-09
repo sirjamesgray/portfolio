@@ -47,7 +47,7 @@ export function HeatmapLogo({
         </div>
       }>
         <Heatmap
-          image="/logo.svg"
+          image="/logo.png"
           colors={colors}
           colorBack={colorBack}
           speed={speed}
@@ -56,7 +56,10 @@ export function HeatmapLogo({
           noise={noise}
           innerGlow={innerGlow}
           outerGlow={outerGlow}
-          scale={1}
+          scale={0.75}
+          fit="contain"
+          worldWidth={1}
+          worldHeight={1}
           style={{ width: size, height: size }}
         />
       </Suspense>

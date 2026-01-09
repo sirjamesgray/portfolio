@@ -137,7 +137,8 @@
   --secondary: oklch(0 0 0 / 4%);
   --secondary-foreground: oklch(0 0 0 / 85%);
   --muted: oklch(0 0 0 / 4%);
-  --muted-foreground: oklch(0 0 0 / 50%);
+  /* Using solid color instead of alpha to prevent SVG stroke overlap artifacts */
+  --muted-foreground: oklch(0.556 0 0);
   --accent: oklch(0 0 0 / 4%);
   --accent-foreground: oklch(0 0 0 / 85%);
   --destructive: oklch(0.577 0.245 27.325);
@@ -173,7 +174,8 @@
   --secondary: oklch(1 0 0 / 8%);
   --secondary-foreground: oklch(1 0 0 / 90%);
   --muted: oklch(1 0 0 / 8%);
-  --muted-foreground: oklch(1 0 0 / 50%);
+  /* Using solid color instead of alpha to prevent SVG stroke overlap artifacts */
+  --muted-foreground: oklch(0.556 0 0);
   --accent: oklch(1 0 0 / 8%);
   --accent-foreground: oklch(1 0 0 / 90%);
   --destructive: oklch(0.704 0.191 22.216);
@@ -209,6 +211,7 @@
     min-height: 100dvh;
     min-height: -webkit-fill-available;
   }
+
 
   /* Disable text selection site-wide */
   *,

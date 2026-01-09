@@ -1389,26 +1389,26 @@ export default function DesignSystemPage() {
               </p>
 
               {/* Alpha/Transparency Note */}
-              <div className="mb-6 p-4 rounded-lg border border-amber-500/30 bg-amber-500/5">
-                <h4 className="text-sm font-medium text-foreground mb-2">Transparency Note</h4>
+              <div className="mb-6 p-4 rounded-lg border border-emerald-500/30 bg-emerald-500/5">
+                <h4 className="text-sm font-medium text-foreground mb-2">SVG Stroke Overlap Fix</h4>
                 <p className="text-xs text-muted-foreground mb-3">
-                  Stroke-based SVG icons (like Lucide) can show overlapping artifacts when using alpha transparency
-                  in the color value. This occurs where strokes intersect.
+                  Stroke-based SVG icons can show overlapping artifacts when using alpha transparency in colors.
+                  We&apos;ve fixed this by using solid colors for <code className="bg-muted/50 px-1 rounded">--muted-foreground</code> in globals.css.
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                   <div>
-                    <p className="font-medium text-destructive mb-1">❌ Avoid</p>
+                    <p className="font-medium text-destructive mb-1">❌ Avoid for icons</p>
                     <code className="block bg-muted/50 p-2 rounded text-muted-foreground">
                       className=&quot;text-foreground/50&quot;
                     </code>
-                    <p className="text-muted-foreground/70 mt-1">Alpha in color causes stroke overlap</p>
+                    <p className="text-muted-foreground mt-1">Alpha in color causes stroke overlap</p>
                   </div>
                   <div>
-                    <p className="font-medium text-emerald-500 mb-1">✓ Use instead</p>
+                    <p className="font-medium text-emerald-500 mb-1">✓ Safe to use</p>
                     <code className="block bg-muted/50 p-2 rounded text-muted-foreground">
-                      className=&quot;text-foreground opacity-50&quot;
+                      className=&quot;text-muted-foreground&quot;
                     </code>
-                    <p className="text-muted-foreground/70 mt-1">CSS opacity on parent preserves clean strokes</p>
+                    <p className="text-muted-foreground mt-1">Uses solid color (oklch 0.556)</p>
                   </div>
                 </div>
               </div>
@@ -1433,7 +1433,7 @@ export default function DesignSystemPage() {
                     key={name}
                     className="flex flex-col items-center gap-2 p-4 rounded-lg border border-border bg-card/50 hover:bg-card transition-colors group"
                   >
-                    <Icon className="h-6 w-6 text-foreground" />
+                    <Icon className="h-6 w-6 text-muted-foreground" />
                     <span className="text-xs text-muted-foreground text-center">{name}</span>
                   </div>
                 ))}
