@@ -2,7 +2,6 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { BlurFade } from "@/components/ui/blur-fade"
 import { MobileBackButton } from "@/components/dashboard/mobile-back-button"
 import {
   Calendar,
@@ -219,9 +218,8 @@ function getStatusLabel(status: string) {
   }
 }
 
-function WorkflowCard({ step, delay }: { step: WorkflowStep; delay: number }) {
+function WorkflowCard({ step }: { step: WorkflowStep }) {
   return (
-    <BlurFade delay={delay}>
       <Card className={`border-2 ${getStatusColor(step.status)}`}>
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
@@ -274,7 +272,6 @@ function WorkflowCard({ step, delay }: { step: WorkflowStep; delay: number }) {
           )}
         </CardContent>
       </Card>
-    </BlurFade>
   )
 }
 
@@ -282,17 +279,14 @@ export default function WorkflowPage() {
   return (
     <div className="space-y-8">
       <MobileBackButton />
-      <BlurFade delay={0.1}>
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Event Workflow</h1>
           <p className="text-muted-foreground">
             Customer journey from booking to project delivery
           </p>
         </div>
-      </BlurFade>
 
       {/* Legend */}
-      <BlurFade delay={0.15}>
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm">Legend</CardTitle>
@@ -318,38 +312,35 @@ export default function WorkflowPage() {
             </div>
           </CardContent>
         </Card>
-      </BlurFade>
 
       {/* Main Flow */}
       <div className="space-y-6">
-        <BlurFade delay={0.2}>
           <h2 className="text-lg font-semibold">Main Flow</h2>
-        </BlurFade>
 
         <div className="grid gap-4">
           {/* Step 1: Lead Capture */}
-          <WorkflowCard step={workflowSteps[0]} delay={0.25} />
+          <WorkflowCard step={workflowSteps[0]} />
 
           <div className="flex justify-center">
             <ArrowDown className="h-6 w-6 text-muted-foreground" />
           </div>
 
           {/* Step 2: Consultation Call */}
-          <WorkflowCard step={workflowSteps[1]} delay={0.3} />
+          <WorkflowCard step={workflowSteps[1]} />
 
           <div className="flex justify-center">
             <ArrowDown className="h-6 w-6 text-muted-foreground" />
           </div>
 
           {/* Step 3: Create & Send Quote */}
-          <WorkflowCard step={workflowSteps[2]} delay={0.35} />
+          <WorkflowCard step={workflowSteps[2]} />
 
           <div className="flex justify-center">
             <ArrowDown className="h-6 w-6 text-muted-foreground" />
           </div>
 
           {/* Step 4: Decision Point */}
-          <WorkflowCard step={workflowSteps[3]} delay={0.4} />
+          <WorkflowCard step={workflowSteps[3]} />
 
           {/* Decision Branches */}
           <div className="grid md:grid-cols-2 gap-4">
@@ -358,35 +349,35 @@ export default function WorkflowPage() {
                 <Check className="h-4 w-4 text-emerald-500" />
                 <span className="text-sm text-emerald-500 font-medium">Accept</span>
               </div>
-              <WorkflowCard step={workflowSteps[4]} delay={0.45} />
+              <WorkflowCard step={workflowSteps[4]} />
 
               <div className="flex justify-center">
                 <ArrowDown className="h-6 w-6 text-muted-foreground" />
               </div>
 
               {/* Create Invoice (auto-generated or manual) */}
-              <WorkflowCard step={workflowSteps[6]} delay={0.5} />
+              <WorkflowCard step={workflowSteps[6]} />
 
               <div className="flex justify-center">
                 <ArrowDown className="h-6 w-6 text-muted-foreground" />
               </div>
 
               {/* Invoice Payment */}
-              <WorkflowCard step={workflowSteps[7]} delay={0.55} />
+              <WorkflowCard step={workflowSteps[7]} />
 
               <div className="flex justify-center">
                 <ArrowDown className="h-6 w-6 text-muted-foreground" />
               </div>
 
               {/* Project Development */}
-              <WorkflowCard step={workflowSteps[8]} delay={0.6} />
+              <WorkflowCard step={workflowSteps[8]} />
 
               <div className="flex justify-center">
                 <ArrowDown className="h-6 w-6 text-muted-foreground" />
               </div>
 
               {/* Project Delivered */}
-              <WorkflowCard step={workflowSteps[9]} delay={0.65} />
+              <WorkflowCard step={workflowSteps[9]} />
             </div>
 
             <div className="space-y-4">
@@ -394,14 +385,13 @@ export default function WorkflowPage() {
                 <X className="h-4 w-4 text-red-500" />
                 <span className="text-sm text-red-500 font-medium">Reject</span>
               </div>
-              <WorkflowCard step={workflowSteps[5]} delay={0.45} />
+              <WorkflowCard step={workflowSteps[5]} />
             </div>
           </div>
         </div>
       </div>
 
       {/* Integration Notes */}
-      <BlurFade delay={0.65}>
         <Card>
           <CardHeader>
             <CardTitle className="text-base">Integration Requirements</CardTitle>
@@ -446,7 +436,6 @@ export default function WorkflowPage() {
             </div>
           </CardContent>
         </Card>
-      </BlurFade>
     </div>
   )
 }

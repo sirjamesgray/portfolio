@@ -5,10 +5,10 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
-import { User, ArrowLeft, LogOut, Calendar } from "lucide-react";
+import { User, ArrowLeft, LogOut } from "lucide-react";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 import { Logo3DStatic } from "@/components/logo-3d";
-import { SITE_CONFIG } from "@/lib/constants";
+import { CTA_CONFIG } from "@/lib/constants";
 
 interface SiteHeaderProps {
   variant?: "default" | "back";
@@ -93,12 +93,11 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
                   View pricing
                 </Button>
               </Link>
-              <a href={SITE_CONFIG.calendly} target="_blank" rel="noopener noreferrer">
-                <Button size="sm" className="gap-2 bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:shadow-[0_0_20px_rgba(16,185,129,0.4)]">
-                  <Calendar className="h-4 w-4" />
-                  Schedule call
+              <Link href={CTA_CONFIG.dashboardDisabled.href}>
+                <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:shadow-[0_0_20px_rgba(16,185,129,0.4)]">
+                  {CTA_CONFIG.dashboardDisabled.text}
                 </Button>
-              </a>
+              </Link>
             </>
           )}
         </>
@@ -161,12 +160,11 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
                   View pricing
                 </Button>
               </Link>
-              <a href={SITE_CONFIG.calendly} target="_blank" rel="noopener noreferrer" className="flex-1">
-                <Button size="default" className="w-full gap-2 h-11 px-5 text-base rounded-full bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:shadow-[0_0_20px_rgba(16,185,129,0.4)]">
-                  <Calendar className="h-5 w-5" />
-                  Schedule call
+              <Link href={CTA_CONFIG.dashboardDisabled.href} className="flex-1">
+                <Button size="default" className="w-full h-11 px-5 text-base rounded-full bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:shadow-[0_0_20px_rgba(16,185,129,0.4)]">
+                  {CTA_CONFIG.dashboardDisabled.text}
                 </Button>
-              </a>
+              </Link>
             </>
           )}
         </>

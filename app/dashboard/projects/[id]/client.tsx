@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
-import { BlurFade } from "@/components/ui/blur-fade"
 import { ProjectProgress } from "@/components/dashboard/project-progress"
 import {
   Dialog,
@@ -394,7 +393,6 @@ export function ProjectDetailClient({
     <div className="space-y-6">
       <MobileBackButton />
       {/* Header */}
-      <BlurFade delay={0.1}>
         <div className="flex items-start gap-4">
           <Button
             variant="ghost"
@@ -453,20 +451,16 @@ export function ProjectDetailClient({
             </p>
           </div>
         </div>
-      </BlurFade>
 
       {/* Progress Tracker */}
-      <BlurFade delay={0.12}>
         <Card>
           <CardContent className="pt-6">
             <ProjectProgress status={project.status} />
           </CardContent>
         </Card>
-      </BlurFade>
 
       {/* Next Step Card - Always at top after checklist */}
       {isEarlyStage && !isCanceled && (
-        <BlurFade delay={0.13}>
           <Card className="border-emerald-500/50 bg-emerald-500/5">
             <CardHeader className="pb-3">
               <CardTitle className="text-base flex items-center gap-2">
@@ -486,12 +480,10 @@ export function ProjectDetailClient({
               </a>
             </CardContent>
           </Card>
-        </BlurFade>
       )}
 
       {/* Canceled Project Notice */}
       {isCanceled && project.cancellation_reason && (
-        <BlurFade delay={0.13}>
           <Card className="border-red-500/50 bg-red-500/5">
             <CardContent className="pt-6">
               <div className="flex items-start gap-3">
@@ -509,7 +501,6 @@ export function ProjectDetailClient({
               </div>
             </CardContent>
           </Card>
-        </BlurFade>
       )}
 
       {/* Main Content Grid */}
@@ -518,7 +509,6 @@ export function ProjectDetailClient({
         <div className="space-y-6">
           {/* Pending Quotes - Action Required */}
           {pendingQuotes.length > 0 && (
-            <BlurFade delay={0.15}>
               <Card className="border-yellow-500/50">
                 <CardHeader>
                   <CardTitle className="text-base flex items-center gap-2 text-yellow-600 dark:text-yellow-400">
@@ -568,12 +558,10 @@ export function ProjectDetailClient({
                   ))}
                 </CardContent>
               </Card>
-            </BlurFade>
           )}
 
           {/* Deliverables */}
           {showDeliverables && (
-            <BlurFade delay={0.18}>
               <Card className={!hasPaid ? "border-amber-500/30 bg-amber-500/5" : ""}>
                 <CardHeader>
                   <div className="flex items-center justify-between">
@@ -647,11 +635,9 @@ export function ProjectDetailClient({
                   )}
                 </CardContent>
               </Card>
-            </BlurFade>
           )}
 
           {/* Project Requirements */}
-          <BlurFade delay={0.2}>
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
@@ -708,11 +694,9 @@ export function ProjectDetailClient({
                 )}
               </CardContent>
             </Card>
-          </BlurFade>
 
           {/* Activity Timeline */}
           {activityLog.length > 0 && (
-            <BlurFade delay={0.22}>
               <Card>
                 <CardHeader>
                   <CardTitle className="text-base flex items-center gap-2">
@@ -743,11 +727,9 @@ export function ProjectDetailClient({
                   </div>
                 </CardContent>
               </Card>
-            </BlurFade>
           )}
 
           {/* Contact Jamie */}
-          <BlurFade delay={0.25}>
             <Card>
               <CardHeader>
                 <CardTitle className="text-base">Contact {SITE_CONFIG.name}</CardTitle>
@@ -771,13 +753,11 @@ export function ProjectDetailClient({
                 </div>
               </CardContent>
             </Card>
-          </BlurFade>
         </div>
 
         {/* Right Sidebar */}
         <div className="space-y-6">
           {/* Project Details */}
-          <BlurFade delay={0.15}>
             <Card>
               <CardHeader>
                 <CardTitle className="text-base">Project Details</CardTitle>
@@ -801,11 +781,9 @@ export function ProjectDetailClient({
                 )}
               </CardContent>
             </Card>
-          </BlurFade>
 
           {/* Pricing & Payments */}
           {showPayments ? (
-            <BlurFade delay={0.2}>
               <Card>
                 <CardHeader>
                   <CardTitle className="text-base flex items-center gap-2">
@@ -832,9 +810,7 @@ export function ProjectDetailClient({
                   </div>
                 </CardContent>
               </Card>
-            </BlurFade>
           ) : (
-            <BlurFade delay={0.2}>
               <Card>
                 <CardHeader>
                   <CardTitle className="text-base flex items-center gap-2">
@@ -850,12 +826,10 @@ export function ProjectDetailClient({
                   </p>
                 </CardContent>
               </Card>
-            </BlurFade>
           )}
 
           {/* Invoices */}
           {invoices.length > 0 && (
-            <BlurFade delay={0.25}>
               <Card>
                 <CardHeader>
                   <CardTitle className="text-base flex items-center gap-2">
@@ -886,12 +860,10 @@ export function ProjectDetailClient({
                   </div>
                 </CardContent>
               </Card>
-            </BlurFade>
           )}
 
           {/* Landing Page Feature Consent */}
           {!isCanceled && (
-            <BlurFade delay={0.28}>
               <Card>
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center gap-2">
@@ -920,7 +892,6 @@ export function ProjectDetailClient({
                   </div>
                 </CardContent>
               </Card>
-            </BlurFade>
           )}
         </div>
       </div>

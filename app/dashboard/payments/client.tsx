@@ -2,7 +2,6 @@
 
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { BlurFade } from "@/components/ui/blur-fade"
 import { Badge } from "@/components/ui/badge"
 import { CreditCard, Receipt, ExternalLink, Download, CheckCircle2, Clock, AlertCircle } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -86,13 +85,12 @@ function formatDate(dateString: string) {
   })
 }
 
-function InvoiceCard({ invoice, index }: { invoice: Invoice; index: number }) {
+function InvoiceCard({ invoice }: { invoice: Invoice }) {
   const statusInfo = getStatusInfo(invoice.status)
   const StatusIcon = statusInfo.icon
   const isPending = invoice.status === "sent" || invoice.status === "overdue"
 
   return (
-    <BlurFade delay={0.1 + index * 0.05}>
       <Card className={cn(
         "bg-card",
         invoice.status === "canceled" && "opacity-60"
@@ -155,7 +153,6 @@ function InvoiceCard({ invoice, index }: { invoice: Invoice; index: number }) {
           </div>
         </CardContent>
       </Card>
-    </BlurFade>
   )
 }
 
@@ -171,16 +168,13 @@ export function PaymentsClient({ invoices }: PaymentsClientProps) {
     return (
       <div className="space-y-6">
         <MobileBackButton />
-        <BlurFade delay={0.1}>
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Payments</h1>
             <p className="text-muted-foreground">
               View your invoices and payment history
             </p>
           </div>
-        </BlurFade>
 
-        <BlurFade delay={0.2}>
           <Card>
             <CardContent className="py-12">
               <div className="flex flex-col items-center text-center">
@@ -194,7 +188,6 @@ export function PaymentsClient({ invoices }: PaymentsClientProps) {
               </div>
             </CardContent>
           </Card>
-        </BlurFade>
       </div>
     )
   }
@@ -203,17 +196,14 @@ export function PaymentsClient({ invoices }: PaymentsClientProps) {
     <div className="space-y-6">
       <MobileBackButton />
       {/* Header */}
-      <BlurFade delay={0.05}>
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Payments</h1>
           <p className="text-muted-foreground">
             View your invoices and payment history
           </p>
         </div>
-      </BlurFade>
 
       {/* Summary Cards */}
-      <BlurFade delay={0.1}>
         <div className="grid gap-4 sm:grid-cols-2">
           <Card>
             <CardContent className="p-4">
@@ -242,14 +232,13 @@ export function PaymentsClient({ invoices }: PaymentsClientProps) {
             </CardContent>
           </Card>
         </div>
-      </BlurFade>
 
       {/* Pending Invoices */}
       {pendingInvoices.length > 0 && (
         <div className="space-y-3">
           <h2 className="text-lg font-semibold">Action Required</h2>
-          {pendingInvoices.map((invoice, index) => (
-            <InvoiceCard key={invoice.id} invoice={invoice} index={index} />
+          {pendingInvoices.map((invoice) => (
+            <InvoiceCard key={invoice.id} invoice={invoice} />
           ))}
         </div>
       )}
@@ -258,11 +247,10 @@ export function PaymentsClient({ invoices }: PaymentsClientProps) {
       {paidInvoices.length > 0 && (
         <div className="space-y-3">
           <h2 className="text-lg font-semibold">Payment History</h2>
-          {paidInvoices.map((invoice, index) => (
+          {paidInvoices.map((invoice) => (
             <InvoiceCard
               key={invoice.id}
               invoice={invoice}
-              index={index + pendingInvoices.length}
             />
           ))}
         </div>
@@ -272,11 +260,10 @@ export function PaymentsClient({ invoices }: PaymentsClientProps) {
       {otherInvoices.length > 0 && (
         <div className="space-y-3">
           <h2 className="text-lg font-semibold text-muted-foreground">Other</h2>
-          {otherInvoices.map((invoice, index) => (
+          {otherInvoices.map((invoice) => (
             <InvoiceCard
               key={invoice.id}
               invoice={invoice}
-              index={index + pendingInvoices.length + paidInvoices.length}
             />
           ))}
         </div>

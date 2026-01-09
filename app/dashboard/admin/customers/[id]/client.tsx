@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { BlurFade } from "@/components/ui/blur-fade"
 import {
   ArrowLeft,
   User,
@@ -110,7 +109,6 @@ export function CustomerDetailClient({
     <div className="space-y-6">
       <MobileBackButton href="/dashboard/admin/customers" label="Customers" />
       {/* Header */}
-      <BlurFade delay={0.1}>
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-4">
             {/* Back button - navigates to customers list, not browser back */}
@@ -134,10 +132,8 @@ export function CustomerDetailClient({
             <span className="hidden sm:inline">View as Customer</span>
           </Button>
         </div>
-      </BlurFade>
 
       {/* Stats */}
-      <BlurFade delay={0.15}>
         <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader className="pb-2">
@@ -174,12 +170,10 @@ export function CustomerDetailClient({
             </CardContent>
           </Card>
         </div>
-      </BlurFade>
 
       <div className="grid gap-6 lg:grid-cols-[1fr,320px]">
         {/* Main Column - Projects */}
         <div className="space-y-6">
-          <BlurFade delay={0.2}>
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -205,12 +199,10 @@ export function CustomerDetailClient({
                 )}
               </CardContent>
             </Card>
-          </BlurFade>
         </div>
 
         {/* Right Sidebar - Customer Info */}
         <div className="space-y-6 order-first lg:order-last">
-          <BlurFade delay={0.15}>
             <Card>
               <CardHeader>
                 <CardTitle className="text-base">Customer Info</CardTitle>
@@ -275,10 +267,8 @@ export function CustomerDetailClient({
                 </div>
               </CardContent>
             </Card>
-          </BlurFade>
 
           {/* Quick Actions */}
-          <BlurFade delay={0.2}>
             <Card>
               <CardHeader>
                 <CardTitle className="text-base">Quick Actions</CardTitle>
@@ -300,7 +290,6 @@ export function CustomerDetailClient({
                 </Link>
               </CardContent>
             </Card>
-          </BlurFade>
         </div>
       </div>
     </div>

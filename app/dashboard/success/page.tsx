@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Check, ArrowRight } from "lucide-react";
-import { BlurFade } from "@/components/ui/blur-fade";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
@@ -96,21 +95,18 @@ export default function DashboardPage() {
   if (status === "loading" || status === "saving") {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-background via-background to-blue-950/20 dark:to-blue-950/30">
-        <BlurFade delay={0.1}>
           <div className="text-center">
             <Loader2 className="h-8 w-8 animate-spin text-emerald-600 mx-auto mb-4" />
             <p className="text-muted-foreground">
               {status === "saving" ? "Saving your project..." : "Loading..."}
             </p>
           </div>
-        </BlurFade>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-background via-background to-blue-950/20 dark:to-blue-950/30 px-6">
-      <BlurFade delay={0.1}>
         <div className="max-w-md w-full text-center">
           {status === "success" ? (
             <>
@@ -156,7 +152,6 @@ export default function DashboardPage() {
             </>
           )}
         </div>
-      </BlurFade>
     </div>
   );
 }

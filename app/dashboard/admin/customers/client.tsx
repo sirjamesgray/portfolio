@@ -31,7 +31,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { FolderKanban, Search, MoreHorizontal, Eye, User, Users, UserPlus, Mail, Loader2, Check, MailCheck, MailX } from "lucide-react"
-import { BlurFade } from "@/components/ui/blur-fade"
 import { PageHeader } from "@/components/dashboard/page-header"
 
 type Project = {
@@ -253,7 +252,6 @@ export function CustomersClient({ customers, stats }: CustomersClientProps) {
       </PageHeader>
 
       {/* Search */}
-      <BlurFade delay={0.2}>
         <div className="relative max-w-sm">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -263,10 +261,8 @@ export function CustomersClient({ customers, stats }: CustomersClientProps) {
             className="pl-9"
           />
         </div>
-      </BlurFade>
 
       {/* Mobile Cards View */}
-      <BlurFade delay={0.25}>
         <div className="md:hidden space-y-3">
           <p className="text-sm text-muted-foreground">
             {filteredCustomers.length} Customer{filteredCustomers.length !== 1 ? "s" : ""}
@@ -355,10 +351,8 @@ export function CustomersClient({ customers, stats }: CustomersClientProps) {
             })
           )}
         </div>
-      </BlurFade>
 
       {/* Desktop Table View */}
-      <BlurFade delay={0.25}>
         <Card className="hidden md:block">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -468,7 +462,6 @@ export function CustomersClient({ customers, stats }: CustomersClientProps) {
             </Table>
           </CardContent>
         </Card>
-      </BlurFade>
     </div>
   )
 }

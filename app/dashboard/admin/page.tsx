@@ -1,6 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { BlurFade } from "@/components/ui/blur-fade"
 import { FolderKanban, CheckCircle2, Clock, DollarSign } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 
@@ -122,11 +121,10 @@ export default async function AdminDashboard() {
 
       {/* Stats Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {statCards.map((stat, index) => {
+        {statCards.map((stat) => {
           const Icon = stat.icon
           return (
-            <BlurFade key={stat.title} delay={0.1 * index}>
-              <Card>
+              <Card key={stat.title}>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
                     {stat.title}
@@ -142,13 +140,11 @@ export default async function AdminDashboard() {
                   )}
                 </CardContent>
               </Card>
-            </BlurFade>
           )
         })}
       </div>
 
       {/* Recent Activity */}
-      <BlurFade delay={0.4}>
         <Card>
           <CardHeader>
             <CardTitle>Recent Activity</CardTitle>
@@ -187,7 +183,6 @@ export default async function AdminDashboard() {
             </div>
           </CardContent>
         </Card>
-      </BlurFade>
     </div>
   )
 }

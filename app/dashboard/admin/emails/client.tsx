@@ -5,7 +5,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Mail, Eye, Send, Check, X } from "lucide-react"
-import { BlurFade } from "@/components/ui/blur-fade"
 import { MobileBackButton } from "@/components/dashboard/mobile-back-button"
 import {
   Drawer,
@@ -104,17 +103,14 @@ export function AdminEmailsClient({ templates }: AdminEmailsClientProps) {
     <div className="space-y-6">
       <MobileBackButton />
       {/* Header */}
-      <BlurFade delay={0.1}>
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Email Templates</h1>
           <p className="text-muted-foreground">
             Preview and test email templates sent to customers
           </p>
         </div>
-      </BlurFade>
 
       {/* Stats */}
-      <BlurFade delay={0.15}>
         <div className="grid gap-4 md:grid-cols-3">
           <Card>
             <CardHeader className="pb-2">
@@ -143,10 +139,8 @@ export function AdminEmailsClient({ templates }: AdminEmailsClientProps) {
             </CardContent>
           </Card>
         </div>
-      </BlurFade>
 
       {/* Templates Grid */}
-      <BlurFade delay={0.2}>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {templates.map((template) => (
             <Card key={template.id} className="flex flex-col">
@@ -229,7 +223,6 @@ export function AdminEmailsClient({ templates }: AdminEmailsClientProps) {
             </Card>
           ))}
         </div>
-      </BlurFade>
     </div>
   )
 }

@@ -39,7 +39,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Search, FolderKanban, Plus, Shield, MoreHorizontal, Eye, User, Trash2, X, Megaphone } from "lucide-react"
-import { BlurFade } from "@/components/ui/blur-fade"
 import { ProjectCard } from "@/components/dashboard/project-card"
 import { PageHeader } from "@/components/dashboard/page-header"
 
@@ -485,7 +484,6 @@ export function AdminProjectsClient({ projects, stats, customers }: AdminProject
       </PageHeader>
 
       {/* Filters */}
-      <BlurFade delay={0.2}>
         <div className="space-y-2">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -537,10 +535,8 @@ export function AdminProjectsClient({ projects, stats, customers }: AdminProject
             ))}
           </div>
         </div>
-      </BlurFade>
 
       {/* Mobile Cards View */}
-      <BlurFade delay={0.25}>
         <div className="md:hidden space-y-3">
           <p className="text-sm text-muted-foreground">
             {filteredProjects.length} Project{filteredProjects.length !== 1 ? "s" : ""}
@@ -561,10 +557,8 @@ export function AdminProjectsClient({ projects, stats, customers }: AdminProject
             ))
           )}
         </div>
-      </BlurFade>
 
       {/* Desktop Table View */}
-      <BlurFade delay={0.25}>
         <Card className="hidden md:block overflow-hidden">
           <CardHeader>
             <CardTitle>
@@ -783,7 +777,6 @@ export function AdminProjectsClient({ projects, stats, customers }: AdminProject
             </Table>
           </CardContent>
         </Card>
-      </BlurFade>
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={!!deleteProjectId} onOpenChange={(open) => !open && setDeleteProjectId(null)}>

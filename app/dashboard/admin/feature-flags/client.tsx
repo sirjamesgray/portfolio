@@ -5,7 +5,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Switch } from "@/components/ui/switch"
 import { Badge } from "@/components/ui/badge"
 import { Flag, Loader2 } from "lucide-react"
-import { BlurFade } from "@/components/ui/blur-fade"
 import { MobileBackButton } from "@/components/dashboard/mobile-back-button"
 import type { FeatureFlag } from "@/lib/feature-flags"
 
@@ -46,17 +45,14 @@ export function FeatureFlagsClient({ flags: initialFlags }: FeatureFlagsClientPr
     <div className="space-y-6">
       <MobileBackButton />
 
-      <BlurFade delay={0.1}>
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Feature Flags</h1>
-          <p className="text-muted-foreground">
-            Control site-wide features and behavior
-          </p>
-        </div>
-      </BlurFade>
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight">Feature Flags</h1>
+        <p className="text-muted-foreground">
+          Control site-wide features and behavior
+        </p>
+      </div>
 
-      <BlurFade delay={0.15}>
-        <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-3">
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium">Total Flags</CardTitle>
@@ -82,10 +78,8 @@ export function FeatureFlagsClient({ flags: initialFlags }: FeatureFlagsClientPr
             </CardContent>
           </Card>
         </div>
-      </BlurFade>
 
-      <BlurFade delay={0.2}>
-        <div className="space-y-4">
+      <div className="space-y-4">
           {flags.length === 0 ? (
             <Card>
               <CardContent className="py-12 text-center">
@@ -141,7 +135,6 @@ export function FeatureFlagsClient({ flags: initialFlags }: FeatureFlagsClientPr
             ))
           )}
         </div>
-      </BlurFade>
     </div>
   )
 }

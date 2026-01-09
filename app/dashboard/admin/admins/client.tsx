@@ -11,7 +11,6 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Shield, UserCircle } from "lucide-react"
-import { BlurFade } from "@/components/ui/blur-fade"
 import { MobileBackButton } from "@/components/dashboard/mobile-back-button"
 
 type Admin = {
@@ -32,17 +31,14 @@ export function AdminsClient({ admins, currentUserId }: AdminsClientProps) {
     <div className="space-y-6">
       <MobileBackButton />
       {/* Header */}
-      <BlurFade delay={0.1}>
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Admins</h1>
           <p className="text-muted-foreground">
             Users with administrative access
           </p>
         </div>
-      </BlurFade>
 
       {/* Stats */}
-      <BlurFade delay={0.15}>
         <div className="grid gap-4 md:grid-cols-2 max-w-md">
           <Card>
             <CardHeader className="pb-2">
@@ -53,10 +49,8 @@ export function AdminsClient({ admins, currentUserId }: AdminsClientProps) {
             </CardContent>
           </Card>
         </div>
-      </BlurFade>
 
       {/* Mobile Cards View */}
-      <BlurFade delay={0.2}>
         <div className="md:hidden space-y-3">
           <p className="text-sm text-muted-foreground">
             {admins.length} Admin{admins.length !== 1 ? "s" : ""}
@@ -100,10 +94,8 @@ export function AdminsClient({ admins, currentUserId }: AdminsClientProps) {
             ))
           )}
         </div>
-      </BlurFade>
 
       {/* Desktop Table View */}
-      <BlurFade delay={0.2}>
         <Card className="hidden md:block">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -161,7 +153,6 @@ export function AdminsClient({ admins, currentUserId }: AdminsClientProps) {
             </Table>
           </CardContent>
         </Card>
-      </BlurFade>
     </div>
   )
 }

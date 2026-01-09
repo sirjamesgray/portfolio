@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowRight, ArrowUp, Layers, Palette, Code2, Sparkles, Mail, Github, Key, Settings2, HeartHandshake, RefreshCw, Check, LucideIcon, User, MessageCircle, Share2, Copy, Calendar, Zap, Rocket, Ship } from "lucide-react";
+import { ArrowRight, ArrowUp, Layers, Palette, Code2, Sparkles, Mail, Github, Key, Settings2, HeartHandshake, RefreshCw, Check, LucideIcon, User, MessageCircle, Share2, Copy, Zap, Rocket, Ship } from "lucide-react";
 import { Glow } from "@codaworks/react-glow";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { BlurFade } from "@/components/ui/blur-fade";
@@ -12,7 +12,7 @@ import { SiteHeader } from "@/components/site-header";
 import { ExperienceTimeline } from "@/components/experience-timeline";
 import { ProjectsShowcase } from "@/components/projects-showcase";
 import { CursorGrid } from "@/components/cursor-grid";
-import { SITE_CONFIG } from "@/lib/constants";
+import { SITE_CONFIG, CTA_CONFIG } from "@/lib/constants";
 import { faqs } from "@/lib/faq-data";
 import Link from "next/link";
 import dynamic from "next/dynamic";
@@ -46,7 +46,7 @@ const socials = [
   },
   {
     name: "SMS",
-    href: "sms:8173680224",
+    href: `sms:${SITE_CONFIG.phone}`,
     icon: <MessageCircle className="h-5 w-5" />,
   },
 ];
@@ -282,14 +282,14 @@ export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
                     </ShimmerButton>
                   </Link>
                 ) : (
-                  <a href={SITE_CONFIG.calendly} target="_blank" rel="noopener noreferrer">
+                  <Link href={CTA_CONFIG.dashboardDisabled.href}>
                     <ShimmerButton className="text-base font-semibold glow:ring-2 glow:ring-emerald-500/50 dark:shadow-[0_0_24px_rgba(16,185,129,0.5)]">
                       <span className="flex items-center gap-2">
-                        Schedule call
-                        <Calendar className="h-4 w-4" />
+                        {CTA_CONFIG.dashboardDisabled.text}
+                        <ArrowRight className="h-4 w-4" />
                       </span>
                     </ShimmerButton>
-                  </a>
+                  </Link>
                 )}
               </Glow>
             </div>
@@ -469,18 +469,18 @@ export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
                       </ShimmerButton>
                     </Link>
                   ) : (
-                    <a href={SITE_CONFIG.calendly} target="_blank" rel="noopener noreferrer" className="flex-1">
+                    <Link href={CTA_CONFIG.dashboardDisabled.href} className="flex-1">
                       <ShimmerButton
                         shimmerColor="#34d399"
                         background="linear-gradient(135deg, #059669 0%, #10b981 100%)"
                         className="w-full text-lg font-semibold dark:shadow-[0_0_24px_rgba(16,185,129,0.5)]"
                       >
                         <span className="flex items-center justify-center gap-2">
-                          Schedule call
-                          <Calendar className="h-5 w-5" />
+                          {CTA_CONFIG.dashboardDisabled.text}
+                          <ArrowRight className="h-5 w-5" />
                         </span>
                       </ShimmerButton>
-                    </a>
+                    </Link>
                   )}
                   {showDashboardLinks ? (
                     <Link

@@ -3,7 +3,6 @@ import { cookies } from "next/headers"
 import { createClient } from "@/lib/supabase/server"
 import { isAdmin } from "@/lib/constants"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { BlurFade } from "@/components/ui/blur-fade"
 import { Button } from "@/components/ui/button"
 import { MessageCircle, FolderKanban } from "lucide-react"
 import Link from "next/link"
@@ -43,16 +42,13 @@ export default async function ChatPage() {
   return (
     <div className="space-y-6">
       <MobileBackButton />
-      <BlurFade delay={0.1}>
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Chat</h1>
           <p className="text-muted-foreground">
             Message Jamie directly within your projects
           </p>
         </div>
-      </BlurFade>
 
-      <BlurFade delay={0.15}>
         <Card>
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2">
@@ -109,7 +105,6 @@ export default async function ChatPage() {
             )}
           </CardContent>
         </Card>
-      </BlurFade>
     </div>
   )
 }

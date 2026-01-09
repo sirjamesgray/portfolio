@@ -2,10 +2,27 @@ export const SITE_CONFIG = {
   name: "Jamie Gray",
   title: "Product Engineer",
   email: "contact@jamiegray.net",
+  phone: "8173680224",
   url: "https://www.jamiegray.net",
   calendly: "https://calendly.com/jamie-gray-tech/30min",
   description:
     "Product Engineer offering software solutions with 8 years of UX design experience. Production-grade prototyping and UX-led systems design.",
+} as const;
+
+// CTA configuration - changes based on customer-dashboard feature flag
+// When dashboard enabled: "Start a project" -> /login
+// When dashboard disabled: "Get started" -> /contact
+export const CTA_CONFIG = {
+  // When customer dashboard is enabled
+  dashboardEnabled: {
+    text: "Start a project",
+    href: "/login",
+  },
+  // When customer dashboard is disabled
+  dashboardDisabled: {
+    text: "Get started",
+    href: "/contact",
+  },
 } as const;
 
 // Admin emails for permission checks

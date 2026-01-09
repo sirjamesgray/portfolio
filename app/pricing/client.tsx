@@ -6,7 +6,7 @@ import { Check, X, Zap, Rocket, Ship, ArrowRight, Calendar, RefreshCw, Plus } fr
 import { Button } from "@/components/ui/button";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { SiteHeader } from "@/components/site-header";
-import { SITE_CONFIG } from "@/lib/constants";
+import { SITE_CONFIG, CTA_CONFIG } from "@/lib/constants";
 
 const projects = [
   {
@@ -294,12 +294,12 @@ export function PricingPageClient({ customerDashboardEnabled }: PricingPageClien
                     </a>
                   </>
                 ) : (
-                  <a href={SITE_CONFIG.calendly} target="_blank" rel="noopener noreferrer">
+                  <Link href={CTA_CONFIG.dashboardDisabled.href}>
                     <Button size="lg" className="gap-2 bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600">
-                      <Calendar className="h-4 w-4" />
-                      Book a Call
+                      {CTA_CONFIG.dashboardDisabled.text}
+                      <ArrowRight className="h-4 w-4" />
                     </Button>
-                  </a>
+                  </Link>
                 )}
               </div>
             </div>

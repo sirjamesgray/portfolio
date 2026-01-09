@@ -10,7 +10,6 @@ import { PulsatingButton } from "@/components/ui/pulsating-button";
 import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button";
 import { AnimatedGradientText } from "@/components/ui/animated-gradient-text";
 import { SparklesText } from "@/components/ui/sparkles-text";
-import { BlurFade } from "@/components/ui/blur-fade";
 import { Marquee } from "@/components/ui/marquee";
 import { Ripple } from "@/components/ui/ripple";
 import { DotPattern } from "@/components/ui/dot-pattern";
@@ -39,6 +38,7 @@ import {
 } from "@/components/ui/select";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { BeforeAfterSlider } from "@/components/before-after-slider";
+import { BlurFade } from "@/components/ui/blur-fade";
 
 // Animated icons
 import { BellIcon } from "@/components/ui/bell";
@@ -168,23 +168,17 @@ export default function DesignSystemPage() {
   const [sliderValue, setSliderValue] = useState([50]);
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Main Content */}
-      <main className="pb-24 px-6">
+    <div>
         <MobileBackButton />
-        <div className="mx-auto max-w-6xl">
-          <BlurFade delay={0.1} inView>
-            <div className="mb-12 text-center">
+            <div className="mb-12 text-center lg:text-left">
               <h1 className="text-4xl font-bold text-foreground mb-4">Design System</h1>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
+              <p className="text-muted-foreground max-w-2xl lg:mx-0 mx-auto">
                 Component library and design tokens. Click component names to copy import paths.
               </p>
             </div>
-          </BlurFade>
 
-          {/* Favicon */}
-          <BlurFade delay={0.11} inView>
-            <section className="mb-16">
+            {/* Favicon */}
+            <section id="favicon" className="mb-16">
               <h2 className="text-2xl font-bold text-foreground mb-6">Favicon</h2>
               <p className="text-muted-foreground mb-6 text-sm">
                 App favicon with JG logo on black background. Generated via <code>app/icon.tsx</code> and <code>app/apple-icon.tsx</code>.
@@ -265,11 +259,9 @@ export default function DesignSystemPage() {
                 </div>
               </div>
             </section>
-          </BlurFade>
 
           {/* 3D Grid Logo - Static (Header Version) */}
-          <BlurFade delay={0.12} inView>
-            <section className="mb-16">
+            <section id="static-logo" className="mb-16">
               <h2 className="text-2xl font-bold text-foreground mb-6">Static Logo (Header Version)</h2>
               <p className="text-muted-foreground mb-6 text-sm">
                 Flat CSS/SVG logo for headers - square border with JG inside. Lightweight (no 3D/Canvas).
@@ -304,11 +296,9 @@ export default function DesignSystemPage() {
                 </div>
               </div>
             </section>
-          </BlurFade>
 
           {/* 3D Grid Logo - Rotating (Hero Version) */}
-          <BlurFade delay={0.13} inView>
-            <section className="mb-16">
+            <section id="rotating-logo" className="mb-16">
               <h2 className="text-2xl font-bold text-foreground mb-6">3D Grid Logo - Rotating (Hero Version)</h2>
               <p className="text-muted-foreground mb-6 text-sm">
                 Rotating version with wireframe cube edges and grid texture on logo letters.
@@ -321,11 +311,9 @@ export default function DesignSystemPage() {
                 </div>
               </div>
             </section>
-          </BlurFade>
 
           {/* Archived: 3D Glassy Logo (Collapsible) */}
-          <BlurFade delay={0.14} inView>
-            <section className="mb-16">
+            <section id="archived-glassy-logo" className="mb-16">
               <details className="group">
                 <summary className="flex items-center gap-2 cursor-pointer list-none">
                   <ChevronDown className="h-5 w-5 text-muted-foreground transition-transform group-open:rotate-180" />
@@ -520,11 +508,9 @@ export default function DesignSystemPage() {
                 </div>
               </details>
             </section>
-          </BlurFade>
 
           {/* Colors Section */}
-          <BlurFade delay={0.15} inView>
-            <section className="mb-16">
+            <section id="colors" className="mb-16">
               <h2 className="text-2xl font-bold text-foreground mb-6">Colors</h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6 p-6 rounded-xl border border-border bg-card/50">
                 <ColorSwatch name="Background" variable="bg-background" className="bg-background" />
@@ -537,11 +523,9 @@ export default function DesignSystemPage() {
                 <ColorSwatch name="Border" variable="border-border" className="bg-border" />
               </div>
             </section>
-          </BlurFade>
 
           {/* Buttons Section */}
-          <BlurFade delay={0.2} inView>
-            <section className="mb-16">
+            <section id="buttons" className="mb-16">
               <h2 className="text-2xl font-bold text-foreground mb-6">Buttons</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {/* Primary Green Buttons - Most Common */}
@@ -596,11 +580,9 @@ export default function DesignSystemPage() {
                 </ComponentCard>
               </div>
             </section>
-          </BlurFade>
 
           {/* Typography Section */}
-          <BlurFade delay={0.25} inView>
-            <section className="mb-16">
+            <section id="typography" className="mb-16">
               <h2 className="text-2xl font-bold text-foreground mb-6">Typography</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <ComponentCard title="AnimatedGradientText" importPath="@/components/ui/animated-gradient-text">
@@ -612,11 +594,9 @@ export default function DesignSystemPage() {
                 </ComponentCard>
               </div>
             </section>
-          </BlurFade>
 
           {/* Form Controls Section */}
-          <BlurFade delay={0.3} inView>
-            <section className="mb-16">
+            <section id="form-controls" className="mb-16">
               <h2 className="text-2xl font-bold text-foreground mb-6">Form Controls</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <ComponentCard title="Switch" importPath="@/components/ui/switch">
@@ -649,11 +629,9 @@ export default function DesignSystemPage() {
                 </ComponentCard>
               </div>
             </section>
-          </BlurFade>
 
           {/* Dropdowns & Popovers Section */}
-          <BlurFade delay={0.32} inView>
-            <section className="mb-16">
+            <section id="dropdowns-popovers" className="mb-16">
               <h2 className="text-2xl font-bold text-foreground mb-6">Dropdowns & Popovers</h2>
               <p className="text-muted-foreground mb-6 text-sm">
                 Glassmorphic dropdowns with <code>backdrop-blur-xl</code> and solid dark background in dark mode.
@@ -701,11 +679,9 @@ export default function DesignSystemPage() {
                 </ComponentCard>
               </div>
             </section>
-          </BlurFade>
 
           {/* Accordion Section */}
-          <BlurFade delay={0.33} inView>
-            <section className="mb-16">
+            <section id="accordion" className="mb-16">
               <h2 className="text-2xl font-bold text-foreground mb-6">Accordion</h2>
               <p className="text-muted-foreground mb-6 text-sm">
                 Collapsible FAQ-style component with smooth expand/collapse animations. Uses Radix UI primitives.
@@ -745,11 +721,9 @@ export default function DesignSystemPage() {
                 </ComponentCard>
               </div>
             </section>
-          </BlurFade>
 
           {/* Media Components Section */}
-          <BlurFade delay={0.34} inView>
-            <section className="mb-16">
+            <section id="media-components" className="mb-16">
               <h2 className="text-2xl font-bold text-foreground mb-6">Media Components</h2>
               <div className="grid grid-cols-1 gap-6">
                 <ComponentCard title="BeforeAfterSlider" importPath="@/components/before-after-slider" className="col-span-full">
@@ -767,19 +741,11 @@ export default function DesignSystemPage() {
                 </ComponentCard>
               </div>
             </section>
-          </BlurFade>
 
           {/* Animation Components Section */}
-          <BlurFade delay={0.36} inView>
-            <section className="mb-16">
+            <section id="animation-components" className="mb-16">
               <h2 className="text-2xl font-bold text-foreground mb-6">Animation Components</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <ComponentCard title="BlurFade" importPath="@/components/ui/blur-fade" className="col-span-full">
-                  <p className="text-muted-foreground text-sm">
-                    Wraps content with fade-in + blur animation on scroll. Used on this page.
-                  </p>
-                </ComponentCard>
-
                 <ComponentCard title="Marquee" importPath="@/components/ui/marquee">
                   <div className="w-full overflow-hidden">
                     <Marquee className="[--duration:10s]">
@@ -799,11 +765,9 @@ export default function DesignSystemPage() {
                 </ComponentCard>
               </div>
             </section>
-          </BlurFade>
 
           {/* Background Patterns Section */}
-          <BlurFade delay={0.41} inView>
-            <section className="mb-16">
+            <section id="background-patterns" className="mb-16">
               <h2 className="text-2xl font-bold text-foreground mb-6">Background Patterns</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <ComponentCard title="DotPattern" importPath="@/components/ui/dot-pattern">
@@ -819,11 +783,42 @@ export default function DesignSystemPage() {
                 </ComponentCard>
               </div>
             </section>
-          </BlurFade>
+
+          {/* BlurFade Section */}
+            <section id="blur-fade" className="mb-16">
+              <h2 className="text-2xl font-bold text-foreground mb-6">BlurFade</h2>
+              <ComponentCard title="BlurFade" importPath="@/components/ui/blur-fade" className="col-span-full">
+                <p className="text-muted-foreground text-sm mb-4">
+                  Wraps content with fade-in + blur animation. Used on the landing page for staggered entrance animations.
+                  Scroll down in this preview area to trigger the animation.
+                </p>
+                <div className="border rounded-lg p-4 bg-muted/30 max-h-48 overflow-y-auto">
+                  <div className="space-y-4">
+                    <BlurFade delay={0.1} inView>
+                      <div className="p-4 bg-emerald-500/10 rounded-lg border border-emerald-500/20">
+                        <p className="text-sm font-medium">First Element (delay: 0.1s)</p>
+                        <p className="text-xs text-muted-foreground">Fades in with blur effect</p>
+                      </div>
+                    </BlurFade>
+                    <BlurFade delay={0.2} inView>
+                      <div className="p-4 bg-blue-500/10 rounded-lg border border-blue-500/20">
+                        <p className="text-sm font-medium">Second Element (delay: 0.2s)</p>
+                        <p className="text-xs text-muted-foreground">Staggered entrance animation</p>
+                      </div>
+                    </BlurFade>
+                    <BlurFade delay={0.3} inView>
+                      <div className="p-4 bg-purple-500/10 rounded-lg border border-purple-500/20">
+                        <p className="text-sm font-medium">Third Element (delay: 0.3s)</p>
+                        <p className="text-xs text-muted-foreground">Creates a cascading effect</p>
+                      </div>
+                    </BlurFade>
+                  </div>
+                </div>
+              </ComponentCard>
+            </section>
 
           {/* Layout Components Section */}
-          <BlurFade delay={0.46} inView>
-            <section className="mb-16">
+            <section id="layout-components" className="mb-16">
               <h2 className="text-2xl font-bold text-foreground mb-6">Layout Components</h2>
               <ComponentCard title="BentoGrid + BentoCard" importPath="@/components/ui/bento-grid" className="col-span-full">
                 <div className="w-full">
@@ -850,11 +845,9 @@ export default function DesignSystemPage() {
                 </div>
               </ComponentCard>
             </section>
-          </BlurFade>
 
           {/* Animated Icons Section */}
-          <BlurFade delay={0.51} inView>
-            <section className="mb-16">
+            <section id="animated-icons" className="mb-16">
               <h2 className="text-2xl font-bold text-foreground mb-6">Animated Icons (Lucide Animated)</h2>
               <p className="text-muted-foreground mb-6 text-sm">
                 Hover over icons to trigger animations. Use refs to control: <code>iconRef.current?.startAnimation()</code>
@@ -886,11 +879,9 @@ export default function DesignSystemPage() {
                 ))}
               </div>
             </section>
-          </BlurFade>
 
           {/* Custom Components Section */}
-          <BlurFade delay={0.56} inView>
-            <section className="mb-16">
+            <section id="custom-components" className="mb-16">
               <h2 className="text-2xl font-bold text-foreground mb-6">Custom Components</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <ComponentCard title="CursorGrid" importPath="@/components/cursor-grid">
@@ -918,11 +909,9 @@ export default function DesignSystemPage() {
                 </ComponentCard>
               </div>
             </section>
-          </BlurFade>
 
           {/* Usage Notes */}
-          <BlurFade delay={0.61} inView>
-            <section className="rounded-xl border border-border bg-card/50 p-6">
+            <section id="usage-notes" className="mb-16 rounded-xl border border-border bg-card/50 p-6">
               <h2 className="text-xl font-bold text-foreground mb-4">Usage Notes</h2>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>• All UI components are in <code>components/ui/</code></li>
@@ -934,9 +923,6 @@ export default function DesignSystemPage() {
                 <li>• Number animations via <code>@number-flow/react</code></li>
               </ul>
             </section>
-          </BlurFade>
-        </div>
-      </main>
-    </div>
+      </div>
   );
 }
