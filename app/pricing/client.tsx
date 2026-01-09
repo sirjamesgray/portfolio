@@ -15,25 +15,25 @@ const TIER_FEATURES = {
     "Clean, professional design",
     "Mobile-friendly & responsive",
     "Deployed & live on the internet",
-  ],
+  ] as string[],
   standard: [
     "Content management system",
     "User accounts & sign-in",
     "Contact forms & notifications",
-  ],
+  ] as string[],
   premium: [
     "Third-party integrations",
     "Admin dashboard",
     "Performance optimization",
-  ],
-} as const;
+  ] as string[],
+};
 
 // All features in order for comparison view
-const ALL_FEATURES = [
+const ALL_FEATURES: string[] = [
   ...TIER_FEATURES.starter,
   ...TIER_FEATURES.standard,
   ...TIER_FEATURES.premium,
-] as const;
+];
 
 const projects = [
   {
