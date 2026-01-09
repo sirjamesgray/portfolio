@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
+import { LandingButton } from "@/components/ui/landing-button";
 import { User, ArrowLeft, LogOut } from "lucide-react";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 import { Logo3DStatic } from "@/components/logo-3d";
@@ -81,22 +82,22 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
                 </Button>
               </Link>
               <Link href="/start-project">
-                <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:shadow-[0_0_20px_rgba(16,185,129,0.4)]">
+                <LandingButton variant="primary" size="sm">
                   Start Project
-                </Button>
+                </LandingButton>
               </Link>
             </>
           ) : (
             <>
               <Link href="/pricing">
-                <Button variant="ghost" size="sm">
+                <LandingButton variant="secondary" size="sm">
                   View pricing
-                </Button>
+                </LandingButton>
               </Link>
               <Link href={CTA_CONFIG.dashboardDisabled.href}>
-                <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:shadow-[0_0_20px_rgba(16,185,129,0.4)]">
+                <LandingButton variant="primary" size="sm">
                   {CTA_CONFIG.dashboardDisabled.text}
-                </Button>
+                </LandingButton>
               </Link>
             </>
           )}
@@ -134,10 +135,10 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
                 Log out
               </Button>
               <Link href="/dashboard" className="flex-1">
-                <Button size="default" className="w-full gap-2 h-11 px-5 text-base rounded-full bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:shadow-[0_0_20px_rgba(16,185,129,0.4)]">
+                <LandingButton variant="primary" className="w-full gap-2">
                   <User className="h-5 w-5" />
                   Dashboard
-                </Button>
+                </LandingButton>
               </Link>
             </>
           ) : customerDashboardEnabled ? (
@@ -148,22 +149,22 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
                 </Button>
               </Link>
               <Link href="/start-project" className="flex-1">
-                <Button size="default" className="w-full h-11 px-5 text-base rounded-full bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:shadow-[0_0_20px_rgba(16,185,129,0.4)]">
+                <LandingButton variant="primary" className="w-full">
                   Start Project
-                </Button>
+                </LandingButton>
               </Link>
             </>
           ) : (
             <>
               <Link href="/pricing" className="flex-1">
-                <Button variant="ghost" size="default" className="w-full h-11 px-5 text-base rounded-full">
+                <LandingButton variant="secondary" className="w-full">
                   View pricing
-                </Button>
+                </LandingButton>
               </Link>
               <Link href={CTA_CONFIG.dashboardDisabled.href} className="flex-1">
-                <Button size="default" className="w-full h-11 px-5 text-base rounded-full bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:shadow-[0_0_20px_rgba(16,185,129,0.4)]">
+                <LandingButton variant="primary" className="w-full">
                   {CTA_CONFIG.dashboardDisabled.text}
-                </Button>
+                </LandingButton>
               </Link>
             </>
           )}

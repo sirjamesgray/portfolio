@@ -1,13 +1,11 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { Calendar, Mail, MessageSquare } from "lucide-react";
 import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { SITE_CONFIG } from "@/lib/constants";
-
-export const metadata = {
-  title: "Get in Touch | Jamie Gray",
-  description: "Schedule a call, send an email, or text me directly to discuss your project.",
-};
 
 const contactOptions = [
   {
@@ -36,6 +34,45 @@ const contactOptions = [
   },
 ];
 
+// Twinkling sparkle component
+function TwinklingSparkles() {
+  const [sparkles, setSparkles] = useState<Array<{ id: number; x: number; y: number; delay: number; size: number }>>([]);
+
+  useEffect(() => {
+    // Generate random sparkle positions
+    const generateSparkles = () => {
+      const newSparkles = Array.from({ length: 12 }, (_, i) => ({
+        id: i,
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        delay: Math.random() * 2,
+        size: Math.random() * 2 + 1,
+      }));
+      setSparkles(newSparkles);
+    };
+
+    generateSparkles();
+  }, []);
+
+  return (
+    <div className="absolute inset-0 overflow-hidden rounded-xl pointer-events-none">
+      {sparkles.map((sparkle) => (
+        <div
+          key={sparkle.id}
+          className="absolute rounded-full bg-white animate-twinkle"
+          style={{
+            left: `${sparkle.x}%`,
+            top: `${sparkle.y}%`,
+            width: `${sparkle.size}px`,
+            height: `${sparkle.size}px`,
+            animationDelay: `${sparkle.delay}s`,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
 export default function ContactPage() {
   return (
     <>
@@ -62,14 +99,17 @@ export default function ContactPage() {
                     href={option.href}
                     target={option.external ? "_blank" : undefined}
                     rel={option.external ? "noopener noreferrer" : undefined}
-                    className={`group flex items-center gap-6 p-6 rounded-xl border transition-all ${
+                    className={`group relative flex items-center gap-6 p-6 rounded-xl border transition-all ${
                       option.primary
                         ? "bg-emerald-600 hover:bg-emerald-700 border-emerald-600 text-white"
                         : "bg-card hover:bg-muted/50 border-border"
                     }`}
                   >
+                    {/* Twinkling sparkles for primary action */}
+                    {option.primary && <TwinklingSparkles />}
+
                     <div
-                      className={`flex-shrink-0 p-3 rounded-lg ${
+                      className={`relative flex-shrink-0 p-3 rounded-lg ${
                         option.primary
                           ? "bg-white/20"
                           : "bg-emerald-500/10"
@@ -81,7 +121,7 @@ export default function ContactPage() {
                         }`}
                       />
                     </div>
-                    <div className="flex-1 min-w-0">
+                    <div className="relative flex-1 min-w-0">
                       <h2
                         className={`text-lg font-semibold ${
                           option.primary ? "text-white" : "text-foreground"
@@ -98,7 +138,7 @@ export default function ContactPage() {
                       </p>
                     </div>
                     <div
-                      className={`flex-shrink-0 transition-transform group-hover:translate-x-1 ${
+                      className={`relative flex-shrink-0 transition-transform group-hover:translate-x-1 ${
                         option.primary ? "text-white/80" : "text-muted-foreground"
                       }`}
                     >

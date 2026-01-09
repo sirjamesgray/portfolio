@@ -5,11 +5,10 @@ import dynamic from "next/dynamic";
 import { Copy, Check, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MobileBackButton } from "@/components/dashboard/mobile-back-button";
-import { ShimmerButton } from "@/components/ui/shimmer-button";
+import { LandingButton } from "@/components/ui/landing-button";
 import { PulsatingButton } from "@/components/ui/pulsating-button";
 import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button";
 import { AnimatedGradientText } from "@/components/ui/animated-gradient-text";
-import { SparklesText } from "@/components/ui/sparkles-text";
 import { Marquee } from "@/components/ui/marquee";
 import { Ripple } from "@/components/ui/ripple";
 import { DotPattern } from "@/components/ui/dot-pattern";
@@ -37,6 +36,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
+import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { StatusBadge } from "@/components/ui/status-badge";
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Textarea } from "@/components/ui/textarea";
 import { BeforeAfterSlider } from "@/components/before-after-slider";
 import { BlurFade } from "@/components/ui/blur-fade";
 
@@ -167,15 +175,161 @@ function HexColorSwatch({ name, hex, description }: { name: string; hex: string;
 export default function DesignSystemPage() {
   const [sliderValue, setSliderValue] = useState([50]);
 
+  // BeforeAfterSlider editor state
+  const [baMode, setBaMode] = useState<"fill" | "fit">("fill");
+  const [baBgColor, setBaBgColor] = useState("#1a1a1a");
+  const [baBeforeImage, setBaBeforeImage] = useState("https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=450&fit=crop");
+  const [baAfterImage, setBaAfterImage] = useState("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=450&fit=crop");
+  const [baBeforeLabel, setBaBeforeLabel] = useState("Before");
+  const [baAfterLabel, setBaAfterLabel] = useState("After");
+
   return (
     <div>
         <MobileBackButton />
-            <div className="mb-12 text-center lg:text-left">
+            <div className="mb-8 text-center lg:text-left">
               <h1 className="text-4xl font-bold text-foreground mb-4">Design System</h1>
               <p className="text-muted-foreground max-w-2xl lg:mx-0 mx-auto">
                 Component library and design tokens. Click component names to copy import paths.
               </p>
             </div>
+
+            {/* Component Sources */}
+            <section id="sources" className="mb-12">
+              <div className="rounded-xl border border-border bg-gradient-to-br from-emerald-500/5 to-blue-500/5 p-6">
+                <h2 className="text-lg font-semibold text-foreground mb-4">Component Sources</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+                  <div className="space-y-1">
+                    <a href="https://ui.shadcn.com" target="_blank" rel="noopener noreferrer" className="font-medium text-foreground hover:text-emerald-500 transition-colors">
+                      shadcn/ui →
+                    </a>
+                    <p className="text-muted-foreground text-xs">
+                      Base components built on Radix UI primitives. Button, Dialog, Select, Accordion, etc.
+                    </p>
+                  </div>
+                  <div className="space-y-1">
+                    <a href="https://magicui.design" target="_blank" rel="noopener noreferrer" className="font-medium text-foreground hover:text-emerald-500 transition-colors">
+                      Magic UI →
+                    </a>
+                    <p className="text-muted-foreground text-xs">
+                      Animated components. Marquee, Ripple, BlurFade, BentoGrid, AnimatedGradientText, etc.
+                    </p>
+                  </div>
+                  <div className="space-y-1">
+                    <a href="https://lucide.dev" target="_blank" rel="noopener noreferrer" className="font-medium text-foreground hover:text-emerald-500 transition-colors">
+                      Lucide Icons →
+                    </a>
+                    <p className="text-muted-foreground text-xs">
+                      Icon library with 1000+ icons. Some wrapped with animation via custom components.
+                    </p>
+                  </div>
+                  <div className="space-y-1">
+                    <span className="font-medium text-foreground">Custom</span>
+                    <p className="text-muted-foreground text-xs">
+                      CursorGrid, BeforeAfterSlider, Logo3D, ExperienceTimeline, LandingButton, etc.
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-4 pt-4 border-t border-border/50 flex flex-wrap gap-x-6 gap-y-2 text-xs text-muted-foreground">
+                  <span><strong>Styling:</strong> Tailwind CSS v4</span>
+                  <span><strong>Animation:</strong> Framer Motion</span>
+                  <span><strong>3D:</strong> React Three Fiber + Drei</span>
+                  <span><strong>Numbers:</strong> @number-flow/react</span>
+                  <span><strong>Glow:</strong> @codaworks/react-glow</span>
+                </div>
+              </div>
+            </section>
+
+            {/* Typography */}
+            <section id="typography" className="mb-16">
+              <h2 className="text-2xl font-bold text-foreground mb-2">Typography</h2>
+              <p className="text-muted-foreground mb-6 text-sm">
+                Font stack using Geist Sans and Geist Mono from Vercel. Defined in <code>app/layout.tsx</code>.
+              </p>
+
+              {/* Font Families */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div className="rounded-xl border border-border bg-card/50 p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-semibold text-foreground">Geist Sans</h3>
+                    <code className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">font-sans</code>
+                  </div>
+                  <p className="text-muted-foreground text-sm mb-4">Primary typeface for all UI text.</p>
+                  <div className="space-y-2 font-sans">
+                    <p className="text-2xl font-bold">The quick brown fox</p>
+                    <p className="text-lg font-medium">The quick brown fox jumps over</p>
+                    <p className="text-base">The quick brown fox jumps over the lazy dog</p>
+                    <p className="text-sm text-muted-foreground">ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789</p>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border border-border bg-card/50 p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-semibold text-foreground">Geist Mono</h3>
+                    <code className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">font-mono</code>
+                  </div>
+                  <p className="text-muted-foreground text-sm mb-4">Monospace for code, data, and technical content.</p>
+                  <div className="space-y-2 font-mono">
+                    <p className="text-2xl font-bold">The quick brown fox</p>
+                    <p className="text-lg font-medium">The quick brown fox jumps over</p>
+                    <p className="text-base">The quick brown fox jumps over the lazy dog</p>
+                    <p className="text-sm text-muted-foreground">ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Type Scale */}
+              <div className="rounded-xl border border-border bg-card/50 p-6">
+                <h3 className="font-semibold text-foreground mb-4">Type Scale & Hierarchy</h3>
+                <div className="space-y-6">
+                  <div className="flex items-baseline gap-4 pb-4 border-b border-border">
+                    <code className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded w-24 shrink-0 text-center">text-5xl</code>
+                    <span className="text-5xl font-bold tracking-tight">Page Title</span>
+                  </div>
+                  <div className="flex items-baseline gap-4 pb-4 border-b border-border">
+                    <code className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded w-24 shrink-0 text-center">text-4xl</code>
+                    <span className="text-4xl font-bold tracking-tight">Section Header</span>
+                  </div>
+                  <div className="flex items-baseline gap-4 pb-4 border-b border-border">
+                    <code className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded w-24 shrink-0 text-center">text-2xl</code>
+                    <span className="text-2xl font-bold">Card Title</span>
+                  </div>
+                  <div className="flex items-baseline gap-4 pb-4 border-b border-border">
+                    <code className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded w-24 shrink-0 text-center">text-xl</code>
+                    <span className="text-xl font-semibold">Subsection Title</span>
+                  </div>
+                  <div className="flex items-baseline gap-4 pb-4 border-b border-border">
+                    <code className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded w-24 shrink-0 text-center">text-lg</code>
+                    <span className="text-lg font-medium">Lead Paragraph</span>
+                  </div>
+                  <div className="flex items-baseline gap-4 pb-4 border-b border-border">
+                    <code className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded w-24 shrink-0 text-center">text-base</code>
+                    <span className="text-base">Body text - default size for paragraphs and UI elements</span>
+                  </div>
+                  <div className="flex items-baseline gap-4 pb-4 border-b border-border">
+                    <code className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded w-24 shrink-0 text-center">text-sm</code>
+                    <span className="text-sm text-muted-foreground">Secondary text, captions, and metadata</span>
+                  </div>
+                  <div className="flex items-baseline gap-4">
+                    <code className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded w-24 shrink-0 text-center">text-xs</code>
+                    <span className="text-xs text-muted-foreground">Labels, badges, and fine print</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Font Weights */}
+              <div className="mt-6 p-4 rounded-lg border border-border bg-muted/30">
+                <h4 className="text-sm font-medium text-foreground mb-3">Font Weights</h4>
+                <div className="flex flex-wrap gap-4 text-sm">
+                  <span className="font-normal">Regular (400)</span>
+                  <span className="font-medium">Medium (500)</span>
+                  <span className="font-semibold">Semibold (600)</span>
+                  <span className="font-bold">Bold (700)</span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-3">
+                  Use <code>tracking-tight</code> (-0.025em) for large headlines. Default tracking for body text.
+                </p>
+              </div>
+            </section>
 
             {/* Favicon */}
             <section id="favicon" className="mb-16">
@@ -512,15 +666,101 @@ export default function DesignSystemPage() {
           {/* Colors Section */}
             <section id="colors" className="mb-16">
               <h2 className="text-2xl font-bold text-foreground mb-6">Colors</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 p-6 rounded-xl border border-border bg-card/50">
-                <ColorSwatch name="Background" variable="bg-background" className="bg-background" />
-                <ColorSwatch name="Foreground" variable="text-foreground" className="bg-foreground" />
-                <ColorSwatch name="Primary" variable="bg-primary" className="bg-primary" />
-                <ColorSwatch name="Secondary" variable="bg-secondary" className="bg-secondary" />
-                <ColorSwatch name="Muted" variable="bg-muted" className="bg-muted" />
-                <ColorSwatch name="Accent" variable="bg-accent" className="bg-accent" />
-                <ColorSwatch name="Card" variable="bg-card" className="bg-card" />
-                <ColorSwatch name="Border" variable="border-border" className="bg-border" />
+              <p className="text-muted-foreground mb-6 text-sm">
+                Uses <strong>OKLCH</strong> color space for perceptual uniformity. Defined in <code>globals.css</code> with light/dark mode variants.
+                Many colors use alpha values (e.g., <code>oklch(0 0 0 / 90%)</code>).
+              </p>
+
+              {/* Core Colors */}
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-sm font-medium text-muted-foreground mb-3 uppercase tracking-wide">Core</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 rounded-xl border border-border bg-card/50">
+                    <ColorSwatch name="Background" variable="bg-background" className="bg-background" />
+                    <ColorSwatch name="Foreground" variable="text-foreground" className="bg-foreground" />
+                    <ColorSwatch name="Card" variable="bg-card" className="bg-card" />
+                    <ColorSwatch name="Border" variable="border-border" className="bg-border" />
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-sm font-medium text-muted-foreground mb-3 uppercase tracking-wide">Brand & Actions</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 rounded-xl border border-border bg-card/50">
+                    <ColorSwatch name="Brand" variable="bg-brand" className="bg-brand" />
+                    <ColorSwatch name="Primary" variable="bg-primary" className="bg-primary" />
+                    <ColorSwatch name="Secondary" variable="bg-secondary" className="bg-secondary" />
+                    <ColorSwatch name="Destructive" variable="bg-destructive" className="bg-destructive" />
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-sm font-medium text-muted-foreground mb-3 uppercase tracking-wide">UI States</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 rounded-xl border border-border bg-card/50">
+                    <ColorSwatch name="Muted" variable="bg-muted" className="bg-muted" />
+                    <ColorSwatch name="Accent" variable="bg-accent" className="bg-accent" />
+                    <ColorSwatch name="Popover" variable="bg-popover" className="bg-popover" />
+                    <ColorSwatch name="Ring" variable="ring-ring" className="bg-ring" />
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-sm font-medium text-muted-foreground mb-3 uppercase tracking-wide">Chart Colors</h3>
+                  <div className="grid grid-cols-5 gap-4 p-4 rounded-xl border border-border bg-card/50">
+                    <ColorSwatch name="Chart 1" variable="--chart-1" className="bg-chart-1" />
+                    <ColorSwatch name="Chart 2" variable="--chart-2" className="bg-chart-2" />
+                    <ColorSwatch name="Chart 3" variable="--chart-3" className="bg-chart-3" />
+                    <ColorSwatch name="Chart 4" variable="--chart-4" className="bg-chart-4" />
+                    <ColorSwatch name="Chart 5" variable="--chart-5" className="bg-chart-5" />
+                  </div>
+                </div>
+
+                {/* Emerald Scale - Our Accent */}
+                <div>
+                  <h3 className="text-sm font-medium text-muted-foreground mb-3 uppercase tracking-wide">Emerald Scale (Accent)</h3>
+                  <p className="text-xs text-muted-foreground mb-3">Primary accent color used for CTAs, links, and highlights.</p>
+                  <div className="grid grid-cols-5 md:grid-cols-10 gap-2 p-4 rounded-xl border border-border bg-card/50">
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="h-8 w-8 rounded-md bg-emerald-50" />
+                      <span className="text-[10px] text-muted-foreground">50</span>
+                    </div>
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="h-8 w-8 rounded-md bg-emerald-100" />
+                      <span className="text-[10px] text-muted-foreground">100</span>
+                    </div>
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="h-8 w-8 rounded-md bg-emerald-200" />
+                      <span className="text-[10px] text-muted-foreground">200</span>
+                    </div>
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="h-8 w-8 rounded-md bg-emerald-300" />
+                      <span className="text-[10px] text-muted-foreground">300</span>
+                    </div>
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="h-8 w-8 rounded-md bg-emerald-400" />
+                      <span className="text-[10px] text-muted-foreground">400</span>
+                    </div>
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="h-8 w-8 rounded-md bg-emerald-500" />
+                      <span className="text-[10px] text-muted-foreground">500</span>
+                    </div>
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="h-8 w-8 rounded-md bg-emerald-600" />
+                      <span className="text-[10px] text-muted-foreground">600</span>
+                    </div>
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="h-8 w-8 rounded-md bg-emerald-700" />
+                      <span className="text-[10px] text-muted-foreground">700</span>
+                    </div>
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="h-8 w-8 rounded-md bg-emerald-800" />
+                      <span className="text-[10px] text-muted-foreground">800</span>
+                    </div>
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="h-8 w-8 rounded-md bg-emerald-900" />
+                      <span className="text-[10px] text-muted-foreground">900</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </section>
 
@@ -567,8 +807,35 @@ export default function DesignSystemPage() {
                   </div>
                 </ComponentCard>
 
-                <ComponentCard title="ShimmerButton" importPath="@/components/ui/shimmer-button">
-                  <ShimmerButton>Shimmer</ShimmerButton>
+                <ComponentCard title="LandingButton" importPath="@/components/ui/landing-button" className="md:col-span-2 lg:col-span-3">
+                  <div className="flex flex-col gap-4 w-full">
+                    <p className="text-xs text-muted-foreground text-center">
+                      Landing page CTA button with shimmer animation. Variants: <code className="bg-muted px-1 rounded">default</code> (black), <code className="bg-muted px-1 rounded">primary</code> (green), <code className="bg-muted px-1 rounded">secondary</code> (white/zinc).
+                    </p>
+                    <div className="flex flex-col gap-4">
+                      {/* Default variant (black) */}
+                      <div className="flex flex-wrap items-center justify-center gap-3">
+                        <span className="text-xs text-muted-foreground w-20">default</span>
+                        <LandingButton size="sm">Small</LandingButton>
+                        <LandingButton>Default</LandingButton>
+                        <LandingButton size="lg">Large</LandingButton>
+                      </div>
+                      {/* Primary variant (green) */}
+                      <div className="flex flex-wrap items-center justify-center gap-3">
+                        <span className="text-xs text-muted-foreground w-20">primary</span>
+                        <LandingButton variant="primary" size="sm">Small</LandingButton>
+                        <LandingButton variant="primary">Default</LandingButton>
+                        <LandingButton variant="primary" size="lg">Large</LandingButton>
+                      </div>
+                      {/* Secondary variant (white in light, zinc in dark) */}
+                      <div className="flex flex-wrap items-center justify-center gap-3">
+                        <span className="text-xs text-muted-foreground w-20">secondary</span>
+                        <LandingButton variant="secondary" size="sm">Small</LandingButton>
+                        <LandingButton variant="secondary">Default</LandingButton>
+                        <LandingButton variant="secondary" size="lg">Large</LandingButton>
+                      </div>
+                    </div>
+                  </div>
                 </ComponentCard>
 
                 <ComponentCard title="PulsatingButton" importPath="@/components/ui/pulsating-button">
@@ -588,10 +855,6 @@ export default function DesignSystemPage() {
                 <ComponentCard title="AnimatedGradientText" importPath="@/components/ui/animated-gradient-text">
                   <AnimatedGradientText>Gradient Text</AnimatedGradientText>
                 </ComponentCard>
-
-                <ComponentCard title="SparklesText" importPath="@/components/ui/sparkles-text">
-                  <SparklesText className="text-2xl">Sparkles</SparklesText>
-                </ComponentCard>
               </div>
             </section>
 
@@ -599,6 +862,21 @@ export default function DesignSystemPage() {
             <section id="form-controls" className="mb-16">
               <h2 className="text-2xl font-bold text-foreground mb-6">Form Controls</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <ComponentCard title="Input" importPath="@/components/ui/input">
+                  <Input placeholder="Enter text..." className="w-full max-w-[200px]" />
+                </ComponentCard>
+
+                <ComponentCard title="Textarea" importPath="@/components/ui/textarea">
+                  <Textarea placeholder="Enter longer text..." className="w-full max-w-[200px] h-20" />
+                </ComponentCard>
+
+                <ComponentCard title="Label" importPath="@/components/ui/label">
+                  <div className="flex flex-col gap-2">
+                    <Label htmlFor="demo-input">Form Label</Label>
+                    <Input id="demo-input" placeholder="With label" className="w-full max-w-[160px]" />
+                  </div>
+                </ComponentCard>
+
                 <ComponentCard title="Switch" importPath="@/components/ui/switch">
                   <Switch />
                 </ComponentCard>
@@ -621,10 +899,18 @@ export default function DesignSystemPage() {
                 </ComponentCard>
 
                 <ComponentCard title="Badge" importPath="@/components/ui/badge">
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 flex-wrap">
                     <Badge>Default</Badge>
                     <Badge variant="secondary">Secondary</Badge>
                     <Badge variant="outline">Outline</Badge>
+                  </div>
+                </ComponentCard>
+
+                <ComponentCard title="StatusBadge" importPath="@/components/ui/status-badge">
+                  <div className="flex gap-2 flex-wrap">
+                    <StatusBadge status="lead" />
+                    <StatusBadge status="in_progress" />
+                    <StatusBadge status="completed" />
                   </div>
                 </ComponentCard>
               </div>
@@ -722,23 +1008,272 @@ export default function DesignSystemPage() {
               </div>
             </section>
 
+          {/* Modals & Dialogs Section */}
+            <section id="modals-dialogs" className="mb-16">
+              <h2 className="text-2xl font-bold text-foreground mb-6">Modals & Dialogs</h2>
+              <p className="text-muted-foreground mb-6 text-sm">
+                Overlay components for user interactions, confirmations, and forms.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <ComponentCard title="Dialog" importPath="@/components/ui/dialog">
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline">Open Dialog</Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Dialog Title</DialogTitle>
+                        <DialogDescription>
+                          This is a modal dialog for displaying content or forms.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="py-4">
+                        <p className="text-sm text-muted-foreground">Dialog content goes here.</p>
+                      </div>
+                      <DialogFooter>
+                        <DialogClose asChild>
+                          <Button variant="outline">Cancel</Button>
+                        </DialogClose>
+                        <Button>Confirm</Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </ComponentCard>
+
+                <ComponentCard title="AlertDialog" importPath="@/components/ui/alert-dialog">
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="outline">Open Alert</Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. This will permanently delete your data.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction>Continue</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </ComponentCard>
+
+                <ComponentCard title="Drawer" importPath="@/components/ui/drawer">
+                  <Drawer>
+                    <DrawerTrigger asChild>
+                      <Button variant="outline">Open Drawer</Button>
+                    </DrawerTrigger>
+                    <DrawerContent>
+                      <DrawerHeader>
+                        <DrawerTitle>Drawer Title</DrawerTitle>
+                        <DrawerDescription>Slides up from the bottom on mobile.</DrawerDescription>
+                      </DrawerHeader>
+                      <div className="p-4">
+                        <p className="text-sm text-muted-foreground">Drawer content goes here.</p>
+                      </div>
+                      <DrawerFooter>
+                        <Button>Submit</Button>
+                        <DrawerClose asChild>
+                          <Button variant="outline">Cancel</Button>
+                        </DrawerClose>
+                      </DrawerFooter>
+                    </DrawerContent>
+                  </Drawer>
+                </ComponentCard>
+              </div>
+            </section>
+
+          {/* Data Display Section */}
+            <section id="data-display" className="mb-16">
+              <h2 className="text-2xl font-bold text-foreground mb-6">Data Display</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <ComponentCard title="Card" importPath="@/components/ui/card">
+                  <Card className="w-full max-w-[280px]">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base">Card Title</CardTitle>
+                      <CardDescription>Card description text</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground">Card content goes here.</p>
+                    </CardContent>
+                    <CardFooter>
+                      <Button size="sm" className="w-full">Action</Button>
+                    </CardFooter>
+                  </Card>
+                </ComponentCard>
+
+                <ComponentCard title="Table" importPath="@/components/ui/table">
+                  <div className="w-full max-w-md">
+                    <Table>
+                      <TableCaption>Sample data table</TableCaption>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Name</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead className="text-right">Amount</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        <TableRow>
+                          <TableCell>Project A</TableCell>
+                          <TableCell>Active</TableCell>
+                          <TableCell className="text-right">$250</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>Project B</TableCell>
+                          <TableCell>Pending</TableCell>
+                          <TableCell className="text-right">$150</TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </div>
+                </ComponentCard>
+              </div>
+            </section>
+
           {/* Media Components Section */}
             <section id="media-components" className="mb-16">
               <h2 className="text-2xl font-bold text-foreground mb-6">Media Components</h2>
               <div className="grid grid-cols-1 gap-6">
-                <ComponentCard title="BeforeAfterSlider" importPath="@/components/before-after-slider" className="col-span-full">
-                  <div className="w-full max-w-2xl">
-                    <p className="text-xs text-muted-foreground text-center mb-4">
-                      Hover to control slider position. Images use <code>object-contain</code> to show full images without cropping.
-                    </p>
-                    <BeforeAfterSlider
-                      beforeImage="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=450&fit=crop"
-                      afterImage="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=450&fit=crop"
-                      beforeLabel="Before"
-                      afterLabel="After"
-                    />
+                <div className="rounded-xl border border-border bg-card/50 p-6">
+                  <div className="mb-4 flex items-center justify-between">
+                    <h3 className="font-semibold text-foreground">BeforeAfterSlider</h3>
+                    <button
+                      onClick={() => navigator.clipboard.writeText("@/components/before-after-slider")}
+                      className="flex items-center gap-1 rounded-md bg-muted px-2 py-1 text-xs text-muted-foreground hover:bg-muted/80 transition-colors"
+                    >
+                      <Copy className="h-3 w-3" />
+                      <code>before-after-slider</code>
+                    </button>
                   </div>
-                </ComponentCard>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Editor Controls */}
+                    <div className="space-y-4">
+                      <h4 className="text-sm font-medium text-foreground">Editor Controls</h4>
+
+                      {/* Mode Toggle */}
+                      <div className="space-y-2">
+                        <Label className="text-xs text-muted-foreground">Mode</Label>
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            variant={baMode === "fill" ? "default" : "outline"}
+                            onClick={() => setBaMode("fill")}
+                          >
+                            Fill
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant={baMode === "fit" ? "default" : "outline"}
+                            onClick={() => setBaMode("fit")}
+                          >
+                            Fit
+                          </Button>
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          {baMode === "fill" ? "Images cover the container (may crop)" : "Images fit inside with padding (no crop)"}
+                        </p>
+                      </div>
+
+                      {/* Background Color (only visible in fit mode) */}
+                      {baMode === "fit" && (
+                        <div className="space-y-2">
+                          <Label className="text-xs text-muted-foreground">Background Color</Label>
+                          <div className="flex gap-2 items-center">
+                            <input
+                              type="color"
+                              value={baBgColor}
+                              onChange={(e) => setBaBgColor(e.target.value)}
+                              className="h-8 w-12 rounded border border-border cursor-pointer"
+                            />
+                            <Input
+                              value={baBgColor}
+                              onChange={(e) => setBaBgColor(e.target.value)}
+                              className="w-28 h-8 text-xs"
+                              placeholder="#1a1a1a"
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Labels */}
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-2">
+                          <Label className="text-xs text-muted-foreground">Before Label</Label>
+                          <Input
+                            value={baBeforeLabel}
+                            onChange={(e) => setBaBeforeLabel(e.target.value)}
+                            className="h-8 text-xs"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-xs text-muted-foreground">After Label</Label>
+                          <Input
+                            value={baAfterLabel}
+                            onChange={(e) => setBaAfterLabel(e.target.value)}
+                            className="h-8 text-xs"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Image URLs */}
+                      <div className="space-y-2">
+                        <Label className="text-xs text-muted-foreground">Before Image URL</Label>
+                        <Input
+                          value={baBeforeImage}
+                          onChange={(e) => setBaBeforeImage(e.target.value)}
+                          className="h-8 text-xs"
+                          placeholder="https://..."
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-xs text-muted-foreground">After Image URL</Label>
+                        <Input
+                          value={baAfterImage}
+                          onChange={(e) => setBaAfterImage(e.target.value)}
+                          className="h-8 text-xs"
+                          placeholder="https://..."
+                        />
+                      </div>
+
+                      {/* Reset Button */}
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setBaMode("fill");
+                          setBaBgColor("#1a1a1a");
+                          setBaBeforeImage("https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=450&fit=crop");
+                          setBaAfterImage("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=450&fit=crop");
+                          setBaBeforeLabel("Before");
+                          setBaAfterLabel("After");
+                        }}
+                        className="w-full"
+                      >
+                        Reset to Defaults
+                      </Button>
+                    </div>
+
+                    {/* Preview */}
+                    <div className="space-y-4">
+                      <h4 className="text-sm font-medium text-foreground">Preview</h4>
+                      <p className="text-xs text-muted-foreground">
+                        Hover to control slider. Click/tap to go fullscreen.
+                      </p>
+                      <BeforeAfterSlider
+                        beforeImage={baBeforeImage}
+                        afterImage={baAfterImage}
+                        beforeLabel={baBeforeLabel}
+                        afterLabel={baAfterLabel}
+                        mode={baMode}
+                        backgroundColor={baBgColor}
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
             </section>
 
@@ -852,6 +1387,31 @@ export default function DesignSystemPage() {
               <p className="text-muted-foreground mb-6 text-sm">
                 Hover over icons to trigger animations. Use refs to control: <code>iconRef.current?.startAnimation()</code>
               </p>
+
+              {/* Alpha/Transparency Note */}
+              <div className="mb-6 p-4 rounded-lg border border-amber-500/30 bg-amber-500/5">
+                <h4 className="text-sm font-medium text-foreground mb-2">Transparency Note</h4>
+                <p className="text-xs text-muted-foreground mb-3">
+                  Stroke-based SVG icons (like Lucide) can show overlapping artifacts when using alpha transparency
+                  in the color value. This occurs where strokes intersect.
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                  <div>
+                    <p className="font-medium text-destructive mb-1">❌ Avoid</p>
+                    <code className="block bg-muted/50 p-2 rounded text-muted-foreground">
+                      className=&quot;text-foreground/50&quot;
+                    </code>
+                    <p className="text-muted-foreground/70 mt-1">Alpha in color causes stroke overlap</p>
+                  </div>
+                  <div>
+                    <p className="font-medium text-emerald-500 mb-1">✓ Use instead</p>
+                    <code className="block bg-muted/50 p-2 rounded text-muted-foreground">
+                      className=&quot;text-foreground opacity-50&quot;
+                    </code>
+                    <p className="text-muted-foreground/70 mt-1">CSS opacity on parent preserves clean strokes</p>
+                  </div>
+                </div>
+              </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4">
                 {[
                   { name: "BellIcon", Icon: BellIcon, path: "@/components/ui/bell" },
@@ -910,6 +1470,83 @@ export default function DesignSystemPage() {
               </div>
             </section>
 
+          {/* OpenGraph Images */}
+            <section id="og-images" className="mb-16">
+              <h2 className="text-2xl font-bold text-foreground mb-2">OpenGraph Images</h2>
+              <p className="text-muted-foreground mb-6 text-sm">
+                Dynamic OG images generated with Next.js ImageResponse. Preview at <code>/opengraph-image</code> routes.
+              </p>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Home OG Image */}
+                <div className="rounded-xl border border-border bg-card/50 p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-semibold text-foreground">Home Page</h3>
+                    <code className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">app/opengraph-image.tsx</code>
+                  </div>
+                  <div className="relative aspect-[1200/630] rounded-lg overflow-hidden border border-border bg-black">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="/opengraph-image"
+                      alt="Home page OpenGraph preview"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
+                    <span className="px-2 py-0.5 rounded bg-muted">1200×630</span>
+                    <span className="px-2 py-0.5 rounded bg-muted">PNG</span>
+                    <a
+                      href="/opengraph-image"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="ml-auto text-emerald-500 hover:underline"
+                    >
+                      Open full size →
+                    </a>
+                  </div>
+                </div>
+
+                {/* Pricing OG Image */}
+                <div className="rounded-xl border border-border bg-card/50 p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-semibold text-foreground">Pricing Page</h3>
+                    <code className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">app/pricing/opengraph-image.tsx</code>
+                  </div>
+                  <div className="relative aspect-[1200/630] rounded-lg overflow-hidden border border-border bg-black">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="/pricing/opengraph-image"
+                      alt="Pricing page OpenGraph preview"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
+                    <span className="px-2 py-0.5 rounded bg-muted">1200×630</span>
+                    <span className="px-2 py-0.5 rounded bg-muted">PNG</span>
+                    <a
+                      href="/pricing/opengraph-image"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="ml-auto text-emerald-500 hover:underline"
+                    >
+                      Open full size →
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              {/* OG Image Guidelines */}
+              <div className="mt-6 p-4 rounded-lg border border-border bg-muted/30">
+                <h4 className="text-sm font-medium text-foreground mb-2">Guidelines</h4>
+                <ul className="text-xs text-muted-foreground space-y-1">
+                  <li>• Standard size: 1200×630px (1.91:1 aspect ratio)</li>
+                  <li>• Keep important content in the center safe zone (avoid edges)</li>
+                  <li>• Use dark background with emerald accent to match brand</li>
+                  <li>• Include JG logo for brand recognition</li>
+                  <li>• Test with <a href="https://www.opengraph.xyz" target="_blank" rel="noopener noreferrer" className="text-emerald-500 hover:underline">opengraph.xyz</a> or social media debug tools</li>
+                </ul>
+              </div>
+            </section>
+
           {/* Usage Notes */}
             <section id="usage-notes" className="mb-16 rounded-xl border border-border bg-card/50 p-6">
               <h2 className="text-xl font-bold text-foreground mb-4">Usage Notes</h2>
@@ -921,6 +1558,7 @@ export default function DesignSystemPage() {
                 <li>• Accent color is green: <code>hsl(145, 80%, 45%)</code> or <code>text-emerald-500</code></li>
                 <li>• Glow effects via <code>@codaworks/react-glow</code></li>
                 <li>• Number animations via <code>@number-flow/react</code></li>
+                <li>• <strong>Icon transparency:</strong> Use <code>opacity-50</code> not <code>text-foreground/50</code> to avoid stroke overlap</li>
               </ul>
             </section>
       </div>

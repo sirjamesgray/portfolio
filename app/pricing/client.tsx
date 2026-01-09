@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 import { Check, X, Zap, Rocket, Ship, ArrowRight, Calendar, RefreshCw } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { LandingButton } from "@/components/ui/landing-button";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { SiteHeader } from "@/components/site-header";
 import { SITE_CONFIG, CTA_CONFIG } from "@/lib/constants";
@@ -19,10 +20,10 @@ const TIER_FEATURES = {
   standard: [
     "Content management system",
     "User accounts & sign-in",
-    "Contact forms & notifications",
+    "Contact forms",
   ] as string[],
   premium: [
-    "Third-party integrations",
+    "Email notifications",
     "Admin dashboard",
     "Performance optimization",
   ] as string[],
@@ -98,6 +99,21 @@ interface PricingPageClientProps {
 
 export function PricingPageClient({ customerDashboardEnabled }: PricingPageClientProps) {
   const cardRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+  const [showMobileFooter, setShowMobileFooter] = useState(false);
+
+  // Track scroll position to show mobile footer after scrolling a bit
+  useEffect(() => {
+    const handleScroll = () => {
+      // Show footer after scrolling past ~40% of viewport height
+      const scrollThreshold = window.innerHeight * 0.4;
+      setShowMobileFooter(window.scrollY > scrollThreshold);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // Check initial position
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Handle hash-based scrolling on mount
   useEffect(() => {
@@ -123,7 +139,7 @@ export function PricingPageClient({ customerDashboardEnabled }: PricingPageClien
     <div className="min-h-screen bg-background">
       <SiteHeader variant="back" backHref="/#pricing" backLabel="Home" />
 
-      <main className="pt-20 pb-16">
+      <main className="pt-20 pb-28 md:pb-16">
         <div className="mx-auto max-w-6xl px-6">
           {/* Header */}
           <BlurFade delay={0.1}>
@@ -228,19 +244,6 @@ export function PricingPageClient({ customerDashboardEnabled }: PricingPageClien
                       </ul>
                     </div>
 
-                    <Link href={`/start-project?sprint=${project.value}`}>
-                      <Button
-                        className={`w-full gap-2 ${
-                          project.popular
-                            ? "bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600"
-                            : ""
-                        }`}
-                        variant={project.popular ? "default" : "outline"}
-                      >
-                        Get Started
-                        <ArrowRight className="h-4 w-4" />
-                      </Button>
-                    </Link>
                   </div>
                 );
               })}
@@ -323,9 +326,9 @@ export function PricingPageClient({ customerDashboardEnabled }: PricingPageClien
             </div>
           </BlurFade>
 
-          {/* CTA */}
+          {/* CTA - Hidden on mobile since we have floating bar */}
           <BlurFade delay={0.5}>
-            <div className="text-center">
+            <div className="text-center hidden md:block">
               <h2 className="text-2xl font-bold text-foreground mb-4">
                 Ready to get started?
               </h2>
@@ -336,24 +339,24 @@ export function PricingPageClient({ customerDashboardEnabled }: PricingPageClien
                 {customerDashboardEnabled ? (
                   <>
                     <Link href="/start-project">
-                      <Button size="lg" className="gap-2 bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600">
+                      <LandingButton variant="primary" size="lg" className="gap-2">
                         Start a Project
                         <ArrowRight className="h-4 w-4" />
-                      </Button>
+                      </LandingButton>
                     </Link>
                     <a href={SITE_CONFIG.calendly} target="_blank" rel="noopener noreferrer">
-                      <Button size="lg" variant="outline" className="gap-2">
+                      <LandingButton variant="secondary" size="lg" className="gap-2">
                         <Calendar className="h-4 w-4" />
                         Book a Call
-                      </Button>
+                      </LandingButton>
                     </a>
                   </>
                 ) : (
                   <Link href={CTA_CONFIG.dashboardDisabled.href}>
-                    <Button size="lg" className="gap-2 bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600">
+                    <LandingButton variant="primary" size="lg" className="gap-2">
                       {CTA_CONFIG.dashboardDisabled.text}
                       <ArrowRight className="h-4 w-4" />
-                    </Button>
+                    </LandingButton>
                   </Link>
                 )}
               </div>
@@ -361,6 +364,33 @@ export function PricingPageClient({ customerDashboardEnabled }: PricingPageClien
           </BlurFade>
         </div>
       </main>
+
+      {/* Mobile Floating Footer - matches landing page style */}
+      <AnimatePresence>
+        {showMobileFooter && (
+          <motion.div
+            className="md:hidden fixed bottom-6 left-4 right-4 z-50"
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
+            transition={{
+              type: "spring",
+              stiffness: 300,
+              damping: 25,
+              mass: 1,
+            }}
+          >
+            <div className="flex items-center p-2 bg-white/70 dark:bg-black/50 backdrop-blur-2xl border border-white/20 dark:border-white/10 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
+              <Link href="/contact" className="flex-1">
+                <LandingButton variant="primary" className="w-full gap-2">
+                  Get started
+                  <ArrowRight className="h-4 w-4" />
+                </LandingButton>
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { ArrowRight, ArrowUp, Layers, Palette, Code2, Sparkles, Mail, Github, Key, Settings2, HeartHandshake, RefreshCw, Check, LucideIcon, User, MessageCircle, Share2, Copy, Zap, Rocket, Ship } from "lucide-react";
 import { Glow } from "@codaworks/react-glow";
-import { ShimmerButton } from "@/components/ui/shimmer-button";
+import { LandingButton } from "@/components/ui/landing-button";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { BentoGrid, BentoCard } from "@/components/ui/bento-grid";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -256,39 +256,41 @@ export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
           <BlurFade delay={0.4}>
             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
               {showDashboardLinks ? (
-                <Link
-                  href="/dashboard"
-                  className="text-sm font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline flex items-center gap-2"
-                >
-                  <User className="h-4 w-4" />
-                  View Dashboard
+                <Link href="/dashboard">
+                  <LandingButton variant="secondary" className="text-base font-semibold">
+                    <span className="flex items-center gap-2">
+                      <User className="h-4 w-4" />
+                      View Dashboard
+                    </span>
+                  </LandingButton>
                 </Link>
               ) : (
-                <Link
-                  href="/pricing"
-                  className="text-sm font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline flex items-center gap-2"
-                >
-                  View pricing
+                <Link href="/pricing">
+                  <LandingButton variant="secondary" className="text-base font-semibold">
+                    <span className="flex items-center gap-2">
+                      View pricing
+                    </span>
+                  </LandingButton>
                 </Link>
               )}
               <Glow color="hsl(145, 80%, 45%)">
                 {customerDashboardEnabled ? (
                   <Link href="/start-project">
-                    <ShimmerButton className="text-base font-semibold glow:ring-2 glow:ring-emerald-500/50 dark:shadow-[0_0_24px_rgba(16,185,129,0.5)]">
+                    <LandingButton variant="primary" className="text-base font-semibold glow:ring-2 glow:ring-emerald-500/50">
                       <span className="flex items-center gap-2">
                         {showDashboardLinks ? "Start New Project" : "Start a Project"}
                         <ArrowRight className="h-4 w-4" />
                       </span>
-                    </ShimmerButton>
+                    </LandingButton>
                   </Link>
                 ) : (
                   <Link href={CTA_CONFIG.dashboardDisabled.href}>
-                    <ShimmerButton className="text-base font-semibold glow:ring-2 glow:ring-emerald-500/50 dark:shadow-[0_0_24px_rgba(16,185,129,0.5)]">
+                    <LandingButton variant="primary" className="text-base font-semibold glow:ring-2 glow:ring-emerald-500/50">
                       <span className="flex items-center gap-2">
                         {CTA_CONFIG.dashboardDisabled.text}
                         <ArrowRight className="h-4 w-4" />
                       </span>
-                    </ShimmerButton>
+                    </LandingButton>
                   </Link>
                 )}
               </Glow>
@@ -354,12 +356,12 @@ export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
           </BlurFade>
 
           <BlurFade delay={0.3} inView>
-            <div className="mt-8 text-center">
+            <div className="mt-8 flex justify-center">
               <Link href="/pricing">
-                <Button className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
+                <LandingButton variant="primary" className="gap-2">
                   View Pricing & Get Started
                   <ArrowRight className="h-4 w-4" />
-                </Button>
+                </LandingButton>
               </Link>
             </div>
           </BlurFade>
@@ -422,12 +424,9 @@ export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
                           <Icon className="h-5 w-5" />
                         </div>
                         <div className="space-y-1">
-                          <div className="flex items-center gap-2">
-                            <Check className="h-4 w-4 text-emerald-500" />
-                            <h3 className="font-semibold text-foreground">
-                              {deliverable.name}
-                            </h3>
-                          </div>
+                          <h3 className="font-semibold text-foreground">
+                            {deliverable.name}
+                          </h3>
                           <p className="text-sm text-muted-foreground leading-relaxed">
                             {deliverable.description}
                           </p>
@@ -435,69 +434,6 @@ export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
                       </div>
                     );
                   })}
-                </div>
-              </div>
-            </Glow>
-          </BlurFade>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section id="contact" className="relative px-6 py-24">
-        <div className="mx-auto max-w-3xl">
-          <BlurFade delay={0.1} inView>
-            <Glow color="hsl(145, 80%, 45%)">
-              <div className="rounded-2xl border border-white/10 bg-card/60 p-8 text-center backdrop-blur-xl glow:ring-1 glow:ring-emerald-500/30 glow:border-emerald-500/40 sm:p-12">
-                <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                  Ready to get started?
-                </h2>
-                <p className="mb-8 text-lg text-muted-foreground">
-                  Tell me about your project and I&apos;ll get back to you within 24 hours. No pressure, no commitment.
-                </p>
-                <div className="flex flex-col sm:flex-row items-stretch gap-4 max-w-md mx-auto">
-                  {customerDashboardEnabled ? (
-                    <Link href="/start-project" className="flex-1">
-                      <ShimmerButton
-                        shimmerColor="#34d399"
-                        background="linear-gradient(135deg, #059669 0%, #10b981 100%)"
-                        className="w-full text-lg font-semibold dark:shadow-[0_0_24px_rgba(16,185,129,0.5)]"
-                      >
-                        <span className="flex items-center justify-center gap-2">
-                          {showDashboardLinks ? "Start New Project" : "Start a Project"}
-                          <ArrowRight className="h-5 w-5" />
-                        </span>
-                      </ShimmerButton>
-                    </Link>
-                  ) : (
-                    <Link href={CTA_CONFIG.dashboardDisabled.href} className="flex-1">
-                      <ShimmerButton
-                        shimmerColor="#34d399"
-                        background="linear-gradient(135deg, #059669 0%, #10b981 100%)"
-                        className="w-full text-lg font-semibold dark:shadow-[0_0_24px_rgba(16,185,129,0.5)]"
-                      >
-                        <span className="flex items-center justify-center gap-2">
-                          {CTA_CONFIG.dashboardDisabled.text}
-                          <ArrowRight className="h-5 w-5" />
-                        </span>
-                      </ShimmerButton>
-                    </Link>
-                  )}
-                  {showDashboardLinks ? (
-                    <Link
-                      href="/dashboard"
-                      className="flex-1 flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-3 text-base font-medium text-foreground backdrop-blur-sm transition-all hover:bg-white/10 hover:border-white/30"
-                    >
-                      <User className="h-5 w-5" />
-                      View Dashboard
-                    </Link>
-                  ) : (
-                    <Link
-                      href="/pricing"
-                      className="flex-1 flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-3 text-base font-medium text-foreground backdrop-blur-sm transition-all hover:bg-white/10 hover:border-white/30"
-                    >
-                      View pricing
-                    </Link>
-                  )}
                 </div>
               </div>
             </Glow>
@@ -550,39 +486,89 @@ export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
       </section>
 
       {/* Referral Section */}
-      <section className="relative px-6 pb-12">
+      <section className="relative px-6 py-24">
         <div className="mx-auto max-w-3xl">
-          <BlurFade delay={0.15} inView>
-            <div className="rounded-2xl border border-white/10 bg-card/40 p-6 text-center backdrop-blur-xl sm:p-8">
-              <p className="mb-4 text-lg text-muted-foreground">
-                Know someone who might need a site? Send them a link!
-              </p>
-              <div className="flex flex-col sm:flex-row items-stretch gap-3 max-w-sm mx-auto">
-                <button
-                  onClick={handleShare}
-                  className="flex-1 flex items-center justify-center gap-2 rounded-full bg-emerald-600 hover:bg-emerald-700 px-6 py-3 text-base font-medium text-white transition-all"
-                >
-                  <Share2 className="h-5 w-5" />
-                  Share this site
-                </button>
-                <button
-                  onClick={handleCopyUrl}
-                  className="flex-1 flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-3 text-base font-medium text-foreground backdrop-blur-sm transition-all hover:bg-white/10 hover:border-white/30"
-                >
-                  {copied ? (
-                    <>
-                      <Check className="h-5 w-5 text-emerald-500" />
-                      Copied!
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="h-5 w-5" />
-                      Copy URL
-                    </>
-                  )}
-                </button>
+          <BlurFade delay={0.1} inView>
+            <Glow color="hsl(145, 80%, 45%)">
+              <div className="rounded-2xl border border-white/10 bg-card/60 p-8 text-center backdrop-blur-xl glow:ring-1 glow:ring-emerald-500/30 glow:border-emerald-500/40 sm:p-12">
+                <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                  Know someone?
+                </h2>
+                <p className="mb-8 text-lg text-muted-foreground">
+                  Maybe you don&apos;t need a site yourself, but you know someone else who might? Please share this site with them!
+                </p>
+                <div className="flex flex-col sm:flex-row items-stretch gap-4 max-w-md mx-auto">
+                  <LandingButton
+                    variant="primary"
+                    size="lg"
+                    onClick={handleShare}
+                    className="flex-1"
+                  >
+                    <span className="flex items-center justify-center gap-2">
+                      <Share2 className="h-5 w-5" />
+                      Share this site
+                    </span>
+                  </LandingButton>
+                  <LandingButton
+                    variant="secondary"
+                    size="lg"
+                    onClick={handleCopyUrl}
+                    className="flex-1"
+                  >
+                    <span className="flex items-center justify-center gap-2">
+                      {copied ? (
+                        <>
+                          <Check className="h-5 w-5 text-emerald-500" />
+                          Copied!
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="h-5 w-5" />
+                          Copy URL
+                        </>
+                      )}
+                    </span>
+                  </LandingButton>
+                </div>
               </div>
-            </div>
+            </Glow>
+          </BlurFade>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section id="contact" className="relative px-6 py-24">
+        <div className="mx-auto max-w-3xl">
+          <BlurFade delay={0.1} inView>
+            <Glow color="hsl(145, 80%, 45%)">
+              <div className="rounded-2xl border border-white/10 bg-card/60 p-8 text-center backdrop-blur-xl glow:ring-1 glow:ring-emerald-500/30 glow:border-emerald-500/40 sm:p-12">
+                <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                  Ready to get started?
+                </h2>
+                <p className="mb-8 text-lg text-muted-foreground">
+                  Tell me about your project and I&apos;ll get back to you within 24 hours. No pressure, no commitment.
+                </p>
+                {customerDashboardEnabled ? (
+                  <Link href="/start-project">
+                    <LandingButton variant="primary" size="lg">
+                      <span className="flex items-center justify-center gap-2">
+                        Let&apos;s go!
+                        <ArrowRight className="h-5 w-5" />
+                      </span>
+                    </LandingButton>
+                  </Link>
+                ) : (
+                  <Link href={CTA_CONFIG.dashboardDisabled.href}>
+                    <LandingButton variant="primary" size="lg">
+                      <span className="flex items-center justify-center gap-2">
+                        Let&apos;s go!
+                        <ArrowRight className="h-5 w-5" />
+                      </span>
+                    </LandingButton>
+                  </Link>
+                )}
+              </div>
+            </Glow>
           </BlurFade>
         </div>
       </section>

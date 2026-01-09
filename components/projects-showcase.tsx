@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Globe, LayoutDashboard, Briefcase, ArrowRight } from "lucide-react";
+import { Briefcase, ArrowRight } from "lucide-react";
 import { Glow } from "@codaworks/react-glow";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { cn } from "@/lib/utils";
@@ -136,69 +136,44 @@ export function ProjectsShowcase() {
                             </div>
                           )}
 
-                          {/* Header */}
-                          <div className="flex items-start justify-between mb-4">
-                            <div className="flex items-center gap-3">
-                              <div className={cn(
-                                "flex h-12 w-12 items-center justify-center rounded-xl transition-all duration-300 overflow-hidden",
-                                hoveredIndex === idx
-                                  ? "bg-primary/20 text-primary"
-                                  : "bg-white/10 text-muted-foreground"
-                              )}>
-                                {project.icon_url ? (
-                                  <Image
-                                    src={project.icon_url}
-                                    alt={displayTitle}
-                                    width={48}
-                                    height={48}
-                                    className="object-cover w-full h-full"
-                                  />
-                                ) : (
-                                  <Briefcase className="h-6 w-6" />
-                                )}
-                              </div>
-                              <div>
-                                <h3 className="font-semibold text-lg text-foreground">
-                                  {displayTitle}
-                                </h3>
-                                <p className="text-xs text-muted-foreground">
-                                  {displayIndustry}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Description */}
-                          <p className="text-sm text-muted-foreground mb-6 leading-relaxed line-clamp-3">
-                            {displayDescription}
-                          </p>
-
-                          {/* Tags and CTA */}
-                          <div className="flex items-center justify-between">
-                            <div className="flex flex-wrap gap-2">
-                              {project.vercel_url && (
-                                <span className={cn(
-                                  "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-colors",
-                                  hoveredIndex === idx
-                                    ? "bg-primary/20 text-primary"
-                                    : "bg-white/10 text-muted-foreground"
-                                )}>
-                                  <Globe className="h-3 w-3" />
-                                  Live Site
-                                </span>
+                          {/* Content row: Logo | Text | Arrow */}
+                          <div className="flex items-center gap-4">
+                            {/* Logo */}
+                            <div className={cn(
+                              "flex h-12 w-12 shrink-0 items-center justify-center rounded-xl transition-all duration-300 overflow-hidden",
+                              hoveredIndex === idx
+                                ? "bg-primary/20 text-primary"
+                                : "bg-white/10 text-muted-foreground"
+                            )}>
+                              {project.icon_url ? (
+                                <Image
+                                  src={project.icon_url}
+                                  alt={displayTitle}
+                                  width={48}
+                                  height={48}
+                                  className="object-cover w-full h-full"
+                                />
+                              ) : (
+                                <Briefcase className="h-6 w-6" />
                               )}
-                              <span className={cn(
-                                "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-colors",
-                                hoveredIndex === idx
-                                  ? "bg-primary/20 text-primary"
-                                  : "bg-white/10 text-muted-foreground"
-                              )}>
-                                <LayoutDashboard className="h-3 w-3" />
-                                Case Study
-                              </span>
                             </div>
+
+                            {/* Text content */}
+                            <div className="flex-1 min-w-0">
+                              <h3 className="font-semibold text-lg text-foreground">
+                                {displayTitle}
+                              </h3>
+                              <p className="text-xs text-muted-foreground mb-1">
+                                {displayIndustry}
+                              </p>
+                              <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
+                                {displayDescription}
+                              </p>
+                            </div>
+
+                            {/* Arrow */}
                             <ArrowRight className={cn(
-                              "h-5 w-5 transition-all duration-300",
+                              "h-5 w-5 shrink-0 transition-all duration-300",
                               hoveredIndex === idx
                                 ? "text-primary translate-x-1"
                                 : "text-muted-foreground"

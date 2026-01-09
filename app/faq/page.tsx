@@ -2,20 +2,26 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { LandingButton } from "@/components/ui/landing-button";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { SiteHeader } from "@/components/site-header";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { faqs } from "@/lib/faq-data";
+import { CTA_CONFIG } from "@/lib/constants";
+import { isCustomerDashboardEnabled } from "@/lib/feature-flags";
 
 export const metadata: Metadata = {
   title: "FAQ | Jamie Gray",
   description: "Answers to common questions about working together on your website project.",
 };
 
-export default function FAQPage() {
+export default async function FAQPage() {
+  const dashboardEnabled = await isCustomerDashboardEnabled();
+  const cta = dashboardEnabled ? CTA_CONFIG.dashboardEnabled : CTA_CONFIG.dashboardDisabled;
+
   return (
     <div className="min-h-screen bg-background">
-      <SiteHeader variant="back" backHref="/" backLabel="Home" />
+      <SiteHeader variant="back" backHref="/" backLabel="Home" customerDashboardEnabled={dashboardEnabled} />
 
       <main className="pt-20 pb-16">
         <div className="mx-auto max-w-3xl px-6">
@@ -56,11 +62,11 @@ export default function FAQPage() {
                 Still have questions? Let&apos;s chat.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link href="/start-project">
-                  <Button size="lg" className="gap-2 bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600">
-                    Start a Project
+                <Link href={cta.href}>
+                  <LandingButton variant="primary" size="lg" className="gap-2">
+                    {cta.text}
                     <ArrowRight className="h-4 w-4" />
-                  </Button>
+                  </LandingButton>
                 </Link>
                 <Link href="/pricing">
                   <Button size="lg" variant="outline" className="gap-2">

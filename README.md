@@ -27,12 +27,11 @@ A modern portfolio and client management platform built with Next.js 16. Feature
 
 #### Magic UI Components
 From [magicui.design](https://magicui.design):
-- `shimmer-button` - Animated button with shimmer effect
+- `landing-button` - Landing page CTA button with shimmer animation (default/primary/secondary variants)
 - `blur-fade` - Fade-in animation with blur effect
 - `bento-grid` - Responsive grid layout for cards
 - `marquee` - Infinite scrolling marquee
 - `dot-pattern` - Decorative dot pattern background
-- `sparkles-text` - Text with sparkle animations
 - `animated-gradient-text` - Gradient text with animation
 - `ripple` - Ripple effect component
 - `pulsating-button` - Button with pulse animation
@@ -41,11 +40,23 @@ From [magicui.design](https://magicui.design):
 
 #### shadcn/ui Components
 From [ui.shadcn.com](https://ui.shadcn.com):
-- `button` - Base button component
-- `switch` - Toggle switch
-- `slider` - Range slider
-- `checkbox` - Checkbox input
+- `accordion` - Collapsible FAQ-style component
+- `alert-dialog` - Confirmation dialogs with cancel/confirm actions
 - `badge` - Status badge
+- `button` - Base button component
+- `card` - Card container with header, content, footer
+- `checkbox` - Checkbox input
+- `dialog` - Modal dialogs for content or forms
+- `drawer` - Slide-up drawer (mobile-friendly)
+- `dropdown-menu` - Dropdown menus with glassmorphic styling
+- `input` - Text input field
+- `label` - Form label
+- `select` - Dropdown select component
+- `slider` - Range slider
+- `status-badge` - Status indicator (active/pending/inactive)
+- `switch` - Toggle switch
+- `table` - Data table with header, body, caption
+- `textarea` - Multi-line text input
 
 ### Animation & Effects
 - **[Framer Motion](https://www.framer.com/motion)** - Animation library

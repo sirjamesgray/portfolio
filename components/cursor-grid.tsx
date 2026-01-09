@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useId, useMemo, useRef, useCallback } from "react";
+import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import { cn } from "@/lib/utils";
 
 interface CursorGridProps {
@@ -37,7 +37,8 @@ const TOTAL_DURATION = FLASH_DURATION + SETTLE_DURATION + GREEN_HOLD_DURATION + 
 const ANIMATION_INTERVAL = 33;
 
 export function CursorGrid({ className, gridSize = 40 }: CursorGridProps) {
-  const id = useId();
+  // Use a stable ID to avoid hydration mismatch (useId generates different IDs on server vs client)
+  const id = "cursor-grid";
   const [mousePosition, setMousePosition] = useState({ x: -1000, y: -1000 });
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [activeDots, setActiveDots] = useState<ActiveDot[]>([]);

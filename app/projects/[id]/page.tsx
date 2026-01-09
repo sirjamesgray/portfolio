@@ -3,7 +3,7 @@ import { createAdminClient } from "@/lib/supabase/admin"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { BlurFade } from "@/components/ui/blur-fade"
-import { Button } from "@/components/ui/button"
+import { LandingButton } from "@/components/ui/landing-button"
 import { SiteHeader } from "@/components/site-header"
 import { CursorGrid } from "@/components/cursor-grid"
 import { formatProjectType, CTA_CONFIG } from "@/lib/constants"
@@ -108,10 +108,10 @@ export default async function PublicProjectPage({ params }: PageProps) {
                 Tell me about your vision and I'll bring it to life.
               </p>
               <Link href={cta.href}>
-                <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2 px-8 py-6 text-base font-semibold">
+                <LandingButton variant="primary" size="lg" className="gap-2">
                   {cta.text}
                   <ArrowRight className="h-4 w-4" />
-                </Button>
+                </LandingButton>
               </Link>
             </div>
           </BlurFade>
