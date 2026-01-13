@@ -228,7 +228,7 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
               mass: 1,
             }}
           >
-            <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-2 p-2 bg-white/70 dark:bg-black/50 backdrop-blur-2xl border border-white/20 dark:border-white/10 rounded-3xl xs:rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
+            <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-2 p-2 bg-white/70 dark:bg-black/50 backdrop-blur-2xl border border-white/20 dark:border-white/10 rounded-3xl xs:rounded-full shadow-[var(--shadow-elevation-md)]">
               <MobileNavItems />
             </div>
           </motion.div>

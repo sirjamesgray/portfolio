@@ -19,7 +19,12 @@ function AccordionItem({
   return (
     <AccordionPrimitive.Item
       data-slot="accordion-item"
-      className={cn("border-b last:border-b-0", className)}
+      className={cn(
+        "border-b last:border-b-0 transition-colors duration-200",
+        // Dark mode hover highlight
+        "dark:hover:bg-white/[0.02]",
+        className
+      )}
       {...props}
     />
   )

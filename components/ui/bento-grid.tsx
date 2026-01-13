@@ -1,6 +1,8 @@
 import { ComponentPropsWithoutRef, ReactNode } from "react"
 
 import { cn } from "@/lib/utils"
+import { CARD_INTERACTIVE_SOLID } from "@/lib/cards"
+import { CursorGlow, GLOW_COLORS } from "@/components/ui/cursor-glow"
 
 interface BentoGridProps extends ComponentPropsWithoutRef<"div"> {
   children: ReactNode
@@ -15,6 +17,10 @@ interface BentoCardProps extends ComponentPropsWithoutRef<"div"> {
   description: string
   href?: string
   cta?: string
+  /** Custom glow color for CursorGlow. Defaults to emerald. */
+  glowColor?: string
+  /** Enable sparkles on this card. Respects SparkleProvider context. */
+  sparkle?: boolean
 }
 
 const BentoGrid = ({ children, className, ...props }: BentoGridProps) => {
@@ -37,34 +43,37 @@ const BentoCard = ({
   background,
   Icon,
   description,
+  glowColor,
+  sparkle,
   ...props
 }: BentoCardProps) => (
-  <div
-    key={name}
-    className={cn(
-      "group relative col-span-3 flex flex-col justify-between overflow-hidden rounded-xl",
-      // glassmorphism styles
-      "bg-background/70 backdrop-blur-xl border border-white/10",
-      "[box-shadow:0_0_0_1px_rgba(0,0,0,.03),0_2px_4px_rgba(0,0,0,.05),0_12px_24px_rgba(0,0,0,.05)]",
-      // dark styles
-      "dark:bg-background/50 dark:backdrop-blur-xl transform-gpu dark:[box-shadow:0_-20px_80px_-20px_#ffffff1f_inset] dark:[border:1px_solid_rgba(255,255,255,.1)]",
-      className
-    )}
-    {...props}
-  >
-    <div>{background}</div>
-    <div className="p-4">
-      <div className="pointer-events-none z-10 flex transform-gpu flex-col gap-1">
-        <Icon className="h-12 w-12 origin-left transform-gpu text-neutral-700 dark:text-neutral-300" />
-        <h3 className="text-xl font-semibold text-neutral-700 dark:text-neutral-300">
-          {name}
-        </h3>
-        <p className="max-w-lg text-neutral-400">{description}</p>
+  <CursorGlow color={glowColor} sparkle={sparkle}>
+    <div
+      key={name}
+      className={cn(
+        "group relative col-span-3 flex flex-col justify-between overflow-hidden",
+        // Card system interactive glass styles
+        `${CARD_INTERACTIVE_SOLID.base} ${CARD_INTERACTIVE_SOLID.shadow} ${CARD_INTERACTIVE_SOLID.hover}`,
+        // dark styles
+        "dark:bg-background/50 transform-gpu",
+        className
+      )}
+      {...props}
+    >
+      <div>{background}</div>
+      <div className="p-4">
+        <div className="pointer-events-none z-10 flex transform-gpu flex-col gap-1">
+          <Icon className="h-12 w-12 origin-left transform-gpu text-neutral-700 dark:text-neutral-300" />
+          <h3 className="text-xl font-semibold text-neutral-700 dark:text-neutral-300">
+            {name}
+          </h3>
+          <p className="max-w-lg text-neutral-400">{description}</p>
+        </div>
       </div>
-    </div>
 
-    <div className="pointer-events-none absolute inset-0 transform-gpu transition-all duration-300 group-hover:bg-black/[.03] group-hover:dark:bg-neutral-800/10" />
-  </div>
+      <div className="pointer-events-none absolute inset-0 transform-gpu transition-all duration-300 group-hover:bg-black/[.03] group-hover:dark:bg-neutral-800/10" />
+    </div>
+  </CursorGlow>
 )
 
 export { BentoCard, BentoGrid }

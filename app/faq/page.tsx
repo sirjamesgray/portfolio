@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { LandingButton } from "@/components/ui/landing-button";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { SiteHeader } from "@/components/site-header";
@@ -9,6 +8,10 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { faqs } from "@/lib/faq-data";
 import { CTA_CONFIG } from "@/lib/constants";
 import { isCustomerDashboardEnabled } from "@/lib/feature-flags";
+import { CARD_INTERACTIVE_SOLID } from "@/lib/cards";
+import { Footer } from "@/components/footer";
+import { LandingBackground } from "@/components/landing-background";
+import { CursorGlow } from "@/components/ui/cursor-glow";
 
 export const metadata: Metadata = {
   title: "FAQ | Jamie Gray",
@@ -20,10 +23,10 @@ export default async function FAQPage() {
   const cta = dashboardEnabled ? CTA_CONFIG.dashboardEnabled : CTA_CONFIG.dashboardDisabled;
 
   return (
-    <div className="min-h-screen bg-background">
+    <LandingBackground className="flex flex-col">
       <SiteHeader variant="back" backHref="/" backLabel="Home" customerDashboardEnabled={dashboardEnabled} />
 
-      <main className="pt-20 pb-16">
+      <main className="flex-1 pt-20 pb-16">
         <div className="mx-auto max-w-3xl px-6">
           {/* Header */}
           <BlurFade delay={0.1}>
@@ -39,20 +42,22 @@ export default async function FAQPage() {
 
           {/* FAQ List */}
           <BlurFade delay={0.2}>
-            <div className="rounded-xl border border-border bg-card/50">
-              <Accordion type="single" collapsible className="w-full">
-                {faqs.map((faq, idx) => (
-                  <AccordionItem key={idx} value={`faq-${idx}`} className="px-6 border-b border-border last:border-b-0">
-                    <AccordionTrigger className="text-foreground font-semibold text-lg text-left hover:no-underline">
-                      {faq.question}
-                    </AccordionTrigger>
-                    <AccordionContent className="text-muted-foreground leading-relaxed">
-                      {faq.answer}
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            </div>
+            <CursorGlow>
+              <div className={`${CARD_INTERACTIVE_SOLID.base} ${CARD_INTERACTIVE_SOLID.shadow} ${CARD_INTERACTIVE_SOLID.hover} bg-card/50`}>
+                <Accordion type="single" collapsible className="w-full">
+                  {faqs.map((faq, idx) => (
+                    <AccordionItem key={idx} value={`faq-${idx}`} className="px-6 border-b border-border last:border-b-0">
+                      <AccordionTrigger className="text-foreground font-semibold text-lg text-left hover:no-underline">
+                        {faq.question}
+                      </AccordionTrigger>
+                      <AccordionContent className="text-muted-foreground leading-relaxed">
+                        {faq.answer}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </div>
+            </CursorGlow>
           </BlurFade>
 
           {/* CTA */}
@@ -69,15 +74,17 @@ export default async function FAQPage() {
                   </LandingButton>
                 </Link>
                 <Link href="/pricing">
-                  <Button size="lg" variant="outline" className="gap-2">
+                  <LandingButton variant="secondary" size="lg" className="gap-2">
                     View Pricing
-                  </Button>
+                  </LandingButton>
                 </Link>
               </div>
             </div>
           </BlurFade>
         </div>
       </main>
-    </div>
+
+      <Footer />
+    </LandingBackground>
   );
 }

@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowRight, ArrowUp, Layers, Palette, Code2, Sparkles, Mail, Github, Key, Settings2, HeartHandshake, RefreshCw, Check, LucideIcon, User, MessageCircle, Share2, Copy, Zap, Rocket, Ship } from "lucide-react";
-import { Glow } from "@codaworks/react-glow";
+import { ArrowRight, Layers, Palette, Code2, Sparkles, Github, Key, Settings2, HeartHandshake, RefreshCw, Check, LucideIcon, User, Share2, Copy, Zap, Rocket, Ship } from "lucide-react";
+import { CursorGlow, GLOW_COLORS } from "@/components/ui/cursor-glow";
 import { LandingButton } from "@/components/ui/landing-button";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { BentoGrid, BentoCard } from "@/components/ui/bento-grid";
@@ -12,7 +12,10 @@ import { SiteHeader } from "@/components/site-header";
 import { ExperienceTimeline } from "@/components/experience-timeline";
 import { ProjectsShowcase } from "@/components/projects-showcase";
 import { CursorGrid } from "@/components/cursor-grid";
+import { Footer } from "@/components/footer";
 import { SITE_CONFIG, CTA_CONFIG } from "@/lib/constants";
+import { CARD_INTERACTIVE_SOLID, CARD_FEATURED } from "@/lib/cards";
+import { CrossedCornersCard } from "@/components/ui/crossed-corners-card";
 import { faqs } from "@/lib/faq-data";
 import Link from "next/link";
 import dynamic from "next/dynamic";
@@ -24,33 +27,6 @@ const Logo3D = dynamic(
   { ssr: false }
 );
 
-// Social links
-const socials = [
-  {
-    name: "X",
-    href: "https://x.com/jamiegraytech",
-    icon: (
-      <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-      </svg>
-    ),
-  },
-  {
-    name: "LinkedIn",
-    href: "https://www.linkedin.com/in/jamiegraytech/",
-    icon: (
-      <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-      </svg>
-    ),
-  },
-  {
-    name: "SMS",
-    href: `sms:${SITE_CONFIG.phone}`,
-    icon: <MessageCircle className="h-5 w-5" />,
-  },
-];
-
 const services = [
   {
     Icon: Layers,
@@ -61,6 +37,7 @@ const services = [
       <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-transparent" />
     ),
     className: "lg:col-span-2 lg:row-span-1",
+    glowColor: GLOW_COLORS.emerald,
   },
   {
     Icon: Palette,
@@ -71,6 +48,7 @@ const services = [
       <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-transparent to-transparent" />
     ),
     className: "lg:col-span-1 lg:row-span-1",
+    glowColor: GLOW_COLORS.orange,
   },
   {
     Icon: Code2,
@@ -81,6 +59,7 @@ const services = [
       <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-transparent" />
     ),
     className: "lg:col-span-1 lg:row-span-1",
+    glowColor: GLOW_COLORS.cyan,
   },
   {
     Icon: Sparkles,
@@ -91,6 +70,7 @@ const services = [
       <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-transparent" />
     ),
     className: "lg:col-span-2 lg:row-span-1",
+    glowColor: GLOW_COLORS.emerald,
   },
 ];
 
@@ -273,27 +253,25 @@ export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
                   </LandingButton>
                 </Link>
               )}
-              <Glow color="hsl(145, 80%, 45%)">
-                {customerDashboardEnabled ? (
-                  <Link href="/start-project">
-                    <LandingButton variant="primary" className="text-base font-semibold glow:ring-2 glow:ring-emerald-500/50">
-                      <span className="flex items-center gap-2">
-                        {showDashboardLinks ? "Start New Project" : "Start a Project"}
-                        <ArrowRight className="h-4 w-4" />
-                      </span>
-                    </LandingButton>
-                  </Link>
-                ) : (
-                  <Link href={CTA_CONFIG.dashboardDisabled.href}>
-                    <LandingButton variant="primary" className="text-base font-semibold glow:ring-2 glow:ring-emerald-500/50">
-                      <span className="flex items-center gap-2">
-                        {CTA_CONFIG.dashboardDisabled.text}
-                        <ArrowRight className="h-4 w-4" />
-                      </span>
-                    </LandingButton>
-                  </Link>
-                )}
-              </Glow>
+              {customerDashboardEnabled ? (
+                <Link href="/start-project">
+                  <LandingButton variant="primary" className="text-base font-semibold ">
+                    <span className="flex items-center gap-2">
+                      {showDashboardLinks ? "Start New Project" : "Start a Project"}
+                      <ArrowRight className="h-4 w-4" />
+                    </span>
+                  </LandingButton>
+                </Link>
+              ) : (
+                <Link href={CTA_CONFIG.dashboardDisabled.href}>
+                  <LandingButton variant="primary" className="text-base font-semibold ">
+                    <span className="flex items-center gap-2">
+                      {CTA_CONFIG.dashboardDisabled.text}
+                      <ArrowRight className="h-4 w-4" />
+                    </span>
+                  </LandingButton>
+                </Link>
+              )}
             </div>
           </BlurFade>
         </div>
@@ -321,35 +299,36 @@ export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
               {projectPricing.map((project) => {
                 const Icon = project.icon;
                 return (
-                  <Link
-                    key={project.value}
-                    href={`/pricing#${project.value}`}
-                    className={`group relative flex items-center gap-4 rounded-2xl border p-5 transition-all hover:border-emerald-500/50 hover:bg-emerald-500/5 ${
-                      project.popular
-                        ? "border-emerald-500/30 bg-emerald-500/5"
-                        : "border-border bg-card/50"
-                    }`}
-                  >
-                    {project.popular && (
-                      <div className="absolute -top-2.5 left-4">
-                        <span className="bg-emerald-600 dark:bg-emerald-500 text-white text-xs font-medium px-2 py-0.5 rounded-full">
-                          Popular
-                        </span>
+                  <CursorGlow key={project.value}>
+                    <Link
+                      href={`/pricing#${project.value}`}
+                      className={`group relative flex items-center gap-4 p-5 ${
+                        project.popular
+                          ? `${CARD_FEATURED.base} ${CARD_FEATURED.shadow} ${CARD_FEATURED.hover}`
+                          : `${CARD_INTERACTIVE_SOLID.base} ${CARD_INTERACTIVE_SOLID.shadow} ${CARD_INTERACTIVE_SOLID.hover}`
+                      }`}
+                    >
+                      {project.popular && (
+                        <div className="absolute -top-2.5 left-4">
+                          <span className="bg-emerald-600 dark:bg-emerald-500 text-white text-xs font-medium px-2 py-0.5 rounded-full">
+                            Popular
+                          </span>
+                        </div>
+                      )}
+                      <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${
+                        project.popular
+                          ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400"
+                          : "bg-muted text-muted-foreground group-hover:bg-emerald-500/20 group-hover:text-emerald-600 dark:group-hover:text-emerald-400"
+                      } transition-colors`}>
+                        <Icon className="h-5 w-5" />
                       </div>
-                    )}
-                    <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${
-                      project.popular
-                        ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400"
-                        : "bg-muted text-muted-foreground group-hover:bg-emerald-500/20 group-hover:text-emerald-600 dark:group-hover:text-emerald-400"
-                    } transition-colors`}>
-                      <Icon className="h-5 w-5" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-foreground">{project.name}</h3>
-                      <p className="text-sm text-muted-foreground">{project.description}</p>
-                    </div>
-                    <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors shrink-0" />
-                  </Link>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-foreground">{project.name}</h3>
+                        <p className="text-sm text-muted-foreground">{project.description}</p>
+                      </div>
+                      <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors shrink-0" />
+                    </Link>
+                  </CursorGlow>
                 );
               })}
             </div>
@@ -410,8 +389,8 @@ export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
           </BlurFade>
 
           <BlurFade delay={0.2} inView>
-            <Glow color="hsl(145, 80%, 45%)">
-              <div className="rounded-2xl border border-white/10 bg-card/40 p-8 backdrop-blur-xl glow:ring-1 glow:ring-emerald-500/20 glow:border-emerald-500/40 sm:p-10">
+            <CursorGlow>
+              <div className={`${CARD_INTERACTIVE_SOLID.base} ${CARD_INTERACTIVE_SOLID.shadow} ${CARD_INTERACTIVE_SOLID.hover} p-8 sm:p-10`}>
                 <div className="grid gap-6 sm:grid-cols-2 lg:gap-8">
                   {deliverables.map((deliverable, idx) => {
                     const Icon = deliverable.Icon;
@@ -436,7 +415,7 @@ export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
                   })}
                 </div>
               </div>
-            </Glow>
+            </CursorGlow>
           </BlurFade>
         </div>
       </section>
@@ -456,20 +435,22 @@ export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
           </BlurFade>
 
           <BlurFade delay={0.2} inView>
-            <div className="rounded-xl border border-border bg-card/50">
-              <Accordion type="single" collapsible className="w-full">
-                {faqs.slice(0, 3).map((faq, idx) => (
-                  <AccordionItem key={idx} value={`faq-${idx}`} className="px-5 border-b border-border last:border-b-0">
-                    <AccordionTrigger className="text-foreground font-semibold text-left hover:no-underline">
-                      {faq.question}
-                    </AccordionTrigger>
-                    <AccordionContent className="text-muted-foreground text-sm leading-relaxed">
-                      {faq.answer}
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            </div>
+            <CursorGlow>
+              <div className={`${CARD_INTERACTIVE_SOLID.base} ${CARD_INTERACTIVE_SOLID.shadow} ${CARD_INTERACTIVE_SOLID.hover} bg-card/50 `}>
+                <Accordion type="single" collapsible className="w-full">
+                  {faqs.slice(0, 3).map((faq, idx) => (
+                    <AccordionItem key={idx} value={`faq-${idx}`} className="px-5 border-b border-border last:border-b-0">
+                      <AccordionTrigger className="text-foreground font-semibold text-left hover:no-underline">
+                        {faq.question}
+                      </AccordionTrigger>
+                      <AccordionContent className="text-muted-foreground text-sm leading-relaxed">
+                        {faq.answer}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </div>
+            </CursorGlow>
           </BlurFade>
 
           <BlurFade delay={0.3} inView>
@@ -489,49 +470,47 @@ export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
       <section className="relative px-6 py-24">
         <div className="mx-auto max-w-3xl">
           <BlurFade delay={0.1} inView>
-            <Glow color="hsl(145, 80%, 45%)">
-              <div className="rounded-2xl border border-white/10 bg-card/60 p-8 text-center backdrop-blur-xl glow:ring-1 glow:ring-emerald-500/30 glow:border-emerald-500/40 sm:p-12">
-                <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                  Know someone?
-                </h2>
-                <p className="mb-8 text-lg text-muted-foreground">
-                  Maybe you don&apos;t need a site yourself, but you know someone else who might? Please share this site with them!
-                </p>
-                <div className="flex flex-col sm:flex-row items-stretch gap-4 max-w-md mx-auto">
-                  <LandingButton
-                    variant="primary"
-                    size="lg"
-                    onClick={handleShare}
-                    className="flex-1"
-                  >
-                    <span className="flex items-center justify-center gap-2">
-                      <Share2 className="h-5 w-5" />
-                      Share this site
-                    </span>
-                  </LandingButton>
-                  <LandingButton
-                    variant="secondary"
-                    size="lg"
-                    onClick={handleCopyUrl}
-                    className="flex-1"
-                  >
-                    <span className="flex items-center justify-center gap-2">
-                      {copied ? (
-                        <>
-                          <Check className="h-5 w-5 text-emerald-500" />
-                          Copied!
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="h-5 w-5" />
-                          Copy URL
-                        </>
-                      )}
-                    </span>
-                  </LandingButton>
-                </div>
+            <CrossedCornersCard className="p-8 text-center sm:p-12">
+              <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                Know someone?
+              </h2>
+              <p className="mb-8 text-lg text-muted-foreground">
+                Maybe you don&apos;t need a site yourself, but you know someone else who might? Please share this site with them!
+              </p>
+              <div className="flex flex-col sm:flex-row items-stretch gap-4 max-w-md mx-auto">
+                <LandingButton
+                  variant="primary"
+                  size="lg"
+                  onClick={handleShare}
+                  className="flex-1"
+                >
+                  <span className="flex items-center justify-center gap-2">
+                    <Share2 className="h-5 w-5" />
+                    Share this site
+                  </span>
+                </LandingButton>
+                <LandingButton
+                  variant="secondary"
+                  size="lg"
+                  onClick={handleCopyUrl}
+                  className="flex-1"
+                >
+                  <span className="flex items-center justify-center gap-2">
+                    {copied ? (
+                      <>
+                        <Check className="h-5 w-5 text-emerald-500" />
+                        Copied!
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-5 w-5" />
+                        Copy URL
+                      </>
+                    )}
+                  </span>
+                </LandingButton>
               </div>
-            </Glow>
+            </CrossedCornersCard>
           </BlurFade>
         </div>
       </section>
@@ -540,8 +519,8 @@ export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
       <section id="contact" className="relative px-6 py-24">
         <div className="mx-auto max-w-3xl">
           <BlurFade delay={0.1} inView>
-            <Glow color="hsl(145, 80%, 45%)">
-              <div className="rounded-2xl border border-white/10 bg-card/60 p-8 text-center backdrop-blur-xl glow:ring-1 glow:ring-emerald-500/30 glow:border-emerald-500/40 sm:p-12">
+            <CursorGlow>
+              <div className={`${CARD_INTERACTIVE_SOLID.full} p-8 text-center sm:p-12`}>
                 <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
                   Ready to get started?
                 </h2>
@@ -568,62 +547,15 @@ export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
                   </Link>
                 )}
               </div>
-            </Glow>
+            </CursorGlow>
           </BlurFade>
         </div>
       </section>
-
-      {/* Social Section */}
-      <section className="relative px-6 py-12">
-        <div className="mx-auto max-w-6xl">
-          <BlurFade delay={0.1} inView>
-            <div className="flex flex-col items-center gap-6">
-              <p className="text-sm font-medium text-muted-foreground">
-                Connect with me
-              </p>
-              <div className="flex items-center gap-6">
-                {socials.map((social) => (
-                  <a
-                    key={social.name}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground transition-colors hover:text-foreground"
-                    aria-label={social.name}
-                  >
-                    {social.icon}
-                  </a>
-                ))}
-                <a
-                  href={`mailto:${SITE_CONFIG.email}`}
-                  className="text-muted-foreground transition-colors hover:text-foreground"
-                  aria-label="Email"
-                >
-                  <Mail className="h-5 w-5" />
-                </a>
-              </div>
-            </div>
-          </BlurFade>
-        </div>
-      </section>
-
-      {/* Back to Top Button */}
-      <div className="flex justify-center pb-8">
-        <a
-          href="#top"
-          className="group flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-        >
-          <ArrowUp className="h-4 w-4 transition-transform group-hover:-translate-y-1" />
-          Back to top
-        </a>
-      </div>
 
       {/* Footer */}
-      <footer className="border-t border-border px-6 py-8 mb-24 md:mb-0">
-        <div className="mx-auto max-w-6xl text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} Jamie Gray. All rights reserved.</p>
-        </div>
-      </footer>
+      <div className="mb-24 md:mb-0">
+        <Footer />
+      </div>
     </div>
   );
 }

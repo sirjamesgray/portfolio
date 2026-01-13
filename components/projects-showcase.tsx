@@ -4,10 +4,11 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Briefcase, ArrowRight } from "lucide-react";
-import { Glow } from "@codaworks/react-glow";
+import { CursorGlow, GLOW_COLORS } from "@/components/ui/cursor-glow";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { cn } from "@/lib/utils";
 import { formatProjectType } from "@/lib/constants";
+import { CARD_GLASS, CARD_INTERACTIVE_SOLID } from "@/lib/cards";
 
 type FeaturedProject = {
   id: string;
@@ -28,6 +29,15 @@ const COLORS = [
   "from-purple-500/20 via-pink-500/10 to-transparent",
   "from-emerald-500/20 via-green-500/10 to-transparent",
   "from-rose-500/20 via-red-500/10 to-transparent",
+];
+
+// Matching glow colors for CursorGlow
+const GLOW_COLOR_PALETTE = [
+  GLOW_COLORS.amber,
+  GLOW_COLORS.cyan,
+  GLOW_COLORS.purple,
+  GLOW_COLORS.emerald,
+  GLOW_COLORS.rose,
 ];
 
 export function ProjectsShowcase() {
@@ -76,7 +86,7 @@ export function ProjectsShowcase() {
             {[0, 1].map((idx) => (
               <div
                 key={idx}
-                className="rounded-2xl border border-white/10 bg-card/40 p-4 animate-pulse"
+                className={`${CARD_GLASS.full} p-4 animate-pulse`}
               >
                 <div className="flex items-center gap-3 mb-4">
                   <div className="h-12 w-12 rounded-xl bg-white/10" />
@@ -99,17 +109,18 @@ export function ProjectsShowcase() {
               const displayDescription = project.public_description || "Custom software solution built for small business needs.";
               const displayIndustry = project.public_industry || formatProjectType(project.project_type);
               const color = COLORS[idx % COLORS.length];
+              const glowColor = GLOW_COLOR_PALETTE[idx % GLOW_COLOR_PALETTE.length];
 
               return (
                 <BlurFade key={project.id} delay={0.15 + idx * 0.1} inView>
                   <Link href={`/projects/${project.id}`}>
-                    <Glow color="hsl(145, 80%, 45%)">
+                    <CursorGlow color={glowColor}>
                       <div
                         className={cn(
-                          "group relative rounded-2xl border p-4 transition-all duration-300 backdrop-blur-xl overflow-hidden glow:ring-1 glow:ring-emerald-500/30 glow:border-emerald-500/40 cursor-pointer h-full",
+                          `group relative p-4 overflow-hidden h-full ${CARD_INTERACTIVE_SOLID.base} ${CARD_INTERACTIVE_SOLID.shadow}`,
                           hoveredIndex === idx
-                            ? "border-primary/50 bg-primary/5 shadow-lg shadow-primary/10"
-                            : "border-white/10 bg-card/40"
+                            ? "border-primary/50 bg-primary/5 shadow-[var(--shadow-elevation-md)]"
+                            : ""
                         )}
                         onMouseEnter={() => setHoveredIndex(idx)}
                         onMouseLeave={() => setHoveredIndex(null)}
@@ -181,7 +192,7 @@ export function ProjectsShowcase() {
                           </div>
                         </div>
                       </div>
-                    </Glow>
+                    </CursorGlow>
                   </Link>
                 </BlurFade>
               );

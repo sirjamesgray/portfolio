@@ -81,13 +81,14 @@ export const LandingButton = React.forwardRef<
         }
         className={cn(
           "group relative z-0 inline-flex cursor-pointer items-center justify-center overflow-hidden [border-radius:var(--radius)] border whitespace-nowrap font-semibold [background:var(--bg)] dark:[background:var(--bg-dark)]",
-          "transform-gpu transition-transform duration-300 ease-in-out active:translate-y-px",
+          "transform-gpu transition-all duration-300 ease-in-out active:translate-y-px",
           sizeStyles[size],
           variantConfig.textColor,
           variantConfig.borderColor,
           // Light mode: green glow on primary, subtle shadow on secondary
           // Dark mode: green glow on primary only
-          variant === "primary" && "shadow-[0_4px_14px_rgba(16,185,129,0.4)] dark:shadow-[0_0_24px_rgba(16,185,129,0.5)]",
+          // Hover: intensify green glow on primary
+          variant === "primary" && "shadow-[var(--shadow-glow-emerald-strong)] hover:shadow-[0_0_30px_rgba(16,185,129,0.6),0_0_60px_rgba(16,185,129,0.3)]",
           variant === "secondary" && "shadow-[0_4px_14px_rgba(0,0,0,0.1)] dark:shadow-none",
           className
         )}

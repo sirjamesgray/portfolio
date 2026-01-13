@@ -102,6 +102,9 @@ type Project = {
   public_hero_image: string | null
   public_industry: string | null
   icon_url: string | null
+  // Live link
+  public_live_url: string | null
+  show_live_link: boolean | null
 }
 
 type ActivityLog = {
@@ -2677,12 +2680,34 @@ export default function ProjectDetailPage() {
         metadata={{
           show_on_landing_page: project.show_on_landing_page,
           customer_opted_out_of_landing_page: project.customer_opted_out_of_landing_page,
+          public_live_url: project.public_live_url,
+          show_live_link: project.show_live_link,
         }}
         onToggle={async (enabled) => {
           const response = await fetch(`/api/admin/projects/${projectId}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ show_on_landing_page: enabled }),
+          })
+          if (response.ok) {
+            fetchProject()
+          }
+        }}
+        onLiveLinkToggle={async (enabled) => {
+          const response = await fetch(`/api/admin/projects/${projectId}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ show_live_link: enabled }),
+          })
+          if (response.ok) {
+            fetchProject()
+          }
+        }}
+        onLiveUrlChange={async (url) => {
+          const response = await fetch(`/api/admin/projects/${projectId}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ public_live_url: url }),
           })
           if (response.ok) {
             fetchProject()

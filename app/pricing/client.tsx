@@ -1,13 +1,16 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
 import { Check, X, Zap, Rocket, Ship, ArrowRight, Calendar, RefreshCw } from "lucide-react";
 import { LandingButton } from "@/components/ui/landing-button";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { SiteHeader } from "@/components/site-header";
 import { SITE_CONFIG, CTA_CONFIG } from "@/lib/constants";
+import { CARD_SOLID, CARD_FEATURED, CARD_INTERACTIVE_SOLID } from "@/lib/cards";
+import { CrossedCornersCard } from "@/components/ui/crossed-corners-card";
+import { Footer } from "@/components/footer";
+import { LandingBackground } from "@/components/landing-background";
 
 // Centralized feature definitions - single source of truth for desktop and mobile
 const TIER_FEATURES = {
@@ -99,21 +102,6 @@ interface PricingPageClientProps {
 
 export function PricingPageClient({ customerDashboardEnabled }: PricingPageClientProps) {
   const cardRefs = useRef<Map<string, HTMLDivElement>>(new Map());
-  const [showMobileFooter, setShowMobileFooter] = useState(false);
-
-  // Track scroll position to show mobile footer after scrolling a bit
-  useEffect(() => {
-    const handleScroll = () => {
-      // Show footer after scrolling past ~40% of viewport height
-      const scrollThreshold = window.innerHeight * 0.4;
-      setShowMobileFooter(window.scrollY > scrollThreshold);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll(); // Check initial position
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   // Handle hash-based scrolling on mount
   useEffect(() => {
@@ -136,10 +124,10 @@ export function PricingPageClient({ customerDashboardEnabled }: PricingPageClien
   }, []);
 
   return (
-    <div className="min-h-screen bg-background">
+    <LandingBackground className="flex flex-col">
       <SiteHeader variant="back" backHref="/#pricing" backLabel="Home" />
 
-      <main className="pt-20 pb-28 md:pb-16">
+      <main className="flex-1 pt-20 pb-28 md:pb-16">
         <div className="mx-auto max-w-6xl px-6">
           {/* Header */}
           <BlurFade delay={0.1}>
@@ -165,10 +153,10 @@ export function PricingPageClient({ customerDashboardEnabled }: PricingPageClien
                     ref={(el) => {
                       if (el) cardRefs.current.set(project.value, el);
                     }}
-                    className={`relative rounded-2xl border p-6 transition-all ${
+                    className={`relative p-6 ${
                       project.popular
-                        ? "border-emerald-500 dark:border-emerald-400 bg-emerald-500/5"
-                        : "border-border bg-card/50"
+                        ? `${CARD_FEATURED.full}`
+                        : `${CARD_SOLID.full} bg-card/50 hover:shadow-[var(--shadow-elevation-md)]`
                     }`}
                   >
                     {project.popular && (
@@ -254,11 +242,11 @@ export function PricingPageClient({ customerDashboardEnabled }: PricingPageClien
           <BlurFade delay={0.3}>
             <div className="grid md:grid-cols-3 gap-6 mb-16">
               {/* Included */}
-              <div className="rounded-2xl border border-border bg-card/50 p-6">
+              <CrossedCornersCard className="p-6">
                 <h3 className="text-lg font-semibold text-foreground text-center">
                   What&apos;s Included
                 </h3>
-                <div className="border-b border-border my-4" />
+                <div className="border-b border-emerald-500/30 my-4" />
                 <ul className="space-y-3">
                   {included.map((item) => (
                     <li key={item} className="flex items-start gap-2">
@@ -269,14 +257,14 @@ export function PricingPageClient({ customerDashboardEnabled }: PricingPageClien
                     </li>
                   ))}
                 </ul>
-              </div>
+              </CrossedCornersCard>
 
               {/* Optional Add-ons */}
-              <div className="rounded-2xl border border-border bg-card/50 p-6">
+              <CrossedCornersCard className="p-6">
                 <h3 className="text-lg font-semibold text-foreground text-center">
                   Optional Add-ons
                 </h3>
-                <div className="border-b border-border my-4" />
+                <div className="border-b border-emerald-500/30 my-4" />
                 <ul className="space-y-3">
                   {optional.map((item) => (
                     <li key={item} className="flex items-start gap-2">
@@ -285,14 +273,14 @@ export function PricingPageClient({ customerDashboardEnabled }: PricingPageClien
                     </li>
                   ))}
                 </ul>
-              </div>
+              </CrossedCornersCard>
 
               {/* Not Included */}
-              <div className="rounded-2xl border border-border bg-card/50 p-6">
+              <CrossedCornersCard className="p-6">
                 <h3 className="text-lg font-semibold text-foreground text-center">
                   Not Included
                 </h3>
-                <div className="border-b border-border my-4" />
+                <div className="border-b border-emerald-500/30 my-4" />
                 <ul className="space-y-3">
                   {notIncluded.map((item) => (
                     <li key={item} className="flex items-start gap-2">
@@ -301,16 +289,16 @@ export function PricingPageClient({ customerDashboardEnabled }: PricingPageClien
                     </li>
                   ))}
                 </ul>
-              </div>
+              </CrossedCornersCard>
             </div>
           </BlurFade>
 
           {/* Ongoing Support Section */}
           <BlurFade delay={0.4}>
-            <div className="rounded-2xl border border-border bg-card/50 p-8 text-center mb-16">
+            <CrossedCornersCard className="p-8 text-center mb-16">
               <div className="flex justify-center mb-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-muted">
-                  <RefreshCw className="h-6 w-6 text-muted-foreground" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-emerald-500/10">
+                  <RefreshCw className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
                 </div>
               </div>
               <h3 className="text-xl font-semibold text-foreground mb-2">
@@ -323,12 +311,12 @@ export function PricingPageClient({ customerDashboardEnabled }: PricingPageClien
               <p className="text-sm text-muted-foreground">
                 Monthly plans start at <span className="font-medium text-foreground">$1,500/month</span>
               </p>
-            </div>
+            </CrossedCornersCard>
           </BlurFade>
 
           {/* CTA - Hidden on mobile since we have floating bar */}
           <BlurFade delay={0.5}>
-            <div className="text-center hidden md:block">
+            <div className={`${CARD_FEATURED.full} p-8 text-center hidden md:block`}>
               <h2 className="text-2xl font-bold text-foreground mb-4">
                 Ready to get started?
               </h2>
@@ -365,32 +353,19 @@ export function PricingPageClient({ customerDashboardEnabled }: PricingPageClien
         </div>
       </main>
 
-      {/* Mobile Floating Footer - matches landing page style */}
-      <AnimatePresence>
-        {showMobileFooter && (
-          <motion.div
-            className="md:hidden fixed bottom-6 left-4 right-4 z-50"
-            initial={{ y: 100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 100, opacity: 0 }}
-            transition={{
-              type: "spring",
-              stiffness: 300,
-              damping: 25,
-              mass: 1,
-            }}
-          >
-            <div className="flex items-center p-2 bg-white/70 dark:bg-black/50 backdrop-blur-2xl border border-white/20 dark:border-white/10 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
-              <Link href="/contact" className="flex-1">
-                <LandingButton variant="primary" className="w-full gap-2">
-                  Get started
-                  <ArrowRight className="h-4 w-4" />
-                </LandingButton>
-              </Link>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+      <Footer />
+
+      {/* Mobile Floating Footer - always visible */}
+      <div className="md:hidden fixed bottom-6 left-4 right-4 z-50">
+        <div className="flex items-center p-2 bg-white/70 dark:bg-black/50 backdrop-blur-2xl border border-white/20 dark:border-white/10 rounded-full shadow-[var(--shadow-elevation-md)]">
+          <Link href="/contact" className="flex-1">
+            <LandingButton variant="primary" className="w-full gap-2">
+              Get started
+              <ArrowRight className="h-4 w-4" />
+            </LandingButton>
+          </Link>
+        </div>
+      </div>
+    </LandingBackground>
   );
 }

@@ -9,6 +9,13 @@ export const SITE_CONFIG = {
     "Product Engineer offering software solutions with 8 years of UX design experience. Production-grade prototyping and UX-led systems design.",
 } as const;
 
+// Centralized social media links
+export const SOCIALS = {
+  x: "https://x.com/jamiegraytech",
+  linkedin: "https://www.linkedin.com/in/jamiegraytech/",
+  github: "https://github.com/sirjamesgray",
+} as const;
+
 // CTA configuration - changes based on customer-dashboard feature flag
 // When dashboard enabled: "Start a project" -> /login
 // When dashboard disabled: "Get started" -> /contact
@@ -53,6 +60,8 @@ export type ExperienceItem = {
   startDate: string;
   endDate: string;
   logo: string;
+  /** Brand color for glow/hover effects (HSL format for CursorGlow) */
+  brandColor: string;
 };
 
 // Project types for the onboarding flow and project display
@@ -77,6 +86,7 @@ export const EXPERIENCE: ExperienceItem[] = [
     startDate: "May 2025",
     endDate: getCurrentDate(),
     logo: "/logos/wewrite.png",
+    brandColor: "#2599FF", // WeWrite Blue
   },
   {
     company: "Turbo",
@@ -85,6 +95,7 @@ export const EXPERIENCE: ExperienceItem[] = [
     startDate: "Jun 2024",
     endDate: "May 2025",
     logo: "/logos/turbo.png",
+    brandColor: "#2E78F7", // Turbo Blue
   },
   {
     company: "Ramp",
@@ -93,6 +104,7 @@ export const EXPERIENCE: ExperienceItem[] = [
     startDate: "Aug 2024",
     endDate: "Mar 2025",
     logo: "/logos/ramp.png",
+    brandColor: "#E1F03F", // Ramp Yellow-Green
   },
   {
     company: "Vondy",
@@ -101,6 +113,7 @@ export const EXPERIENCE: ExperienceItem[] = [
     startDate: "Feb 2025",
     endDate: "Apr 2025",
     logo: "/logos/vondy.png",
+    brandColor: "#0E3DB9", // Vondy Blue
   },
   {
     company: "Whop",
@@ -109,6 +122,7 @@ export const EXPERIENCE: ExperienceItem[] = [
     startDate: "Jul 2023",
     endDate: "May 2024",
     logo: "/logos/whop.png",
+    brandColor: "#F83E22", // Whop Red-Orange
   },
   {
     company: "Saturday App",
@@ -117,6 +131,7 @@ export const EXPERIENCE: ExperienceItem[] = [
     startDate: "Jan 2023",
     endDate: "Mar 2023",
     logo: "/logos/saturday.png",
+    brandColor: "#4521B7", // Saturday Purple
   },
   {
     company: "ParkHub",
@@ -125,5 +140,6 @@ export const EXPERIENCE: ExperienceItem[] = [
     startDate: "Jun 2017",
     endDate: "Jan 2023",
     logo: "/logos/parkhub.png",
+    brandColor: "#279B3C", // ParkHub Green
   },
 ];

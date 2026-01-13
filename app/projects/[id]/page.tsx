@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation"
 import { createAdminClient } from "@/lib/supabase/admin"
 import Link from "next/link"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, Globe } from "lucide-react"
 import { BlurFade } from "@/components/ui/blur-fade"
 import { LandingButton } from "@/components/ui/landing-button"
 import { SiteHeader } from "@/components/site-header"
@@ -9,6 +9,8 @@ import { CursorGrid } from "@/components/cursor-grid"
 import { formatProjectType, CTA_CONFIG } from "@/lib/constants"
 import { CMSContentRenderer } from "@/components/cms-content-renderer"
 import { isCustomerDashboardEnabled } from "@/lib/feature-flags"
+import { TwinklingSparkles } from "@/components/twinkling-sparkles"
+import { CARD_GLASS, CARD_CTA } from "@/lib/cards"
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -33,7 +35,9 @@ export default async function PublicProjectPage({ params }: PageProps) {
       public_industry,
       public_content_html,
       project_type,
-      show_on_landing_page
+      show_on_landing_page,
+      public_live_url,
+      show_live_link
     `)
     .eq("id", id)
     .eq("show_on_landing_page", true)
@@ -70,6 +74,27 @@ export default async function PublicProjectPage({ params }: PageProps) {
             </div>
           </BlurFade>
 
+          {/* Live Site CTA */}
+          {project.show_live_link && project.public_live_url && (
+            <BlurFade delay={0.2}>
+              <a
+                href={project.public_live_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`group relative mb-8 flex items-center justify-between p-5 ${CARD_CTA.full}`}
+              >
+                <TwinklingSparkles />
+                <div className="relative flex items-center gap-4">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-white/20">
+                    <Globe className="h-5 w-5 text-white" />
+                  </div>
+                  <p className="font-semibold text-white text-lg">View Live Site</p>
+                </div>
+                <ArrowRight className="relative h-5 w-5 text-white/80 transition-transform group-hover:translate-x-1" />
+              </a>
+            </BlurFade>
+          )}
+
           {/* Rich HTML Content */}
           {project.public_content_html && (
             <BlurFade delay={0.3}>
@@ -90,7 +115,7 @@ export default async function PublicProjectPage({ params }: PageProps) {
           {/* Empty State */}
           {!project.public_content_html && (
             <BlurFade delay={0.3}>
-              <div className="text-center py-16 rounded-2xl border border-white/10 bg-card/40">
+              <div className={`text-center py-16 ${CARD_GLASS.full}`}>
                 <p className="text-muted-foreground">
                   More details about this project coming soon.
                 </p>
@@ -100,7 +125,7 @@ export default async function PublicProjectPage({ params }: PageProps) {
 
           {/* CTA */}
           <BlurFade delay={0.5}>
-            <div className="mt-16 rounded-2xl border border-white/10 bg-card/40 backdrop-blur-sm p-8 md:p-12 text-center">
+            <div className={`mt-16 p-8 md:p-12 text-center ${CARD_GLASS.full}`}>
               <h3 className="text-2xl font-bold tracking-tight text-foreground mb-3">
                 Interested in a similar project?
               </h3>

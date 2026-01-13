@@ -3,10 +3,29 @@
 import { useState } from "react";
 import Image from "next/image";
 import { MapPin, ArrowRight } from "lucide-react";
-import { Glow } from "@codaworks/react-glow";
+import { CursorGlow } from "@/components/ui/cursor-glow";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { cn } from "@/lib/utils";
 import { EXPERIENCE } from "@/lib/constants";
+import { CARD_INTERACTIVE_SOLID } from "@/lib/cards";
+
+/** Convert color string to rgba with specified opacity (supports HSL and hex) */
+function colorWithOpacity(color: string, opacity: number): string {
+  // Handle HSL format
+  const hslMatch = color.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
+  if (hslMatch) {
+    return `hsla(${hslMatch[1]}, ${hslMatch[2]}%, ${hslMatch[3]}%, ${opacity})`;
+  }
+  // Handle hex format
+  if (color.startsWith("#")) {
+    const hex = color.slice(1);
+    const r = parseInt(hex.slice(0, 2), 16);
+    const g = parseInt(hex.slice(2, 4), 16);
+    const b = parseInt(hex.slice(4, 6), 16);
+    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+  }
+  return color;
+}
 
 export function ExperienceTimeline() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -45,14 +64,13 @@ export function ExperienceTimeline() {
                       idx % 2 === 0 ? "justify-end" : "justify-end"
                     )}>
                       {idx % 2 === 0 ? (
-                        <Glow color="hsl(145, 80%, 45%)">
+                        <CursorGlow color={job.brandColor}>
                           <div
                             className={cn(
-                              "w-full max-w-sm rounded-xl border p-4 transition-all duration-300 cursor-default backdrop-blur-xl glow:ring-1 glow:ring-emerald-500/30 glow:border-emerald-500/40",
-                              hoveredIndex === idx
-                                ? "border-primary/50 bg-primary/10 shadow-lg shadow-primary/10"
-                                : "border-white/10 bg-card/40"
+                              `w-full max-w-sm p-4 cursor-default ${CARD_INTERACTIVE_SOLID.base} ${CARD_INTERACTIVE_SOLID.shadow}`,
+                              hoveredIndex === idx && "shadow-[var(--shadow-elevation-md)]"
                             )}
+                            style={hoveredIndex === idx ? { borderColor: colorWithOpacity(job.brandColor, 0.5) } : undefined}
                           >
                             <div className="flex items-start gap-3">
                               {job.logo && (
@@ -80,7 +98,7 @@ export function ExperienceTimeline() {
                               </div>
                             </div>
                           </div>
-                        </Glow>
+                        </CursorGlow>
                       ) : (
                         <div className="w-full max-w-sm" />
                       )}
@@ -93,9 +111,10 @@ export function ExperienceTimeline() {
                         className={cn(
                           "rounded-full px-3 py-1 text-xs font-medium transition-all duration-300 whitespace-nowrap",
                           hoveredIndex === idx
-                            ? "bg-primary text-primary-foreground scale-105"
+                            ? "text-white scale-105"
                             : "bg-muted text-muted-foreground"
                         )}
+                        style={hoveredIndex === idx ? { backgroundColor: job.brandColor } : undefined}
                       >
                         {job.startDate}
                       </span>
@@ -105,19 +124,25 @@ export function ExperienceTimeline() {
                         className={cn(
                           "mt-2 h-3 w-3 rounded-full transition-all duration-300 z-10",
                           hoveredIndex === idx
-                            ? "bg-primary scale-125 shadow-lg shadow-primary/50"
+                            ? "scale-125"
                             : "bg-border"
                         )}
+                        style={hoveredIndex === idx ? {
+                          backgroundColor: job.brandColor,
+                          boxShadow: `0 10px 15px -3px ${colorWithOpacity(job.brandColor, 0.5)}`
+                        } : undefined}
                       />
 
                       {/* Connecting vertical line */}
                       <div
                         className={cn(
                           "w-0.5 flex-1 min-h-12 transition-all duration-300",
-                          hoveredIndex === idx
-                            ? "bg-primary shadow-[0_0_8px_2px] shadow-primary/40"
-                            : "bg-border"
+                          hoveredIndex !== idx && "bg-border"
                         )}
+                        style={hoveredIndex === idx ? {
+                          backgroundColor: job.brandColor,
+                          boxShadow: `0 0 8px 2px ${colorWithOpacity(job.brandColor, 0.4)}`
+                        } : undefined}
                       />
 
                       {/* End dot */}
@@ -125,9 +150,13 @@ export function ExperienceTimeline() {
                         className={cn(
                           "h-3 w-3 rounded-full transition-all duration-300 z-10",
                           hoveredIndex === idx
-                            ? "bg-primary scale-125 shadow-lg shadow-primary/50"
+                            ? "scale-125"
                             : "bg-border"
                         )}
+                        style={hoveredIndex === idx ? {
+                          backgroundColor: job.brandColor,
+                          boxShadow: `0 10px 15px -3px ${colorWithOpacity(job.brandColor, 0.5)}`
+                        } : undefined}
                       />
 
                       {/* End date */}
@@ -135,9 +164,10 @@ export function ExperienceTimeline() {
                         className={cn(
                           "mt-2 rounded-full px-3 py-1 text-xs font-medium transition-all duration-300 whitespace-nowrap",
                           hoveredIndex === idx
-                            ? "bg-primary text-primary-foreground scale-105"
+                            ? "text-white scale-105"
                             : "bg-muted text-muted-foreground"
                         )}
+                        style={hoveredIndex === idx ? { backgroundColor: job.brandColor } : undefined}
                       >
                         {job.endDate}
                       </span>
@@ -149,14 +179,13 @@ export function ExperienceTimeline() {
                       idx % 2 === 1 ? "justify-start" : "justify-start"
                     )}>
                       {idx % 2 === 1 ? (
-                        <Glow color="hsl(145, 80%, 45%)">
+                        <CursorGlow color={job.brandColor}>
                           <div
                             className={cn(
-                              "w-full max-w-sm rounded-xl border p-4 transition-all duration-300 cursor-default backdrop-blur-xl glow:ring-1 glow:ring-emerald-500/30 glow:border-emerald-500/40",
-                              hoveredIndex === idx
-                                ? "border-primary/50 bg-primary/10 shadow-lg shadow-primary/10"
-                                : "border-white/10 bg-card/40"
+                              `w-full max-w-sm p-4 cursor-default ${CARD_INTERACTIVE_SOLID.base} ${CARD_INTERACTIVE_SOLID.shadow}`,
+                              hoveredIndex === idx && "shadow-[var(--shadow-elevation-md)]"
                             )}
+                            style={hoveredIndex === idx ? { borderColor: colorWithOpacity(job.brandColor, 0.5) } : undefined}
                           >
                             <div className="flex items-start gap-3">
                               {job.logo && (
@@ -184,7 +213,7 @@ export function ExperienceTimeline() {
                               </div>
                             </div>
                           </div>
-                        </Glow>
+                        </CursorGlow>
                       ) : (
                         <div className="w-full max-w-sm" />
                       )}
@@ -193,14 +222,13 @@ export function ExperienceTimeline() {
 
                   {/* Mobile layout */}
                   <div className="md:hidden py-2">
-                    <Glow color="hsl(145, 80%, 45%)">
+                    <CursorGlow color={job.brandColor}>
                       <div
                         className={cn(
-                          "rounded-xl border p-4 transition-all duration-300 cursor-default backdrop-blur-xl glow:ring-1 glow:ring-emerald-500/30 glow:border-emerald-500/40",
-                          hoveredIndex === idx
-                            ? "border-primary/50 bg-primary/10 shadow-lg shadow-primary/10"
-                            : "border-white/10 bg-card/40"
+                          `p-4 cursor-default ${CARD_INTERACTIVE_SOLID.base} ${CARD_INTERACTIVE_SOLID.shadow}`,
+                          hoveredIndex === idx && "shadow-[var(--shadow-elevation-md)]"
                         )}
+                        style={hoveredIndex === idx ? { borderColor: colorWithOpacity(job.brandColor, 0.5) } : undefined}
                       >
                         <div className="flex items-start gap-3">
                           {/* Logo on the left */}
@@ -239,7 +267,7 @@ export function ExperienceTimeline() {
                           </div>
                         </div>
                       </div>
-                    </Glow>
+                    </CursorGlow>
                   </div>
                 </div>
               </BlurFade>
