@@ -20,7 +20,12 @@ export async function GET() {
       project_type,
       vercel_url,
       icon_url,
-      public_brand_color
+      public_brand_color,
+      public_live_url,
+      show_live_link,
+      public_design_system_url,
+      show_design_system_link,
+      public_content_html
     `)
     .eq("show_on_landing_page", true)
     .order("created_at", { ascending: false })

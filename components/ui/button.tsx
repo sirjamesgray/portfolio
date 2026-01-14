@@ -52,12 +52,19 @@ function Button({
   }) {
   const Comp = asChild ? Slot : "button"
 
+  // Check if using accent style via data attribute
+  const accentStyle = props["data-accent-style" as keyof typeof props] as string | undefined;
+  const useAccentColor = !!accentStyle && variant === "default";
+
   return (
     <Comp
       data-slot="button"
       data-variant={variant}
       data-size={size}
-      className={cn(buttonVariants({ variant, size, className }))}
+      className={cn(
+        buttonVariants({ variant, size, className }),
+        useAccentColor && "!bg-[var(--showcase-accent)] hover:!bg-[var(--showcase-accent-hover)]"
+      )}
       {...props}
     />
   )

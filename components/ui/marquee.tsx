@@ -31,6 +31,11 @@ interface MarqueeProps extends ComponentPropsWithoutRef<"div"> {
    * @default 4
    */
   repeat?: number
+  /**
+   * Whether to enable manual horizontal scrolling instead of auto-animation
+   * @default false
+   */
+  scrollable?: boolean
 }
 
 export function Marquee({
@@ -40,13 +45,15 @@ export function Marquee({
   children,
   vertical = false,
   repeat = 4,
+  scrollable = false,
   ...props
 }: MarqueeProps) {
   return (
     <div
       {...props}
       className={cn(
-        "group flex [gap:var(--gap)] overflow-hidden p-2 [--duration:40s] [--gap:1rem]",
+        "group flex [gap:var(--gap)] overflow-y-visible py-6 [--duration:40s] [--gap:1rem]",
+        scrollable ? "overflow-x-auto scrollbar-none" : "overflow-x-clip",
         {
           "flex-row": !vertical,
           "flex-col": vertical,

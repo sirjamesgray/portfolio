@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { BlurFade } from "@/components/ui/blur-fade";
+import { LandingButton } from "@/components/ui/landing-button";
 import { ProjectCard, ProjectCardData } from "@/components/project-card";
 import { formatProjectType } from "@/lib/constants";
 import { CARD_GLASS } from "@/lib/cards";
@@ -94,6 +96,17 @@ export function ProjectsShowcase() {
             })}
           </div>
         )}
+
+        <BlurFade delay={0.3} inView>
+          <div className="mt-8 flex justify-center">
+            <Link href="/projects">
+              <LandingButton variant="secondary" className="gap-2">
+                View projects page
+                <ArrowRight className="h-4 w-4" />
+              </LandingButton>
+            </Link>
+          </div>
+        </BlurFade>
       </div>
     </section>
   );

@@ -8,7 +8,8 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { TimeMachine } from "@/components/time-machine";
 import { LiquidMetalLogo } from "@/components/liquid-metal-logo";
 import { HeatmapLogo } from "@/components/heatmap-logo";
-import { UIShowcase } from "@/components/ui-showcase";
+import { UIShowcase, type ShowcaseStyle } from "@/components/ui-showcase";
+import { UIStyleSwitcher } from "@/components/ui-style-switcher";
 import { Footer } from "@/components/footer";
 
 const sections = [
@@ -20,6 +21,7 @@ const sections = [
 
 export default function ExperimentsPage() {
   const [activeSection, setActiveSection] = useState("heatmap-logo");
+  const [showcaseStyle, setShowcaseStyle] = useState<ShowcaseStyle>("paper");
 
   // Track active section based on scroll position
   useEffect(() => {
@@ -275,8 +277,11 @@ export default function ExperimentsPage() {
             <p className="text-muted-foreground mb-6 text-sm">
               Auto-triggering component carousel with animated interactions. Components animate automatically on a timed loop.
             </p>
-            <div className="rounded-xl border border-border bg-card/50 overflow-hidden py-8">
-              <UIShowcase />
+            <div className="mb-4">
+              <UIStyleSwitcher activeStyle={showcaseStyle} onStyleChange={setShowcaseStyle} />
+            </div>
+            <div className="rounded-xl border border-border">
+              <UIShowcase style={showcaseStyle} />
             </div>
           </section>
         </div>

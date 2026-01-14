@@ -22,6 +22,7 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [showMobileFooter, setShowMobileFooter] = useState(false);
+  const [isStylesSectionVisible, setIsStylesSectionVisible] = useState(false);
 
   useEffect(() => {
     // Only check user if dashboard is enabled
@@ -60,6 +61,23 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
     handleScroll(); // Check initial position
 
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Track when the Custom Styles section is in view to hide mobile footer
+  useEffect(() => {
+    const stylesSection = document.getElementById("styles");
+    if (!stylesSection) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // Hide footer when styles section is at least 30% visible
+        setIsStylesSectionVisible(entry.isIntersecting);
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(stylesSection);
+    return () => observer.disconnect();
   }, []);
 
   // Navigation items for desktop header
@@ -213,9 +231,9 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
         <ThemeToggle />
       </div>
 
-      {/* Mobile Floating Footer - hidden on desktop, appears after scrolling past hero, only on landing page */}
+      {/* Mobile Floating Footer - hidden on desktop, appears after scrolling past hero, only on landing page, hides when styles section is visible */}
       <AnimatePresence>
-        {showMobileFooter && variant === "default" && (
+        {showMobileFooter && variant === "default" && !isStylesSectionVisible && (
           <motion.div
             className="md:hidden fixed bottom-6 left-4 right-4 z-50"
             initial={{ y: 100, opacity: 0 }}

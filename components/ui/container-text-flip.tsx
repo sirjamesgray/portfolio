@@ -20,11 +20,18 @@ export const ContainerTextFlip = ({
   const [isClient, setIsClient] = useState(false);
   const [width, setWidth] = useState<number | "auto">("auto");
   const measureRef = useRef<HTMLSpanElement>(null);
+  const lastInteractionRef = useRef<number>(0);
 
   // Ensure we only animate on client to avoid hydration issues
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  // Skip to next word on click/tap
+  const handleClick = useCallback(() => {
+    lastInteractionRef.current = Date.now();
+    setCurrentIndex((prev) => (prev + 1) % words.length);
+  }, [words.length]);
 
   // Measure the width of the current word
   const measureWidth = useCallback(() => {
@@ -45,7 +52,11 @@ export const ContainerTextFlip = ({
     if (!isClient) return;
 
     const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % words.length);
+      // Only auto-advance if it's been at least `interval` ms since last interaction
+      const timeSinceInteraction = Date.now() - lastInteractionRef.current;
+      if (timeSinceInteraction >= interval) {
+        setCurrentIndex((prev) => (prev + 1) % words.length);
+      }
     }, interval);
 
     return () => clearInterval(timer);
@@ -79,11 +90,13 @@ export const ContainerTextFlip = ({
   return (
     <motion.span
       className={cn(
-        "inline-flex items-center justify-center rounded-lg bg-card border border-border shadow-sm dark:bg-emerald-500/20 dark:border-emerald-500/30 overflow-hidden",
+        "inline-flex items-center justify-center rounded-lg bg-card border border-border shadow-sm dark:bg-emerald-500/20 dark:border-emerald-500/30 overflow-hidden cursor-pointer select-none",
         className
       )}
+      onClick={handleClick}
       animate={{ width: width !== "auto" ? width + 16 : "auto" }} // +16 for px-2 padding
       transition={springTransition}
+      whileTap={{ scale: 0.98 }}
     >
       <span className="relative inline-flex items-center justify-center px-2 py-1">
         {/* Hidden span to measure width */}

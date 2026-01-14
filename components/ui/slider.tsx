@@ -23,6 +23,10 @@ function Slider({
     [value, defaultValue, min, max]
   )
 
+  // Check if using accent style via data attribute
+  const accentStyle = props["data-accent-style" as keyof typeof props] as string | undefined;
+  const useAccentColor = !!accentStyle;
+
   return (
     <SliderPrimitive.Root
       data-slot="slider"
@@ -39,21 +43,29 @@ function Slider({
       <SliderPrimitive.Track
         data-slot="slider-track"
         className={cn(
-          "bg-muted relative grow overflow-hidden rounded-full data-[orientation=horizontal]:h-1.5 data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-1.5"
+          "relative grow overflow-hidden rounded-full data-[orientation=horizontal]:h-1.5 data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-1.5",
+          !useAccentColor && "bg-muted",
+          useAccentColor && "bg-black/20"
         )}
       >
         <SliderPrimitive.Range
           data-slot="slider-range"
           className={cn(
-            "bg-primary absolute transition-all duration-300 ease-out data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full"
+            "absolute transition-all duration-300 ease-out data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full",
+            !useAccentColor && "bg-primary"
           )}
+          style={useAccentColor ? { backgroundColor: "var(--showcase-accent)" } : undefined}
         />
       </SliderPrimitive.Track>
       {Array.from({ length: _values.length }, (_, index) => (
         <SliderPrimitive.Thumb
           data-slot="slider-thumb"
           key={index}
-          className="border-primary ring-ring/50 block size-4 shrink-0 rounded-full border bg-white shadow-sm transition-all duration-300 ease-out hover:ring-4 focus-visible:ring-4 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50"
+          className={cn(
+            "ring-ring/50 block size-4 shrink-0 rounded-full border bg-white shadow-sm transition-all duration-300 ease-out hover:ring-4 focus-visible:ring-4 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50",
+            !useAccentColor && "border-primary"
+          )}
+          style={useAccentColor ? { borderColor: "var(--showcase-accent)" } : undefined}
         />
       ))}
     </SliderPrimitive.Root>

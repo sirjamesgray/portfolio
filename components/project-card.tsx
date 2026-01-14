@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Briefcase, ArrowRight } from "lucide-react";
+import Link from "next/link";
+import { Briefcase, ArrowRight, Globe, Palette, FileText } from "lucide-react";
 import { CursorGlow } from "@/components/ui/cursor-glow";
+import { LandingButton } from "@/components/ui/landing-button";
 import { cn } from "@/lib/utils";
 import { CARD_INTERACTIVE_SOLID } from "@/lib/cards";
 
@@ -17,6 +19,12 @@ export type ProjectCardData = {
   project_type: string | null;
   icon_url: string | null;
   public_brand_color: string | null;
+  // Optional URL fields for detailed variant
+  public_live_url?: string | null;
+  show_live_link?: boolean;
+  public_design_system_url?: string | null;
+  show_design_system_link?: boolean;
+  public_content_html?: string | null;
 };
 
 interface ProjectCardProps {
@@ -28,6 +36,8 @@ interface ProjectCardProps {
   onHover?: (hovered: boolean) => void;
   priority?: boolean;
   className?: string;
+  /** "simple" for landing page (clickable card), "detailed" for projects page (with action buttons) */
+  variant?: "simple" | "detailed";
 }
 
 // Convert hex color to rgba with opacity
@@ -56,12 +66,18 @@ export function ProjectCard({
   onHover,
   priority = false,
   className,
+  variant = "simple",
 }: ProjectCardProps) {
   const [internalHovered, setInternalHovered] = useState(false);
   const hovered = onHover ? isHovered : internalHovered;
 
   const brandColor = project.public_brand_color || DEFAULT_COLOR;
   const glowColor = getGlowColor(brandColor);
+
+  // Determine which buttons to show for detailed variant
+  const hasContent = !!project.public_content_html;
+  const hasLiveUrl = project.show_live_link && project.public_live_url;
+  const hasDesignSystem = project.show_design_system_link && project.public_design_system_url;
 
   // Create gradient style using the hex color
   const gradientStyle = {
@@ -116,7 +132,7 @@ export function ProjectCard({
             </div>
           )}
 
-          {/* Content row: Logo | Text | Arrow */}
+          {/* Content row: Logo | Text | Arrow (simple) or just Logo | Text (detailed) */}
           <div className="flex items-center gap-4">
             {/* Logo */}
             <div
@@ -153,14 +169,54 @@ export function ProjectCard({
               </p>
             </div>
 
-            {/* Arrow */}
-            <ArrowRight
-              className={cn(
-                "h-5 w-5 shrink-0 transition-all duration-300",
-                hovered ? "text-primary translate-x-1" : "text-muted-foreground"
-              )}
-            />
+            {/* Arrow - only for simple variant */}
+            {variant === "simple" && (
+              <ArrowRight
+                className={cn(
+                  "h-5 w-5 shrink-0 transition-all duration-300",
+                  hovered ? "text-primary translate-x-1" : "text-muted-foreground"
+                )}
+              />
+            )}
           </div>
+
+          {/* Action buttons - only for detailed variant */}
+          {variant === "detailed" && (
+            <div className="flex flex-wrap gap-2 mt-4">
+              {hasContent && (
+                <Link href={`/projects/${project.id}`}>
+                  <LandingButton variant="secondary" size="sm" className="gap-1.5">
+                    <FileText className="h-3.5 w-3.5" />
+                    Read blog post
+                  </LandingButton>
+                </Link>
+              )}
+              {hasLiveUrl && (
+                <a
+                  href={project.public_live_url!}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <LandingButton variant="primary" size="sm" className="gap-1.5">
+                    <Globe className="h-3.5 w-3.5" />
+                    View site
+                  </LandingButton>
+                </a>
+              )}
+              {hasDesignSystem && (
+                <a
+                  href={project.public_design_system_url!}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <LandingButton variant="secondary" size="sm" className="gap-1.5">
+                    <Palette className="h-3.5 w-3.5" />
+                    View design system
+                  </LandingButton>
+                </a>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </CursorGlow>

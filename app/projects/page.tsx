@@ -97,17 +97,16 @@ export default function ProjectsPage() {
 
                 return (
                   <BlurFade key={project.id} delay={0.1 + idx * 0.05}>
-                    <Link href={`/projects/${project.id}`}>
-                      <ProjectCard
-                        project={project}
-                        displayTitle={displayTitle}
-                        displayDescription={displayDescription}
-                        displayIndustry={displayIndustry}
-                        isHovered={hoveredIndex === idx}
-                        onHover={(hovered) => setHoveredIndex(hovered ? idx : null)}
-                        priority={idx < 3}
-                      />
-                    </Link>
+                    <ProjectCard
+                      project={project}
+                      displayTitle={displayTitle}
+                      displayDescription={displayDescription}
+                      displayIndustry={displayIndustry}
+                      isHovered={hoveredIndex === idx}
+                      onHover={(hovered) => setHoveredIndex(hovered ? idx : null)}
+                      priority={idx < 3}
+                      variant="detailed"
+                    />
                   </BlurFade>
                 );
               })}

@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowRight, Layers, Palette, Code2, Sparkles, Github, Key, Settings2, HeartHandshake, RefreshCw, Check, LucideIcon, User, Share2, Copy, Zap, Rocket, Ship } from "lucide-react";
+import { ArrowRight, Layers, Palette, Code2, Sparkles, Github, Key, Settings2, HeartHandshake, RefreshCw, Check, LucideIcon, User, Share2, Copy, Zap, Rocket, Ship, Paintbrush } from "lucide-react";
+import { UIShowcase, type ShowcaseStyle } from "@/components/ui-showcase";
+import { UIStyleSwitcher } from "@/components/ui-style-switcher";
+import { AnimatedHeight } from "@/components/ui/animated-height";
 import { ContainerTextFlip } from "@/components/ui/container-text-flip";
 import { CursorGlow, GLOW_COLORS } from "@/components/ui/cursor-glow";
 import { LandingButton } from "@/components/ui/landing-button";
@@ -134,6 +137,7 @@ interface HomeClientProps {
 export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [copied, setCopied] = useState(false);
+  const [showcaseStyle, setShowcaseStyle] = useState<ShowcaseStyle>("paper");
 
   const handleCopyUrl = async () => {
     try {
@@ -214,15 +218,17 @@ export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
           </BlurFade>
 
           <BlurFade delay={0.2}>
-            <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
-              Need a{" "}
-              <ContainerTextFlip
-                words={ROTATING_WORDS}
-                interval={2500}
-                textClassName="font-bold"
-              />
-              {" "}website?
-            </h1>
+            <AnimatedHeight className="mb-6">
+              <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
+                Need a{" "}
+                <ContainerTextFlip
+                  words={ROTATING_WORDS}
+                  interval={2500}
+                  textClassName="font-bold"
+                />
+                {" "}website?
+              </h1>
+            </AnimatedHeight>
           </BlurFade>
 
           <BlurFade delay={0.3}>
@@ -351,6 +357,36 @@ export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
             </div>
           </BlurFade>
         </div>
+      </section>
+
+      {/* Custom Styles Section */}
+      <section id="styles" className="relative py-24 overflow-hidden">
+        <BlurFade delay={0.1} inView>
+          <div className="mb-8 text-center px-6">
+            <div className="mb-4 flex justify-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500 ring-1 ring-emerald-500/20">
+                <Paintbrush className="h-6 w-6" />
+              </div>
+            </div>
+            <h2 className="mb-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+              Custom Styles
+            </h2>
+            <p className="mx-auto max-w-xl text-muted-foreground">
+              Every site is tailored to match your brand. Pick a style that fits your vibe,
+              or I&apos;ll create something completely unique for you.
+            </p>
+          </div>
+        </BlurFade>
+
+        <BlurFade delay={0.2} inView>
+          <div className="mb-6 px-6">
+            <UIStyleSwitcher activeStyle={showcaseStyle} onStyleChange={setShowcaseStyle} />
+          </div>
+        </BlurFade>
+
+        <BlurFade delay={0.3} inView>
+          <UIShowcase style={showcaseStyle} />
+        </BlurFade>
       </section>
 
       {/* Experience Section */}

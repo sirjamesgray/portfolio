@@ -34,10 +34,18 @@ function Badge({
   VariantProps<typeof badgeVariants> & { asChild?: boolean }) {
   const Comp = asChild ? Slot : "span"
 
+  // Check if using accent style via data attribute
+  const accentStyle = props["data-accent-style" as keyof typeof props] as string | undefined;
+  const useAccentColor = !!accentStyle && variant === "default";
+
   return (
     <Comp
       data-slot="badge"
-      className={cn(badgeVariants({ variant }), className)}
+      className={cn(
+        badgeVariants({ variant }),
+        useAccentColor && "!bg-[var(--showcase-accent)] !border-transparent",
+        className
+      )}
       {...props}
     />
   )
