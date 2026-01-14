@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
-import { Check, X, Zap, Rocket, Ship, ArrowRight, Calendar, RefreshCw } from "lucide-react";
+import { Check, X, Zap, Rocket, Ship, ArrowRight, ArrowLeft, Calendar, RefreshCw } from "lucide-react";
 import { LandingButton } from "@/components/ui/landing-button";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { SiteHeader } from "@/components/site-header";
@@ -125,12 +125,22 @@ export function PricingPageClient({ customerDashboardEnabled }: PricingPageClien
 
   return (
     <LandingBackground className="flex flex-col">
-      <SiteHeader variant="back" backHref="/#pricing" backLabel="Home" />
+      <SiteHeader />
 
       <main className="flex-1 pt-20 pb-28 md:pb-16">
         <div className="mx-auto max-w-6xl px-6">
-          {/* Header */}
           <BlurFade delay={0.1}>
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Home
+            </Link>
+          </BlurFade>
+
+          {/* Header */}
+          <BlurFade delay={0.15}>
             <div className="text-center mb-16">
               <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
                 Simple Pricing

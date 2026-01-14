@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin, ArrowRight } from "lucide-react";
+import { MapPin, ArrowRight, ArrowLeft } from "lucide-react";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { SiteHeader } from "@/components/site-header";
 import { Footer } from "@/components/footer";
@@ -37,11 +37,21 @@ export default function ExperiencePage() {
 
   return (
     <LandingBackground className="flex flex-col">
-      <SiteHeader variant="back" backHref="/" backLabel="Home" />
+      <SiteHeader />
 
       <main className="flex-1 pt-20 pb-16">
         <div className="mx-auto max-w-5xl px-6">
           <BlurFade delay={0.1}>
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Home
+            </Link>
+          </BlurFade>
+
+          <BlurFade delay={0.15}>
             <div className="mb-12 text-center">
               <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
                 Experience

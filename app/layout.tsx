@@ -26,11 +26,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.jamiegray.net"),
-  title: "Jamie Gray | Product Engineer",
-  description: "Product Engineer offering software solutions with 8 years of UX design experience. Production-grade prototyping and UX-led systems design.",
+  title: "Need a new website? | Jamie Gray",
+  description: "Custom websites and admin tools for small businesses. I build fast, beautiful, modern websites that help you work smarter and grow faster.",
   openGraph: {
-    title: "Jamie Gray | Product Engineer",
-    description: "Product Engineer offering software solutions with 8 years of UX design experience. Production-grade prototyping and UX-led systems design.",
+    title: "Need a new website? | Jamie Gray",
+    description: "Custom websites and admin tools for small businesses. I build fast, beautiful, modern websites that help you work smarter and grow faster.",
     url: "https://www.jamiegray.net",
     siteName: "Jamie Gray",
     locale: "en_US",
@@ -40,14 +40,14 @@ export const metadata: Metadata = {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "Jamie Gray | Product Engineer",
+        alt: "Need a fast website? | Jamie Gray - Product Engineer",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Jamie Gray | Product Engineer",
-    description: "Product Engineer offering software solutions with 8 years of UX design experience.",
+    title: "Need a new website? | Jamie Gray",
+    description: "Custom websites and admin tools for small businesses. Fast, beautiful, modern websites.",
     creator: "@jamiegraytech",
     images: ["/opengraph-image"],
   },

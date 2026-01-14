@@ -23,6 +23,7 @@ const sections = [
   { id: "dropdowns-popovers", label: "Dropdowns & Popovers" },
   { id: "favicon", label: "Favicon" },
   { id: "form-controls", label: "Form Controls" },
+  { id: "hero-section", label: "Hero Section" },
   { id: "layout-components", label: "Layout Components" },
   { id: "logo-rotating", label: "Logo (Rotating)" },
   { id: "logo-static", label: "Logo (Static)" },
@@ -76,6 +77,8 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import { Textarea } from "@/components/ui/textarea";
 import { BeforeAfterSlider } from "@/components/before-after-slider";
 import { BlurFade } from "@/components/ui/blur-fade";
+import { FlipWords } from "@/components/ui/flip-words";
+import { ContainerTextFlip } from "@/components/ui/container-text-flip";
 import { Footer } from "@/components/footer";
 import { LandingBackground } from "@/components/landing-background";
 import { CursorGrid } from "@/components/cursor-grid";
@@ -2212,6 +2215,132 @@ export default function DesignSystemPage() {
             <p className="text-xs text-muted-foreground mt-3">
               Use <code>tracking-tight</code> (-0.025em) for large headlines. Default tracking for body text.
             </p>
+          </div>
+        </section>
+
+        <section id="hero-section" className="mb-16">
+          <h2 className="text-2xl font-bold text-foreground mb-6">Hero Section</h2>
+          <p className="text-muted-foreground mb-6">
+            Animated text components for the hero headline. Cycles through rotating words with smooth transitions.
+            Inspired by{" "}
+            <a href="https://ui.aceternity.com/components/container-text-flip" target="_blank" rel="noopener noreferrer" className="text-emerald-500 hover:underline">
+              Aceternity UI
+            </a>.
+          </p>
+
+          {/* Word List */}
+          <div className="rounded-xl border border-border bg-card/50 p-6 mb-8">
+            <h3 className="text-lg font-semibold text-foreground mb-4">Rotating Words</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Words cycle in this order (defined in <code>home-client.tsx</code>):
+            </p>
+            <ol className="list-decimal list-inside space-y-2 text-sm">
+              <li><span className="font-semibold text-emerald-500">new</span> — Fresh start, new beginnings</li>
+              <li><span className="font-semibold text-emerald-500">fast</span> — Speed & performance</li>
+              <li><span className="font-semibold text-emerald-500">beautiful</span> — Visual design & aesthetics</li>
+              <li><span className="font-semibold text-emerald-500">modern</span> — Current tech & trends</li>
+              <li><span className="font-semibold text-emerald-500">custom</span> — Tailored solutions</li>
+            </ol>
+            <p className="text-xs text-muted-foreground mt-4">
+              Interval: 2500ms between transitions
+            </p>
+          </div>
+
+          <div className="space-y-8">
+            {/* Current Implementation - ContainerTextFlip */}
+            <ComponentCard title="ContainerTextFlip (Current)" importPath="@/components/ui/container-text-flip">
+              <div className="text-center py-8">
+                <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
+                  Need a{" "}
+                  <ContainerTextFlip
+                    words={["new", "fast", "beautiful", "modern", "custom"]}
+                    interval={2500}
+                    textClassName="font-bold"
+                  />
+                  {" "}website?
+                </h1>
+              </div>
+            </ComponentCard>
+
+            {/* Old Implementation - FlipWords */}
+            <ComponentCard title="FlipWords (Previous)" importPath="@/components/ui/flip-words">
+              <div className="text-center py-8">
+                <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
+                  Need a{" "}
+                  <FlipWords
+                    words={["new", "fast", "beautiful", "modern", "custom"]}
+                    duration={2500}
+                    className="text-emerald-500 dark:text-emerald-400"
+                  />
+                  {" "}website?
+                </h1>
+              </div>
+            </ComponentCard>
+
+            {/* Props Documentation - ContainerTextFlip */}
+            <div className="rounded-xl border border-border bg-card/50 p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-4">ContainerTextFlip Props</h3>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-border">
+                      <th className="text-left py-2 pr-4 font-medium text-foreground">Prop</th>
+                      <th className="text-left py-2 pr-4 font-medium text-foreground">Type</th>
+                      <th className="text-left py-2 pr-4 font-medium text-foreground">Default</th>
+                      <th className="text-left py-2 font-medium text-foreground">Description</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-muted-foreground">
+                    <tr className="border-b border-border/50">
+                      <td className="py-2 pr-4"><code>words</code></td>
+                      <td className="py-2 pr-4"><code>string[]</code></td>
+                      <td className="py-2 pr-4">[&quot;better&quot;, ...]</td>
+                      <td className="py-2">Array of words to cycle through</td>
+                    </tr>
+                    <tr className="border-b border-border/50">
+                      <td className="py-2 pr-4"><code>interval</code></td>
+                      <td className="py-2 pr-4"><code>number</code></td>
+                      <td className="py-2 pr-4">3000</td>
+                      <td className="py-2">Time in ms between transitions</td>
+                    </tr>
+                    <tr className="border-b border-border/50">
+                      <td className="py-2 pr-4"><code>className</code></td>
+                      <td className="py-2 pr-4"><code>string</code></td>
+                      <td className="py-2 pr-4">-</td>
+                      <td className="py-2">CSS classes for the container</td>
+                    </tr>
+                    <tr className="border-b border-border/50">
+                      <td className="py-2 pr-4"><code>textClassName</code></td>
+                      <td className="py-2 pr-4"><code>string</code></td>
+                      <td className="py-2 pr-4">-</td>
+                      <td className="py-2">CSS classes for the text</td>
+                    </tr>
+                    <tr>
+                      <td className="py-2 pr-4"><code>animationDuration</code></td>
+                      <td className="py-2 pr-4"><code>number</code></td>
+                      <td className="py-2 pr-4">700</td>
+                      <td className="py-2">Animation duration in ms</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Code Example */}
+            <div className="rounded-xl border border-border bg-card/50 p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-4">Code Example</h3>
+              <pre className="text-sm text-muted-foreground bg-muted/50 rounded-lg p-4 overflow-x-auto">
+{`<h1 className="text-4xl font-bold">
+  Need a{" "}
+  <ContainerTextFlip
+    words={["new", "fast", "beautiful", "modern", "custom"]}
+    interval={2500}
+    textClassName="font-bold"
+  />
+  {" "}website?
+</h1>`}
+              </pre>
+            </div>
           </div>
         </section>
 

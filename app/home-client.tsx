@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ArrowRight, Layers, Palette, Code2, Sparkles, Github, Key, Settings2, HeartHandshake, RefreshCw, Check, LucideIcon, User, Share2, Copy, Zap, Rocket, Ship } from "lucide-react";
+import { ContainerTextFlip } from "@/components/ui/container-text-flip";
 import { CursorGlow, GLOW_COLORS } from "@/components/ui/cursor-glow";
 import { LandingButton } from "@/components/ui/landing-button";
 import { BlurFade } from "@/components/ui/blur-fade";
@@ -124,6 +125,8 @@ const deliverables: { Icon: LucideIcon; name: string; description: string }[] = 
   },
 ];
 
+const ROTATING_WORDS = ["new", "fast", "beautiful", "modern", "custom"];
+
 interface HomeClientProps {
   customerDashboardEnabled: boolean;
 }
@@ -212,20 +215,23 @@ export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
 
           <BlurFade delay={0.2}>
             <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
-              Hi, I&apos;m{" "}
-              <span className="bg-gradient-to-r from-emerald-600 via-green-500 to-teal-500 dark:from-emerald-400 dark:via-green-400 dark:to-teal-400 bg-clip-text text-transparent">
-                Jamie Gray
-              </span>
+              Need a{" "}
+              <ContainerTextFlip
+                words={ROTATING_WORDS}
+                interval={2500}
+                textClassName="font-bold"
+              />
+              {" "}website?
             </h1>
           </BlurFade>
 
           <BlurFade delay={0.3}>
             <p className="mx-auto mb-8 max-w-2xl text-lg text-muted-foreground sm:text-xl">
-              I build{" "}
+              Hi, I&apos;m Jamie Gray. I build{" "}
               <span className="font-semibold text-foreground">
                 websites
               </span>
-               {" "} and {" "}
+               {" "}and{" "}
               <span className="font-semibold text-foreground">
                 admin tools
               </span>

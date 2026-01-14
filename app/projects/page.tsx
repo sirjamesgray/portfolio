@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Briefcase, ArrowRight } from "lucide-react";
+import { Briefcase, ArrowRight, ArrowLeft } from "lucide-react";
 import { LandingButton } from "@/components/ui/landing-button";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { SiteHeader } from "@/components/site-header";
@@ -36,11 +36,21 @@ export default function ProjectsPage() {
 
   return (
     <LandingBackground className="flex flex-col">
-      <SiteHeader variant="back" backHref="/" backLabel="Home" />
+      <SiteHeader />
 
       <main className="flex-1 pt-20 pb-16">
         <div className="mx-auto max-w-6xl px-6">
           <BlurFade delay={0.1}>
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Home
+            </Link>
+          </BlurFade>
+
+          <BlurFade delay={0.15}>
             <div className="mb-12 text-center">
               <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
                 Projects

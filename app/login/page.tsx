@@ -7,7 +7,7 @@ import { SiteHeader } from "@/components/site-header";
 import { Suspense } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2, Mail } from "lucide-react";
+import { Loader2, Mail, ArrowLeft } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/constants";
 
 // Get the correct base URL for auth redirects
@@ -193,12 +193,21 @@ function LoginContent() {
 export default function LoginPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-blue-950/20 dark:to-blue-950/30">
-      <SiteHeader variant="back" />
+      <SiteHeader />
 
       <div className="flex min-h-screen items-center justify-center px-6 pt-16">
-        <Suspense fallback={<div>Loading...</div>}>
-          <LoginContent />
-        </Suspense>
+        <div className="flex flex-col">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Home
+          </Link>
+          <Suspense fallback={<div>Loading...</div>}>
+            <LoginContent />
+          </Suspense>
+        </div>
       </div>
     </div>
   );
