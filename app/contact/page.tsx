@@ -62,7 +62,7 @@ export default function ContactPage() {
                     href={option.href}
                     target={option.external ? "_blank" : undefined}
                     rel={option.external ? "noopener noreferrer" : undefined}
-                    className={`group relative flex items-center gap-6 p-6 rounded-xl border transition-all ${
+                    className={`group relative flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 p-6 rounded-xl border transition-all ${
                       option.primary
                         ? "bg-emerald-600 hover:bg-emerald-700 border-emerald-600 text-white shadow-[var(--shadow-glow-emerald)] hover:shadow-[var(--shadow-glow-emerald-hover)]"
                         : "bg-card hover:bg-muted/50 border-border shadow-[var(--shadow-elevation-md)] hover:shadow-[var(--shadow-elevation-md)]"
@@ -72,7 +72,7 @@ export default function ContactPage() {
                     {option.primary && <TwinklingSparkles />}
 
                     <div
-                      className={`relative flex-shrink-0 p-3 rounded-lg ${
+                      className={`relative flex-shrink-0 p-3 rounded-lg w-fit ${
                         option.primary
                           ? "bg-white/20"
                           : "bg-emerald-500/10"
@@ -101,7 +101,7 @@ export default function ContactPage() {
                       </p>
                     </div>
                     <div
-                      className={`relative flex-shrink-0 transition-transform group-hover:translate-x-1 ${
+                      className={`absolute right-6 top-1/2 -translate-y-1/2 sm:relative sm:right-auto sm:top-auto sm:translate-y-0 flex-shrink-0 transition-transform group-hover:translate-x-1 ${
                         option.primary ? "text-white/80" : "text-muted-foreground"
                       }`}
                     >

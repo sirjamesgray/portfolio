@@ -1,15 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowRight, Layers, Palette, Code2, Sparkles, Github, Key, Settings2, HeartHandshake, RefreshCw, Check, LucideIcon, User, Share2, Copy, Zap, Rocket, Ship, Paintbrush } from "lucide-react";
+import { ArrowRight, Github, Key, Settings2, HeartHandshake, RefreshCw, Check, LucideIcon, User, Share2, Copy, Zap, Rocket, Ship, Paintbrush } from "lucide-react";
 import { UIShowcase, type ShowcaseStyle } from "@/components/ui-showcase";
 import { UIStyleSwitcher } from "@/components/ui-style-switcher";
 import { AnimatedHeight } from "@/components/ui/animated-height";
 import { ContainerTextFlip } from "@/components/ui/container-text-flip";
-import { CursorGlow, GLOW_COLORS } from "@/components/ui/cursor-glow";
+import { CursorGlow } from "@/components/ui/cursor-glow";
 import { LandingButton } from "@/components/ui/landing-button";
 import { BlurFade } from "@/components/ui/blur-fade";
-import { BentoGrid, BentoCard } from "@/components/ui/bento-grid";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { SiteHeader } from "@/components/site-header";
@@ -30,53 +29,6 @@ const Logo3D = dynamic(
   () => import("@/components/logo-3d").then((mod) => mod.Logo3D),
   { ssr: false }
 );
-
-const services = [
-  {
-    Icon: Layers,
-    name: "Websites That Work",
-    description:
-      "Clean, fast websites that look great on any device. No templates—custom built for your business.",
-    background: (
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-transparent" />
-    ),
-    className: "lg:col-span-2 lg:row-span-1",
-    glowColor: GLOW_COLORS.emerald,
-  },
-  {
-    Icon: Palette,
-    name: "Simple & Friendly Design",
-    description:
-      "Designs that your customers will actually enjoy using. Clear, intuitive, and easy to navigate.",
-    background: (
-      <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-transparent to-transparent" />
-    ),
-    className: "lg:col-span-1 lg:row-span-1",
-    glowColor: GLOW_COLORS.orange,
-  },
-  {
-    Icon: Code2,
-    name: "Built to Last",
-    description:
-      "Solid code that won't break. I handle everything from design to launch so you can focus on your business.",
-    background: (
-      <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-transparent" />
-    ),
-    className: "lg:col-span-1 lg:row-span-1",
-    glowColor: GLOW_COLORS.cyan,
-  },
-  {
-    Icon: Sparkles,
-    name: "Admin Tools & Dashboards",
-    description:
-      "Custom tools to run your business better. Track customers, manage orders, see what's working—all in one place.",
-    background: (
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-transparent" />
-    ),
-    className: "lg:col-span-2 lg:row-span-1",
-    glowColor: GLOW_COLORS.emerald,
-  },
-];
 
 const projectPricing = [
   {
@@ -391,30 +343,6 @@ export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
 
       {/* Experience Section */}
       <ExperienceTimeline />
-
-      {/* Services Section */}
-      <section id="services" className="relative px-6 py-24">
-        <div className="mx-auto max-w-6xl">
-          <BlurFade delay={0.1} inView>
-            <div className="mb-12 text-center">
-              <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                How I Can Help
-              </h2>
-              <p className="mx-auto max-w-2xl text-muted-foreground">
-                I take care of the tech so you can focus on running your business.
-              </p>
-            </div>
-          </BlurFade>
-
-          <BlurFade delay={0.2} inView>
-            <BentoGrid className="lg:grid-cols-3">
-              {services.map((service, idx) => (
-                <BentoCard key={idx} {...service} />
-              ))}
-            </BentoGrid>
-          </BlurFade>
-        </div>
-      </section>
 
       {/* What You Get Section */}
       <section className="relative px-6 py-24">
