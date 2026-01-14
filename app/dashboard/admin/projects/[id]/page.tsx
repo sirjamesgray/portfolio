@@ -105,6 +105,9 @@ type Project = {
   // Live link
   public_live_url: string | null
   show_live_link: boolean | null
+  // Design system link
+  public_design_system_url: string | null
+  show_design_system_link: boolean | null
 }
 
 type ActivityLog = {
@@ -2682,6 +2685,8 @@ export default function ProjectDetailPage() {
           customer_opted_out_of_landing_page: project.customer_opted_out_of_landing_page,
           public_live_url: project.public_live_url,
           show_live_link: project.show_live_link,
+          public_design_system_url: project.public_design_system_url,
+          show_design_system_link: project.show_design_system_link,
         }}
         onToggle={async (enabled) => {
           const response = await fetch(`/api/admin/projects/${projectId}`, {
@@ -2708,6 +2713,26 @@ export default function ProjectDetailPage() {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ public_live_url: url }),
+          })
+          if (response.ok) {
+            fetchProject()
+          }
+        }}
+        onDesignSystemLinkToggle={async (enabled) => {
+          const response = await fetch(`/api/admin/projects/${projectId}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ show_design_system_link: enabled }),
+          })
+          if (response.ok) {
+            fetchProject()
+          }
+        }}
+        onDesignSystemUrlChange={async (url) => {
+          const response = await fetch(`/api/admin/projects/${projectId}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ public_design_system_url: url }),
           })
           if (response.ok) {
             fetchProject()

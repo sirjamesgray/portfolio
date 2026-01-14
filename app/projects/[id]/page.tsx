@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation"
 import { createAdminClient } from "@/lib/supabase/admin"
 import Link from "next/link"
-import { ArrowRight, Globe } from "lucide-react"
+import { ArrowLeft, ArrowRight, Globe, Palette } from "lucide-react"
 import { BlurFade } from "@/components/ui/blur-fade"
 import { LandingButton } from "@/components/ui/landing-button"
 import { SiteHeader } from "@/components/site-header"
@@ -9,8 +9,7 @@ import { CursorGrid } from "@/components/cursor-grid"
 import { formatProjectType, CTA_CONFIG } from "@/lib/constants"
 import { CMSContentRenderer } from "@/components/cms-content-renderer"
 import { isCustomerDashboardEnabled } from "@/lib/feature-flags"
-import { TwinklingSparkles } from "@/components/twinkling-sparkles"
-import { CARD_GLASS, CARD_CTA } from "@/lib/cards"
+import { CARD_GLASS } from "@/lib/cards"
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -37,7 +36,9 @@ export default async function PublicProjectPage({ params }: PageProps) {
       project_type,
       show_on_landing_page,
       public_live_url,
-      show_live_link
+      show_live_link,
+      public_design_system_url,
+      show_design_system_link
     `)
     .eq("id", id)
     .eq("show_on_landing_page", true)
@@ -55,45 +56,68 @@ export default async function PublicProjectPage({ params }: PageProps) {
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-background via-background to-blue-950/20 dark:to-blue-950/30">
       <CursorGrid />
-      <SiteHeader variant="back" backHref="/#projects" backLabel="Back to Landing Page" customerDashboardEnabled={dashboardEnabled} />
+      <SiteHeader customerDashboardEnabled={dashboardEnabled} />
 
       <main className="relative z-10 px-6 pt-24 pb-12">
         <div className="mx-auto max-w-4xl">
+          {/* Back to Projects */}
+          <BlurFade delay={0.1}>
+            <Link
+              href="/projects"
+              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Projects
+            </Link>
+          </BlurFade>
+
           {/* Header */}
           <BlurFade delay={0.15}>
-            <div className="mb-8">
-              <p className="text-sm font-medium text-primary mb-2">{displayIndustry}</p>
-              <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl mb-4">
-                {displayTitle}
-              </h1>
-              {displayDescription && (
-                <p className="text-lg text-muted-foreground max-w-2xl">
-                  {displayDescription}
-                </p>
+            <div className="mb-8 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+              <div>
+                <p className="text-sm font-medium text-primary mb-2">{displayIndustry}</p>
+                <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl mb-4">
+                  {displayTitle}
+                </h1>
+                {displayDescription && (
+                  <p className="text-lg text-muted-foreground max-w-2xl">
+                    {displayDescription}
+                  </p>
+                )}
+              </div>
+
+              {/* External Links Buttons */}
+              {((project.show_live_link && project.public_live_url) ||
+                (project.show_design_system_link && project.public_design_system_url)) && (
+                <div className="flex flex-row gap-2 sm:shrink-0">
+                  {project.show_design_system_link && project.public_design_system_url && (
+                    <a
+                      href={project.public_design_system_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <LandingButton variant="secondary" size="sm" className="gap-1.5">
+                        <Palette className="h-3.5 w-3.5" />
+                        Design System
+                      </LandingButton>
+                    </a>
+                  )}
+                  {project.show_live_link && project.public_live_url && (
+                    <a
+                      href={project.public_live_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <LandingButton variant="primary" size="sm" className="gap-1.5">
+                        <Globe className="h-3.5 w-3.5" />
+                        Live Site
+                      </LandingButton>
+                    </a>
+                  )}
+                </div>
               )}
             </div>
           </BlurFade>
-
-          {/* Live Site CTA */}
-          {project.show_live_link && project.public_live_url && (
-            <BlurFade delay={0.2}>
-              <a
-                href={project.public_live_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`group relative mb-8 flex items-center justify-between p-5 ${CARD_CTA.full}`}
-              >
-                <TwinklingSparkles />
-                <div className="relative flex items-center gap-4">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-white/20">
-                    <Globe className="h-5 w-5 text-white" />
-                  </div>
-                  <p className="font-semibold text-white text-lg">View Live Site</p>
-                </div>
-                <ArrowRight className="relative h-5 w-5 text-white/80 transition-transform group-hover:translate-x-1" />
-              </a>
-            </BlurFade>
-          )}
 
           {/* Rich HTML Content */}
           {project.public_content_html && (

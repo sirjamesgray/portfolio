@@ -49,6 +49,9 @@ export async function GET(
       icon_url,
       public_live_url,
       show_live_link,
+      public_design_system_url,
+      show_design_system_link,
+      public_brand_color,
       contacts (
         name,
         email,

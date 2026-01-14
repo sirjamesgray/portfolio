@@ -15,16 +15,13 @@ import {
   Loader2,
   Upload,
   X,
-  Globe,
-  Briefcase,
-  ArrowRight,
-  LayoutDashboard,
   ImageIcon,
+  Pipette,
 } from "lucide-react"
-import { cn } from "@/lib/utils"
 import { formatProjectType } from "@/lib/constants"
 import { MobileBackButton } from "@/components/dashboard/mobile-back-button"
 import { CMSEditor, CMSEditorRef } from "@/components/dashboard/cms-editor"
+import { ProjectCard, ProjectCardData } from "@/components/project-card"
 
 type ProjectMetadata = {
   id: string
@@ -37,7 +34,11 @@ type ProjectMetadata = {
   project_type: string | null
   vercel_url: string | null
   icon_url: string | null
+  public_brand_color: string | null
 }
+
+// Default emerald color
+const DEFAULT_COLOR = "#10b981"
 
 export default function LandingContentEditorPage() {
   const params = useParams()
@@ -53,6 +54,7 @@ export default function LandingContentEditorPage() {
     public_description: "",
     public_hero_image: "",
     public_industry: "",
+    public_brand_color: DEFAULT_COLOR,
   })
 
   // Content HTML state
@@ -65,6 +67,7 @@ export default function LandingContentEditorPage() {
     public_description: "",
     public_hero_image: "",
     public_industry: "",
+    public_brand_color: DEFAULT_COLOR,
   })
 
   // Track if content has changed
@@ -73,6 +76,7 @@ export default function LandingContentEditorPage() {
   // Hero image upload state
   const [uploadingHeroImage, setUploadingHeroImage] = useState(false)
   const heroImageInputRef = useRef<HTMLInputElement>(null)
+  const colorInputRef = useRef<HTMLInputElement>(null)
 
   // CMS Editor ref
   const editorRef = useRef<CMSEditorRef>(null)
@@ -90,6 +94,7 @@ export default function LandingContentEditorPage() {
             public_description: project.public_description || "",
             public_hero_image: project.public_hero_image || "",
             public_industry: project.public_industry || "",
+            public_brand_color: project.public_brand_color || DEFAULT_COLOR,
           }
           setMetadataForm(metadata)
           setOriginalMetadata(metadata)
@@ -214,6 +219,19 @@ export default function LandingContentEditorPage() {
   const displayDescription = metadataForm.public_description || "Custom software solution built for small business needs."
   const displayIndustry = metadataForm.public_industry || formatProjectType(project?.project_type ?? null)
 
+  // Build preview project object for ProjectCard
+  const previewProject: ProjectCardData = {
+    id: projectId,
+    title: project?.title || null,
+    public_title: metadataForm.public_title || null,
+    public_description: metadataForm.public_description || null,
+    public_hero_image: metadataForm.public_hero_image || null,
+    public_industry: metadataForm.public_industry || null,
+    project_type: project?.project_type || null,
+    icon_url: project?.icon_url || null,
+    public_brand_color: metadataForm.public_brand_color || null,
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -269,73 +287,64 @@ export default function LandingContentEditorPage() {
           </p>
         </CardHeader>
         <CardContent>
-          <div className="max-w-md mx-auto">
-            <div className="group relative rounded-2xl border p-6 transition-all duration-300 backdrop-blur-xl overflow-hidden border-white/10 bg-card/40">
-              {/* Background gradient */}
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 via-green-500/10 to-transparent opacity-30" />
+          {/* Real ProjectCard Preview */}
+          <div className="max-w-md mx-auto pointer-events-none">
+            <ProjectCard
+              project={previewProject}
+              displayTitle={displayTitle}
+              displayDescription={displayDescription}
+              displayIndustry={displayIndustry}
+            />
+          </div>
 
-              <div className="relative">
-                {/* Hero Image */}
-                {metadataForm.public_hero_image && (
-                  <div className="relative w-full h-40 rounded-lg overflow-hidden mb-4 bg-white/5">
-                    <Image
-                      src={metadataForm.public_hero_image}
-                      alt={displayTitle}
-                      fill
-                      sizes="400px"
-                      className="object-cover"
-                    />
-                  </div>
-                )}
+          {/* Hex Color Picker */}
+          <div className="mt-6 pt-4 border-t border-border">
+            <label className="text-sm font-medium mb-2 block">Card Accent Color</label>
+            <p className="text-xs text-muted-foreground mb-3">
+              Pick a color from the hero image using your browser&apos;s color picker
+            </p>
+            <div className="flex items-center gap-3">
+              {/* Hidden native color input */}
+              <input
+                ref={colorInputRef}
+                type="color"
+                value={metadataForm.public_brand_color}
+                onChange={(e) => setMetadataForm({ ...metadataForm, public_brand_color: e.target.value })}
+                className="sr-only"
+              />
 
-                {/* Header */}
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 text-muted-foreground overflow-hidden">
-                      {project?.icon_url ? (
-                        <Image
-                          src={project.icon_url}
-                          alt={displayTitle}
-                          width={48}
-                          height={48}
-                          className="object-cover w-full h-full"
-                        />
-                      ) : (
-                        <Briefcase className="h-6 w-6" />
-                      )}
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-lg text-foreground">
-                        {displayTitle}
-                      </h3>
-                      <p className="text-xs text-muted-foreground">
-                        {displayIndustry}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+              {/* Color preview button that triggers picker */}
+              <button
+                type="button"
+                onClick={() => colorInputRef.current?.click()}
+                className="h-10 w-10 rounded-lg border-2 border-border transition-all hover:scale-105 hover:border-foreground/50"
+                style={{ backgroundColor: metadataForm.public_brand_color }}
+                title="Click to pick color"
+              />
 
-                {/* Description */}
-                <p className="text-sm text-muted-foreground mb-6 leading-relaxed line-clamp-3">
-                  {displayDescription}
-                </p>
-
-                {/* Tags and CTA */}
-                <div className="flex items-center justify-between">
-                  <div className="flex flex-wrap gap-2">
-                    {project?.vercel_url && (
-                      <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium bg-white/10 text-muted-foreground">
-                        <Globe className="h-3 w-3" />
-                        Live Site
-                      </span>
-                    )}
-                    <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium bg-white/10 text-muted-foreground">
-                      <LayoutDashboard className="h-3 w-3" />
-                      Case Study
-                    </span>
-                  </div>
-                  <ArrowRight className="h-5 w-5 text-muted-foreground" />
-                </div>
+              {/* Hex input */}
+              <div className="flex items-center gap-2">
+                <Input
+                  value={metadataForm.public_brand_color}
+                  onChange={(e) => {
+                    const value = e.target.value
+                    if (/^#[0-9A-Fa-f]{0,6}$/.test(value)) {
+                      setMetadataForm({ ...metadataForm, public_brand_color: value })
+                    }
+                  }}
+                  placeholder="#10b981"
+                  className="w-28 font-mono text-sm"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => colorInputRef.current?.click()}
+                  className="gap-1.5"
+                >
+                  <Pipette className="h-4 w-4" />
+                  Pick
+                </Button>
               </div>
             </div>
           </div>

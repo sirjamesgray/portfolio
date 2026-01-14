@@ -103,7 +103,7 @@ export async function PATCH(
   }
 
   const body = await request.json()
-  const { public_title, public_description, public_hero_image, public_industry, public_content_html, icon_url, reorder } = body
+  const { public_title, public_description, public_hero_image, public_industry, public_content_html, public_brand_color, icon_url, reorder } = body
 
   const adminSupabase = createAdminClient()
 
@@ -126,6 +126,7 @@ export async function PATCH(
   if (public_hero_image !== undefined) updates.public_hero_image = public_hero_image
   if (public_industry !== undefined) updates.public_industry = public_industry
   if (public_content_html !== undefined) updates.public_content_html = public_content_html
+  if (public_brand_color !== undefined) updates.public_brand_color = public_brand_color
   if (icon_url !== undefined) updates.icon_url = icon_url
 
   if (Object.keys(updates).length === 0) {

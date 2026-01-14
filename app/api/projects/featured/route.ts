@@ -19,7 +19,8 @@ export async function GET() {
       public_industry,
       project_type,
       vercel_url,
-      icon_url
+      icon_url,
+      public_brand_color
     `)
     .eq("show_on_landing_page", true)
     .order("created_at", { ascending: false })

@@ -2,42 +2,19 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { Briefcase, ArrowRight } from "lucide-react";
 import { LandingButton } from "@/components/ui/landing-button";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { SiteHeader } from "@/components/site-header";
 import { Footer } from "@/components/footer";
 import { LandingBackground } from "@/components/landing-background";
-import { CursorGlow } from "@/components/ui/cursor-glow";
-import { cn } from "@/lib/utils";
+import { ProjectCard, ProjectCardData } from "@/components/project-card";
 import { formatProjectType } from "@/lib/constants";
 import { CARD_GLASS, CARD_INTERACTIVE_SOLID } from "@/lib/cards";
 
-type FeaturedProject = {
-  id: string;
-  title: string | null;
-  public_title: string | null;
-  public_description: string | null;
-  public_hero_image: string | null;
-  public_industry: string | null;
-  project_type: string | null;
-  vercel_url: string | null;
-  icon_url: string | null;
-};
-
-// Color palette for project cards
-const COLORS = [
-  "from-amber-500/20 via-orange-500/10 to-transparent",
-  "from-cyan-500/20 via-blue-500/10 to-transparent",
-  "from-purple-500/20 via-pink-500/10 to-transparent",
-  "from-emerald-500/20 via-green-500/10 to-transparent",
-  "from-rose-500/20 via-red-500/10 to-transparent",
-];
-
 export default function ProjectsPage() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const [projects, setProjects] = useState<FeaturedProject[]>([]);
+  const [projects, setProjects] = useState<ProjectCardData[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -107,91 +84,20 @@ export default function ProjectsPage() {
                 const displayTitle = project.public_title || project.title || "Untitled Project";
                 const displayDescription = project.public_description || "Custom software solution built for small business needs.";
                 const displayIndustry = project.public_industry || formatProjectType(project.project_type);
-                const color = COLORS[idx % COLORS.length];
 
                 return (
                   <BlurFade key={project.id} delay={0.1 + idx * 0.05}>
-                    <CursorGlow>
-                      <Link href={`/projects/${project.id}`}>
-                        <div
-                          className={cn(
-                            `group relative p-4 overflow-hidden h-full ${CARD_INTERACTIVE_SOLID.base} ${CARD_INTERACTIVE_SOLID.shadow}`,
-                            hoveredIndex === idx
-                              ? "border-primary/50 bg-primary/5 shadow-[var(--shadow-elevation-md)]"
-                              : ""
-                          )}
-                          onMouseEnter={() => setHoveredIndex(idx)}
-                          onMouseLeave={() => setHoveredIndex(null)}
-                        >
-                            {/* Background gradient */}
-                            <div className={cn(
-                              "absolute inset-0 bg-gradient-to-br opacity-50 transition-opacity duration-300",
-                              color,
-                              hoveredIndex === idx ? "opacity-70" : "opacity-30"
-                            )} />
-
-                            <div className="relative">
-                              {/* Hero Image */}
-                              {project.public_hero_image && (
-                                <div className="relative w-full h-40 rounded-lg overflow-hidden mb-4 bg-white/5">
-                                  <Image
-                                    src={project.public_hero_image}
-                                    alt={displayTitle}
-                                    fill
-                                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                                    className="object-cover transition-transform duration-300 group-hover:scale-105"
-                                    loading={idx < 3 ? "eager" : "lazy"}
-                                  />
-                                </div>
-                              )}
-
-                              {/* Content row: Logo | Text | Arrow */}
-                              <div className="flex items-center gap-4">
-                                {/* Logo */}
-                                <div className={cn(
-                                  "flex h-12 w-12 shrink-0 items-center justify-center rounded-xl transition-all duration-300 overflow-hidden",
-                                  hoveredIndex === idx
-                                    ? "bg-primary/20 text-primary"
-                                    : "bg-white/10 text-muted-foreground"
-                                )}>
-                                  {project.icon_url ? (
-                                    <Image
-                                      src={project.icon_url}
-                                      alt={displayTitle}
-                                      width={48}
-                                      height={48}
-                                      className="object-cover w-full h-full"
-                                    />
-                                  ) : (
-                                    <Briefcase className="h-6 w-6" />
-                                  )}
-                                </div>
-
-                                {/* Text content */}
-                                <div className="flex-1 min-w-0">
-                                  <h3 className="font-semibold text-lg text-foreground">
-                                    {displayTitle}
-                                  </h3>
-                                  <p className="text-xs text-muted-foreground mb-1">
-                                    {displayIndustry}
-                                  </p>
-                                  <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
-                                    {displayDescription}
-                                  </p>
-                                </div>
-
-                                {/* Arrow */}
-                                <ArrowRight className={cn(
-                                  "h-5 w-5 shrink-0 transition-all duration-300",
-                                  hoveredIndex === idx
-                                    ? "text-primary translate-x-1"
-                                    : "text-muted-foreground"
-                                )} />
-                              </div>
-                            </div>
-                        </div>
-                      </Link>
-                    </CursorGlow>
+                    <Link href={`/projects/${project.id}`}>
+                      <ProjectCard
+                        project={project}
+                        displayTitle={displayTitle}
+                        displayDescription={displayDescription}
+                        displayIndustry={displayIndustry}
+                        isHovered={hoveredIndex === idx}
+                        onHover={(hovered) => setHoveredIndex(hovered ? idx : null)}
+                        priority={idx < 3}
+                      />
+                    </Link>
                   </BlurFade>
                 );
               })}
