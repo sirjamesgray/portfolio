@@ -14,8 +14,14 @@ A freelance web development portfolio and client management platform that handle
 - **Framework:** Next.js 14+ (App Router)
 - **Database:** Supabase (PostgreSQL + Auth + Storage + Realtime)
 - **Payments:** Stripe (Invoicing, Webhooks)
-- **Styling:** Tailwind CSS, shadcn/ui, Magic UI
+- **Styling:** Tailwind CSS v4, shadcn/ui, Magic UI
 - **Deployment:** Vercel
+
+### Site Configuration (`lib/constants.ts`)
+Centralized configuration for site-wide settings:
+- `SITE_CONFIG` - URL, email, phone, social links, Calendly URL
+- `CTA_CONFIG` - Primary CTAs with dashboard-enabled/disabled variants
+- `ADMIN_EMAILS` - Email allowlist for admin access
 
 ### Authentication
 - Supabase Auth with OAuth providers
@@ -195,6 +201,48 @@ files
 - Public portfolio (manually curated, separate from project system)
 - Contact form that **auto-creates a project** in "lead" status
 - Service showcase with Magic UI components
+
+#### Page Sections
+1. **Hero Section** - Animated gradient text, shimmer CTA button, copy URL functionality
+2. **Experience Timeline** - Vertical timeline with alternating cards, hover-activated date highlighting, glow effects
+3. **Custom Styles Showcase** - Interactive UI component carousel demonstrating theming capabilities
+4. **Contact CTA** - Primary call-to-action driving to /contact page
+
+#### Custom Styles System (`components/ui-showcase.tsx`)
+An interactive demonstration of 7 themed UI styles, each with forced light/dark mode:
+
+| Style | Theme | Description |
+|-------|-------|-------------|
+| Neon | Dark | Cyan glow effects, dark slate background |
+| Blueprint | Dark | Grid pattern, dashed borders, technical aesthetic |
+| Neumorphism | Light | Soft shadows, slate-200 background, indigo accent |
+| Glassmorphism | Light | Frosted glass, gradient background, purple accent |
+| Pixel | Dark | Retro 8-bit aesthetic, sharp corners, pixel shadows |
+| Paper | Light | Warm cream tones, amber accent, subtle shadows |
+| Leather | Dark | Rich amber/brown gradients, premium texture |
+
+**Implementation:**
+- `SHOWCASE_STYLES` object defines container and card classes per style
+- `forcedTheme` property ensures styles ignore system dark/light mode
+- `StyleContext` propagates active style to child components
+- `getStyleConfig()` returns component-specific styling (switches, sliders, badges, etc.)
+- Three-row marquee with auto-animation and manual scroll support
+- Style switcher with prev/next navigation and 5-second auto-cycle
+
+#### Mobile Floating Toolbar
+- Appears after scrolling past hero section (60% viewport height)
+- Hides when Custom Styles section is in view (IntersectionObserver, 30% threshold)
+- Contains primary CTAs (View pricing, Schedule a call)
+- Spring animation for smooth enter/exit transitions
+
+#### Contact Page (`app/contact/page.tsx`)
+Three contact options with responsive card layout:
+1. **Schedule a call** (primary) - Links to Calendly, sparkle effect
+2. **Email me** - mailto link
+3. **Text me** - sms link
+
+Mobile: Icon above text stack, full-width cards
+Desktop: Icon left of text, horizontal layout
 
 ### Pricing Model
 
@@ -413,6 +461,69 @@ RESEND_API_KEY=
 TWILIO_ACCOUNT_SID=
 TWILIO_AUTH_TOKEN=
 ```
+
+---
+
+## UI Components & Design System
+
+### Component Library
+Built on shadcn/ui with custom extensions:
+
+**Core Components (shadcn/ui):**
+- Button, Badge, Checkbox, Switch, Slider
+- Card, Dialog, Dropdown, Popover
+- Input, Label, Textarea
+- Table, Tabs, Toast
+
+**Custom Components:**
+- `LandingButton` - Primary/secondary variants with glow effects for marketing pages
+- `BlurFade` - Staggered fade-in animation wrapper
+- `Marquee` - Auto-scrolling carousel with manual scroll support, hidden scrollbars
+- `TwinklingSparkles` - Animated sparkle overlay effect
+- `Logo3DStatic` - 3D rendered logo component
+
+**Animated Icons (lucide-animated):**
+- Bell, Heart, Zap, RefreshCW, Wifi, Moon, Download, Check, Volume, Cog, User, Lock, LockOpen
+
+### Animation Libraries
+- **Framer Motion** - Layout animations, spring physics, AnimatePresence
+- **@number-flow/react** - Odometer-style number transitions
+- **tw-animate-css** - Tailwind animation utilities
+
+### Design Tokens (`app/globals.css`)
+
+**Color System:**
+- CSS custom properties for all colors (`--background`, `--foreground`, `--primary`, etc.)
+- HSL values with semantic naming
+- Dark mode via `.dark` class with `@custom-variant dark`
+
+**Shadow System:**
+- `--shadow-elevation-sm/md/lg` - Elevation-based shadows
+- `--shadow-glow-emerald` - Brand glow effects
+- Neumorphic shadows for soft UI style
+
+**Global Utilities:**
+- `.scrollbar-hide` - Cross-browser scrollbar hiding
+- Text selection disabled site-wide
+- Custom focus states
+
+### Theming
+
+**System Theme:**
+- next-themes for dark/light mode toggle
+- System preference detection
+- Persisted to localStorage
+
+**Component Theming (Custom Styles):**
+- CSS custom properties scoped to container (`--showcase-text`, `--showcase-accent`, etc.)
+- React Context for style propagation
+- Forced light/dark mode per style (ignores system theme)
+
+### Responsive Design
+- Mobile-first approach
+- Breakpoints: `xs: 360px`, `sm: 640px`, `md: 768px`, `lg: 1024px`, `xl: 1280px`
+- Mobile floating toolbar with scroll-based visibility
+- Responsive card layouts (stack on mobile, horizontal on desktop)
 
 ---
 

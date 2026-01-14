@@ -89,7 +89,7 @@ interface HomeClientProps {
 export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [copied, setCopied] = useState(false);
-  const [showcaseStyle, setShowcaseStyle] = useState<ShowcaseStyle>("paper");
+  const [showcaseStyle, setShowcaseStyle] = useState<ShowcaseStyle>("neon");
 
   const handleCopyUrl = async () => {
     try {

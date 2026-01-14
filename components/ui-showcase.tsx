@@ -26,34 +26,43 @@ import { cn } from "@/lib/utils";
 
 // Style definitions for different visual aesthetics
 // Uses CSS custom properties for colors that cascade to children
+// forcedTheme: "light" | "dark" | null - forces the style to ignore system theme
+// Order: neon, blueprint, neumorphism, glassmorphism, pixel, paper, leather
 export const SHOWCASE_STYLES = {
-  paper: {
-    container: "bg-[#f5f0e6] dark:bg-stone-900 [--showcase-text:#1c1917] dark:[--showcase-text:#fef3c7] [--showcase-muted:#57534e] dark:[--showcase-muted:rgba(254,243,199,0.7)] [--showcase-accent:#b45309] dark:[--showcase-accent:#d97706] [--showcase-accent-hover:#92400e] dark:[--showcase-accent-hover:#b45309] [--showcase-badge-text:#fef3c7]",
-    card: "bg-[#faf8f3] dark:bg-stone-800 border-amber-800/15 dark:border-stone-700 shadow-[2px_2px_8px_rgba(180,160,120,0.12)]",
-  },
   neon: {
+    forcedTheme: "dark" as const,
     container: "bg-slate-950 [--showcase-text:#ffffff] [--showcase-muted:rgba(167,243,252,0.8)] [--showcase-glow:0_0_10px_rgba(6,182,212,0.5)] [--showcase-accent:#06b6d4] [--showcase-accent-hover:#22d3ee] [--showcase-badge-text:#0f172a] [--showcase-neon-glow:0_0_8px_rgba(6,182,212,0.6),0_0_16px_rgba(6,182,212,0.3)]",
     card: "bg-slate-900/90 border-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.6),0_0_20px_rgba(6,182,212,0.3),inset_0_0_12px_rgba(6,182,212,0.15)]",
   },
-  leather: {
-    container: "bg-gradient-to-br from-amber-950 to-stone-900 [--showcase-text:#ffffff] [--showcase-muted:rgba(253,230,138,0.8)] [--showcase-accent:#d97706] [--showcase-accent-hover:#f59e0b] [--showcase-badge-text:#1c1917]",
-    card: "bg-gradient-to-br from-amber-900/80 to-amber-950/80 border-amber-700/40 shadow-[inset_0_2px_4px_rgba(255,255,255,0.05),0_4px_8px_rgba(0,0,0,0.3)]",
-  },
   blueprint: {
+    forcedTheme: "dark" as const,
     container: "bg-blue-950 [background-image:linear-gradient(rgba(59,130,246,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.1)_1px,transparent_1px)] [background-size:20px_20px] [--showcase-text:#ffffff] [--showcase-muted:rgba(191,219,254,0.8)] [--showcase-accent:#3b82f6] [--showcase-accent-hover:#60a5fa] [--showcase-badge-text:#ffffff]",
     card: "bg-blue-900/50 border-blue-400/40 border-dashed !rounded-none",
   },
   neumorphism: {
-    container: "bg-slate-200 dark:bg-slate-800 [--showcase-text:#334155] dark:[--showcase-text:#e2e8f0] [--showcase-muted:#64748b] dark:[--showcase-muted:#94a3b8] [--showcase-accent:#6366f1] [--showcase-accent-hover:#818cf8] [--showcase-badge-text:#ffffff] [--showcase-neu-shadow-light:inset_2px_2px_4px_rgba(0,0,0,0.1),inset_-2px_-2px_4px_rgba(255,255,255,0.7)] [--showcase-neu-shadow-dark:inset_2px_2px_4px_rgba(0,0,0,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.05)] [--showcase-neu-bg:#cbd5e1] dark:[--showcase-neu-bg:#475569]",
-    card: "bg-slate-200 dark:bg-slate-800 border-transparent shadow-[6px_6px_12px_rgba(0,0,0,0.08),-6px_-6px_12px_rgba(255,255,255,0.9)] dark:shadow-[6px_6px_12px_rgba(0,0,0,0.4),-6px_-6px_12px_rgba(255,255,255,0.03)]",
+    forcedTheme: "light" as const,
+    container: "bg-slate-200 [--showcase-text:#334155] [--showcase-muted:#64748b] [--showcase-accent:#6366f1] [--showcase-accent-hover:#818cf8] [--showcase-badge-text:#ffffff] [--showcase-neu-shadow-light:inset_2px_2px_4px_rgba(0,0,0,0.1),inset_-2px_-2px_4px_rgba(255,255,255,0.7)] [--showcase-neu-bg:#cbd5e1]",
+    card: "bg-slate-200 border-transparent shadow-[6px_6px_12px_rgba(0,0,0,0.08),-6px_-6px_12px_rgba(255,255,255,0.9)]",
   },
   glassmorphism: {
-    container: "bg-gradient-to-br from-purple-500/30 via-pink-500/30 to-cyan-500/30 [--showcase-text:#1f2937] [--showcase-muted:rgba(55,65,81,0.8)] [--showcase-accent:#a855f7] [--showcase-accent-hover:#c084fc] [--showcase-badge-text:#ffffff]",
-    card: "bg-white/40 backdrop-blur-xl border-white/50 shadow-[0_8px_32px_rgba(0,0,0,0.1)]",
+    forcedTheme: "light" as const,
+    container: "bg-[linear-gradient(135deg,#e9d5ff_0%,#fbcfe8_50%,#a5f3fc_100%)] [--showcase-text:#1f2937] [--showcase-muted:rgba(55,65,81,0.8)] [--showcase-accent:#a855f7] [--showcase-accent-hover:#c084fc] [--showcase-badge-text:#ffffff]",
+    card: "bg-white/70 backdrop-blur-xl border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.1)]",
   },
   pixel: {
+    forcedTheme: "dark" as const,
     container: "bg-[#1a1c2c] [--showcase-text:#f4f4f4] [--showcase-muted:#5d5d8a] [--showcase-accent:#29adff] [--showcase-accent-hover:#00e436] [--showcase-badge-text:#1a1c2c]",
     card: "bg-[#2a2d3e] border-2 border-[#3a3f5c] !rounded-none shadow-[4px_4px_0px_#0d0e14]",
+  },
+  paper: {
+    forcedTheme: "light" as const,
+    container: "bg-[#f5f0e6] [--showcase-text:#1c1917] [--showcase-muted:#57534e] [--showcase-accent:#b45309] [--showcase-accent-hover:#92400e] [--showcase-badge-text:#fef3c7]",
+    card: "bg-[#faf8f3] border-amber-800/15 shadow-[2px_2px_8px_rgba(180,160,120,0.12)]",
+  },
+  leather: {
+    forcedTheme: "dark" as const,
+    container: "bg-gradient-to-br from-amber-950 to-stone-900 [--showcase-text:#ffffff] [--showcase-muted:rgba(253,230,138,0.8)] [--showcase-accent:#d97706] [--showcase-accent-hover:#f59e0b] [--showcase-badge-text:#1c1917]",
+    card: "bg-gradient-to-br from-amber-900/80 to-amber-950/80 border-amber-700/40 shadow-[inset_0_2px_4px_rgba(255,255,255,0.05),0_4px_8px_rgba(0,0,0,0.3)]",
   },
 } as const;
 
@@ -130,31 +139,31 @@ const getStyleConfig = (style: ShowcaseStyle) => {
   const configs = {
     paper: {
       switch: {
-        track: "bg-amber-200/50 dark:bg-amber-900/30",
+        track: "bg-amber-200/50",
         trackChecked: "!bg-[var(--showcase-accent)]",
         thumb: "bg-white shadow-sm",
         thumbChecked: "",
       },
       checkbox: {
-        base: "border-amber-400/50 dark:border-amber-700",
+        base: "border-amber-400/50",
         checked: "!bg-[var(--showcase-accent)] !border-[var(--showcase-accent)]",
       },
       slider: {
-        track: "bg-amber-200/50 dark:bg-amber-800/50",
+        track: "bg-amber-200/50",
         range: "bg-[var(--showcase-accent)]",
         thumb: "border-[var(--showcase-accent)] bg-white",
       },
       badge: {
         default: "!bg-[var(--showcase-accent)] text-amber-50",
-        secondary: "bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-200 border-amber-300/50 dark:border-amber-700/50",
-        outline: "border-amber-400/50 dark:border-amber-600/50 text-amber-700 dark:text-amber-300",
+        secondary: "bg-amber-100 text-amber-800 border-amber-300/50",
+        outline: "border-amber-400/50 text-amber-700",
       },
       button: "!bg-[var(--showcase-accent)] hover:!bg-[var(--showcase-accent-hover)] text-white",
-      progress: { track: "bg-amber-200/30 dark:bg-amber-900/30", bar: "bg-[var(--showcase-accent)]" },
+      progress: { track: "bg-amber-200/30", bar: "bg-[var(--showcase-accent)]" },
       segmented: {
-        container: "bg-amber-100/50 dark:bg-amber-900/30 border border-amber-300/30 dark:border-amber-700/30",
-        item: "text-amber-700/70 dark:text-amber-300/70",
-        itemActive: "bg-white dark:bg-amber-800 text-amber-900 dark:text-amber-100 shadow-sm",
+        container: "bg-amber-100/50 border border-amber-300/30",
+        item: "text-amber-700/70",
+        itemActive: "bg-white text-amber-900 shadow-sm",
       },
     },
     neon: {
@@ -246,34 +255,34 @@ const getStyleConfig = (style: ShowcaseStyle) => {
     },
     neumorphism: {
       switch: {
-        track: "bg-slate-200 dark:bg-slate-700 shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1),inset_-2px_-2px_4px_rgba(255,255,255,0.7)] dark:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.05)]",
+        track: "bg-slate-200 shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1),inset_-2px_-2px_4px_rgba(255,255,255,0.7)]",
         trackChecked: "!bg-indigo-500 shadow-[inset_1px_1px_2px_rgba(0,0,0,0.2)]",
-        thumb: "bg-slate-100 dark:bg-slate-600 shadow-[2px_2px_4px_rgba(0,0,0,0.1),-2px_-2px_4px_rgba(255,255,255,0.8)] dark:shadow-[2px_2px_4px_rgba(0,0,0,0.3),-2px_-2px_4px_rgba(255,255,255,0.05)]",
+        thumb: "bg-slate-100 shadow-[2px_2px_4px_rgba(0,0,0,0.1),-2px_-2px_4px_rgba(255,255,255,0.8)]",
         thumbChecked: "",
       },
       checkbox: {
-        base: "bg-slate-200 dark:bg-slate-700 border-transparent shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1),inset_-2px_-2px_4px_rgba(255,255,255,0.7)] dark:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.05)]",
+        base: "bg-slate-200 border-transparent shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1),inset_-2px_-2px_4px_rgba(255,255,255,0.7)]",
         checked: "!bg-indigo-500 shadow-[inset_1px_1px_2px_rgba(0,0,0,0.2)]",
       },
       slider: {
-        track: "bg-slate-200 dark:bg-slate-700 shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1),inset_-2px_-2px_4px_rgba(255,255,255,0.7)] dark:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.05)]",
+        track: "bg-slate-200 shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1),inset_-2px_-2px_4px_rgba(255,255,255,0.7)]",
         range: "bg-indigo-500",
-        thumb: "border-transparent bg-slate-100 dark:bg-slate-600 shadow-[3px_3px_6px_rgba(0,0,0,0.1),-3px_-3px_6px_rgba(255,255,255,0.8)] dark:shadow-[3px_3px_6px_rgba(0,0,0,0.3),-3px_-3px_6px_rgba(255,255,255,0.05)]",
+        thumb: "border-transparent bg-slate-100 shadow-[3px_3px_6px_rgba(0,0,0,0.1),-3px_-3px_6px_rgba(255,255,255,0.8)]",
       },
       badge: {
         default: "!bg-indigo-500 text-white shadow-[2px_2px_4px_rgba(0,0,0,0.1),-2px_-2px_4px_rgba(255,255,255,0.5)]",
-        secondary: "bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-transparent shadow-[2px_2px_4px_rgba(0,0,0,0.08),-2px_-2px_4px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_4px_rgba(0,0,0,0.3),-2px_-2px_4px_rgba(255,255,255,0.03)]",
-        outline: "bg-slate-200 dark:bg-slate-700 border-transparent text-slate-600 dark:text-slate-300 shadow-[inset_1px_1px_2px_rgba(0,0,0,0.1),inset_-1px_-1px_2px_rgba(255,255,255,0.7)] dark:shadow-[inset_1px_1px_2px_rgba(0,0,0,0.2),inset_-1px_-1px_2px_rgba(255,255,255,0.03)]",
+        secondary: "bg-slate-200 text-slate-600 border-transparent shadow-[2px_2px_4px_rgba(0,0,0,0.08),-2px_-2px_4px_rgba(255,255,255,0.7)]",
+        outline: "bg-slate-200 border-transparent text-slate-600 shadow-[inset_1px_1px_2px_rgba(0,0,0,0.1),inset_-1px_-1px_2px_rgba(255,255,255,0.7)]",
       },
-      button: "!bg-slate-200 dark:!bg-slate-700 !text-indigo-600 dark:!text-indigo-400 shadow-[4px_4px_8px_rgba(0,0,0,0.1),-4px_-4px_8px_rgba(255,255,255,0.8)] dark:shadow-[4px_4px_8px_rgba(0,0,0,0.3),-4px_-4px_8px_rgba(255,255,255,0.05)] hover:shadow-[2px_2px_4px_rgba(0,0,0,0.1),-2px_-2px_4px_rgba(255,255,255,0.8)] dark:hover:shadow-[2px_2px_4px_rgba(0,0,0,0.3),-2px_-2px_4px_rgba(255,255,255,0.05)]",
+      button: "!bg-slate-200 !text-indigo-600 shadow-[4px_4px_8px_rgba(0,0,0,0.1),-4px_-4px_8px_rgba(255,255,255,0.8)] hover:shadow-[2px_2px_4px_rgba(0,0,0,0.1),-2px_-2px_4px_rgba(255,255,255,0.8)]",
       progress: {
-        track: "bg-slate-200 dark:bg-slate-700 shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1),inset_-2px_-2px_4px_rgba(255,255,255,0.7)] dark:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.05)]",
+        track: "bg-slate-200 shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1),inset_-2px_-2px_4px_rgba(255,255,255,0.7)]",
         bar: "bg-indigo-500"
       },
       segmented: {
-        container: "bg-slate-200 dark:bg-slate-700 shadow-[inset_2px_2px_4px_rgba(0,0,0,0.08),inset_-2px_-2px_4px_rgba(255,255,255,0.6)] dark:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.25),inset_-2px_-2px_4px_rgba(255,255,255,0.03)]",
-        item: "text-slate-500 dark:text-slate-400",
-        itemActive: "bg-slate-100 dark:bg-slate-600 text-indigo-600 dark:text-indigo-400 shadow-[2px_2px_4px_rgba(0,0,0,0.08),-2px_-2px_4px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_4px_rgba(0,0,0,0.2),-2px_-2px_4px_rgba(255,255,255,0.03)]",
+        container: "bg-slate-200 shadow-[inset_2px_2px_4px_rgba(0,0,0,0.08),inset_-2px_-2px_4px_rgba(255,255,255,0.6)]",
+        item: "text-slate-500",
+        itemActive: "bg-slate-100 text-indigo-600 shadow-[2px_2px_4px_rgba(0,0,0,0.08),-2px_-2px_4px_rgba(255,255,255,0.7)]",
       },
     },
     glassmorphism: {
@@ -1281,7 +1290,7 @@ interface UIShowcaseProps {
   style?: ShowcaseStyle;
 }
 
-export function UIShowcase({ style = "paper" }: UIShowcaseProps) {
+export function UIShowcase({ style = "neon" }: UIShowcaseProps) {
   const styles = SHOWCASE_STYLES[style];
 
   return (

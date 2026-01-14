@@ -53,7 +53,7 @@ export function Marquee({
       {...props}
       className={cn(
         "group flex [gap:var(--gap)] overflow-y-visible py-6 [--duration:40s] [--gap:1rem]",
-        scrollable ? "overflow-x-auto scrollbar-none" : "overflow-x-clip",
+        scrollable ? "overflow-x-auto scrollbar-hide" : "overflow-x-clip",
         {
           "flex-row": !vertical,
           "flex-col": vertical,

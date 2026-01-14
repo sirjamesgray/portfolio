@@ -21,7 +21,7 @@ const sections = [
 
 export default function ExperimentsPage() {
   const [activeSection, setActiveSection] = useState("heatmap-logo");
-  const [showcaseStyle, setShowcaseStyle] = useState<ShowcaseStyle>("paper");
+  const [showcaseStyle, setShowcaseStyle] = useState<ShowcaseStyle>("neon");
 
   // Track active section based on scroll position
   useEffect(() => {
