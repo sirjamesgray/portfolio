@@ -4,7 +4,7 @@ import { isCustomerDashboardEnabled } from "@/lib/feature-flags";
 
 export const metadata: Metadata = {
   title: "Pricing | Jamie Gray",
-  description: "Simple, flat-rate pricing for your website project. No hidden fees, no surprises.",
+  description: "Simple, transparent pricing for your website project. No hidden fees, no surprises.",
 };
 
 export default async function PricingPage() {

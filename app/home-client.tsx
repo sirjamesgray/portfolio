@@ -295,7 +295,7 @@ export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
                 Simple Pricing
               </h2>
               <p className="mx-auto max-w-xl text-muted-foreground">
-                One flat price. No hidden fees. Know exactly what you&apos;re paying.
+                Transparent pricing. No hidden fees. Know what you&apos;re paying upfront.
               </p>
             </div>
           </BlurFade>

@@ -146,7 +146,7 @@ export function PricingPageClient({ customerDashboardEnabled }: PricingPageClien
                 Simple Pricing
               </h1>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                One flat price. No hidden fees. Know exactly what you&apos;re paying.
+                Transparent pricing. No hidden fees. Know what you&apos;re paying upfront.
               </p>
             </div>
           </BlurFade>
@@ -192,8 +192,8 @@ export function PricingPageClient({ customerDashboardEnabled }: PricingPageClien
                     </div>
 
                     <div className="mb-6">
+                      <span className="text-sm text-muted-foreground block mb-1">starting at</span>
                       <span className="text-4xl font-bold text-foreground">{project.price}</span>
-                      <span className="text-muted-foreground ml-1">flat</span>
                     </div>
 
                     {/* Desktop: Show all features with included/not-included styling */}

@@ -46,7 +46,7 @@ export default async function Image() {
             letterSpacing: "-0.01em",
           }}
         >
-          Simple, Flat-Rate Pricing
+          Simple, Transparent Pricing
         </div>
 
         {/* Three pricing tiers */}
@@ -140,7 +140,7 @@ export default async function Image() {
             color: "rgba(255,255,255,0.5)",
           }}
         >
-          One flat price. No hidden fees. Know exactly what you&apos;re paying.
+          Transparent pricing. No hidden fees. Know what you&apos;re paying upfront.
         </div>
 
         {/* Logo bottom - Square black bg with green JG (matching favicon) */}
