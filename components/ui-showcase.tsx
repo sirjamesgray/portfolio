@@ -1295,20 +1295,20 @@ export function UIShowcase({ style = "neon" }: UIShowcaseProps) {
 
   return (
     <StyleContext.Provider value={style}>
-      <section className={cn("relative py-6 transition-all duration-500", styles.container)}>
-        <div className="flex flex-col -space-y-2">
+      <section className={cn("relative py-8 transition-all duration-500", styles.container)}>
+        <div className="flex flex-col -space-y-6">
           {/* Row 1 - scrolls left */}
-          <Marquee className="[--duration:50s]" scrollable>
+          <Marquee className="[--duration:50s] !py-5" scrollable>
             {row1Components}
           </Marquee>
 
           {/* Row 2 - scrolls right (reversed) */}
-          <Marquee reverse className="[--duration:55s]" scrollable>
+          <Marquee reverse className="[--duration:55s] !py-5" scrollable>
             {row2Components}
           </Marquee>
 
           {/* Row 3 - scrolls left */}
-          <Marquee className="[--duration:45s]" scrollable>
+          <Marquee className="[--duration:45s] !py-5" scrollable>
             {row3Components}
           </Marquee>
         </div>

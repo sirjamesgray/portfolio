@@ -76,7 +76,7 @@ export const ContainerTextFlip = ({
     return (
       <span
         className={cn(
-          "inline-flex items-center justify-center rounded-lg bg-card border border-border shadow-sm dark:bg-emerald-500/20 dark:border-emerald-500/30 px-2 py-1",
+          "inline-flex items-center justify-center rounded-lg bg-card border border-border shadow-sm dark:bg-emerald-500/20 dark:border-emerald-500/30 px-2 py-[0.15em]",
           className
         )}
       >
@@ -90,7 +90,7 @@ export const ContainerTextFlip = ({
   return (
     <motion.span
       className={cn(
-        "inline-flex items-center justify-center rounded-lg bg-card border border-border shadow-sm dark:bg-emerald-500/20 dark:border-emerald-500/30 overflow-hidden cursor-pointer select-none",
+        "inline-flex items-center justify-center rounded-lg bg-card border border-border shadow-sm dark:bg-emerald-500/20 dark:border-emerald-500/30 cursor-pointer select-none overflow-hidden",
         className
       )}
       onClick={handleClick}
@@ -98,7 +98,7 @@ export const ContainerTextFlip = ({
       transition={springTransition}
       whileTap={{ scale: 0.98 }}
     >
-      <span className="relative inline-flex items-center justify-center px-2 py-1">
+      <span className="relative inline-flex items-center justify-center px-2 py-[0.15em]">
         {/* Hidden span to measure width */}
         <span
           ref={measureRef}
@@ -115,9 +115,9 @@ export const ContainerTextFlip = ({
               "text-emerald-600 dark:text-emerald-400 whitespace-nowrap",
               textClassName
             )}
-            initial={{ opacity: 0, y: 12, scale: 0.9 }}
+            initial={{ opacity: 0, y: "0.3em", scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -12, scale: 0.9 }}
+            exit={{ opacity: 0, y: "-0.3em", scale: 0.9 }}
             transition={{
               opacity: { duration: 0.1 },
               y: { type: "spring", stiffness: 500, damping: 25 },

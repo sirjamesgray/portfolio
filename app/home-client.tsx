@@ -171,7 +171,7 @@ export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
 
           <BlurFade delay={0.2}>
             <AnimatedHeight className="mb-6">
-              <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
+              <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl pb-2">
                 Need a{" "}
                 <ContainerTextFlip
                   words={ROTATING_WORDS}
@@ -442,10 +442,10 @@ export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
           <BlurFade delay={0.1} inView>
             <CrossedCornersCard className="p-8 text-center sm:p-12">
               <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                Know someone?
+                Spread the word
               </h2>
               <p className="mb-8 text-lg text-muted-foreground">
-                Maybe you don&apos;t need a site yourself, but you know someone else who might? Please share this site with them!
+                Not in the market yourself? If you know someone who could use a new website, I&apos;d really appreciate you passing this along!
               </p>
               <div className="flex flex-col sm:flex-row items-stretch gap-4 max-w-md mx-auto">
                 <LandingButton
@@ -456,7 +456,7 @@ export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
                 >
                   <span className="flex items-center justify-center gap-2">
                     <Share2 className="h-5 w-5" />
-                    Share this site
+                    Share
                   </span>
                 </LandingButton>
                 <LandingButton

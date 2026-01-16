@@ -459,11 +459,11 @@ function RotatingLogoCube({ colors }: { colors: ThemeColors }) {
         if (shouldShowFlipped) {
           // In flipped region: flipped is dominant, normal fades out
           setFlippedOpacity(1)
-          setNormalOpacity(1 - eased < 0.01 ? 0 : 1 - eased)
+          setNormalOpacity(1 - eased)
         } else {
           // In normal region: normal is dominant, flipped fades out
           setNormalOpacity(1)
-          setFlippedOpacity(1 - eased < 0.01 ? 0 : 1 - eased)
+          setFlippedOpacity(1 - eased)
         }
       } else {
         // Outside fade zone: show only the appropriate logo
@@ -487,30 +487,16 @@ function RotatingLogoCube({ colors }: { colors: ThemeColors }) {
           edgeProgress={edgeProgress}
           gridProgress={gridProgress}
         />
-        {/* Normal (non-flipped) logo */}
-        {normalOpacity > 0 && (
-          <ExtrudedLogoWireframe
-            logoColor={colors.logoEdge}
-            fillColor={colors.logoFill}
-            emissive={colors.logoEmissive}
-            emissiveIntensity={colors.logoEmissiveIntensity}
-            opacity={normalOpacity}
-            flipped={false}
-            revealProgress={logoProgress}
-          />
-        )}
-        {/* Flipped logo */}
-        {flippedOpacity > 0 && (
-          <ExtrudedLogoWireframe
-            logoColor={colors.logoEdge}
-            fillColor={colors.logoFill}
-            emissive={colors.logoEmissive}
-            emissiveIntensity={colors.logoEmissiveIntensity}
-            opacity={flippedOpacity}
-            flipped={true}
-            revealProgress={logoProgress}
-          />
-        )}
+        {/* Only render one logo at a time - show whichever has higher opacity */}
+        <ExtrudedLogoWireframe
+          logoColor={colors.logoEdge}
+          fillColor={colors.logoFill}
+          emissive={colors.logoEmissive}
+          emissiveIntensity={colors.logoEmissiveIntensity}
+          opacity={1}
+          flipped={flippedOpacity > normalOpacity}
+          revealProgress={logoProgress}
+        />
       </group>
     </Float>
   )
