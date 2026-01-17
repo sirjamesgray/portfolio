@@ -233,7 +233,7 @@ export function DeleteFigmaLanding({ customerDashboardEnabled }: DeleteFigmaLand
       </section>
 
       {/* UI Showcase Section - Scaffolding Flexibility */}
-      <section className="relative py-16">
+      <section className="relative py-16 overflow-hidden">
         <div className={`mx-auto px-6 ${SECTION_MAX_WIDTH}`}>
           <BlurFade delay={0.1} inView>
             <SectionHeader
