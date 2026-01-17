@@ -33,7 +33,7 @@ export async function PATCH(request: NextRequest) {
   } = {
     enabled,
     updated_at: new Date().toISOString(),
-    updated_by: user.email,
+    updated_by: user.email ?? null,
   }
 
   if (typeof description === "string") {
