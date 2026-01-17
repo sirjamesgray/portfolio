@@ -76,51 +76,52 @@ export function LandingPagesClient({ activePage: initialActivePage }: LandingPag
 
           return (
             <Card key={page.id} className={isActive ? "border-emerald-500/50" : ""}>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${
-                      isActive
-                        ? "bg-emerald-500/20 text-emerald-500"
-                        : "bg-primary/10 text-primary"
-                    }`}>
-                      <FileStack className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-lg flex items-center gap-2">
-                        {page.name}
-                        {isActive && (
-                          <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20">
-                            Active
-                          </Badge>
-                        )}
-                      </CardTitle>
-                      <CardDescription>{page.description}</CardDescription>
-                    </div>
+              <CardHeader className="space-y-4">
+                {/* Header row with icon and text */}
+                <div className="flex items-start gap-3">
+                  <div className={`h-10 w-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                    isActive
+                      ? "bg-emerald-500/20 text-emerald-500"
+                      : "bg-primary/10 text-primary"
+                  }`}>
+                    <FileStack className="h-5 w-5" />
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Link href={`/?preview=${page.id}`}>
-                      <DashboardButton variant="outline" size="sm" className="gap-2">
-                        <Eye className="h-4 w-4" />
-                        Preview
-                      </DashboardButton>
-                    </Link>
-                    {!isActive && (
-                      <DashboardButton
-                        size="sm"
-                        onClick={() => setActive(page.id)}
-                        disabled={isUpdating}
-                        className="gap-2"
-                      >
-                        {isUpdating ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <Check className="h-4 w-4" />
-                        )}
-                        <span className="hidden sm:inline">Set Active</span>
-                      </DashboardButton>
-                    )}
+                  <div className="min-w-0 flex-1">
+                    <CardTitle className="text-lg flex items-center gap-2 flex-wrap">
+                      {page.name}
+                      {isActive && (
+                        <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20">
+                          Active
+                        </Badge>
+                      )}
+                    </CardTitle>
+                    <CardDescription className="mt-1">{page.description}</CardDescription>
                   </div>
+                </div>
+
+                {/* Action buttons - full width on mobile */}
+                <div className="flex items-center gap-2 sm:justify-end">
+                  <Link href={`/?preview=${page.id}`} className="flex-1 sm:flex-none">
+                    <DashboardButton variant="outline" size="sm" className="gap-2 w-full sm:w-auto">
+                      <Eye className="h-4 w-4" />
+                      Preview
+                    </DashboardButton>
+                  </Link>
+                  {!isActive && (
+                    <DashboardButton
+                      size="sm"
+                      onClick={() => setActive(page.id)}
+                      disabled={isUpdating}
+                      className="gap-2 flex-1 sm:flex-none"
+                    >
+                      {isUpdating ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Check className="h-4 w-4" />
+                      )}
+                      Set Active
+                    </DashboardButton>
+                  )}
                 </div>
               </CardHeader>
             </Card>

@@ -13,7 +13,7 @@ export async function PATCH(request: NextRequest) {
   }
 
   const body = await request.json()
-  const { name, enabled } = body
+  const { name, enabled, description } = body
 
   if (typeof name !== "string" || typeof enabled !== "boolean") {
     return NextResponse.json(
@@ -24,13 +24,25 @@ export async function PATCH(request: NextRequest) {
 
   const adminSupabase = createAdminClient()
 
+  // Build update payload - include description if provided
+  const updatePayload: {
+    enabled: boolean
+    updated_at: string
+    updated_by: string | null
+    description?: string
+  } = {
+    enabled,
+    updated_at: new Date().toISOString(),
+    updated_by: user.email,
+  }
+
+  if (typeof description === "string") {
+    updatePayload.description = description
+  }
+
   const { error } = await adminSupabase
     .from("feature_flags")
-    .update({
-      enabled,
-      updated_at: new Date().toISOString(),
-      updated_by: user.email,
-    })
+    .update(updatePayload)
     .eq("name", name)
 
   if (error) {
