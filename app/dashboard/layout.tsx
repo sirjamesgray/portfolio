@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { isAdmin } from "@/lib/constants"
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
+import { DashboardButton } from "@/components/ui/button"
 import { MirrorBanner } from "@/components/dashboard/mirror-banner"
 import { LogoutButton } from "@/components/dashboard/logout-button"
 import { ThemeToggle } from "@/components/theme-toggle"
@@ -98,13 +98,13 @@ export default async function DashboardLayout({
               const Icon = item.icon
               return (
                 <Link key={item.href} href={item.href}>
-                  <Button
+                  <DashboardButton
                     variant="ghost"
                     className="w-full justify-start text-muted-foreground hover:text-foreground"
                   >
                     <Icon className="mr-2 h-4 w-4" />
                     {item.name}
-                  </Button>
+                  </DashboardButton>
                 </Link>
               )
             })}

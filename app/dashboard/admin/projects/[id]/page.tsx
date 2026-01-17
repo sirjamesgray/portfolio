@@ -7,7 +7,7 @@ import { ProjectProgress } from "@/components/dashboard/project-progress"
 import { RichTextEditor } from "@/components/dashboard/rich-text-editor"
 import { LandingPageStatusCard } from "@/components/dashboard/landing-page-status-card"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { DashboardButton } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
   Select,
@@ -1182,10 +1182,10 @@ export default function ProjectDetailPage() {
     return (
       <div className="space-y-6">
         <Link href="/dashboard/admin/projects">
-          <Button variant="ghost">
+          <DashboardButton variant="ghost">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Projects
-          </Button>
+          </DashboardButton>
         </Link>
         <Card>
           <CardContent className="py-8">
@@ -1211,11 +1211,11 @@ export default function ProjectDetailPage() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <Link href="/dashboard/admin/projects">
-            <Button variant="ghost" size="sm" className="h-8 px-2 sm:px-3">
+            <DashboardButton variant="ghost" size="sm" className="h-8 px-2 sm:px-3">
               <ArrowLeft className="mr-1 sm:mr-2 h-4 w-4" />
               <span className="hidden sm:inline">Back to Projects</span>
               <span className="sm:hidden">Back</span>
-            </Button>
+            </DashboardButton>
           </Link>
           <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20 gap-1 text-xs">
             <Shield className="h-3 w-3" />
@@ -1223,7 +1223,7 @@ export default function ProjectDetailPage() {
             <span className="sm:hidden">Admin</span>
           </Badge>
         </div>
-        <Button
+        <DashboardButton
           variant="outline"
           size="sm"
           onClick={handleViewAsCustomer}
@@ -1232,7 +1232,7 @@ export default function ProjectDetailPage() {
         >
           <Eye className="mr-1 sm:mr-2 h-4 w-4" />
           {mirrorLoading ? "..." : <><span className="hidden sm:inline">Preview as Customer</span><span className="sm:hidden">Preview</span></>}
-        </Button>
+        </DashboardButton>
       </div>
 
       {/* Progress Tracker */}
@@ -1301,7 +1301,7 @@ export default function ProjectDetailPage() {
                 autoFocus
               />
               <div className="flex items-center gap-2">
-                <Button
+                <DashboardButton
                   size="sm"
                   onClick={handleSaveTitle}
                   disabled={!titleChanged || savingTitle}
@@ -1313,8 +1313,8 @@ export default function ProjectDetailPage() {
                     <Check className="h-4 w-4" />
                   )}
                   <span className="ml-1">Save</span>
-                </Button>
-                <Button
+                </DashboardButton>
+                <DashboardButton
                   size="sm"
                   variant="outline"
                   onClick={revertTitle}
@@ -1322,7 +1322,7 @@ export default function ProjectDetailPage() {
                 >
                   <RotateCcw className="h-4 w-4" />
                   <span className="ml-1">Cancel</span>
-                </Button>
+                </DashboardButton>
               </div>
             </div>
           ) : (
@@ -1330,14 +1330,14 @@ export default function ProjectDetailPage() {
               <h1 className="text-3xl font-bold tracking-tight">
                 {title || (contact?.name ? `${contact.name}'s Project` : "Untitled Project")}
               </h1>
-              <Button
+              <DashboardButton
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
                 onClick={() => setIsEditingTitle(true)}
               >
                 <Pencil className="h-4 w-4" />
-              </Button>
+              </DashboardButton>
             </div>
           )}
         </div>
@@ -1366,7 +1366,7 @@ export default function ProjectDetailPage() {
               )}
             </div>
             {!isEditingRequirements && (
-              <Button
+              <DashboardButton
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsEditingRequirements(true)}
@@ -1374,7 +1374,7 @@ export default function ProjectDetailPage() {
               >
                 <Pencil className="h-4 w-4" />
                 Edit
-              </Button>
+              </DashboardButton>
             )}
           </div>
         </CardHeader>
@@ -1384,13 +1384,13 @@ export default function ProjectDetailPage() {
             <div className="border rounded-lg p-4 bg-muted/50 space-y-3">
               <div className="flex items-center justify-between">
                 <h4 className="font-medium">Version History</h4>
-                <Button
+                <DashboardButton
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowVersionHistory(false)}
                 >
                   Close
-                </Button>
+                </DashboardButton>
               </div>
               <div className="space-y-2 max-h-[200px] overflow-y-auto">
                 {requirementsVersions.map((version) => (
@@ -1422,7 +1422,7 @@ export default function ProjectDetailPage() {
                 placeholder="Enter project requirements..."
               />
               <div className="flex items-center gap-2">
-                <Button
+                <DashboardButton
                   size="sm"
                   onClick={handleSaveRequirements}
                   disabled={!requirementsChanged || savingRequirements}
@@ -1434,8 +1434,8 @@ export default function ProjectDetailPage() {
                     <Check className="h-4 w-4" />
                   )}
                   <span className="ml-1">Save</span>
-                </Button>
-                <Button
+                </DashboardButton>
+                <DashboardButton
                   size="sm"
                   variant="outline"
                   onClick={revertRequirements}
@@ -1443,7 +1443,7 @@ export default function ProjectDetailPage() {
                 >
                   <RotateCcw className="h-4 w-4" />
                   <span className="ml-1">Cancel</span>
-                </Button>
+                </DashboardButton>
               </div>
             </div>
           ) : (
@@ -1475,13 +1475,13 @@ export default function ProjectDetailPage() {
           <div className="flex flex-wrap gap-3">
             {contact?.email ? (
               <a href={`mailto:${contact.email}`}>
-                <Button variant="outline" className="gap-2">
+                <DashboardButton variant="outline" className="gap-2">
                   <Mail className="h-4 w-4" />
                   Email {contact?.name || "Customer"}
-                </Button>
+                </DashboardButton>
               </a>
             ) : (
-              <Button
+              <DashboardButton
                 variant="outline"
                 className="gap-2"
                 disabled
@@ -1489,13 +1489,13 @@ export default function ProjectDetailPage() {
               >
                 <Mail className="h-4 w-4" />
                 Email Customer
-              </Button>
+              </DashboardButton>
             )}
             <a href="https://cal.com/jamiegray/30min" target="_blank" rel="noopener noreferrer">
-              <Button variant="outline" className="gap-2">
+              <DashboardButton variant="outline" className="gap-2">
                 <CalendarDays className="h-4 w-4" />
                 Schedule a Call
-              </Button>
+              </DashboardButton>
             </a>
           </div>
         </CardContent>
@@ -1510,7 +1510,7 @@ export default function ProjectDetailPage() {
               Quotes & Invoices
             </CardTitle>
             <div className="flex gap-2">
-              <Button
+              <DashboardButton
                 size="sm"
                 variant="outline"
                 className="gap-2"
@@ -1518,13 +1518,13 @@ export default function ProjectDetailPage() {
               >
                 <Plus className="h-4 w-4" />
                 Create Invoice
-              </Button>
+              </DashboardButton>
               <Dialog open={quoteDialogOpen} onOpenChange={setQuoteDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button size="sm" className="gap-2 bg-emerald-600 hover:bg-emerald-700">
+                  <DashboardButton size="sm" className="gap-2 bg-emerald-600 hover:bg-emerald-700">
                     <Plus className="h-4 w-4" />
                     Create Quote
-                  </Button>
+                  </DashboardButton>
                 </DialogTrigger>
               <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
@@ -1568,7 +1568,7 @@ export default function ProjectDetailPage() {
                   </div>
                 </div>
                 <DialogFooter className="gap-2 sm:gap-0">
-                  <Button
+                  <DashboardButton
                     variant="outline"
                     onClick={() => handleCreateQuote(false)}
                     disabled={!quoteTitle.trim() || !quoteAmount || creatingQuote}
@@ -1577,8 +1577,8 @@ export default function ProjectDetailPage() {
                       <Loader2 className="h-4 w-4 animate-spin mr-2" />
                     ) : null}
                     Save as Draft
-                  </Button>
-                  <Button
+                  </DashboardButton>
+                  <DashboardButton
                     onClick={() => handleCreateQuote(true)}
                     disabled={!quoteTitle.trim() || !quoteAmount || creatingQuote || !contact?.email}
                     className="gap-2 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-400"
@@ -1590,7 +1590,7 @@ export default function ProjectDetailPage() {
                       <Send className="h-4 w-4" />
                     )}
                     {!contact?.email ? "Requires Email" : "Send Quote"}
-                  </Button>
+                  </DashboardButton>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
@@ -1668,10 +1668,10 @@ export default function ProjectDetailPage() {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        <Button variant="outline" size="sm" className="gap-2">
+                        <DashboardButton variant="outline" size="sm" className="gap-2">
                           <ExternalLink className="h-3 w-3" />
                           View
-                        </Button>
+                        </DashboardButton>
                       </a>
                     )}
                   </div>
@@ -1757,7 +1757,7 @@ export default function ProjectDetailPage() {
           {/* Save/Revert buttons */}
           {deliverablesChanged && (
             <div className="flex items-center gap-2 pt-2 border-t">
-              <Button
+              <DashboardButton
                 size="sm"
                 onClick={handleSaveDeliverables}
                 disabled={savingDeliverables}
@@ -1769,8 +1769,8 @@ export default function ProjectDetailPage() {
                   <Check className="h-4 w-4" />
                 )}
                 <span className="ml-1">Save</span>
-              </Button>
-              <Button
+              </DashboardButton>
+              <DashboardButton
                 size="sm"
                 variant="outline"
                 onClick={revertDeliverables}
@@ -1778,7 +1778,7 @@ export default function ProjectDetailPage() {
               >
                 <RotateCcw className="h-4 w-4" />
                 <span className="ml-1">Revert</span>
-              </Button>
+              </DashboardButton>
             </div>
           )}
         </CardContent>
@@ -1795,10 +1795,10 @@ export default function ProjectDetailPage() {
             <div className="flex gap-2">
               <Dialog open={addLinkDialogOpen} onOpenChange={setAddLinkDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button size="sm" variant="outline" className="gap-2">
+                  <DashboardButton size="sm" variant="outline" className="gap-2">
                     <Link2 className="h-4 w-4" />
                     Add Link
-                  </Button>
+                  </DashboardButton>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
                   <DialogHeader>
@@ -1827,16 +1827,16 @@ export default function ProjectDetailPage() {
                     </div>
                   </div>
                   <DialogFooter>
-                    <Button variant="outline" onClick={() => setAddLinkDialogOpen(false)} disabled={addingLink}>
+                    <DashboardButton variant="outline" onClick={() => setAddLinkDialogOpen(false)} disabled={addingLink}>
                       Cancel
-                    </Button>
-                    <Button onClick={handleAddLink} disabled={!newLinkUrl.trim() || addingLink}>
+                    </DashboardButton>
+                    <DashboardButton onClick={handleAddLink} disabled={!newLinkUrl.trim() || addingLink}>
                       {addingLink ? "Adding..." : "Add Link"}
-                    </Button>
+                    </DashboardButton>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
-              <Button size="sm" variant="outline" className="gap-2" asChild>
+              <DashboardButton size="sm" variant="outline" className="gap-2" asChild>
                 <label className="cursor-pointer">
                   <Upload className="h-4 w-4" />
                   {uploadingImage ? "Uploading..." : "Upload Image"}
@@ -1848,7 +1848,7 @@ export default function ProjectDetailPage() {
                     disabled={uploadingImage}
                   />
                 </label>
-              </Button>
+              </DashboardButton>
             </div>
           </div>
         </CardHeader>
@@ -1868,32 +1868,32 @@ export default function ProjectDetailPage() {
                 className="flex-1"
               />
               {previousSiteUrl && (
-                <Button
+                <DashboardButton
                   size="icon"
                   variant="outline"
                   onClick={() => window.open(previousSiteUrl, "_blank")}
                 >
                   <ExternalLink className="h-4 w-4" />
-                </Button>
+                </DashboardButton>
               )}
             </div>
             {previousSiteChanged && (
               <div className="flex justify-end gap-2 mt-2">
-                <Button
+                <DashboardButton
                   size="sm"
                   onClick={handleSavePreviousSite}
                   disabled={savingPreviousSite}
                 >
                   {savingPreviousSite ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save"}
-                </Button>
-                <Button
+                </DashboardButton>
+                <DashboardButton
                   size="sm"
                   variant="outline"
                   onClick={() => setPreviousSiteUrl(originalPreviousSiteUrl)}
                   disabled={savingPreviousSite}
                 >
                   Cancel
-                </Button>
+                </DashboardButton>
               </div>
             )}
           </div>
@@ -1926,22 +1926,22 @@ export default function ProjectDetailPage() {
                       </div>
                     </div>
                     <div className="flex gap-1 shrink-0">
-                      <Button
+                      <DashboardButton
                         size="icon"
                         variant="ghost"
                         className="h-8 w-8"
                         onClick={() => window.open(asset.url || "", "_blank")}
                       >
                         <ExternalLink className="h-4 w-4" />
-                      </Button>
-                      <Button
+                      </DashboardButton>
+                      <DashboardButton
                         size="icon"
                         variant="ghost"
                         className="h-8 w-8 text-muted-foreground hover:text-red-600"
                         onClick={() => handleDeleteAsset(asset.id)}
                       >
                         <X className="h-4 w-4" />
-                      </Button>
+                      </DashboardButton>
                     </div>
                   </div>
                 ))}
@@ -1974,22 +1974,22 @@ export default function ProjectDetailPage() {
                       </div>
                     )}
                     <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                      <Button
+                      <DashboardButton
                         size="icon"
                         variant="secondary"
                         className="h-8 w-8"
                         onClick={() => window.open(asset.url || "", "_blank")}
                       >
                         <ExternalLink className="h-4 w-4" />
-                      </Button>
-                      <Button
+                      </DashboardButton>
+                      <DashboardButton
                         size="icon"
                         variant="destructive"
                         className="h-8 w-8"
                         onClick={() => handleDeleteAsset(asset.id)}
                       >
                         <Trash2 className="h-4 w-4" />
-                      </Button>
+                      </DashboardButton>
                     </div>
                     {asset.title && (
                       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
@@ -2083,7 +2083,7 @@ export default function ProjectDetailPage() {
             {/* Archive/Restore button */}
             <div className="pt-4 border-t">
               {status === "canceled" ? (
-                <Button
+                <DashboardButton
                   variant="outline"
                   size="sm"
                   className="w-full gap-2 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
@@ -2096,9 +2096,9 @@ export default function ProjectDetailPage() {
                     <ArchiveRestore className="h-4 w-4" />
                   )}
                   Restore Project
-                </Button>
+                </DashboardButton>
               ) : (
-                <Button
+                <DashboardButton
                   variant="outline"
                   size="sm"
                   className="w-full gap-2 text-red-600 hover:text-red-700 hover:bg-red-50"
@@ -2106,7 +2106,7 @@ export default function ProjectDetailPage() {
                 >
                   <Trash2 className="h-4 w-4" />
                   Archive Project
-                </Button>
+                </DashboardButton>
               )}
             </div>
           </CardContent>
@@ -2193,10 +2193,10 @@ export default function ProjectDetailPage() {
                 }
               }}>
                 <DialogTrigger asChild>
-                  <Button size="sm" variant="outline" className="gap-2">
+                  <DashboardButton size="sm" variant="outline" className="gap-2">
                     <Send className="h-4 w-4" />
                     Invite Customer
-                  </Button>
+                  </DashboardButton>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
                   <DialogHeader>
@@ -2240,17 +2240,17 @@ export default function ProjectDetailPage() {
                         )}
                       </div>
                       <DialogFooter>
-                        <Button variant="outline" onClick={() => setInviteDialogOpen(false)} disabled={inviting}>
+                        <DashboardButton variant="outline" onClick={() => setInviteDialogOpen(false)} disabled={inviting}>
                           Cancel
-                        </Button>
-                        <Button onClick={handleInviteCustomer} disabled={!inviteEmail.trim() || inviting} className="gap-2">
+                        </DashboardButton>
+                        <DashboardButton onClick={handleInviteCustomer} disabled={!inviteEmail.trim() || inviting} className="gap-2">
                           {inviting ? (
                             <Loader2 className="h-4 w-4 animate-spin" />
                           ) : (
                             <Send className="h-4 w-4" />
                           )}
                           {inviting ? "Sending..." : "Send Invitation"}
-                        </Button>
+                        </DashboardButton>
                       </DialogFooter>
                     </>
                   )}
@@ -2258,10 +2258,10 @@ export default function ProjectDetailPage() {
               </Dialog>
               <Dialog open={addMemberDialogOpen} onOpenChange={setAddMemberDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button size="sm" variant="outline" className="gap-2">
+                  <DashboardButton size="sm" variant="outline" className="gap-2">
                     <UserPlus className="h-4 w-4" />
                     Add Member
-                  </Button>
+                  </DashboardButton>
                 </DialogTrigger>
               <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
@@ -2299,12 +2299,12 @@ export default function ProjectDetailPage() {
                   </div>
                 </div>
                 <DialogFooter>
-                  <Button variant="outline" onClick={() => setAddMemberDialogOpen(false)} disabled={addingMember}>
+                  <DashboardButton variant="outline" onClick={() => setAddMemberDialogOpen(false)} disabled={addingMember}>
                     Cancel
-                  </Button>
-                  <Button onClick={handleAddMember} disabled={!newMemberEmail.trim() || addingMember}>
+                  </DashboardButton>
+                  <DashboardButton onClick={handleAddMember} disabled={!newMemberEmail.trim() || addingMember}>
                     {addingMember ? "Adding..." : "Add Member"}
-                  </Button>
+                  </DashboardButton>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
@@ -2329,17 +2329,17 @@ export default function ProjectDetailPage() {
                     <p className="text-xs text-muted-foreground">{assignedAdmin.email}</p>
                   </div>
                 </div>
-                <Button
+                <DashboardButton
                   variant="ghost"
                   size="sm"
                   onClick={() => handleRemoveMember(assignedAdmin.id, "admin")}
                   className="text-muted-foreground hover:text-red-600"
                 >
                   <X className="h-4 w-4" />
-                </Button>
+                </DashboardButton>
               </div>
             ) : (
-              <Button
+              <DashboardButton
                 variant="outline"
                 size="sm"
                 onClick={() => currentUserEmail && handleAssignAdmin(currentUserEmail)}
@@ -2348,7 +2348,7 @@ export default function ProjectDetailPage() {
               >
                 <Plus className="h-4 w-4" />
                 Assign myself
-              </Button>
+              </DashboardButton>
             )}
           </div>
 
@@ -2372,7 +2372,7 @@ export default function ProjectDetailPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-1">
-                      <Button
+                      <DashboardButton
                         variant="ghost"
                         size="sm"
                         onClick={() => handleResendInvite(member.user.email, member.user.name)}
@@ -2385,15 +2385,15 @@ export default function ProjectDetailPage() {
                         ) : (
                           <RotateCcw className="h-4 w-4" />
                         )}
-                      </Button>
-                      <Button
+                      </DashboardButton>
+                      <DashboardButton
                         variant="ghost"
                         size="sm"
                         onClick={() => handleRemoveMember(member.user_id, "owner")}
                         className="text-muted-foreground hover:text-red-600"
                       >
                         <X className="h-4 w-4" />
-                      </Button>
+                      </DashboardButton>
                     </div>
                   </div>
                 ))}
@@ -2422,14 +2422,14 @@ export default function ProjectDetailPage() {
                         <p className="text-xs text-muted-foreground">{member.user.email}</p>
                       </div>
                     </div>
-                    <Button
+                    <DashboardButton
                       variant="ghost"
                       size="sm"
                       onClick={() => handleRemoveMember(member.user_id, "viewer")}
                       className="text-muted-foreground hover:text-red-600"
                     >
                       <X className="h-4 w-4" />
-                    </Button>
+                    </DashboardButton>
                   </div>
                 ))}
               </div>
@@ -2551,9 +2551,9 @@ export default function ProjectDetailPage() {
             </div>
           )}
           <DialogFooter>
-            <Button variant="outline" onClick={() => setEmailPreviewOpen(false)}>
+            <DashboardButton variant="outline" onClick={() => setEmailPreviewOpen(false)}>
               Close
-            </Button>
+            </DashboardButton>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -2594,7 +2594,7 @@ export default function ProjectDetailPage() {
             </div>
           </div>
           <DialogFooter className="gap-2 sm:gap-0">
-            <Button
+            <DashboardButton
               variant="outline"
               onClick={() => handleCreateInvoice(false)}
               disabled={!invoiceAmount || creatingInvoice}
@@ -2603,8 +2603,8 @@ export default function ProjectDetailPage() {
                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
               ) : null}
               Save as Draft
-            </Button>
-            <Button
+            </DashboardButton>
+            <DashboardButton
               onClick={() => handleCreateInvoice(true)}
               disabled={!invoiceAmount || creatingInvoice || !contact?.email}
               className="gap-2 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-400"
@@ -2616,7 +2616,7 @@ export default function ProjectDetailPage() {
                 <Send className="h-4 w-4" />
               )}
               {!contact?.email ? "Requires Email" : "Send Invoice"}
-            </Button>
+            </DashboardButton>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -2650,7 +2650,7 @@ export default function ProjectDetailPage() {
             </div>
           </div>
           <DialogFooter className="gap-2">
-            <Button
+            <DashboardButton
               variant="outline"
               onClick={() => {
                 setArchiveDialogOpen(false)
@@ -2659,8 +2659,8 @@ export default function ProjectDetailPage() {
               disabled={archiving}
             >
               Cancel
-            </Button>
-            <Button
+            </DashboardButton>
+            <DashboardButton
               variant="destructive"
               onClick={handleArchiveProject}
               disabled={archiving || !archiveReason.trim()}
@@ -2672,7 +2672,7 @@ export default function ProjectDetailPage() {
                 <Trash2 className="h-4 w-4" />
               )}
               Archive Project
-            </Button>
+            </DashboardButton>
           </DialogFooter>
         </DialogContent>
       </Dialog>

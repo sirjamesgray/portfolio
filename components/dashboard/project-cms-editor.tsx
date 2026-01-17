@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { DashboardButton } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
@@ -368,11 +368,11 @@ export function ProjectCMSEditor({ projectId, metadata, onMetadataChange }: Proj
           </CardTitle>
           {isVisibleOnLandingPage && (
             <Link href={`/projects/${projectId}`} target="_blank">
-              <Button variant="outline" size="sm" className="gap-1">
+              <DashboardButton variant="outline" size="sm" className="gap-1">
                 <Eye className="h-4 w-4" />
                 Preview
                 <ExternalLink className="h-3 w-3" />
-              </Button>
+              </DashboardButton>
             </Link>
           )}
         </div>
@@ -425,19 +425,19 @@ export function ProjectCMSEditor({ projectId, metadata, onMetadataChange }: Proj
           <div className="flex items-center justify-between">
             <h4 className="text-sm font-medium">Page Metadata</h4>
             {!editingMetadata ? (
-              <Button variant="ghost" size="sm" onClick={() => setEditingMetadata(true)}>
+              <DashboardButton variant="ghost" size="sm" onClick={() => setEditingMetadata(true)}>
                 <Pencil className="h-4 w-4 mr-1" />
                 Edit
-              </Button>
+              </DashboardButton>
             ) : (
               <div className="flex gap-2">
-                <Button variant="ghost" size="sm" onClick={() => setEditingMetadata(false)} disabled={saving}>
+                <DashboardButton variant="ghost" size="sm" onClick={() => setEditingMetadata(false)} disabled={saving}>
                   Cancel
-                </Button>
-                <Button size="sm" onClick={handleSaveMetadata} disabled={saving} className="gap-1">
+                </DashboardButton>
+                <DashboardButton size="sm" onClick={handleSaveMetadata} disabled={saving} className="gap-1">
                   {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
                   Save
-                </Button>
+                </DashboardButton>
               </div>
             )}
           </div>
@@ -490,17 +490,17 @@ export function ProjectCMSEditor({ projectId, metadata, onMetadataChange }: Proj
                         fill
                         className="object-cover"
                       />
-                      <Button
+                      <DashboardButton
                         variant="destructive"
                         size="icon"
                         className="absolute top-2 right-2 h-8 w-8"
                         onClick={() => setMetadataForm({ ...metadataForm, public_hero_image: "" })}
                       >
                         <X className="h-4 w-4" />
-                      </Button>
+                      </DashboardButton>
                     </div>
                     <div className="flex gap-2">
-                      <Button
+                      <DashboardButton
                         type="button"
                         variant="outline"
                         size="sm"
@@ -509,8 +509,8 @@ export function ProjectCMSEditor({ projectId, metadata, onMetadataChange }: Proj
                       >
                         <Upload className="h-4 w-4 mr-1" />
                         Replace
-                      </Button>
-                      <Button
+                      </DashboardButton>
+                      <DashboardButton
                         type="button"
                         variant="outline"
                         size="sm"
@@ -519,7 +519,7 @@ export function ProjectCMSEditor({ projectId, metadata, onMetadataChange }: Proj
                       >
                         <Clipboard className="h-4 w-4 mr-1" />
                         Paste
-                      </Button>
+                      </DashboardButton>
                     </div>
                   </div>
                 ) : (
@@ -543,7 +543,7 @@ export function ProjectCMSEditor({ projectId, metadata, onMetadataChange }: Proj
                           Click to upload, drag & drop, or click here and press Ctrl+V to paste
                         </p>
                         <div className="flex gap-2 mt-2">
-                          <Button
+                          <DashboardButton
                             type="button"
                             variant="outline"
                             size="sm"
@@ -554,8 +554,8 @@ export function ProjectCMSEditor({ projectId, metadata, onMetadataChange }: Proj
                           >
                             <Upload className="h-4 w-4 mr-1" />
                             Upload
-                          </Button>
-                          <Button
+                          </DashboardButton>
+                          <DashboardButton
                             type="button"
                             variant="outline"
                             size="sm"
@@ -566,7 +566,7 @@ export function ProjectCMSEditor({ projectId, metadata, onMetadataChange }: Proj
                           >
                             <Clipboard className="h-4 w-4 mr-1" />
                             Paste
-                          </Button>
+                          </DashboardButton>
                         </div>
                       </div>
                     )}
@@ -620,10 +620,10 @@ export function ProjectCMSEditor({ projectId, metadata, onMetadataChange }: Proj
             <h4 className="text-sm font-medium">Content Blocks</h4>
             <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
               <DialogTrigger asChild>
-                <Button size="sm" variant="outline" className="gap-1">
+                <DashboardButton size="sm" variant="outline" className="gap-1">
                   <Plus className="h-4 w-4" />
                   Add Block
-                </Button>
+                </DashboardButton>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
@@ -692,13 +692,13 @@ export function ProjectCMSEditor({ projectId, metadata, onMetadataChange }: Proj
                   )}
                 </div>
                 <DialogFooter>
-                  <Button variant="outline" onClick={() => setAddDialogOpen(false)} disabled={addingBlock}>
+                  <DashboardButton variant="outline" onClick={() => setAddDialogOpen(false)} disabled={addingBlock}>
                     Cancel
-                  </Button>
-                  <Button onClick={handleAddBlock} disabled={!newBlockContent.trim() || addingBlock}>
+                  </DashboardButton>
+                  <DashboardButton onClick={handleAddBlock} disabled={!newBlockContent.trim() || addingBlock}>
                     {addingBlock ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <Plus className="h-4 w-4 mr-1" />}
                     Add Block
-                  </Button>
+                  </DashboardButton>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
@@ -737,12 +737,12 @@ export function ProjectCMSEditor({ projectId, metadata, onMetadataChange }: Proj
                     </p>
                   </div>
                   <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEditDialog(block)}>
+                    <DashboardButton variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEditDialog(block)}>
                       <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500 hover:text-red-600" onClick={() => handleDeleteBlock(block.id)}>
+                    </DashboardButton>
+                    <DashboardButton variant="ghost" size="icon" className="h-8 w-8 text-red-500 hover:text-red-600" onClick={() => handleDeleteBlock(block.id)}>
                       <Trash2 className="h-4 w-4" />
-                    </Button>
+                    </DashboardButton>
                   </div>
                 </div>
               ))}
@@ -786,13 +786,13 @@ export function ProjectCMSEditor({ projectId, metadata, onMetadataChange }: Proj
             )}
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setEditDialogOpen(false)} disabled={updatingBlock}>
+            <DashboardButton variant="outline" onClick={() => setEditDialogOpen(false)} disabled={updatingBlock}>
               Cancel
-            </Button>
-            <Button onClick={handleUpdateBlock} disabled={!editBlockContent.trim() || updatingBlock}>
+            </DashboardButton>
+            <DashboardButton onClick={handleUpdateBlock} disabled={!editBlockContent.trim() || updatingBlock}>
               {updatingBlock ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <Check className="h-4 w-4 mr-1" />}
               Save Changes
-            </Button>
+            </DashboardButton>
           </DialogFooter>
         </DialogContent>
       </Dialog>

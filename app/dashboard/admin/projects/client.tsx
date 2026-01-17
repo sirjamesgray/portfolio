@@ -14,7 +14,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+import { DashboardButton } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import {
   Select,
@@ -402,10 +402,10 @@ export function AdminProjectsClient({ projects, stats, customers }: AdminProject
       >
         <Dialog open={isNewProjectOpen} onOpenChange={setIsNewProjectOpen}>
           <DialogTrigger asChild>
-            <Button className="gap-2 bg-emerald-600 hover:bg-emerald-700">
+            <DashboardButton className="gap-2 bg-emerald-600 hover:bg-emerald-700">
               <Plus className="h-4 w-4" />
               New Project
-            </Button>
+            </DashboardButton>
           </DialogTrigger>
             <DialogContent className="sm:max-w-[500px]">
               <DialogHeader>
@@ -464,20 +464,20 @@ export function AdminProjectsClient({ projects, stats, customers }: AdminProject
                 </div>
               </div>
               <DialogFooter>
-                <Button
+                <DashboardButton
                   variant="outline"
                   onClick={() => setIsNewProjectOpen(false)}
                   disabled={creating}
                 >
                   Cancel
-                </Button>
-                <Button
+                </DashboardButton>
+                <DashboardButton
                   onClick={handleCreateProject}
                   disabled={!newProject.title.trim() || creating}
                   className="bg-emerald-600 hover:bg-emerald-700"
                 >
                   {creating ? "Creating..." : "Create Project"}
-                </Button>
+                </DashboardButton>
               </DialogFooter>
             </DialogContent>
           </Dialog>
@@ -727,7 +727,7 @@ export function AdminProjectsClient({ projects, stats, customers }: AdminProject
                           <TableCell className="sticky right-0 bg-card">
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
-                                <Button
+                                <DashboardButton
                                   variant="ghost"
                                   size="icon"
                                   className="h-8 w-8"
@@ -735,7 +735,7 @@ export function AdminProjectsClient({ projects, stats, customers }: AdminProject
                                 >
                                   <MoreHorizontal className="h-4 w-4" />
                                   <span className="sr-only">Actions</span>
-                                </Button>
+                                </DashboardButton>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end">
                                 <DropdownMenuItem
@@ -802,21 +802,21 @@ export function AdminProjectsClient({ projects, stats, customers }: AdminProject
             </div>
           )}
           <DialogFooter>
-            <Button
+            <DashboardButton
               variant="outline"
               onClick={() => setDeleteProjectId(null)}
               disabled={deleting}
             >
               Cancel
-            </Button>
-            <Button
+            </DashboardButton>
+            <DashboardButton
               variant="destructive"
               onClick={handleDeleteProject}
               disabled={deleting}
               className="gap-2"
             >
               {deleting ? "Deleting..." : "Delete Project"}
-            </Button>
+            </DashboardButton>
           </DialogFooter>
         </DialogContent>
       </Dialog>

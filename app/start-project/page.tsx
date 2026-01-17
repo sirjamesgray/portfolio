@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, ArrowRight, Check, Loader2, X, Calendar, Zap, Rocket, Ship, HelpCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { DashboardButton } from "@/components/ui/button";
 import { BlurFade } from "@/components/ui/blur-fade";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
@@ -293,7 +293,7 @@ function StartProjectContent() {
                   <p className="text-sm text-red-500 text-center">{submitError}</p>
                 )}
 
-                <Button
+                <DashboardButton
                   onClick={submitAndSchedule}
                   disabled={!canProceed() || isSubmitting}
                   className="w-full gap-2 bg-emerald-600 hover:bg-emerald-700 py-6 text-base"
@@ -304,7 +304,7 @@ function StartProjectContent() {
                     <Calendar className="h-5 w-5" />
                   )}
                   {isSubmitting ? "Saving..." : "Book a Call"}
-                </Button>
+                </DashboardButton>
 
                 <p className="text-sm text-muted-foreground text-center">
                   We&apos;ll hop on a quick call to discuss scope and next steps.
@@ -335,17 +335,17 @@ function StartProjectContent() {
                   Calendly should have opened in a new tab. If not, click below to schedule.
                 </p>
                 <div className="space-y-4">
-                  <Button
+                  <DashboardButton
                     onClick={openCalendly}
                     className="w-full gap-2 bg-emerald-600 hover:bg-emerald-700 py-6 text-base"
                   >
                     <Calendar className="h-5 w-5" />
                     Open Calendly
-                  </Button>
+                  </DashboardButton>
                   <Link href="/">
-                    <Button variant="ghost" className="w-full">
+                    <DashboardButton variant="ghost" className="w-full">
                       Back to Home
-                    </Button>
+                    </DashboardButton>
                   </Link>
                 </div>
               </div>
@@ -356,7 +356,7 @@ function StartProjectContent() {
           {step < 3 && (
             <BlurFade delay={0.3}>
               <div className="mt-8 flex justify-between">
-                <Button
+                <DashboardButton
                   variant="ghost"
                   onClick={step === 1 ? () => router.back() : prevStep}
                   className="gap-2"
@@ -364,16 +364,16 @@ function StartProjectContent() {
                 >
                   <ArrowLeft className="h-4 w-4" />
                   Back
-                </Button>
+                </DashboardButton>
                 {step === 1 && (
-                  <Button
+                  <DashboardButton
                     onClick={nextStep}
                     disabled={!canProceed()}
                     className="gap-2 bg-emerald-600 dark:bg-emerald-500 hover:bg-emerald-700 dark:hover:bg-emerald-600"
                   >
                     Next
                     <ArrowRight className="h-4 w-4" />
-                  </Button>
+                  </DashboardButton>
                 )}
               </div>
             </BlurFade>

@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 
 export const FEATURE_FLAGS = {
   CUSTOMER_DASHBOARD: "customer-dashboard",
+  ACTIVE_LANDING_PAGE: "active-landing-page",
 } as const
 
 export type FeatureFlagName = typeof FEATURE_FLAGS[keyof typeof FEATURE_FLAGS]
@@ -69,4 +70,29 @@ export async function getAllFeatureFlags(): Promise<FeatureFlag[]> {
  */
 export async function isCustomerDashboardEnabled(): Promise<boolean> {
   return getFeatureFlag(FEATURE_FLAGS.CUSTOMER_DASHBOARD)
+}
+
+/**
+ * Get the active landing page ID.
+ * Returns the page ID stored in the description field of the active-landing-page flag.
+ * Defaults to "hire-for-projects" if not set.
+ */
+export async function getActiveLandingPage(): Promise<string> {
+  try {
+    const supabase = await createClient()
+    const { data, error } = await supabase
+      .from("feature_flags")
+      .select("description")
+      .eq("name", FEATURE_FLAGS.ACTIVE_LANDING_PAGE)
+      .single()
+
+    if (error || !data?.description) {
+      return "hire-for-projects"
+    }
+
+    return data.description
+  } catch (error) {
+    console.error("Error fetching active landing page:", error)
+    return "hire-for-projects"
+  }
 }

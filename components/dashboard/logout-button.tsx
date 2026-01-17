@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { LogOut } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { DashboardButton } from "@/components/ui/button"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,13 +21,13 @@ export function LogoutButton() {
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <Button
+        <DashboardButton
           variant="ghost"
           className="w-full justify-start text-muted-foreground hover:text-foreground"
         >
           <LogOut className="mr-2 h-4 w-4" />
           Logout
-        </Button>
+        </DashboardButton>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

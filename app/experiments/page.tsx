@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { TimeMachine } from "@/components/time-machine";
@@ -13,6 +13,7 @@ import { UIStyleSwitcher } from "@/components/ui-style-switcher";
 import { Footer } from "@/components/footer";
 
 const sections = [
+  { id: "factory-os", label: "HomeLab" },
   { id: "heatmap-logo", label: "Heatmap Logo" },
   { id: "liquid-metal-logo", label: "Liquid Metal Logo" },
   { id: "time-machine", label: "Time Machine" },
@@ -20,7 +21,7 @@ const sections = [
 ];
 
 export default function ExperimentsPage() {
-  const [activeSection, setActiveSection] = useState("heatmap-logo");
+  const [activeSection, setActiveSection] = useState("factory-os");
   const [showcaseStyle, setShowcaseStyle] = useState<ShowcaseStyle>("neon");
 
   // Track active section based on scroll position
@@ -133,6 +134,21 @@ export default function ExperimentsPage() {
               Experimental UI components and features. A playground for testing new ideas and interactions.
             </p>
           </div>
+
+          {/* HomeLab - Automated Arbitrage Pipeline */}
+          <section id="factory-os" className="mb-16">
+            <h2 className="text-2xl font-bold text-foreground mb-2">HomeLab</h2>
+            <p className="text-muted-foreground mb-6 text-sm">
+              Automated arbitrage pipeline: research overpriced products, 3D print cheaper alternatives, flood the market. Real-time simulation with revenue tracking.
+            </p>
+            <Link
+              href="/experiments/factory-os"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20 transition-colors text-sm font-medium"
+            >
+              View Experiment
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </section>
 
           {/* Heatmap Logo */}
           <section id="heatmap-logo" className="mb-16">

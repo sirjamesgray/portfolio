@@ -1,7 +1,7 @@
 "use client"
 
 import { X, Eye } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { DashboardButton } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 
 interface MirrorBannerProps {
@@ -34,7 +34,7 @@ export function MirrorBanner({ userName, userEmail, isProjectPreview }: MirrorBa
             )}
           </span>
         </div>
-        <Button
+        <DashboardButton
           variant="ghost"
           size="sm"
           onClick={exitMirror}
@@ -42,7 +42,7 @@ export function MirrorBanner({ userName, userEmail, isProjectPreview }: MirrorBa
         >
           <X className="h-4 w-4 mr-1" />
           Exit Preview
-        </Button>
+        </DashboardButton>
       </div>
     </div>
   )

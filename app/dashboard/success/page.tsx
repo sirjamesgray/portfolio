@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Check, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { DashboardButton } from "@/components/ui/button";
 import Link from "next/link";
 
 export default function DashboardPage() {
@@ -121,10 +121,10 @@ export default function DashboardPage() {
               </p>
               <div className="space-y-3">
                 <Link href="/">
-                  <Button className="w-full gap-2 bg-emerald-600 hover:bg-emerald-700">
+                  <DashboardButton className="w-full gap-2 bg-emerald-600 hover:bg-emerald-700">
                     Back to Home
                     <ArrowRight className="h-4 w-4" />
-                  </Button>
+                  </DashboardButton>
                 </Link>
               </div>
             </>
@@ -138,15 +138,15 @@ export default function DashboardPage() {
               </p>
               <div className="space-y-3">
                 <Link href="/start-project">
-                  <Button className="w-full gap-2 bg-emerald-600 hover:bg-emerald-700">
+                  <DashboardButton className="w-full gap-2 bg-emerald-600 hover:bg-emerald-700">
                     Start a Project
                     <ArrowRight className="h-4 w-4" />
-                  </Button>
+                  </DashboardButton>
                 </Link>
                 <Link href="/">
-                  <Button variant="ghost" className="w-full">
+                  <DashboardButton variant="ghost" className="w-full">
                     Back to Home
-                  </Button>
+                  </DashboardButton>
                 </Link>
               </div>
             </>

@@ -4,21 +4,23 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Button } from "@/components/ui/button";
+import { DashboardButton } from "@/components/ui/button";
 import { LandingButton } from "@/components/ui/landing-button";
 import { User, ArrowLeft, LogOut } from "lucide-react";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 import { Logo3DStatic } from "@/components/logo-3d";
-import { CTA_CONFIG } from "@/lib/constants";
+import { CTA_CONFIG, PRODUCT_ENGINEER_CTA } from "@/lib/constants";
 
 interface SiteHeaderProps {
   variant?: "default" | "back";
   backHref?: string;
   backLabel?: string;
   customerDashboardEnabled?: boolean;
+  /** Landing page context for different CTA styles */
+  landingPage?: "hire-for-projects" | "product-engineer";
 }
 
-export function SiteHeader({ variant = "default", backHref = "/", backLabel = "Back", customerDashboardEnabled = true }: SiteHeaderProps) {
+export function SiteHeader({ variant = "default", backHref = "/", backLabel = "Back", customerDashboardEnabled = true, landingPage = "hire-for-projects" }: SiteHeaderProps) {
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [showMobileFooter, setShowMobileFooter] = useState(false);
@@ -85,19 +87,33 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
     <>
       {!loading && variant === "default" && (
         <>
-          {showDashboardLinks ? (
+          {landingPage === "product-engineer" ? (
+            // Product Engineer landing page: "Let's talk" focused CTAs
+            <>
+              <Link href="/design-system">
+                <LandingButton variant="secondary" size="sm">
+                  Design System
+                </LandingButton>
+              </Link>
+              <Link href={PRODUCT_ENGINEER_CTA.primary.href}>
+                <LandingButton variant="primary" size="sm">
+                  {PRODUCT_ENGINEER_CTA.primary.text}
+                </LandingButton>
+              </Link>
+            </>
+          ) : showDashboardLinks ? (
             <Link href="/dashboard">
-              <Button variant="ghost" size="sm" className="gap-2">
+              <DashboardButton variant="ghost" size="sm" className="gap-2">
                 <User className="h-4 w-4" />
                 Dashboard
-              </Button>
+              </DashboardButton>
             </Link>
           ) : customerDashboardEnabled ? (
             <>
               <Link href="/login">
-                <Button variant="ghost" size="sm">
+                <DashboardButton variant="ghost" size="sm">
                   Log in
-                </Button>
+                </DashboardButton>
               </Link>
               <Link href="/start-project">
                 <LandingButton variant="primary" size="sm">
@@ -141,9 +157,23 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
     <>
       {!loading && variant === "default" && (
         <>
-          {showDashboardLinks ? (
+          {landingPage === "product-engineer" ? (
+            // Product Engineer landing page: "Let's talk" focused CTAs
             <>
-              <Button
+              <Link href="/design-system" className="flex-1">
+                <LandingButton variant="secondary" className="w-full">
+                  Design System
+                </LandingButton>
+              </Link>
+              <Link href={PRODUCT_ENGINEER_CTA.primary.href} className="flex-1">
+                <LandingButton variant="primary" className="w-full">
+                  {PRODUCT_ENGINEER_CTA.primary.text}
+                </LandingButton>
+              </Link>
+            </>
+          ) : showDashboardLinks ? (
+            <>
+              <DashboardButton
                 variant="ghost-destructive"
                 size="default"
                 className="flex-1 gap-2 h-11 px-5 text-base rounded-full"
@@ -151,7 +181,7 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
               >
                 <LogOut className="h-5 w-5" />
                 Log out
-              </Button>
+              </DashboardButton>
               <Link href="/dashboard" className="flex-1">
                 <LandingButton variant="primary" className="w-full gap-2">
                   <User className="h-5 w-5" />
@@ -162,9 +192,9 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
           ) : customerDashboardEnabled ? (
             <>
               <Link href="/login" className="flex-1">
-                <Button variant="ghost" size="default" className="w-full h-11 px-5 text-base rounded-full">
+                <DashboardButton variant="ghost" size="default" className="w-full h-11 px-5 text-base rounded-full">
                   Log in
-                </Button>
+                </DashboardButton>
               </Link>
               <Link href="/start-project" className="flex-1">
                 <LandingButton variant="primary" className="w-full">

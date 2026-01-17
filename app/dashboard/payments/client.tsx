@@ -1,7 +1,7 @@
 "use client"
 
 import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { DashboardButton } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { CreditCard, Receipt, ExternalLink, Download, CheckCircle2, Clock, AlertCircle } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -125,7 +125,7 @@ function InvoiceCard({ invoice }: { invoice: Invoice }) {
             {/* Right side - Actions */}
             <div className="flex items-center gap-2 sm:flex-shrink-0">
               {isPending && invoice.invoice_url && (
-                <Button
+                <DashboardButton
                   asChild
                   className="bg-emerald-600 hover:bg-emerald-700"
                 >
@@ -133,21 +133,21 @@ function InvoiceCard({ invoice }: { invoice: Invoice }) {
                     <CreditCard className="h-4 w-4 mr-2" />
                     Pay Now
                   </a>
-                </Button>
+                </DashboardButton>
               )}
               {invoice.invoice_url && (
-                <Button variant="outline" size="icon" asChild>
+                <DashboardButton variant="outline" size="icon" asChild>
                   <a href={invoice.invoice_url} target="_blank" rel="noopener noreferrer">
                     <ExternalLink className="h-4 w-4" />
                   </a>
-                </Button>
+                </DashboardButton>
               )}
               {invoice.invoice_pdf && (
-                <Button variant="outline" size="icon" asChild>
+                <DashboardButton variant="outline" size="icon" asChild>
                   <a href={invoice.invoice_pdf} target="_blank" rel="noopener noreferrer">
                     <Download className="h-4 w-4" />
                   </a>
-                </Button>
+                </DashboardButton>
               )}
             </div>
           </div>

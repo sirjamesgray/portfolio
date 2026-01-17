@@ -18,7 +18,7 @@ export const SOCIALS = {
 
 // CTA configuration - changes based on customer-dashboard feature flag
 // When dashboard enabled: "Start a project" -> /login
-// When dashboard disabled: "Get started" -> /contact
+// When dashboard disabled: "Get started" -> /project-consultation
 export const CTA_CONFIG = {
   // When customer dashboard is enabled
   dashboardEnabled: {
@@ -28,7 +28,19 @@ export const CTA_CONFIG = {
   // When customer dashboard is disabled
   dashboardDisabled: {
     text: "Get started",
-    href: "/contact",
+    href: "/project-consultation",
+  },
+} as const;
+
+// Product Engineer landing page CTA configuration
+export const PRODUCT_ENGINEER_CTA = {
+  primary: {
+    text: "Let's talk",
+    href: "/join-team",
+  },
+  secondary: {
+    text: "Learn More",
+    href: "#approach",
   },
 } as const;
 

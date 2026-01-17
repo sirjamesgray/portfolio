@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { DashboardButton } from "@/components/ui/button"
 import { Mail, Eye, Send, Check, X } from "lucide-react"
 import { MobileBackButton } from "@/components/dashboard/mobile-back-button"
 import {
@@ -168,14 +168,14 @@ export function AdminEmailsClient({ templates }: AdminEmailsClientProps) {
                   <div className="flex gap-2">
                     <Drawer direction="right">
                       <DrawerTrigger asChild>
-                        <Button
+                        <DashboardButton
                           variant="outline"
                           size="sm"
                           className="flex-1"
                         >
                           <Eye className="h-4 w-4 mr-1" />
                           Preview
-                        </Button>
+                        </DashboardButton>
                       </DrawerTrigger>
                       <DrawerContent className="h-full w-full sm:max-w-2xl">
                         <DrawerHeader className="border-b">
@@ -187,9 +187,9 @@ export function AdminEmailsClient({ templates }: AdminEmailsClientProps) {
                               </DrawerDescription>
                             </div>
                             <DrawerClose asChild>
-                              <Button variant="ghost" size="icon">
+                              <DashboardButton variant="ghost" size="icon">
                                 <X className="h-4 w-4" />
-                              </Button>
+                              </DashboardButton>
                             </DrawerClose>
                           </div>
                         </DrawerHeader>
@@ -198,7 +198,7 @@ export function AdminEmailsClient({ templates }: AdminEmailsClientProps) {
                         </div>
                       </DrawerContent>
                     </Drawer>
-                    <Button
+                    <DashboardButton
                       variant="outline"
                       size="sm"
                       className="flex-1"
@@ -216,7 +216,7 @@ export function AdminEmailsClient({ templates }: AdminEmailsClientProps) {
                           Test
                         </>
                       )}
-                    </Button>
+                    </DashboardButton>
                   </div>
                 </div>
               </CardContent>

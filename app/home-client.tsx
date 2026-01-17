@@ -10,7 +10,7 @@ import { CursorGlow } from "@/components/ui/cursor-glow";
 import { LandingButton } from "@/components/ui/landing-button";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
+import { DashboardButton } from "@/components/ui/button";
 import { SiteHeader } from "@/components/site-header";
 import { ExperienceTimeline } from "@/components/experience-timeline";
 import { ProjectsShowcase } from "@/components/projects-showcase";
@@ -90,6 +90,12 @@ export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [copied, setCopied] = useState(false);
   const [showcaseStyle, setShowcaseStyle] = useState<ShowcaseStyle>("neon");
+  const [mounted, setMounted] = useState(false);
+
+  // Prevent hydration mismatch with Radix components that generate random IDs
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleCopyUrl = async () => {
     try {
@@ -407,18 +413,28 @@ export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
           <BlurFade delay={0.2} inView>
             <CursorGlow>
               <div className={`${CARD_INTERACTIVE_SOLID.base} ${CARD_INTERACTIVE_SOLID.shadow} ${CARD_INTERACTIVE_SOLID.hover} bg-card/50 `}>
-                <Accordion type="single" collapsible className="w-full">
-                  {faqs.slice(0, 3).map((faq, idx) => (
-                    <AccordionItem key={idx} value={`faq-${idx}`} className="px-5 border-b border-border last:border-b-0">
-                      <AccordionTrigger className="text-foreground font-semibold text-left hover:no-underline">
-                        {faq.question}
-                      </AccordionTrigger>
-                      <AccordionContent className="text-muted-foreground text-sm leading-relaxed">
-                        {faq.answer}
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
+                {mounted ? (
+                  <Accordion type="single" collapsible className="w-full">
+                    {faqs.slice(0, 3).map((faq, idx) => (
+                      <AccordionItem key={idx} value={`faq-${idx}`} className="px-5 border-b border-border last:border-b-0">
+                        <AccordionTrigger className="text-foreground font-semibold text-left hover:no-underline">
+                          {faq.question}
+                        </AccordionTrigger>
+                        <AccordionContent className="text-muted-foreground text-sm leading-relaxed">
+                          {faq.answer}
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
+                ) : (
+                  <div className="w-full">
+                    {faqs.slice(0, 3).map((faq, idx) => (
+                      <div key={idx} className="px-5 py-4 border-b border-border last:border-b-0">
+                        <div className="text-foreground font-semibold">{faq.question}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </CursorGlow>
           </BlurFade>

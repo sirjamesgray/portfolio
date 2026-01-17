@@ -4,11 +4,10 @@ import {
   CreditCard,
   Users,
   UserCircle,
-  FlaskConical,
-  Palette,
   Mail,
   GitBranch,
   Flag,
+  FileStack,
   LucideIcon,
 } from "lucide-react"
 
@@ -62,14 +61,9 @@ export const adminNavItems: NavItem[] = [
     icon: GitBranch,
   },
   {
-    name: "Experiments",
-    href: "/dashboard/admin/experiments",
-    icon: FlaskConical,
-  },
-  {
-    name: "Design System",
-    href: "/dashboard/admin/design-system",
-    icon: Palette,
+    name: "Landing Pages",
+    href: "/dashboard/admin/landing-pages",
+    icon: FileStack,
   },
   {
     name: "Feature Flags",

@@ -5,7 +5,7 @@ import { useParams } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { DashboardButton } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import {
@@ -248,9 +248,9 @@ export default function LandingContentEditorPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <Link href={`/dashboard/admin/projects/${projectId}`}>
-            <Button variant="ghost" size="icon" className="h-8 w-8">
+            <DashboardButton variant="ghost" size="icon" className="h-8 w-8">
               <ArrowLeft className="h-4 w-4" />
-            </Button>
+            </DashboardButton>
           </Link>
           <div>
             <h1 className="text-xl font-semibold">Landing Page Content</h1>
@@ -261,12 +261,12 @@ export default function LandingContentEditorPage() {
         </div>
         <div className="flex items-center gap-2">
           {hasChanges && (
-            <Button variant="outline" size="sm" onClick={handleRevert} disabled={saving}>
+            <DashboardButton variant="outline" size="sm" onClick={handleRevert} disabled={saving}>
               <RotateCcw className="h-4 w-4 mr-1" />
               Revert
-            </Button>
+            </DashboardButton>
           )}
-          <Button
+          <DashboardButton
             size="sm"
             onClick={handleSave}
             disabled={!hasChanges || saving}
@@ -274,7 +274,7 @@ export default function LandingContentEditorPage() {
           >
             {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
             Save Changes
-          </Button>
+          </DashboardButton>
         </div>
       </div>
 
@@ -335,7 +335,7 @@ export default function LandingContentEditorPage() {
                   placeholder="#10b981"
                   className="w-28 font-mono text-sm"
                 />
-                <Button
+                <DashboardButton
                   type="button"
                   variant="outline"
                   size="sm"
@@ -344,7 +344,7 @@ export default function LandingContentEditorPage() {
                 >
                   <Pipette className="h-4 w-4" />
                   Pick
-                </Button>
+                </DashboardButton>
               </div>
             </div>
           </div>
@@ -407,16 +407,16 @@ export default function LandingContentEditorPage() {
                     fill
                     className="object-cover"
                   />
-                  <Button
+                  <DashboardButton
                     variant="destructive"
                     size="icon"
                     className="absolute top-1 right-1 h-6 w-6"
                     onClick={() => setMetadataForm({ ...metadataForm, public_hero_image: "" })}
                   >
                     <X className="h-3 w-3" />
-                  </Button>
+                  </DashboardButton>
                 </div>
-                <Button
+                <DashboardButton
                   type="button"
                   variant="outline"
                   size="sm"
@@ -425,7 +425,7 @@ export default function LandingContentEditorPage() {
                 >
                   <Upload className="h-4 w-4 mr-1" />
                   Replace
-                </Button>
+                </DashboardButton>
               </div>
             ) : (
               <div

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { DashboardButton } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
@@ -394,14 +394,14 @@ export function ProjectDetailClient({
       <MobileBackButton />
       {/* Header */}
         <div className="flex items-start gap-4">
-          <Button
+          <DashboardButton
             variant="ghost"
             size="icon"
             onClick={() => router.back()}
             className="shrink-0 hidden md:flex mt-6"
           >
             <ArrowLeft className="h-4 w-4" />
-          </Button>
+          </DashboardButton>
           <div className="space-y-1 flex-1">
             <div className="space-y-1.5">
               <label className="text-sm font-medium text-muted-foreground">
@@ -417,7 +417,7 @@ export function ProjectDetailClient({
                     autoFocus
                   />
                   <div className="flex items-center gap-2">
-                    <Button
+                    <DashboardButton
                       size="sm"
                       onClick={handleSaveTitle}
                       disabled={!hasTitleChanges || isSavingTitle}
@@ -425,24 +425,24 @@ export function ProjectDetailClient({
                     >
                       {isSavingTitle ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
                       <span className="ml-1">Save</span>
-                    </Button>
-                    <Button size="sm" variant="outline" onClick={handleRevertTitle} disabled={isSavingTitle}>
+                    </DashboardButton>
+                    <DashboardButton size="sm" variant="outline" onClick={handleRevertTitle} disabled={isSavingTitle}>
                       <RotateCcw className="h-4 w-4" />
                       <span className="ml-1">Cancel</span>
-                    </Button>
+                    </DashboardButton>
                   </div>
                 </div>
               ) : (
                 <div className="flex items-center gap-2 group">
                   <h1 className="text-2xl font-bold tracking-tight">{projectName}</h1>
-                  <Button
+                  <DashboardButton
                     variant="ghost"
                     size="icon"
                     className="h-8 w-8 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity"
                     onClick={() => setIsEditingTitle(true)}
                   >
                     <Pencil className="h-4 w-4" />
-                  </Button>
+                  </DashboardButton>
                 </div>
               )}
             </div>
@@ -473,10 +473,10 @@ export function ProjectDetailClient({
                 Schedule a consultation to discuss your project and receive a quote.
               </p>
               <a href={SITE_CONFIG.calendly} target="_blank" rel="noopener noreferrer">
-                <Button className="w-full gap-2 bg-emerald-600 hover:bg-emerald-700" size="sm">
+                <DashboardButton className="w-full gap-2 bg-emerald-600 hover:bg-emerald-700" size="sm">
                   <Calendar className="h-4 w-4" />
                   Schedule Consultation
-                </Button>
+                </DashboardButton>
               </a>
             </CardContent>
           </Card>
@@ -534,7 +534,7 @@ export function ProjectDetailClient({
                         </p>
                       )}
                       <div className="flex gap-2">
-                        <Button
+                        <DashboardButton
                           className="flex-1 bg-emerald-600 hover:bg-emerald-700"
                           size="sm"
                           disabled={respondingQuoteId === quote.id}
@@ -542,8 +542,8 @@ export function ProjectDetailClient({
                         >
                           <Check className="h-4 w-4 mr-1" />
                           {respondingQuoteId === quote.id ? "Processing..." : "Accept Quote"}
-                        </Button>
-                        <Button
+                        </DashboardButton>
+                        <DashboardButton
                           variant="outline"
                           className="flex-1 text-red-600 hover:text-red-700"
                           size="sm"
@@ -552,7 +552,7 @@ export function ProjectDetailClient({
                         >
                           <X className="h-4 w-4 mr-1" />
                           Decline
-                        </Button>
+                        </DashboardButton>
                       </div>
                     </div>
                   ))}
@@ -643,10 +643,10 @@ export function ProjectDetailClient({
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-base">Project Requirements</CardTitle>
                   {!isEditingRequirements && (
-                    <Button variant="ghost" size="sm" onClick={() => setIsEditingRequirements(true)} className="gap-1">
+                    <DashboardButton variant="ghost" size="sm" onClick={() => setIsEditingRequirements(true)} className="gap-1">
                       <Pencil className="h-4 w-4" />
                       Edit
-                    </Button>
+                    </DashboardButton>
                   )}
                 </div>
               </CardHeader>
@@ -661,7 +661,7 @@ export function ProjectDetailClient({
                       autoFocus
                     />
                     <div className="flex items-center gap-2">
-                      <Button
+                      <DashboardButton
                         size="sm"
                         onClick={handleSaveRequirements}
                         disabled={!hasRequirementsChanges || isSavingRequirements}
@@ -669,11 +669,11 @@ export function ProjectDetailClient({
                       >
                         {isSavingRequirements ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
                         <span className="ml-1">Save</span>
-                      </Button>
-                      <Button size="sm" variant="outline" onClick={handleRevertRequirements} disabled={isSavingRequirements}>
+                      </DashboardButton>
+                      <DashboardButton size="sm" variant="outline" onClick={handleRevertRequirements} disabled={isSavingRequirements}>
                         <RotateCcw className="h-4 w-4" />
                         <span className="ml-1">Cancel</span>
-                      </Button>
+                      </DashboardButton>
                     </div>
                   </div>
                 ) : (
@@ -737,17 +737,17 @@ export function ProjectDetailClient({
               <CardContent>
                 <div className="flex flex-wrap gap-3">
                   <a href={`mailto:${SITE_CONFIG.email}`}>
-                    <Button variant="outline" className="gap-2">
+                    <DashboardButton variant="outline" className="gap-2">
                       <Mail className="h-4 w-4" />
                       Email {SITE_CONFIG.name.split(" ")[0]}
-                    </Button>
+                    </DashboardButton>
                   </a>
                   {!isEarlyStage && (
                     <a href={SITE_CONFIG.calendly} target="_blank" rel="noopener noreferrer">
-                      <Button variant="outline" className="gap-2">
+                      <DashboardButton variant="outline" className="gap-2">
                         <Calendar className="h-4 w-4" />
                         Schedule a call
-                      </Button>
+                      </DashboardButton>
                     </a>
                   )}
                 </div>
@@ -852,7 +852,7 @@ export function ProjectDetailClient({
                         </div>
                         {invoice.invoice_url && invoice.status !== "paid" && (
                           <Link href={invoice.invoice_url} target="_blank">
-                            <Button size="sm" variant="outline">Pay</Button>
+                            <DashboardButton size="sm" variant="outline">Pay</DashboardButton>
                           </Link>
                         )}
                       </div>
@@ -915,10 +915,10 @@ export function ProjectDetailClient({
             />
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setRejectDialogOpen(false)} disabled={respondingQuoteId !== null}>
+            <DashboardButton variant="outline" onClick={() => setRejectDialogOpen(false)} disabled={respondingQuoteId !== null}>
               Cancel
-            </Button>
-            <Button variant="destructive" onClick={handleConfirmReject} disabled={respondingQuoteId !== null}>
+            </DashboardButton>
+            <DashboardButton variant="destructive" onClick={handleConfirmReject} disabled={respondingQuoteId !== null}>
               {respondingQuoteId !== null ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin mr-2" />
@@ -927,7 +927,7 @@ export function ProjectDetailClient({
               ) : (
                 "Decline Quote"
               )}
-            </Button>
+            </DashboardButton>
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -40,7 +40,13 @@ const buttonVariants = cva(
   }
 )
 
-function Button({
+/**
+ * DashboardButton - Button component for dashboard/admin contexts
+ *
+ * For landing pages, use LandingButton from @/components/ui/landing-button
+ * For dashboard/admin pages, use DashboardButton
+ */
+function DashboardButton({
   className,
   variant = "default",
   size = "default",
@@ -70,4 +76,7 @@ function Button({
   )
 }
 
-export { Button, buttonVariants }
+/** @deprecated Use DashboardButton instead */
+const Button = DashboardButton;
+
+export { DashboardButton, Button, buttonVariants }

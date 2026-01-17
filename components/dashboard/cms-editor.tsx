@@ -143,7 +143,7 @@ const BeforeAfterNode = TiptapNode.create({
     return ReactNodeViewRenderer(BeforeAfterNodeView)
   },
 })
-import { Button } from "@/components/ui/button"
+import { DashboardButton } from "@/components/ui/button"
 import {
   Bold,
   Italic,
@@ -478,7 +478,7 @@ export const CMSEditor = forwardRef<CMSEditorRef, CMSEditorProps>(function CMSEd
     <div className={cn("border rounded-lg overflow-hidden bg-background relative", className)}>
       {/* Toolbar */}
       <div className="flex items-center gap-1 p-2 border-b bg-muted/50 flex-wrap">
-        <Button
+        <DashboardButton
           type="button"
           variant="ghost"
           size="sm"
@@ -487,8 +487,8 @@ export const CMSEditor = forwardRef<CMSEditorRef, CMSEditorProps>(function CMSEd
           title="Heading 1"
         >
           <Heading1 className="h-4 w-4" />
-        </Button>
-        <Button
+        </DashboardButton>
+        <DashboardButton
           type="button"
           variant="ghost"
           size="sm"
@@ -497,9 +497,9 @@ export const CMSEditor = forwardRef<CMSEditorRef, CMSEditorProps>(function CMSEd
           title="Heading 2"
         >
           <Heading2 className="h-4 w-4" />
-        </Button>
+        </DashboardButton>
         <div className="w-px h-6 bg-border mx-1" />
-        <Button
+        <DashboardButton
           type="button"
           variant="ghost"
           size="sm"
@@ -508,8 +508,8 @@ export const CMSEditor = forwardRef<CMSEditorRef, CMSEditorProps>(function CMSEd
           title="Bold"
         >
           <Bold className="h-4 w-4" />
-        </Button>
-        <Button
+        </DashboardButton>
+        <DashboardButton
           type="button"
           variant="ghost"
           size="sm"
@@ -518,9 +518,9 @@ export const CMSEditor = forwardRef<CMSEditorRef, CMSEditorProps>(function CMSEd
           title="Italic"
         >
           <Italic className="h-4 w-4" />
-        </Button>
+        </DashboardButton>
         <div className="w-px h-6 bg-border mx-1" />
-        <Button
+        <DashboardButton
           type="button"
           variant="ghost"
           size="sm"
@@ -529,8 +529,8 @@ export const CMSEditor = forwardRef<CMSEditorRef, CMSEditorProps>(function CMSEd
           title="Bullet List"
         >
           <List className="h-4 w-4" />
-        </Button>
-        <Button
+        </DashboardButton>
+        <DashboardButton
           type="button"
           variant="ghost"
           size="sm"
@@ -539,9 +539,9 @@ export const CMSEditor = forwardRef<CMSEditorRef, CMSEditorProps>(function CMSEd
           title="Numbered List"
         >
           <ListOrdered className="h-4 w-4" />
-        </Button>
+        </DashboardButton>
         <div className="w-px h-6 bg-border mx-1" />
-        <Button
+        <DashboardButton
           type="button"
           variant="ghost"
           size="sm"
@@ -550,9 +550,9 @@ export const CMSEditor = forwardRef<CMSEditorRef, CMSEditorProps>(function CMSEd
           title="Insert Image"
         >
           <ImageIcon className="h-4 w-4" />
-        </Button>
+        </DashboardButton>
         <div className="flex-1" />
-        <Button
+        <DashboardButton
           type="button"
           variant="ghost"
           size="sm"
@@ -562,8 +562,8 @@ export const CMSEditor = forwardRef<CMSEditorRef, CMSEditorProps>(function CMSEd
           title="Undo"
         >
           <Undo className="h-4 w-4" />
-        </Button>
-        <Button
+        </DashboardButton>
+        <DashboardButton
           type="button"
           variant="ghost"
           size="sm"
@@ -573,7 +573,7 @@ export const CMSEditor = forwardRef<CMSEditorRef, CMSEditorProps>(function CMSEd
           title="Redo"
         >
           <Redo className="h-4 w-4" />
-        </Button>
+        </DashboardButton>
       </div>
 
       {/* Editor */}
@@ -683,12 +683,12 @@ export const CMSEditor = forwardRef<CMSEditorRef, CMSEditorProps>(function CMSEd
             />
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowImageDialog(false)}>
+            <DashboardButton variant="outline" onClick={() => setShowImageDialog(false)}>
               Cancel
-            </Button>
-            <Button onClick={handleImageUrlSubmit} disabled={!imageUrl}>
+            </DashboardButton>
+            <DashboardButton onClick={handleImageUrlSubmit} disabled={!imageUrl}>
               Insert
-            </Button>
+            </DashboardButton>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -766,16 +766,16 @@ export const CMSEditor = forwardRef<CMSEditorRef, CMSEditorProps>(function CMSEd
                   <div className="relative w-24 h-16 rounded border overflow-hidden bg-muted">
                     <img src={beforeImageUrl} alt="Before" className="w-full h-full object-cover" />
                   </div>
-                  <Button variant="outline" size="sm" onClick={() => beforeFileInputRef.current?.click()}>
+                  <DashboardButton variant="outline" size="sm" onClick={() => beforeFileInputRef.current?.click()}>
                     Replace
-                  </Button>
-                  <Button variant="ghost" size="sm" onClick={() => setBeforeImageUrl("")}>
+                  </DashboardButton>
+                  <DashboardButton variant="ghost" size="sm" onClick={() => setBeforeImageUrl("")}>
                     Remove
-                  </Button>
+                  </DashboardButton>
                 </div>
               ) : (
                 <div className="flex gap-2">
-                  <Button
+                  <DashboardButton
                     variant="outline"
                     size="sm"
                     onClick={() => beforeFileInputRef.current?.click()}
@@ -783,7 +783,7 @@ export const CMSEditor = forwardRef<CMSEditorRef, CMSEditorProps>(function CMSEd
                   >
                     {uploadingBefore ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
                     Upload
-                  </Button>
+                  </DashboardButton>
                   <Input
                     placeholder="Or paste URL..."
                     value={beforeImageUrl}
@@ -802,16 +802,16 @@ export const CMSEditor = forwardRef<CMSEditorRef, CMSEditorProps>(function CMSEd
                   <div className="relative w-24 h-16 rounded border overflow-hidden bg-muted">
                     <img src={afterImageUrl} alt="After" className="w-full h-full object-cover" />
                   </div>
-                  <Button variant="outline" size="sm" onClick={() => afterFileInputRef.current?.click()}>
+                  <DashboardButton variant="outline" size="sm" onClick={() => afterFileInputRef.current?.click()}>
                     Replace
-                  </Button>
-                  <Button variant="ghost" size="sm" onClick={() => setAfterImageUrl("")}>
+                  </DashboardButton>
+                  <DashboardButton variant="ghost" size="sm" onClick={() => setAfterImageUrl("")}>
                     Remove
-                  </Button>
+                  </DashboardButton>
                 </div>
               ) : (
                 <div className="flex gap-2">
-                  <Button
+                  <DashboardButton
                     variant="outline"
                     size="sm"
                     onClick={() => afterFileInputRef.current?.click()}
@@ -819,7 +819,7 @@ export const CMSEditor = forwardRef<CMSEditorRef, CMSEditorProps>(function CMSEd
                   >
                     {uploadingAfter ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
                     Upload
-                  </Button>
+                  </DashboardButton>
                   <Input
                     placeholder="Or paste URL..."
                     value={afterImageUrl}
@@ -854,7 +854,7 @@ export const CMSEditor = forwardRef<CMSEditorRef, CMSEditorProps>(function CMSEd
             <div>
               <label className="text-sm font-medium mb-1.5 block">Display Mode</label>
               <div className="flex gap-2">
-                <Button
+                <DashboardButton
                   type="button"
                   variant={displayMode === "fill" ? "default" : "outline"}
                   size="sm"
@@ -862,8 +862,8 @@ export const CMSEditor = forwardRef<CMSEditorRef, CMSEditorProps>(function CMSEd
                   className="flex-1"
                 >
                   Fill
-                </Button>
-                <Button
+                </DashboardButton>
+                <DashboardButton
                   type="button"
                   variant={displayMode === "fit" ? "default" : "outline"}
                   size="sm"
@@ -871,7 +871,7 @@ export const CMSEditor = forwardRef<CMSEditorRef, CMSEditorProps>(function CMSEd
                   className="flex-1"
                 >
                   Fit with Padding
-                </Button>
+                </DashboardButton>
               </div>
               <p className="text-xs text-muted-foreground mt-1">
                 {displayMode === "fill"
@@ -932,10 +932,10 @@ export const CMSEditor = forwardRef<CMSEditorRef, CMSEditorProps>(function CMSEd
             )}
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowBeforeAfterDialog(false)}>
+            <DashboardButton variant="outline" onClick={() => setShowBeforeAfterDialog(false)}>
               Cancel
-            </Button>
-            <Button
+            </DashboardButton>
+            <DashboardButton
               onClick={() => {
                 if (beforeImageUrl && afterImageUrl && editor) {
                   const attrs = {
@@ -980,7 +980,7 @@ export const CMSEditor = forwardRef<CMSEditorRef, CMSEditorProps>(function CMSEd
               disabled={!beforeImageUrl || !afterImageUrl}
             >
               {editingNodePos !== null ? "Update" : "Insert"} Comparison
-            </Button>
+            </DashboardButton>
           </DialogFooter>
         </DialogContent>
       </Dialog>

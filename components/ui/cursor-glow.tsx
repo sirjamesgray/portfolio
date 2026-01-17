@@ -13,6 +13,8 @@ interface CursorGlowProps {
   opacity?: number;
   /** Whether the glow effect is disabled */
   disabled?: boolean;
+  /** Disable glow in light mode only. Defaults to true. Set to false to show glow in both modes. */
+  disabledInLightMode?: boolean;
   /** Distance in pixels to start glowing before cursor reaches card. Defaults to 100. */
   proximityDistance?: number;
   /** Use white/light glow to brighten instead of colored glow. Ideal for CTA cards with colored backgrounds. */
@@ -29,6 +31,7 @@ const DEFAULT_GLOW_COLOR = "hsl(145, 80%, 45%)";
 /** Preset color palette for easy reuse */
 export const GLOW_COLORS = {
   emerald: "hsl(145, 80%, 45%)",
+  red: "hsl(0, 85%, 55%)",
   orange: "hsl(25, 95%, 55%)",
   cyan: "hsl(190, 95%, 45%)",
   purple: "hsl(270, 80%, 55%)",
@@ -57,6 +60,7 @@ export function CursorGlow({
   size = 500,
   opacity = 0.06,
   disabled = false,
+  disabledInLightMode = true,
   proximityDistance = 100,
   brighten = false,
   sparkle = false,
@@ -68,8 +72,25 @@ export function CursorGlow({
   const rafRef = useRef<number>(0);
   const [isNear, setIsNear] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
+  const [isLightMode, setIsLightMode] = useState(false);
   const { sparklesEnabled } = useSparkles();
   const [sparkles, setSparkles] = useState<Array<{ id: number; x: number; y: number; delay: number; size: number }>>([]);
+
+  // Detect light/dark mode
+  useEffect(() => {
+    const checkTheme = () => {
+      setIsLightMode(!document.documentElement.classList.contains("dark"));
+    };
+    checkTheme();
+
+    // Watch for theme changes
+    const observer = new MutationObserver(checkTheme);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => observer.disconnect();
+  }, []);
+
+  // Compute effective disabled state
+  const effectivelyDisabled = disabled || (disabledInLightMode && isLightMode);
 
   // Generate sparkles once on mount
   useEffect(() => {
@@ -87,7 +108,7 @@ export function CursorGlow({
 
   // Document-level mouse tracking for proximity detection
   useEffect(() => {
-    if (disabled) return;
+    if (effectivelyDisabled) return;
 
     const handleMouseMove = (e: MouseEvent) => {
       if (!containerRef.current || !glowRef.current || !borderGlowRef.current) return;
@@ -144,7 +165,7 @@ export function CursorGlow({
         cancelAnimationFrame(rafRef.current);
       }
     };
-  }, [disabled, isNear, proximityDistance]);
+  }, [effectivelyDisabled, isNear, proximityDistance]);
 
   // Cleanup on unmount
   useEffect(() => {

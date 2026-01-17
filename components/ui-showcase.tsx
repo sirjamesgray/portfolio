@@ -20,7 +20,7 @@ import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { DashboardButton } from "@/components/ui/button";
 import { Marquee } from "@/components/ui/marquee";
 import { cn } from "@/lib/utils";
 

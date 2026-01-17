@@ -3,20 +3,24 @@
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { Copy, Check, ChevronDown, ArrowLeft } from "lucide-react";
+import { Copy, Check, ChevronDown, ArrowLeft, Calendar, Mail, MessageSquare, Linkedin } from "lucide-react";
+import { ActionLinkCard } from "@/components/ui/action-link-card";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { CrossedCornersCard } from "@/components/ui/crossed-corners-card";
 import { CursorGlow, GLOW_COLORS } from "@/components/ui/cursor-glow";
 import { SparkleProvider, useSparkles } from "@/lib/sparkle-context";
+import { getCard, CARD_COLORS, CARD_INTERACTIVE_SOLID, CARD_FEATURED, CARD_CTA, CARD_DESTRUCTIVE, CARD_WARNING } from "@/lib/cards";
+import { TwinklingSparkles } from "@/components/twinkling-sparkles";
 
 const sections = [
   { id: "accordion", label: "Accordion" },
+  { id: "action-link-cards", label: "Action Link Cards" },
   { id: "animated-icons", label: "Animated Icons" },
   { id: "animation-components", label: "Animation" },
   { id: "backgrounds", label: "Backgrounds" },
   { id: "blur-fade", label: "BlurFade" },
-  { id: "buttons", label: "Buttons" },
+  { id: "buttons", label: "DashboardButton" },
   { id: "cards", label: "Cards & Glow" },
   { id: "colors", label: "Colors" },
   { id: "data-display", label: "Data Display" },
@@ -36,7 +40,7 @@ const sections = [
   { id: "typography-components", label: "Typography Components" },
   { id: "usage-notes", label: "Usage Notes" },
 ];
-import { Button } from "@/components/ui/button";
+import { DashboardButton } from "@/components/ui/button";
 import { LandingButton } from "@/components/ui/landing-button";
 import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button";
 import { AnimatedGradientText } from "@/components/ui/animated-gradient-text";
@@ -434,6 +438,83 @@ export default function DesignSystemPage() {
           </div>
         </section>
 
+        <section id="action-link-cards" className="mb-16">
+          <h2 className="text-2xl font-bold text-foreground mb-6">Action Link Cards</h2>
+          <p className="text-muted-foreground mb-6 text-sm">
+            Clickable cards for contact actions, navigation links, and CTAs. Primary variant has emerald background with white sparkles.
+            Secondary variant uses card background with emerald icon accent.
+          </p>
+
+          <div className="space-y-8">
+            {/* Primary vs Secondary */}
+            <div>
+              <h3 className="text-sm font-medium text-muted-foreground mb-3 uppercase tracking-wide">Primary vs Secondary</h3>
+              <div className="grid gap-4 max-w-xl">
+                <ActionLinkCard
+                  title="Schedule a call"
+                  description="Book a free 30-minute consultation"
+                  icon={Calendar}
+                  href="#"
+                  primary
+                />
+                <ActionLinkCard
+                  title="Email me"
+                  description="I'll get back to you within 24 hours"
+                  icon={Mail}
+                  href="#"
+                />
+              </div>
+            </div>
+
+            {/* With/Without Description */}
+            <div>
+              <h3 className="text-sm font-medium text-muted-foreground mb-3 uppercase tracking-wide">With/Without Description</h3>
+              <div className="grid gap-4 max-w-xl">
+                <ActionLinkCard
+                  title="Email me"
+                  icon={Mail}
+                  href="#"
+                  primary
+                />
+                <ActionLinkCard
+                  title="Connect on LinkedIn"
+                  icon={Linkedin}
+                  href="#"
+                  external
+                />
+              </div>
+            </div>
+
+            {/* External Links */}
+            <div>
+              <h3 className="text-sm font-medium text-muted-foreground mb-3 uppercase tracking-wide">External Links</h3>
+              <p className="text-xs text-muted-foreground mb-3">
+                Use <code className="bg-muted px-1 rounded">external</code> prop for links that open in new tabs (adds target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;).
+              </p>
+              <div className="grid gap-4 max-w-xl">
+                <ActionLinkCard
+                  title="View on GitHub"
+                  description="Opens in a new tab"
+                  icon={MessageSquare}
+                  href="#"
+                  external
+                />
+              </div>
+            </div>
+
+            {/* Usage Notes */}
+            <div className="p-4 rounded-lg border border-border bg-muted/30">
+              <h4 className="text-sm font-medium text-foreground mb-3">Usage</h4>
+              <div className="space-y-2 text-xs text-muted-foreground">
+                <p><strong>Import:</strong> <code className="bg-muted px-1 rounded">import {"{"} ActionLinkCard {"}"} from &quot;@/components/ui/action-link-card&quot;</code></p>
+                <p><strong>Primary:</strong> Use for the main CTA (e.g., &quot;Schedule a call&quot;). Has white sparkles.</p>
+                <p><strong>Secondary:</strong> Use for alternative actions. No sparkles, emerald icon accent.</p>
+                <p><strong>External:</strong> Set <code className="bg-muted px-1 rounded">external=true</code> for links opening in new tabs.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section id="animated-icons" className="mb-16">
           <h2 className="text-2xl font-bold text-foreground mb-6">Animated Icons (Lucide Animated)</h2>
           <p className="text-muted-foreground mb-6 text-sm">
@@ -718,7 +799,10 @@ export default function DesignSystemPage() {
         </section>
 
         <section id="buttons" className="mb-16">
-          <h2 className="text-2xl font-bold text-foreground mb-6">Buttons</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-6">DashboardButton</h2>
+          <p className="text-muted-foreground mb-6 text-sm">
+            <code>DashboardButton</code> is for dashboard/admin contexts. For landing pages, use <code>LandingButton</code> instead.
+          </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Primary Green Buttons - Most Common */}
             <ComponentCard title="Primary Green (CTA)" importPath="@/components/ui/button" className="md:col-span-2 lg:col-span-3 border-emerald-500/30">
@@ -727,34 +811,34 @@ export default function DesignSystemPage() {
                   Our main CTA style: <code className="bg-muted px-1 rounded">bg-emerald-600 hover:bg-emerald-700</code>
                 </p>
                 <div className="flex flex-wrap items-center justify-center gap-3">
-                  <Button className="bg-emerald-600 hover:bg-emerald-700">
+                  <DashboardButton className="bg-emerald-600 hover:bg-emerald-700">
                     Default
-                  </Button>
-                  <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 gap-2">
+                  </DashboardButton>
+                  <DashboardButton size="lg" className="bg-emerald-600 hover:bg-emerald-700 gap-2">
                     <ArrowRightIcon className="h-4 w-4" />
                     Large with Icon
-                  </Button>
-                  <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 gap-2 px-8 py-6 text-base font-semibold">
+                  </DashboardButton>
+                  <DashboardButton size="lg" className="bg-emerald-600 hover:bg-emerald-700 gap-2 px-8 py-6 text-base font-semibold">
                     Start Your Project
                     <ArrowRightIcon className="h-4 w-4" />
-                  </Button>
+                  </DashboardButton>
                 </div>
               </div>
             </ComponentCard>
 
             {/* Standard shadcn variants */}
-            <ComponentCard title="Button Variants" importPath="@/components/ui/button">
+            <ComponentCard title="DashboardButton Variants" importPath="@/components/ui/button">
               <div className="flex flex-col gap-3">
                 <div className="flex flex-wrap gap-2">
-                  <Button>Default</Button>
-                  <Button variant="secondary">Secondary</Button>
-                  <Button variant="outline">Outline</Button>
-                  <Button variant="ghost">Ghost</Button>
+                  <DashboardButton>Default</DashboardButton>
+                  <DashboardButton variant="secondary">Secondary</DashboardButton>
+                  <DashboardButton variant="outline">Outline</DashboardButton>
+                  <DashboardButton variant="ghost">Ghost</DashboardButton>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  <Button variant="destructive">Destructive</Button>
-                  <Button variant="outline-destructive">Outline Destructive</Button>
-                  <Button variant="ghost-destructive">Ghost Destructive</Button>
+                  <DashboardButton variant="destructive">Destructive</DashboardButton>
+                  <DashboardButton variant="outline-destructive">Outline Destructive</DashboardButton>
+                  <DashboardButton variant="ghost-destructive">Ghost Destructive</DashboardButton>
                 </div>
               </div>
             </ComponentCard>
@@ -808,54 +892,125 @@ export default function DesignSystemPage() {
             Use <code>sparkle</code> prop with <code>SparkleProvider</code> to enable twinkling sparkles.
           </p>
 
-          {/* Card Variants */}
+          {/* Unified Card Color System */}
           <div className="space-y-6">
             <div>
-              <h3 className="text-sm font-medium text-muted-foreground mb-3 uppercase tracking-wide">Card Variants</h3>
+              <h3 className="text-sm font-medium text-muted-foreground mb-3 uppercase tracking-wide">Unified Card Color System</h3>
+              <p className="text-xs text-muted-foreground mb-4">
+                Each card variant has a single accent color that defines its border, shadow, CursorGlow, and sparkle colors.
+                Use <code className="bg-muted px-1 rounded">getCard(variant)</code> to get all colors and classes at once.
+                <strong className="text-foreground"> CARD_CTA is the only variant with white sparkles.</strong>
+              </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6 rounded-xl border border-border bg-gradient-to-br from-emerald-500/5 to-blue-500/5">
-                {/* Interactive Solid */}
+                {/* Interactive Solid - Emerald */}
                 <div className="space-y-3">
-                  <CursorGlow color={GLOW_COLORS.emerald} sparkle>
-                    <div className="rounded-2xl border border-white/10 bg-card/50 backdrop-blur-xl shadow-[var(--shadow-elevation-sm)] dark:shadow-[0_0_20px_rgba(16,185,129,0.08)] p-6 transition-all duration-300 cursor-pointer hover:border-primary/50 hover:shadow-[var(--shadow-elevation-md)] hover:bg-white/80 dark:hover:bg-card/80 dark:hover:shadow-[0_0_30px_rgba(16,185,129,0.15)]">
-                      <p className="font-medium text-foreground">Interactive Solid</p>
-                      <p className="text-sm text-muted-foreground">Primary card style</p>
+                  <CursorGlow color={getCard("interactive").cursorGlow}>
+                    <div className={`${CARD_INTERACTIVE_SOLID.full} p-6 relative overflow-hidden`}>
+                      <TwinklingSparkles color={getCard("interactive").sparkle} forceShow />
+                      <p className="font-medium text-foreground relative z-20">Interactive</p>
+                      <p className="text-sm text-muted-foreground relative z-20">Emerald sparkles</p>
                     </div>
                   </CursorGlow>
-                  <code className="text-xs text-muted-foreground block">CARD_INTERACTIVE_SOLID</code>
+                  <code className="text-xs text-muted-foreground block">color: emerald</code>
                 </div>
 
-                {/* Featured */}
+                {/* Featured - Emerald */}
                 <div className="space-y-3">
-                  <CursorGlow color={GLOW_COLORS.emerald} sparkle>
-                    <div className="rounded-2xl border border-emerald-600/40 bg-white dark:bg-emerald-500/5 shadow-[var(--shadow-glow-emerald)] p-6 transition-all duration-300 hover:border-emerald-600/60 hover:shadow-[var(--shadow-glow-emerald-hover)]">
-                      <p className="font-medium text-foreground">Featured</p>
-                      <p className="text-sm text-muted-foreground">White bg + emerald glow</p>
+                  <CursorGlow color={getCard("featured").cursorGlow}>
+                    <div className={`${CARD_FEATURED.full} p-6 relative overflow-hidden`}>
+                      <TwinklingSparkles color={getCard("featured").sparkle} forceShow />
+                      <p className="font-medium text-foreground relative z-20">Featured</p>
+                      <p className="text-sm text-muted-foreground relative z-20">Emerald sparkles</p>
                     </div>
                   </CursorGlow>
-                  <code className="text-xs text-muted-foreground block">CARD_FEATURED</code>
+                  <code className="text-xs text-muted-foreground block">color: emerald</code>
                 </div>
 
-                {/* CTA */}
+                {/* CTA - White sparkles (ONLY exception) */}
                 <div className="space-y-3">
-                  <CursorGlow brighten sparkle>
-                    <div className="rounded-xl border border-emerald-600 bg-emerald-600 text-white shadow-[var(--shadow-glow-emerald)] p-6 transition-all hover:bg-emerald-700 hover:shadow-[var(--shadow-glow-emerald-hover)]">
-                      <p className="font-medium">CTA</p>
-                      <p className="text-sm text-white/80">Primary action button</p>
+                  <CursorGlow brighten>
+                    <div className={`${CARD_CTA.full} p-6 relative overflow-hidden`}>
+                      <TwinklingSparkles color={getCard("cta").sparkle} forceShow />
+                      <p className="font-medium relative z-20">CTA</p>
+                      <p className="text-sm text-white/80 relative z-20">White sparkles only</p>
                     </div>
                   </CursorGlow>
-                  <code className="text-xs text-muted-foreground block">CARD_CTA + brighten + sparkle</code>
+                  <code className="text-xs text-muted-foreground block">color: white (exception)</code>
                 </div>
 
-                {/* Crossed Corners */}
+                {/* Crossed Corners - Emerald */}
                 <div className="space-y-3">
-                  <CursorGlow color={GLOW_COLORS.emerald} sparkle>
-                    <CrossedCornersCard className="p-6">
-                      <p className="font-medium text-foreground">Crossed Corners</p>
-                      <p className="text-sm text-muted-foreground">Engineering style</p>
+                  <CursorGlow color={getCard("crossed-corners").cursorGlow}>
+                    <CrossedCornersCard className="p-6 relative overflow-hidden">
+                      <TwinklingSparkles color={getCard("crossed-corners").sparkle} forceShow />
+                      <p className="font-medium text-foreground relative z-20">Crossed Corners</p>
+                      <p className="text-sm text-muted-foreground relative z-20">Emerald sparkles</p>
                     </CrossedCornersCard>
                   </CursorGlow>
-                  <code className="text-xs text-muted-foreground block">CrossedCornersCard</code>
+                  <code className="text-xs text-muted-foreground block">color: emerald</code>
                 </div>
+
+                {/* Warning - Yellow */}
+                <div className="space-y-3">
+                  <CursorGlow color={getCard("warning").cursorGlow}>
+                    <div className={`${CARD_WARNING.full} p-6 relative overflow-hidden`}>
+                      <TwinklingSparkles color={getCard("warning").sparkle} forceShow />
+                      <p className="font-medium text-foreground relative z-20">Warning</p>
+                      <p className="text-sm text-muted-foreground relative z-20">Yellow sparkles</p>
+                    </div>
+                  </CursorGlow>
+                  <code className="text-xs text-muted-foreground block">color: yellow</code>
+                </div>
+
+                {/* Destructive - Red */}
+                <div className="space-y-3">
+                  <CursorGlow color={getCard("destructive").cursorGlow}>
+                    <div className={`${CARD_DESTRUCTIVE.full} p-6 relative overflow-hidden`}>
+                      <TwinklingSparkles color={getCard("destructive").sparkle} forceShow />
+                      <p className="font-medium text-foreground relative z-20">Destructive</p>
+                      <p className="text-sm text-muted-foreground relative z-20">Red sparkles</p>
+                    </div>
+                  </CursorGlow>
+                  <code className="text-xs text-muted-foreground block">color: red</code>
+                </div>
+              </div>
+            </div>
+
+            {/* Card Color Reference */}
+            <div>
+              <h3 className="text-sm font-medium text-muted-foreground mb-3 uppercase tracking-wide">Card Color Reference</h3>
+              <div className="p-4 rounded-xl border border-border bg-card/50">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="border-b border-border">
+                      <th className="text-left py-2 font-medium text-foreground">Variant</th>
+                      <th className="text-left py-2 font-medium text-foreground">Color</th>
+                      <th className="text-left py-2 font-medium text-foreground">Sparkle</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-muted-foreground">
+                    <tr className="border-b border-border/50">
+                      <td className="py-2">interactive, featured, crossed-corners</td>
+                      <td className="py-2"><span className="text-emerald-500">emerald</span></td>
+                      <td className="py-2">rgba(16, 185, 129, 0.9)</td>
+                    </tr>
+                    <tr className="border-b border-border/50">
+                      <td className="py-2">cta</td>
+                      <td className="py-2"><span className="text-white bg-emerald-600 px-1 rounded">white</span></td>
+                      <td className="py-2">white (only exception)</td>
+                    </tr>
+                    <tr className="border-b border-border/50">
+                      <td className="py-2">warning</td>
+                      <td className="py-2"><span className="text-yellow-500">yellow</span></td>
+                      <td className="py-2">rgba(234, 179, 8, 0.9)</td>
+                    </tr>
+                    <tr>
+                      <td className="py-2">destructive</td>
+                      <td className="py-2"><span className="text-red-500">red</span></td>
+                      <td className="py-2">rgba(239, 68, 68, 0.9)</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
 
@@ -865,11 +1020,17 @@ export default function DesignSystemPage() {
               <p className="text-xs text-muted-foreground mb-4">
                 The <code className="bg-muted px-1 rounded">GLOW_COLORS</code> constant provides a preset palette. Pass any HSL value for custom colors.
               </p>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-6 rounded-xl border border-border bg-card/50">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 p-6 rounded-xl border border-border bg-card/50">
                 <CursorGlow color={GLOW_COLORS.emerald}>
                   <div className="p-4 rounded-xl border border-border bg-card/50 text-center">
                     <p className="text-xs font-medium text-foreground">Emerald</p>
                     <code className="text-[10px] text-muted-foreground">GLOW_COLORS.emerald</code>
+                  </div>
+                </CursorGlow>
+                <CursorGlow color={GLOW_COLORS.red}>
+                  <div className="p-4 rounded-xl border border-border bg-card/50 text-center">
+                    <p className="text-xs font-medium text-foreground">Red</p>
+                    <code className="text-[10px] text-muted-foreground">GLOW_COLORS.red</code>
                   </div>
                 </CursorGlow>
                 <CursorGlow color={GLOW_COLORS.orange}>
@@ -940,7 +1101,11 @@ export default function DesignSystemPage() {
                   </div>
                   <div className="flex gap-3">
                     <code className="text-emerald-600 dark:text-emerald-400 shrink-0 font-mono text-xs">disabled</code>
-                    <span className="text-xs text-muted-foreground">Disable the glow effect. Default: <code className="bg-muted px-1 rounded">false</code></span>
+                    <span className="text-xs text-muted-foreground">Disable the glow effect completely. Default: <code className="bg-muted px-1 rounded">false</code></span>
+                  </div>
+                  <div className="flex gap-3">
+                    <code className="text-emerald-600 dark:text-emerald-400 shrink-0 font-mono text-xs">disabledInLightMode</code>
+                    <span className="text-xs text-muted-foreground">Disable glow in light mode only (dark mode still glows). Default: <code className="bg-muted px-1 rounded">true</code></span>
                   </div>
                 </div>
               </div>
@@ -1102,7 +1267,7 @@ export default function DesignSystemPage() {
                   <p className="text-sm text-muted-foreground">Card content goes here.</p>
                 </CardContent>
                 <CardFooter>
-                  <Button size="sm" className="w-full">Action</Button>
+                  <DashboardButton size="sm" className="w-full">Action</DashboardButton>
                 </CardFooter>
               </Card>
             </ComponentCard>
@@ -1145,7 +1310,7 @@ export default function DesignSystemPage() {
             <ComponentCard title="DropdownMenu" importPath="@/components/ui/dropdown-menu">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline">Open Menu</Button>
+                  <DashboardButton variant="outline">Open Menu</DashboardButton>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
@@ -1622,20 +1787,20 @@ export default function DesignSystemPage() {
                   <div className="space-y-2">
                     <Label className="text-xs text-muted-foreground">Mode</Label>
                     <div className="flex gap-2">
-                      <Button
+                      <DashboardButton
                         size="sm"
                         variant={baMode === "fill" ? "default" : "outline"}
                         onClick={() => setBaMode("fill")}
                       >
                         Fill
-                      </Button>
-                      <Button
+                      </DashboardButton>
+                      <DashboardButton
                         size="sm"
                         variant={baMode === "fit" ? "default" : "outline"}
                         onClick={() => setBaMode("fit")}
                       >
                         Fit
-                      </Button>
+                      </DashboardButton>
                     </div>
                     <p className="text-xs text-muted-foreground">
                       {baMode === "fill" ? "Images cover the container (may crop)" : "Images fit inside with padding (no crop)"}
@@ -1704,7 +1869,7 @@ export default function DesignSystemPage() {
                   </div>
 
                   {/* Reset Button */}
-                  <Button
+                  <DashboardButton
                     size="sm"
                     variant="outline"
                     onClick={() => {
@@ -1718,7 +1883,7 @@ export default function DesignSystemPage() {
                     className="w-full"
                   >
                     Reset to Defaults
-                  </Button>
+                  </DashboardButton>
                 </div>
 
                 {/* Preview */}
@@ -1750,7 +1915,7 @@ export default function DesignSystemPage() {
             <ComponentCard title="Dialog" importPath="@/components/ui/dialog">
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button variant="outline">Open Dialog</Button>
+                  <DashboardButton variant="outline">Open Dialog</DashboardButton>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
@@ -1764,9 +1929,9 @@ export default function DesignSystemPage() {
                   </div>
                   <DialogFooter>
                     <DialogClose asChild>
-                      <Button variant="outline">Cancel</Button>
+                      <DashboardButton variant="outline">Cancel</DashboardButton>
                     </DialogClose>
-                    <Button>Confirm</Button>
+                    <DashboardButton>Confirm</DashboardButton>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
@@ -1775,7 +1940,7 @@ export default function DesignSystemPage() {
             <ComponentCard title="AlertDialog" importPath="@/components/ui/alert-dialog">
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button variant="outline">Open Alert</Button>
+                  <DashboardButton variant="outline">Open Alert</DashboardButton>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
@@ -1795,7 +1960,7 @@ export default function DesignSystemPage() {
             <ComponentCard title="Drawer" importPath="@/components/ui/drawer">
               <Drawer>
                 <DrawerTrigger asChild>
-                  <Button variant="outline">Open Drawer</Button>
+                  <DashboardButton variant="outline">Open Drawer</DashboardButton>
                 </DrawerTrigger>
                 <DrawerContent>
                   <DrawerHeader>
@@ -1806,9 +1971,9 @@ export default function DesignSystemPage() {
                     <p className="text-sm text-muted-foreground">Drawer content goes here.</p>
                   </div>
                   <DrawerFooter>
-                    <Button>Submit</Button>
+                    <DashboardButton>Submit</DashboardButton>
                     <DrawerClose asChild>
-                      <Button variant="outline">Cancel</Button>
+                      <DashboardButton variant="outline">Cancel</DashboardButton>
                     </DrawerClose>
                   </DrawerFooter>
                 </DrawerContent>

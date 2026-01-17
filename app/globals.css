@@ -97,7 +97,7 @@
     boxShadow: 0 0 0 0 var(--pulse-color);}
   50% {
     boxShadow: 0 0 0 8px var(--pulse-color);}}
-  --animate-spin-slow: spin-slow 3s linear infinite;
+  --animate-spin-slow: spin-slow 8s linear infinite;
   @keyframes spin-slow {
   from {
     transform: rotate(0deg);}

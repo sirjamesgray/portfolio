@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useMemo } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { DashboardButton } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Send, MessageCircle } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -209,14 +209,14 @@ export function ProjectChat({ projectId, currentUserId, isAdmin }: ProjectChatPr
               className="min-h-[44px] max-h-[120px] resize-none"
               rows={1}
             />
-            <Button
+            <DashboardButton
               size="icon"
               onClick={sendMessage}
               disabled={!newMessage.trim() || sending}
               className="bg-emerald-600 hover:bg-emerald-700 shrink-0"
             >
               <Send className="h-4 w-4" />
-            </Button>
+            </DashboardButton>
           </div>
           <p className="text-xs text-muted-foreground mt-2">
             Press Enter to send, Shift+Enter for new line

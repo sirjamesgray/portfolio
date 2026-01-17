@@ -6,7 +6,7 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { Suspense } from "react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { DashboardButton } from "@/components/ui/button";
 import { Loader2, Mail, ArrowLeft } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/constants";
 
@@ -123,7 +123,7 @@ function LoginContent() {
           required
           className="bg-card/50"
         />
-        <Button
+        <DashboardButton
           type="submit"
           className="w-full bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600"
           disabled={isLoading}
@@ -139,7 +139,7 @@ function LoginContent() {
               Continue with Email
             </>
           )}
-        </Button>
+        </DashboardButton>
       </form>
 
       <div className="relative">

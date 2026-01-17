@@ -4,7 +4,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { DashboardButton } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
@@ -173,10 +173,10 @@ export function CustomersClient({ customers, stats }: CustomersClientProps) {
             }
           }}>
             <DialogTrigger asChild>
-              <Button className="gap-2 bg-emerald-600 hover:bg-emerald-700">
+              <DashboardButton className="gap-2 bg-emerald-600 hover:bg-emerald-700">
                 <UserPlus className="h-4 w-4" />
                 Invite Customer
-              </Button>
+              </DashboardButton>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
               <DialogHeader>
@@ -225,14 +225,14 @@ export function CustomersClient({ customers, stats }: CustomersClientProps) {
                     )}
                   </div>
                   <DialogFooter>
-                    <Button
+                    <DashboardButton
                       variant="outline"
                       onClick={() => setInviteDialogOpen(false)}
                       disabled={inviting}
                     >
                       Cancel
-                    </Button>
-                    <Button
+                    </DashboardButton>
+                    <DashboardButton
                       onClick={handleInviteCustomer}
                       disabled={!inviteEmail.trim() || inviting}
                       className="gap-2 bg-emerald-600 hover:bg-emerald-700"
@@ -243,7 +243,7 @@ export function CustomersClient({ customers, stats }: CustomersClientProps) {
                         <Mail className="h-4 w-4" />
                       )}
                       {inviting ? "Sending..." : "Send Invitation"}
-                    </Button>
+                    </DashboardButton>
                   </DialogFooter>
                 </>
               )}
@@ -302,14 +302,14 @@ export function CustomersClient({ customers, stats }: CustomersClientProps) {
                       </div>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button
+                          <DashboardButton
                             variant="ghost"
                             size="icon"
                             className="h-8 w-8 shrink-0"
                             onClick={(e) => e.stopPropagation()}
                           >
                             <MoreHorizontal className="h-4 w-4" />
-                          </Button>
+                          </DashboardButton>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem onClick={() => mirrorAsUser(customer.id)}>
@@ -436,7 +436,7 @@ export function CustomersClient({ customers, stats }: CustomersClientProps) {
                         <TableCell>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button
+                              <DashboardButton
                                 variant="ghost"
                                 size="icon"
                                 className="h-8 w-8"
@@ -444,7 +444,7 @@ export function CustomersClient({ customers, stats }: CustomersClientProps) {
                               >
                                 <MoreHorizontal className="h-4 w-4" />
                                 <span className="sr-only">Actions</span>
-                              </Button>
+                              </DashboardButton>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuItem onClick={() => mirrorAsUser(customer.id)}>

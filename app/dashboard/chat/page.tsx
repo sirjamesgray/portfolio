@@ -3,7 +3,7 @@ import { cookies } from "next/headers"
 import { createClient } from "@/lib/supabase/server"
 import { isAdmin } from "@/lib/constants"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { DashboardButton } from "@/components/ui/button"
 import { MessageCircle, FolderKanban } from "lucide-react"
 import Link from "next/link"
 import { MobileBackButton } from "@/components/dashboard/mobile-back-button"
@@ -67,9 +67,9 @@ export default async function ChatPage() {
                   Start a project to chat directly with Jamie about your requirements, progress, and deliverables.
                 </p>
                 <Link href="/start-project">
-                  <Button className="bg-emerald-600 hover:bg-emerald-700">
+                  <DashboardButton className="bg-emerald-600 hover:bg-emerald-700">
                     Start a Project
-                  </Button>
+                  </DashboardButton>
                 </Link>
               </div>
             ) : (
@@ -96,9 +96,9 @@ export default async function ChatPage() {
                         </p>
                       </div>
                     </div>
-                    <Button variant="ghost" size="sm">
+                    <DashboardButton variant="ghost" size="sm">
                       Open Chat
-                    </Button>
+                    </DashboardButton>
                   </Link>
                 ))}
               </div>

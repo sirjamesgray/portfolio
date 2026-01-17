@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { ChevronLeft, ArrowLeft } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { DashboardButton } from "@/components/ui/button"
 import { BlurFade } from "@/components/ui/blur-fade"
 
 interface PageHeaderProps {
@@ -43,14 +43,14 @@ export function PageHeader({
       {/* Mobile Back Button - shown above header */}
       <div className="md:hidden mb-4">
         <Link href={backHref}>
-          <Button
+          <DashboardButton
             variant="ghost"
             size="sm"
             className="h-8 px-2 -ml-2 text-muted-foreground hover:text-foreground"
           >
             <ChevronLeft className="mr-1 h-4 w-4" />
             {backLabel}
-          </Button>
+          </DashboardButton>
         </Link>
       </div>
 
@@ -60,9 +60,9 @@ export function PageHeader({
           <div className="flex items-start gap-4">
             {/* Desktop Back Button - inline with title */}
             <Link href={backHref} className="hidden md:block">
-              <Button variant="ghost" size="icon" className="shrink-0 mt-1">
+              <DashboardButton variant="ghost" size="icon" className="shrink-0 mt-1">
                 <ArrowLeft className="h-4 w-4" />
-              </Button>
+              </DashboardButton>
             </Link>
             <div>
               <h1 className="text-3xl font-bold tracking-tight">{title}</h1>

@@ -2,7 +2,7 @@
 
 import { Check, ArrowRight } from "lucide-react";
 import { BlurFade } from "@/components/ui/blur-fade";
-import { Button } from "@/components/ui/button";
+import { DashboardButton } from "@/components/ui/button";
 import Link from "next/link";
 
 export default function SubmissionSuccessPage() {
@@ -21,10 +21,10 @@ export default function SubmissionSuccessPage() {
           </p>
           <div className="space-y-3">
             <Link href="/">
-              <Button className="w-full gap-2 bg-emerald-600 hover:bg-emerald-700">
+              <DashboardButton className="w-full gap-2 bg-emerald-600 hover:bg-emerald-700">
                 Back to Home
                 <ArrowRight className="h-4 w-4" />
-              </Button>
+              </DashboardButton>
             </Link>
           </div>
         </div>

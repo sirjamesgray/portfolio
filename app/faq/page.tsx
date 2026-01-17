@@ -4,7 +4,7 @@ import { ArrowRight, ArrowLeft } from "lucide-react";
 import { LandingButton } from "@/components/ui/landing-button";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { SiteHeader } from "@/components/site-header";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { FAQAccordion } from "@/components/faq-accordion";
 import { faqs } from "@/lib/faq-data";
 import { CTA_CONFIG } from "@/lib/constants";
 import { isCustomerDashboardEnabled } from "@/lib/feature-flags";
@@ -54,18 +54,7 @@ export default async function FAQPage() {
           <BlurFade delay={0.2}>
             <CursorGlow>
               <div className={`${CARD_INTERACTIVE_SOLID.base} ${CARD_INTERACTIVE_SOLID.shadow} ${CARD_INTERACTIVE_SOLID.hover} bg-card/50`}>
-                <Accordion type="single" collapsible className="w-full">
-                  {faqs.map((faq, idx) => (
-                    <AccordionItem key={idx} value={`faq-${idx}`} className="px-6 border-b border-border last:border-b-0">
-                      <AccordionTrigger className="text-foreground font-semibold text-lg text-left hover:no-underline">
-                        {faq.question}
-                      </AccordionTrigger>
-                      <AccordionContent className="text-muted-foreground leading-relaxed">
-                        {faq.answer}
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
+                <FAQAccordion faqs={faqs} />
               </div>
             </CursorGlow>
           </BlurFade>

@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { DashboardButton } from "@/components/ui/button"
 import {
   ArrowLeft,
   User,
@@ -113,9 +113,9 @@ export function CustomerDetailClient({
           <div className="flex items-center gap-4">
             {/* Back button - navigates to customers list, not browser back */}
             <Link href="/dashboard/admin/customers">
-              <Button variant="ghost" size="icon" className="shrink-0 hidden md:flex">
+              <DashboardButton variant="ghost" size="icon" className="shrink-0 hidden md:flex">
                 <ArrowLeft className="h-4 w-4" />
-              </Button>
+              </DashboardButton>
             </Link>
             <div className="flex items-center gap-4">
               <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center">
@@ -127,10 +127,10 @@ export function CustomerDetailClient({
               </div>
             </div>
           </div>
-          <Button onClick={mirrorAsUser} variant="outline" className="gap-2 shrink-0">
+          <DashboardButton onClick={mirrorAsUser} variant="outline" className="gap-2 shrink-0">
             <Eye className="h-4 w-4" />
             <span className="hidden sm:inline">View as Customer</span>
-          </Button>
+          </DashboardButton>
         </div>
 
       {/* Stats */}
@@ -274,19 +274,19 @@ export function CustomerDetailClient({
                 <CardTitle className="text-base">Quick Actions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                <Button
+                <DashboardButton
                   variant="outline"
                   className="w-full justify-start gap-2"
                   onClick={mirrorAsUser}
                 >
                   <Eye className="h-4 w-4" />
                   View as Customer
-                </Button>
+                </DashboardButton>
                 <Link href={`mailto:${customer.email}`} className="block">
-                  <Button variant="outline" className="w-full justify-start gap-2">
+                  <DashboardButton variant="outline" className="w-full justify-start gap-2">
                     <Mail className="h-4 w-4" />
                     Send Email
-                  </Button>
+                  </DashboardButton>
                 </Link>
               </CardContent>
             </Card>

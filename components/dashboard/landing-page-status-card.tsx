@@ -1,7 +1,7 @@
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { DashboardButton } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Switch } from "@/components/ui/switch"
 import { Input } from "@/components/ui/input"
@@ -149,14 +149,14 @@ export function LandingPageStatusCard({ projectId, metadata, onToggle, onLiveLin
           </div>
 
           <Link href={`/dashboard/admin/projects/${projectId}/content`}>
-            <Button variant="outline" size="sm" className="gap-1.5">
+            <DashboardButton variant="outline" size="sm" className="gap-1.5">
               {toggling ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
                 <Pencil className="h-4 w-4" />
               )}
               Edit Content
-            </Button>
+            </DashboardButton>
           </Link>
         </div>
 
@@ -203,7 +203,7 @@ export function LandingPageStatusCard({ projectId, metadata, onToggle, onLiveLin
               onChange={(e) => setLiveUrl(e.target.value)}
               className="flex-1"
             />
-            <Button
+            <DashboardButton
               variant="outline"
               size="sm"
               onClick={handleSaveUrl}
@@ -217,7 +217,7 @@ export function LandingPageStatusCard({ projectId, metadata, onToggle, onLiveLin
               ) : (
                 "Save"
               )}
-            </Button>
+            </DashboardButton>
           </div>
         </div>
 
@@ -258,7 +258,7 @@ export function LandingPageStatusCard({ projectId, metadata, onToggle, onLiveLin
               onChange={(e) => setDesignSystemUrl(e.target.value)}
               className="flex-1"
             />
-            <Button
+            <DashboardButton
               variant="outline"
               size="sm"
               onClick={handleSaveDesignSystemUrl}
@@ -272,7 +272,7 @@ export function LandingPageStatusCard({ projectId, metadata, onToggle, onLiveLin
               ) : (
                 "Save"
               )}
-            </Button>
+            </DashboardButton>
           </div>
         </div>
       </CardContent>

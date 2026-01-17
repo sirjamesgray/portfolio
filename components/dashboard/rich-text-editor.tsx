@@ -3,7 +3,7 @@
 import { useEditor, EditorContent } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import Placeholder from "@tiptap/extension-placeholder"
-import { Button } from "@/components/ui/button"
+import { DashboardButton } from "@/components/ui/button"
 import {
   Bold,
   Italic,
@@ -69,7 +69,7 @@ export function RichTextEditor({
     <div className={cn("border rounded-lg overflow-hidden bg-background", className)}>
       {editable && (
         <div className="flex items-center gap-1 p-2 border-b bg-muted/50 flex-wrap">
-          <Button
+          <DashboardButton
             type="button"
             variant="ghost"
             size="sm"
@@ -77,8 +77,8 @@ export function RichTextEditor({
             className={cn("h-8 w-8 p-0", editor.isActive("heading", { level: 1 }) && "bg-muted")}
           >
             <Heading1 className="h-4 w-4" />
-          </Button>
-          <Button
+          </DashboardButton>
+          <DashboardButton
             type="button"
             variant="ghost"
             size="sm"
@@ -86,9 +86,9 @@ export function RichTextEditor({
             className={cn("h-8 w-8 p-0", editor.isActive("heading", { level: 2 }) && "bg-muted")}
           >
             <Heading2 className="h-4 w-4" />
-          </Button>
+          </DashboardButton>
           <div className="w-px h-6 bg-border mx-1" />
-          <Button
+          <DashboardButton
             type="button"
             variant="ghost"
             size="sm"
@@ -96,8 +96,8 @@ export function RichTextEditor({
             className={cn("h-8 w-8 p-0", editor.isActive("bold") && "bg-muted")}
           >
             <Bold className="h-4 w-4" />
-          </Button>
-          <Button
+          </DashboardButton>
+          <DashboardButton
             type="button"
             variant="ghost"
             size="sm"
@@ -105,9 +105,9 @@ export function RichTextEditor({
             className={cn("h-8 w-8 p-0", editor.isActive("italic") && "bg-muted")}
           >
             <Italic className="h-4 w-4" />
-          </Button>
+          </DashboardButton>
           <div className="w-px h-6 bg-border mx-1" />
-          <Button
+          <DashboardButton
             type="button"
             variant="ghost"
             size="sm"
@@ -115,8 +115,8 @@ export function RichTextEditor({
             className={cn("h-8 w-8 p-0", editor.isActive("bulletList") && "bg-muted")}
           >
             <List className="h-4 w-4" />
-          </Button>
-          <Button
+          </DashboardButton>
+          <DashboardButton
             type="button"
             variant="ghost"
             size="sm"
@@ -124,9 +124,9 @@ export function RichTextEditor({
             className={cn("h-8 w-8 p-0", editor.isActive("orderedList") && "bg-muted")}
           >
             <ListOrdered className="h-4 w-4" />
-          </Button>
+          </DashboardButton>
           <div className="flex-1" />
-          <Button
+          <DashboardButton
             type="button"
             variant="ghost"
             size="sm"
@@ -135,8 +135,8 @@ export function RichTextEditor({
             className="h-8 w-8 p-0"
           >
             <Undo className="h-4 w-4" />
-          </Button>
-          <Button
+          </DashboardButton>
+          <DashboardButton
             type="button"
             variant="ghost"
             size="sm"
@@ -145,7 +145,7 @@ export function RichTextEditor({
             className="h-8 w-8 p-0"
           >
             <Redo className="h-4 w-4" />
-          </Button>
+          </DashboardButton>
         </div>
       )}
       <EditorContent editor={editor} />

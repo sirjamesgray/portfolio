@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { Plus } from "lucide-react"
 import { Card } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { DashboardButton } from "@/components/ui/button"
 import { ProjectCard, ProjectCardData } from "./project-card"
 
 interface MobileCustomerOverviewProps {
@@ -34,10 +34,10 @@ export function MobileCustomerOverview({ userName, projects }: MobileCustomerOve
         </h2>
         {projects.length > 0 && (
           <Link href="/start-project">
-            <Button size="sm" className="gap-1 bg-emerald-600 hover:bg-emerald-700">
+            <DashboardButton size="sm" className="gap-1 bg-emerald-600 hover:bg-emerald-700">
               <Plus className="h-4 w-4" />
               New
-            </Button>
+            </DashboardButton>
           </Link>
         )}
       </div>
@@ -49,9 +49,9 @@ export function MobileCustomerOverview({ userName, projects }: MobileCustomerOve
             <div className="p-6 text-center">
               <p className="text-muted-foreground mb-4">No projects yet</p>
               <Link href="/start-project">
-                <Button className="bg-emerald-600 hover:bg-emerald-700">
+                <DashboardButton className="bg-emerald-600 hover:bg-emerald-700">
                   Start Your First Project
-                </Button>
+                </DashboardButton>
               </Link>
             </div>
           </Card>
