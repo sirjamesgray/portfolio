@@ -86,11 +86,11 @@ export function UIStyleSwitcher({ activeStyle, onStyleChange }: UIStyleSwitcherP
   };
 
   return (
-    <div className="relative flex items-center justify-center gap-2">
+    <div className="relative flex items-center justify-center gap-2 w-full max-w-md mx-auto px-2">
       {/* Left chevron - always visible, navigates to previous style */}
       <button
         onClick={() => navigateStyle("prev")}
-        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-background/80 backdrop-blur-sm border border-border shadow-sm hover:bg-muted transition-colors"
+        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-background/80 backdrop-blur-sm border border-border shadow-sm hover:bg-muted transition-colors z-10"
         aria-label="Previous style"
       >
         <ChevronLeft className="h-4 w-4 text-muted-foreground" />
@@ -99,7 +99,7 @@ export function UIStyleSwitcher({ activeStyle, onStyleChange }: UIStyleSwitcherP
       {/* Scrollable container */}
       <div
         ref={containerRef}
-        className="flex justify-start sm:justify-center gap-2 overflow-x-scroll max-w-full [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+        className="flex-1 min-w-0 flex justify-start sm:justify-center gap-2 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
       >
         {styleNames.map((styleName) => {
           const isActive = activeStyle === styleName;
@@ -144,7 +144,7 @@ export function UIStyleSwitcher({ activeStyle, onStyleChange }: UIStyleSwitcherP
       {/* Right chevron - always visible, navigates to next style */}
       <button
         onClick={() => navigateStyle("next")}
-        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-background/80 backdrop-blur-sm border border-border shadow-sm hover:bg-muted transition-colors"
+        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-background/80 backdrop-blur-sm border border-border shadow-sm hover:bg-muted transition-colors z-10"
         aria-label="Next style"
       >
         <ChevronRight className="h-4 w-4 text-muted-foreground" />

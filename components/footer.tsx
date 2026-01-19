@@ -77,25 +77,48 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Resources */}
-          <div>
-            <h3 className="text-sm font-semibold text-foreground">Resources</h3>
-            <ul className="mt-4 space-y-3">
-              {navigation.resources.map((item) => (
-                <li key={item.name}>
-                  <Link
-                    href={item.href}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          {/* Resources + Connect (stacked on mobile) */}
+          <div className="space-y-8">
+            {/* Resources */}
+            <div>
+              <h3 className="text-sm font-semibold text-foreground">Resources</h3>
+              <ul className="mt-4 space-y-3">
+                {navigation.resources.map((item) => (
+                  <li key={item.name}>
+                    <Link
+                      href={item.href}
+                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {item.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Connect - under Resources on mobile */}
+            <div className="md:hidden">
+              <h3 className="text-sm font-semibold text-foreground">Connect</h3>
+              <ul className="mt-4 space-y-3">
+                {navigation.social.map((item) => (
+                  <li key={item.name}>
+                    <a
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {item.icon}
+                      {item.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
-          {/* Social */}
-          <div>
+          {/* Social - separate column on desktop only */}
+          <div className="hidden md:block">
             <h3 className="text-sm font-semibold text-foreground">Connect</h3>
             <ul className="mt-4 space-y-3">
               {navigation.social.map((item) => (

@@ -188,7 +188,7 @@ export function ProductEngineerLanding({ customerDashboardEnabled }: ProductEngi
           </BlurFade>
 
           <BlurFade delay={0.2} inView>
-            <CursorGlow color="hsl(0, 85%, 55%)" disabledInLightMode={false}>
+            <CursorGlow color="hsl(0, 85%, 55%)">
               <div className={`${CARD_DESTRUCTIVE.full} p-8`}>
                 <ul className="space-y-4">
                   {problems.map((problem, idx) => (
@@ -207,7 +207,7 @@ export function ProductEngineerLanding({ customerDashboardEnabled }: ProductEngi
       </section>
 
       {/* My Approach Section */}
-      <section id="approach" className="relative px-6 py-16">
+      <section id="approach" className="relative px-6 py-16 scroll-mt-20">
         <div className={`mx-auto ${SECTION_MAX_WIDTH}`}>
           <BlurFade delay={0.1} inView>
             <SectionHeader
@@ -347,9 +347,9 @@ export function ProductEngineerLanding({ customerDashboardEnabled }: ProductEngi
             {trackRecord.map((item, idx) => {
               const Icon = item.Icon;
               return (
-                <BlurFade key={idx} delay={0.2 + idx * 0.05} inView>
+                <BlurFade key={idx} delay={0.2 + idx * 0.05} inView className="h-full">
                   <CursorGlow>
-                    <div className={`${CARD_INTERACTIVE_SOLID.full} p-5 flex items-start gap-4`}>
+                    <div className={`${CARD_INTERACTIVE_SOLID.full} p-5 flex items-start gap-4 h-full`}>
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-500 ring-1 ring-emerald-500/20">
                         <Icon className="h-5 w-5" />
                       </div>

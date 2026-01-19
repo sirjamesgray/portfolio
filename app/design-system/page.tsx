@@ -386,6 +386,24 @@ export default function DesignSystemPage() {
         </div>
       </div>
 
+      {/* Pagination Dots - Fixed on right side */}
+      <div className="hidden md:flex fixed right-4 top-1/2 -translate-y-1/2 z-40 flex-col items-center gap-1.5">
+        {sections.map(({ id, label }) => (
+          <button
+            key={id}
+            onClick={() => scrollToSection(id)}
+            className={cn(
+              "h-2 rounded-full transition-all duration-200",
+              activeSection === id
+                ? "w-4 bg-emerald-500"
+                : "w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50"
+            )}
+            aria-label={`Jump to ${label}`}
+            title={label}
+          />
+        ))}
+      </div>
+
       {/* Main Content - offset by sidebar width on lg screens */}
       <main className="lg:ml-56 pt-24 lg:pt-0">
         <div className="max-w-5xl mx-auto px-6 py-12">
