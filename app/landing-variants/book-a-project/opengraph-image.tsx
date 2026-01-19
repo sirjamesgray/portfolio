@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
 
-export const alt = "Jamie Gray - Product Engineer | Design Systems in Code";
+export const alt = "Need a new website? | Jamie Gray - Product Engineer";
 export const size = {
   width: 1200,
   height: 630,
@@ -36,13 +36,52 @@ export default async function Image() {
           }}
         />
 
-        {/* Author info at top */}
+        {/* Main headline */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 80,
+            fontWeight: 700,
+            color: "#fff",
+            marginBottom: 24,
+            letterSpacing: "-0.02em",
+          }}
+        >
+          Need a{" "}
+          <span
+            style={{
+              color: "#34d399",
+              marginLeft: 16,
+              marginRight: 16,
+            }}
+          >
+            new
+          </span>
+          {" "}website?
+        </div>
+
+        {/* Subheadline */}
+        <div
+          style={{
+            fontSize: 32,
+            color: "rgba(255,255,255,0.7)",
+            maxWidth: 900,
+            textAlign: "center",
+            lineHeight: 1.4,
+            marginBottom: 48,
+          }}
+        >
+          Custom websites and admin tools for small businesses
+        </div>
+
+        {/* Author info */}
         <div
           style={{
             display: "flex",
             alignItems: "center",
             gap: 20,
-            marginBottom: 48,
           }}
         >
           {/* Logo */}
@@ -83,7 +122,7 @@ export default async function Image() {
           >
             <div
               style={{
-                fontSize: 32,
+                fontSize: 28,
                 fontWeight: 600,
                 color: "#fff",
               }}
@@ -92,70 +131,13 @@ export default async function Image() {
             </div>
             <div
               style={{
-                fontSize: 24,
+                fontSize: 20,
                 color: "#34d399",
               }}
             >
               Product Engineer
             </div>
           </div>
-        </div>
-
-        {/* Main headline */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            textAlign: "center",
-            marginBottom: 32,
-          }}
-        >
-          <div
-            style={{
-              fontSize: 72,
-              fontWeight: 700,
-              color: "#fff",
-              letterSpacing: "-0.02em",
-              lineHeight: 1.1,
-            }}
-          >
-            Design systems
-          </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              fontSize: 72,
-              fontWeight: 700,
-              letterSpacing: "-0.02em",
-            }}
-          >
-            <span style={{ color: "#fff" }}>belong in</span>
-            <span
-              style={{
-                color: "#34d399",
-                marginLeft: 20,
-                fontFamily: "monospace",
-              }}
-            >
-              Git
-            </span>
-          </div>
-        </div>
-
-        {/* Subheadline */}
-        <div
-          style={{
-            fontSize: 28,
-            color: "rgba(255,255,255,0.6)",
-            maxWidth: 800,
-            textAlign: "center",
-            lineHeight: 1.4,
-          }}
-        >
-          Eliminating handoffs, speeding up iteration, and keeping design systems honest.
         </div>
       </div>
     ),

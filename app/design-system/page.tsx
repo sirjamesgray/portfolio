@@ -1988,65 +1988,139 @@ export default function DesignSystemPage() {
         <section id="og-images" className="mb-16">
           <h2 className="text-2xl font-bold text-foreground mb-2">OpenGraph Images</h2>
           <p className="text-muted-foreground mb-6 text-sm">
-            Dynamic OG images generated with Next.js ImageResponse. Preview at <code>/opengraph-image</code> routes.
+            Dynamic OG images generated with Next.js ImageResponse. Each landing page has its own OG image.
           </p>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Home OG Image */}
-            <div className="rounded-xl border border-border bg-card/50 p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold text-foreground">Home Page</h3>
-                <code className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">app/opengraph-image.tsx</code>
-              </div>
-              <div className="relative aspect-[1200/630] rounded-lg overflow-hidden border border-border bg-black">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/opengraph-image"
-                  alt="Home page OpenGraph preview"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
-                <span className="px-2 py-0.5 rounded bg-muted">1200x630</span>
-                <span className="px-2 py-0.5 rounded bg-muted">PNG</span>
-                <a
-                  href="/opengraph-image"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="ml-auto text-emerald-500 hover:underline"
-                >
-                  Open full size
-                </a>
-              </div>
-            </div>
 
-            {/* Pricing OG Image */}
-            <div className="rounded-xl border border-border bg-card/50 p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold text-foreground">Pricing Page</h3>
-                <code className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">app/pricing/opengraph-image.tsx</code>
+          {/* Active Landing Page - Product Engineer */}
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+              <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 text-xs">Active</span>
+              Product Engineer Landing Page
+            </h3>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Home OG Image (Product Engineer) */}
+              <div className="rounded-xl border border-emerald-500/30 bg-card/50 p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="font-semibold text-foreground">Home Page (Root)</h4>
+                  <code className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">app/opengraph-image.tsx</code>
+                </div>
+                <div className="relative aspect-[1200/630] rounded-lg overflow-hidden border border-border bg-black">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/opengraph-image"
+                    alt="Home page OpenGraph preview"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
+                  <span className="px-2 py-0.5 rounded bg-muted">1200x630</span>
+                  <span className="px-2 py-0.5 rounded bg-muted">PNG</span>
+                  <a
+                    href="/opengraph-image"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="ml-auto text-emerald-500 hover:underline"
+                  >
+                    Open full size
+                  </a>
+                </div>
               </div>
-              <div className="relative aspect-[1200/630] rounded-lg overflow-hidden border border-border bg-black">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/pricing/opengraph-image"
-                  alt="Pricing page OpenGraph preview"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
-                <span className="px-2 py-0.5 rounded bg-muted">1200x630</span>
-                <span className="px-2 py-0.5 rounded bg-muted">PNG</span>
-                <a
-                  href="/pricing/opengraph-image"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="ml-auto text-emerald-500 hover:underline"
-                >
-                  Open full size
-                </a>
+
+              {/* Product Engineer Variant OG Image */}
+              <div className="rounded-xl border border-border bg-card/50 p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="font-semibold text-foreground">Product Engineer Variant</h4>
+                  <code className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">landing-variants/product-engineer/</code>
+                </div>
+                <div className="relative aspect-[1200/630] rounded-lg overflow-hidden border border-border bg-black">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/landing-variants/product-engineer/opengraph-image"
+                    alt="Product Engineer variant OpenGraph preview"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
+                  <span className="px-2 py-0.5 rounded bg-muted">1200x630</span>
+                  <span className="px-2 py-0.5 rounded bg-muted">PNG</span>
+                  <a
+                    href="/landing-variants/product-engineer/opengraph-image"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="ml-auto text-emerald-500 hover:underline"
+                  >
+                    Open full size
+                  </a>
+                </div>
               </div>
             </div>
           </div>
+
+          {/* Inactive Landing Pages - Collapsed */}
+          <details className="group mb-6">
+            <summary className="flex items-center gap-2 cursor-pointer list-none text-muted-foreground hover:text-foreground transition-colors">
+              <ChevronDown className="h-4 w-4 transition-transform group-open:rotate-180" />
+              <span className="text-sm font-medium">Inactive Landing Pages</span>
+              <span className="text-xs text-muted-foreground">(Book a Project, Pricing)</span>
+            </summary>
+            <div className="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Book a Project OG Image */}
+              <div className="rounded-xl border border-border bg-card/50 p-4 opacity-75">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="font-semibold text-foreground">Book a Project</h4>
+                  <code className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">landing-variants/book-a-project/</code>
+                </div>
+                <div className="relative aspect-[1200/630] rounded-lg overflow-hidden border border-border bg-black">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/landing-variants/book-a-project/opengraph-image"
+                    alt="Book a Project OpenGraph preview"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
+                  <span className="px-2 py-0.5 rounded bg-muted">1200x630</span>
+                  <span className="px-2 py-0.5 rounded bg-muted">PNG</span>
+                  <a
+                    href="/landing-variants/book-a-project/opengraph-image"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="ml-auto text-emerald-500 hover:underline"
+                  >
+                    Open full size
+                  </a>
+                </div>
+              </div>
+
+              {/* Pricing OG Image */}
+              <div className="rounded-xl border border-border bg-card/50 p-4 opacity-75">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="font-semibold text-foreground">Pricing Page</h4>
+                  <code className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">app/pricing/opengraph-image.tsx</code>
+                </div>
+                <div className="relative aspect-[1200/630] rounded-lg overflow-hidden border border-border bg-black">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/pricing/opengraph-image"
+                    alt="Pricing page OpenGraph preview"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
+                  <span className="px-2 py-0.5 rounded bg-muted">1200x630</span>
+                  <span className="px-2 py-0.5 rounded bg-muted">PNG</span>
+                  <a
+                    href="/pricing/opengraph-image"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="ml-auto text-emerald-500 hover:underline"
+                  >
+                    Open full size
+                  </a>
+                </div>
+              </div>
+            </div>
+          </details>
 
           {/* Social Platform Validators */}
           <div className="mt-6 p-4 rounded-lg border border-emerald-500/30 bg-emerald-500/5">
