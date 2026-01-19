@@ -109,10 +109,21 @@ export async function PATCH(
   const { id: projectId } = await params
 
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
 
-  if (!user || !isAdmin(user.email)) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  if (authError) {
+    console.error("[content/PATCH] Auth error:", authError.message)
+    return NextResponse.json({ error: "Authentication failed" }, { status: 401 })
+  }
+
+  if (!user) {
+    console.error("[content/PATCH] No user found in session")
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 })
+  }
+
+  if (!isAdmin(user.email)) {
+    console.error("[content/PATCH] User is not admin:", user.email)
+    return NextResponse.json({ error: "Not authorized" }, { status: 403 })
   }
 
   const body = await request.json()
@@ -145,8 +156,11 @@ export async function PATCH(
   if (design_system_description !== undefined) updates.design_system_description = design_system_description
 
   if (Object.keys(updates).length === 0) {
+    console.error("[content/PATCH] No valid fields to update, received:", Object.keys(body))
     return NextResponse.json({ error: "No fields to update" }, { status: 400 })
   }
+
+  console.log("[content/PATCH] Updating project", projectId, "with fields:", Object.keys(updates))
 
   const { data: project, error } = await adminSupabase
     .from("projects")
@@ -156,9 +170,10 @@ export async function PATCH(
     .single()
 
   if (error) {
-    console.error("Error updating project metadata:", error)
-    return NextResponse.json({ error: "Failed to update project" }, { status: 500 })
+    console.error("[content/PATCH] Database error:", error.message, error.details, error.hint)
+    return NextResponse.json({ error: `Database error: ${error.message}` }, { status: 500 })
   }
 
+  console.log("[content/PATCH] Successfully updated project", projectId)
   return NextResponse.json({ project })
 }

@@ -10,10 +10,21 @@ const BUCKET_NAME = "project-assets"
 export async function POST(request: NextRequest) {
   // Auth check
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
 
-  if (!user || !isAdmin(user.email)) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  if (authError) {
+    console.error("[upload/POST] Auth error:", authError.message)
+    return NextResponse.json({ error: "Authentication failed" }, { status: 401 })
+  }
+
+  if (!user) {
+    console.error("[upload/POST] No user found in session")
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 })
+  }
+
+  if (!isAdmin(user.email)) {
+    console.error("[upload/POST] User is not admin:", user.email)
+    return NextResponse.json({ error: "Not authorized" }, { status: 403 })
   }
 
   try {
@@ -61,12 +72,14 @@ export async function POST(request: NextRequest) {
       })
 
     if (error) {
-      console.error("Storage upload error:", error)
+      console.error("[upload/POST] Storage upload error:", error.message, error.cause)
       return NextResponse.json(
-        { error: error.message || "Failed to upload file" },
+        { error: `Storage error: ${error.message}` },
         { status: 500 }
       )
     }
+
+    console.log("[upload/POST] Successfully uploaded:", data.path)
 
     // Get public URL
     const { data: urlData } = adminClient.storage

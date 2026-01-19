@@ -22,6 +22,7 @@ import {
   Link2,
   Settings,
   Eye,
+  AlertCircle,
 } from "lucide-react"
 import { Switch } from "@/components/ui/switch"
 import { Badge } from "@/components/ui/badge"
@@ -164,12 +165,20 @@ export default function LandingContentEditorPage() {
   useEffect(() => {
     const metadataChanged = JSON.stringify(metadataForm) !== JSON.stringify(originalMetadata)
     const contentChanged = contentHtml !== originalContentHtml
-    setHasChanges(metadataChanged || contentChanged)
+    const newHasChanges = metadataChanged || contentChanged
+    console.log("[hasChanges] metadataChanged:", metadataChanged, "contentChanged:", contentChanged, "hasChanges:", newHasChanges)
+    setHasChanges(newHasChanges)
   }, [metadataForm, originalMetadata, contentHtml, originalContentHtml])
+
+  // Error state for save failures
+  const [saveError, setSaveError] = useState<string | null>(null)
 
   // Save all changes
   async function handleSave() {
+    console.log("[handleSave] Starting save, hasChanges:", hasChanges, "saving:", saving)
+    console.log("[handleSave] metadataForm:", metadataForm)
     setSaving(true)
+    setSaveError(null)
     try {
       const response = await fetch(`/api/admin/projects/${projectId}/content`, {
         method: "PATCH",
@@ -183,8 +192,15 @@ export default function LandingContentEditorPage() {
         setOriginalMetadata(metadataForm)
         setOriginalContentHtml(contentHtml)
         setHasChanges(false)
+      } else {
+        const errorData = await response.json().catch(() => ({}))
+        const errorMessage = errorData.error || `Save failed (${response.status})`
+        setSaveError(errorMessage)
+        console.error("Save failed:", response.status, errorData)
       }
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Network error"
+      setSaveError(errorMessage)
       console.error("Failed to save:", error)
     } finally {
       setSaving(false)
@@ -425,6 +441,20 @@ export default function LandingContentEditorPage() {
           </DashboardButton>
         </div>
       </div>
+
+      {/* Save Error Banner */}
+      {saveError && (
+        <div className="flex items-center gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400">
+          <AlertCircle className="h-4 w-4 shrink-0" />
+          <span className="text-sm">{saveError}</span>
+          <button
+            onClick={() => setSaveError(null)}
+            className="ml-auto text-red-500 hover:text-red-600"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      )}
 
       {/* Card Previews Section */}
       <Card>
