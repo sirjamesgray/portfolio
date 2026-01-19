@@ -15,11 +15,11 @@ interface RotatingCubeIconProps {
 }
 
 const cubeVariants = {
-  emerald: "border-emerald-500/60",
-  red: "border-red-500/60",
-  yellow: "border-yellow-500/60",
-  blue: "border-blue-500/60",
-  muted: "border-border",
+  emerald: "border-emerald-500/50",
+  red: "border-red-500/50",
+  yellow: "border-yellow-500/50",
+  blue: "border-blue-500/50",
+  muted: "border-border/50",
 };
 
 const iconVariants = {
@@ -31,9 +31,9 @@ const iconVariants = {
 };
 
 const sizeConfig = {
-  sm: { container: "h-10 w-10", cube: "h-8 w-8", icon: "h-4 w-4" },
-  md: { container: "h-12 w-12", cube: "h-10 w-10", icon: "h-5 w-5" },
-  lg: { container: "h-16 w-16", cube: "h-14 w-14", icon: "h-7 w-7" },
+  sm: { container: "h-10 w-10", cubeSize: 28, icon: "h-4 w-4" },
+  md: { container: "h-12 w-12", cubeSize: 36, icon: "h-5 w-5" },
+  lg: { container: "h-16 w-16", cubeSize: 48, icon: "h-7 w-7" },
 };
 
 export function RotatingCubeIcon({
@@ -43,6 +43,16 @@ export function RotatingCubeIcon({
   className,
 }: RotatingCubeIconProps) {
   const sizes = sizeConfig[size];
+  const cubeSize = sizes.cubeSize;
+  const halfSize = cubeSize / 2;
+
+  // Face styles for each side of the cube
+  const faceBaseStyle = {
+    position: "absolute" as const,
+    width: cubeSize,
+    height: cubeSize,
+    backfaceVisibility: "visible" as const,
+  };
 
   return (
     <div
@@ -51,32 +61,67 @@ export function RotatingCubeIcon({
         sizes.container,
         className
       )}
-      style={{ perspective: "200px" }}
+      style={{ perspective: "150px" }}
     >
-      {/* Rotating 3D cube outline */}
+      {/* 3D Cube Container */}
       <div
-        className={cn(
-          "absolute border-2 rounded-lg animate-[spin3d_8s_linear_infinite]",
-          sizes.cube,
-          cubeVariants[variant]
-        )}
+        className="absolute animate-[spin-cube_10s_linear_infinite]"
         style={{
+          width: cubeSize,
+          height: cubeSize,
           transformStyle: "preserve-3d",
         }}
-      />
-      {/* Second cube face for depth effect */}
-      <div
-        className={cn(
-          "absolute border-2 rounded-lg animate-[spin3d_8s_linear_infinite]",
-          sizes.cube,
-          cubeVariants[variant],
-          "opacity-50"
-        )}
-        style={{
-          transformStyle: "preserve-3d",
-          animationDelay: "-4s",
-        }}
-      />
+      >
+        {/* Front face */}
+        <div
+          className={cn("border", cubeVariants[variant])}
+          style={{
+            ...faceBaseStyle,
+            transform: `translateZ(${halfSize}px)`,
+          }}
+        />
+        {/* Back face */}
+        <div
+          className={cn("border", cubeVariants[variant])}
+          style={{
+            ...faceBaseStyle,
+            transform: `translateZ(-${halfSize}px) rotateY(180deg)`,
+          }}
+        />
+        {/* Left face */}
+        <div
+          className={cn("border", cubeVariants[variant])}
+          style={{
+            ...faceBaseStyle,
+            transform: `translateX(-${halfSize}px) rotateY(-90deg)`,
+          }}
+        />
+        {/* Right face */}
+        <div
+          className={cn("border", cubeVariants[variant])}
+          style={{
+            ...faceBaseStyle,
+            transform: `translateX(${halfSize}px) rotateY(90deg)`,
+          }}
+        />
+        {/* Top face */}
+        <div
+          className={cn("border", cubeVariants[variant])}
+          style={{
+            ...faceBaseStyle,
+            transform: `translateY(-${halfSize}px) rotateX(90deg)`,
+          }}
+        />
+        {/* Bottom face */}
+        <div
+          className={cn("border", cubeVariants[variant])}
+          style={{
+            ...faceBaseStyle,
+            transform: `translateY(${halfSize}px) rotateX(-90deg)`,
+          }}
+        />
+      </div>
+
       {/* Icon in center */}
       <Icon className={cn(sizes.icon, iconVariants[variant], "relative z-10")} />
     </div>

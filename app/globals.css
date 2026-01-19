@@ -124,7 +124,13 @@
   0% {
     transform: rotateX(0deg) rotateY(0deg);}
   100% {
-    transform: rotateX(360deg) rotateY(360deg);}}}
+    transform: rotateX(360deg) rotateY(360deg);}}
+  --animate-spin-cube: spin-cube 10s linear infinite;
+  @keyframes spin-cube {
+  0% {
+    transform: rotateY(0deg);}
+  100% {
+    transform: rotateY(360deg);}}}
 
 :root {
   --radius: 0.625rem;
