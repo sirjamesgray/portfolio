@@ -115,7 +115,7 @@ export function ProductEngineerLanding({ customerDashboardEnabled }: ProductEngi
   const [showcaseStyle, setShowcaseStyle] = useState<ShowcaseStyle>("paper");
 
   return (
-    <div id="top" className="relative min-h-screen bg-gradient-to-br from-background via-background to-blue-950/20 dark:to-blue-950/30">
+    <div id="top" className="relative min-h-screen overflow-x-hidden bg-gradient-to-br from-background via-background to-blue-950/20 dark:to-blue-950/30">
       {/* Twinkling grid background */}
       <CursorGrid />
 
