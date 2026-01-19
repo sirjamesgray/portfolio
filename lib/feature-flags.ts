@@ -72,10 +72,13 @@ export async function isCustomerDashboardEnabled(): Promise<boolean> {
   return getFeatureFlag(FEATURE_FLAGS.CUSTOMER_DASHBOARD)
 }
 
+/** Default landing page when none is set or on error */
+export const DEFAULT_LANDING_PAGE = "product-engineer"
+
 /**
  * Get the active landing page ID.
  * Returns the page ID stored in the description field of the active-landing-page flag.
- * Defaults to "hire-for-projects" if not set.
+ * Defaults to "product-engineer" if not set or null.
  */
 export async function getActiveLandingPage(): Promise<string> {
   try {
@@ -87,12 +90,12 @@ export async function getActiveLandingPage(): Promise<string> {
       .single()
 
     if (error || !data?.description) {
-      return "hire-for-projects"
+      return DEFAULT_LANDING_PAGE
     }
 
     return data.description
   } catch (error) {
     console.error("Error fetching active landing page:", error)
-    return "hire-for-projects"
+    return DEFAULT_LANDING_PAGE
   }
 }

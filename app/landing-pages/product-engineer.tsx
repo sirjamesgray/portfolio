@@ -39,6 +39,7 @@ const problems = [
 
 // Approach items
 const approaches = [
+  "Rapid prototyping with real working code, rather than Figma prototypes",
   "Design system built directly in React",
   "Components are the spec, not screenshots",
   "Tokens, spacing, typography, motion live in code",
@@ -105,11 +106,11 @@ const audiences = [
   "Teams building products where the design system actually matters",
 ];
 
-interface DeleteFigmaLandingProps {
+interface ProductEngineerLandingProps {
   customerDashboardEnabled?: boolean;
 }
 
-export function DeleteFigmaLanding({ customerDashboardEnabled }: DeleteFigmaLandingProps) {
+export function ProductEngineerLanding({ customerDashboardEnabled }: ProductEngineerLandingProps) {
   const [showcaseStyle, setShowcaseStyle] = useState<ShowcaseStyle>("paper");
 
   return (
@@ -181,7 +182,7 @@ export function DeleteFigmaLanding({ customerDashboardEnabled }: DeleteFigmaLand
               icon={AlertTriangle}
               iconVariant="red"
               title="The Problem"
-              subtitle="Most teams have the same inefficiency."
+              subtitle="Most teams have the same inefficiencies."
             />
           </BlurFade>
 
@@ -403,7 +404,7 @@ export function DeleteFigmaLanding({ customerDashboardEnabled }: DeleteFigmaLand
               {EXPERIENCE.map((exp) => (
                 <div
                   key={exp.company}
-                  className="flex items-center gap-3 px-6 py-3 rounded-lg bg-card/50 border border-border/50 group-hover:border-emerald-500/30 transition-colors"
+                  className="flex items-center gap-3 pl-3 pr-6 py-3 rounded-lg bg-card/50 border border-border/50 group-hover:border-emerald-500/30 transition-colors"
                 >
                   <Image
                     src={exp.logo}

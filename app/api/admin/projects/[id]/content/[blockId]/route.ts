@@ -2,6 +2,16 @@ import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { isAdmin } from "@/lib/constants"
+import DOMPurify from "isomorphic-dompurify"
+
+// Sanitize HTML content to prevent XSS
+function sanitizeHtml(html: string): string {
+  return DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: ["p", "br", "strong", "em", "u", "h1", "h2", "h3", "h4", "h5", "h6", "ul", "ol", "li", "a", "img", "blockquote", "code", "pre", "span", "div"],
+    ALLOWED_ATTR: ["href", "src", "alt", "class", "style", "target", "rel"],
+    ALLOW_DATA_ATTR: false,
+  })
+}
 
 // PATCH - Update a content block
 export async function PATCH(
@@ -24,7 +34,10 @@ export async function PATCH(
     updated_at: new Date().toISOString(),
   }
   if (type !== undefined) updates.type = type
-  if (content !== undefined) updates.content = content
+  // Sanitize HTML content for text/html block types
+  if (content !== undefined) {
+    updates.content = (type === "html" || type === "text") ? sanitizeHtml(content) : content
+  }
   if (image_alt !== undefined) updates.image_alt = image_alt
 
   const adminSupabase = createAdminClient()

@@ -4,6 +4,7 @@ import crypto from "crypto"
 import { resend, EMAIL_FROM } from "@/lib/email/resend"
 import { SITE_CONFIG, ADMIN_EMAILS } from "@/lib/constants"
 import { emailLogoHtml } from "@/emails/components"
+import { checkRateLimit, getClientIp } from "@/lib/ratelimit"
 
 // Initialize Supabase admin client for webhook operations
 function getSupabaseAdmin() {
@@ -56,41 +57,55 @@ type CalendlyEvent = {
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limit: 30 webhook calls per minute (generous for legitimate use)
+    const clientIp = getClientIp(request)
+    const rateLimit = checkRateLimit(`calendly:${clientIp}`, 30, 60 * 1000)
+
+    if (!rateLimit.success) {
+      console.warn(`Calendly webhook rate limited: ${clientIp}`)
+      return NextResponse.json(
+        { error: "Too many requests" },
+        { status: 429 }
+      )
+    }
+
     const signingKey = process.env.CALENDLY_WEBHOOK_SIGNING_KEY
 
     // Get the raw body for signature verification
     const rawBody = await request.text()
     const body: CalendlyEvent = JSON.parse(rawBody)
 
-    // Verify webhook signature if signing key is configured
-    if (signingKey) {
-      const signature = request.headers.get("Calendly-Webhook-Signature")
-      if (!signature) {
-        console.error("Missing Calendly webhook signature")
-        return NextResponse.json({ error: "Missing signature" }, { status: 401 })
-      }
+    // Require webhook signing key for security
+    if (!signingKey) {
+      console.error("CALENDLY_WEBHOOK_SIGNING_KEY not configured - rejecting webhook")
+      return NextResponse.json({ error: "Webhook not configured" }, { status: 503 })
+    }
 
-      // Calendly signature format: t=timestamp,v1=signature
-      const signatureParts = signature.split(",")
-      const timestampPart = signatureParts.find((p) => p.startsWith("t="))
-      const signaturePart = signatureParts.find((p) => p.startsWith("v1="))
+    // Verify webhook signature
+    const signature = request.headers.get("Calendly-Webhook-Signature")
+    if (!signature) {
+      console.error("Missing Calendly webhook signature")
+      return NextResponse.json({ error: "Missing signature" }, { status: 401 })
+    }
 
-      if (!timestampPart || !signaturePart) {
-        console.error("Invalid signature format")
-        return NextResponse.json({ error: "Invalid signature format" }, { status: 401 })
-      }
+    // Calendly signature format: t=timestamp,v1=signature
+    const signatureParts = signature.split(",")
+    const timestampPart = signatureParts.find((p) => p.startsWith("t="))
+    const signaturePart = signatureParts.find((p) => p.startsWith("v1="))
 
-      const timestamp = timestampPart.replace("t=", "")
-      const sig = signaturePart.replace("v1=", "")
+    if (!timestampPart || !signaturePart) {
+      console.error("Invalid signature format")
+      return NextResponse.json({ error: "Invalid signature format" }, { status: 401 })
+    }
 
-      // Verify the signature
-      const signedPayload = timestamp + "." + rawBody
-      if (!verifyWebhookSignature(signedPayload, sig, signingKey)) {
-        console.error("Invalid webhook signature")
-        return NextResponse.json({ error: "Invalid signature" }, { status: 401 })
-      }
-    } else {
-      console.warn("CALENDLY_WEBHOOK_SIGNING_KEY not configured - skipping signature verification")
+    const timestamp = timestampPart.replace("t=", "")
+    const sig = signaturePart.replace("v1=", "")
+
+    // Verify the signature
+    const signedPayload = timestamp + "." + rawBody
+    if (!verifyWebhookSignature(signedPayload, sig, signingKey)) {
+      console.error("Invalid webhook signature")
+      return NextResponse.json({ error: "Invalid signature" }, { status: 401 })
     }
 
     // Only handle invitee.created events

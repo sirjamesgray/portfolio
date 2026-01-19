@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { Copy, Check, ChevronDown, ArrowLeft, Calendar, Mail, MessageSquare, Linkedin } from "lucide-react";
+import { Copy, Check, ChevronDown, ArrowLeft, Calendar, Mail, MessageSquare, Linkedin, Zap, Heart } from "lucide-react";
 import { ActionLinkCard } from "@/components/ui/action-link-card";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -34,6 +34,7 @@ const sections = [
   { id: "media-components", label: "Media Components" },
   { id: "modals-dialogs", label: "Modals & Dialogs" },
   { id: "og-images", label: "OpenGraph Images" },
+  { id: "section-header", label: "Section Header" },
   { id: "shadows", label: "Shadows" },
   { id: "sources", label: "Sources" },
   { id: "typography", label: "Typography" },
@@ -86,6 +87,8 @@ import { ContainerTextFlip } from "@/components/ui/container-text-flip";
 import { Footer } from "@/components/footer";
 import { LandingBackground } from "@/components/landing-background";
 import { CursorGrid } from "@/components/cursor-grid";
+import { SectionHeader, IconStyle, IconVariant } from "@/components/ui/section-header";
+import { RotatingCubeIcon } from "@/components/ui/rotating-cube-icon";
 
 // Animated icons
 import { BellIcon } from "@/components/ui/bell";
@@ -2139,6 +2142,83 @@ export default function DesignSystemPage() {
               <li><strong>Cache:</strong> Social platforms cache aggressively - use validators above to force refresh</li>
               <li><strong>Facebook tip:</strong> Click &quot;Scrape Again&quot; in the debugger to refresh cached images</li>
             </ul>
+          </div>
+        </section>
+
+        <section id="section-header" className="mb-16">
+          <h2 className="text-2xl font-bold text-foreground mb-6">Section Header</h2>
+          <p className="text-muted-foreground mb-6 text-sm">
+            Reusable section header component for landing pages. Supports two icon styles:
+            <code className="mx-1">cube</code> (rotating 3D outline) and <code className="mx-1">app</code> (solid background).
+            Five color variants available: emerald, red, yellow, blue, and muted.
+          </p>
+
+          <div className="space-y-8">
+            {/* Icon Styles Comparison */}
+            <div className="rounded-xl border border-border bg-card/50 p-6">
+              <h3 className="font-semibold text-foreground mb-4">Icon Styles</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="text-center">
+                  <p className="text-xs text-muted-foreground mb-4">Cube Style (default)</p>
+                  <SectionHeader
+                    icon={Zap}
+                    iconStyle="cube"
+                    iconVariant="emerald"
+                    title="Rotating Cube"
+                    subtitle="3D rotating outline cube with icon centered inside"
+                  />
+                </div>
+                <div className="text-center">
+                  <p className="text-xs text-muted-foreground mb-4">App Style</p>
+                  <SectionHeader
+                    icon={Zap}
+                    iconStyle="app"
+                    iconVariant="emerald"
+                    title="App Icon"
+                    subtitle="Solid background with ring border"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Color Variants - Cube */}
+            <div className="rounded-xl border border-border bg-card/50 p-6">
+              <h3 className="font-semibold text-foreground mb-4">Color Variants (Cube Style)</h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6">
+                {(["emerald", "red", "yellow", "blue", "muted"] as IconVariant[]).map((variant) => (
+                  <div key={variant} className="flex flex-col items-center gap-2">
+                    <RotatingCubeIcon icon={Zap} variant={variant} size="md" />
+                    <span className="text-xs text-muted-foreground capitalize">{variant}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Size Variants */}
+            <div className="rounded-xl border border-border bg-card/50 p-6">
+              <h3 className="font-semibold text-foreground mb-4">Rotating Cube Icon Sizes</h3>
+              <div className="flex items-end justify-center gap-8">
+                {(["sm", "md", "lg"] as const).map((size) => (
+                  <div key={size} className="flex flex-col items-center gap-2">
+                    <RotatingCubeIcon icon={Zap} variant="emerald" size={size} />
+                    <span className="text-xs text-muted-foreground">{size}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Usage Example */}
+            <ComponentCard title="SectionHeader" importPath="@/components/ui/section-header" className="col-span-full">
+              <div className="w-full">
+                <SectionHeader
+                  icon={Heart}
+                  iconStyle="cube"
+                  iconVariant="red"
+                  title="Example Section"
+                  subtitle="This is a subtitle that describes the section content"
+                />
+              </div>
+            </ComponentCard>
           </div>
         </section>
 

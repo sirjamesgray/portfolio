@@ -62,6 +62,17 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+  const supabase = await createClient()
+
+  // Verify the current user is an admin
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user || !isAdmin(user.email)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  }
+
   // Get the return URL from the cookie
   const returnUrl = request.cookies.get("mirror_return_url")?.value
 

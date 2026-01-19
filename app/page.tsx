@@ -13,9 +13,9 @@ export default async function Home({
   const activeLandingPage = params.preview || await getActiveLandingPage();
 
   // Render the appropriate landing page
-  if (activeLandingPage === "delete-figma") {
-    const { DeleteFigmaLanding } = await import("./landing-pages/delete-figma");
-    return <DeleteFigmaLanding customerDashboardEnabled={customerDashboardEnabled} />;
+  if (activeLandingPage === "product-engineer") {
+    const { ProductEngineerLanding } = await import("./landing-pages/product-engineer");
+    return <ProductEngineerLanding customerDashboardEnabled={customerDashboardEnabled} />;
   }
 
   // Default: Hire for Projects (current landing page)

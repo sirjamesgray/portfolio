@@ -36,7 +36,7 @@ export const CTA_CONFIG = {
 export const PRODUCT_ENGINEER_CTA = {
   primary: {
     text: "Let's talk",
-    href: "/join-team",
+    href: "/contact",
   },
   secondary: {
     text: "Learn More",

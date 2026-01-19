@@ -2,10 +2,33 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { isAdmin } from "@/lib/constants";
 import type { ProjectStatus } from "@/lib/types/crm";
 
-export async function updateProjectStatus(projectId: string, status: ProjectStatus) {
+// Helper to verify user is authenticated and optionally admin
+async function verifyAuth(requireAdmin = false) {
   const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { authorized: false, user: null, supabase, isUserAdmin: false };
+  }
+
+  const isUserAdmin = isAdmin(user.email);
+
+  if (requireAdmin && !isUserAdmin) {
+    return { authorized: false, user, supabase, isUserAdmin };
+  }
+
+  return { authorized: true, user, supabase, isUserAdmin };
+}
+
+export async function updateProjectStatus(projectId: string, status: ProjectStatus) {
+  const { authorized, supabase } = await verifyAuth(true); // Admin only
+
+  if (!authorized) {
+    return { success: false, error: "Unauthorized" };
+  }
 
   const { error } = await supabase
     .from("projects")
@@ -31,7 +54,11 @@ export async function updateProjectStatus(projectId: string, status: ProjectStat
 }
 
 export async function updateProjectNotes(projectId: string, notes: string) {
-  const supabase = await createClient();
+  const { authorized, supabase } = await verifyAuth(true); // Admin only
+
+  if (!authorized) {
+    return { success: false, error: "Unauthorized" };
+  }
 
   const { error } = await supabase
     .from("projects")
@@ -56,7 +83,18 @@ export async function updateProjectNotes(projectId: string, notes: string) {
 }
 
 export async function getProjectStats() {
-  const supabase = await createClient();
+  const { authorized, supabase } = await verifyAuth(true); // Admin only
+
+  if (!authorized) {
+    return {
+      total: 0,
+      lead: 0,
+      contacted: 0,
+      in_progress: 0,
+      completed: 0,
+      canceled: 0,
+    };
+  }
 
   const { data: projects, error } = await supabase
     .from("projects")
@@ -87,7 +125,11 @@ export async function getProjectStats() {
 }
 
 export async function getProjects(status?: ProjectStatus) {
-  const supabase = await createClient();
+  const { authorized, supabase, user, isUserAdmin } = await verifyAuth();
+
+  if (!authorized || !user) {
+    return [];
+  }
 
   let query = supabase
     .from("projects")
@@ -96,6 +138,11 @@ export async function getProjects(status?: ProjectStatus) {
       contact:contacts(*)
     `)
     .order("created_at", { ascending: false });
+
+  // Non-admins can only see their own projects
+  if (!isUserAdmin) {
+    query = query.eq("user_id", user.id);
+  }
 
   if (status) {
     query = query.eq("status", status);
@@ -112,16 +159,26 @@ export async function getProjects(status?: ProjectStatus) {
 }
 
 export async function getProject(id: string) {
-  const supabase = await createClient();
+  const { authorized, supabase, user, isUserAdmin } = await verifyAuth();
 
-  const { data, error } = await supabase
+  if (!authorized || !user) {
+    return null;
+  }
+
+  let query = supabase
     .from("projects")
     .select(`
       *,
       contact:contacts(*)
     `)
-    .eq("id", id)
-    .single();
+    .eq("id", id);
+
+  // Non-admins can only see their own projects
+  if (!isUserAdmin) {
+    query = query.eq("user_id", user.id);
+  }
+
+  const { data, error } = await query.single();
 
   if (error) {
     console.error("Error fetching project:", error);
@@ -132,7 +189,25 @@ export async function getProject(id: string) {
 }
 
 export async function getProjectActivity(projectId: string) {
-  const supabase = await createClient();
+  const { authorized, supabase, user, isUserAdmin } = await verifyAuth();
+
+  if (!authorized || !user) {
+    return [];
+  }
+
+  // First verify user has access to this project
+  if (!isUserAdmin) {
+    const { data: project } = await supabase
+      .from("projects")
+      .select("id")
+      .eq("id", projectId)
+      .eq("user_id", user.id)
+      .single();
+
+    if (!project) {
+      return []; // User doesn't own this project
+    }
+  }
 
   const { data, error } = await supabase
     .from("activity_log")
@@ -149,7 +224,11 @@ export async function getProjectActivity(projectId: string) {
 }
 
 export async function getRecentActivity(limit = 10) {
-  const supabase = await createClient();
+  const { authorized, supabase } = await verifyAuth(true); // Admin only
+
+  if (!authorized) {
+    return [];
+  }
 
   const { data, error } = await supabase
     .from("activity_log")

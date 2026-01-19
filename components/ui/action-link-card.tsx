@@ -4,11 +4,15 @@ import Link from "next/link";
 import { LucideIcon, ChevronRight } from "lucide-react";
 import { TwinklingSparkles } from "@/components/twinkling-sparkles";
 import { cn } from "@/lib/utils";
+import { ComponentType } from "react";
+
+/** Icon component that accepts className prop */
+type IconComponent = LucideIcon | ComponentType<{ className?: string }>;
 
 export interface ActionLinkCardProps {
   title: string;
   description?: string;
-  icon: LucideIcon;
+  icon: IconComponent;
   href: string;
   external?: boolean;
   primary?: boolean;

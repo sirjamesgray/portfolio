@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { DeleteFigmaLanding } from "../landing-pages/delete-figma";
+import { ProductEngineerLanding } from "../landing-pages/product-engineer";
 
 export const metadata: Metadata = {
   title: "Product Engineer | Jamie Gray",
@@ -12,5 +12,5 @@ export const metadata: Metadata = {
 
 export default function ProductEngineerPage() {
   // This landing page doesn't use the customer dashboard flow
-  return <DeleteFigmaLanding />;
+  return <ProductEngineerLanding />;
 }

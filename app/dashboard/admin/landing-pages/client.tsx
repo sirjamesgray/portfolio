@@ -4,38 +4,61 @@ import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { DashboardButton } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { FileStack, Eye, Check, Loader2 } from "lucide-react"
+import { FileStack, Eye, Check, Loader2, ArrowRight } from "lucide-react"
 import { MobileBackButton } from "@/components/dashboard/mobile-back-button"
 import Link from "next/link"
+
+interface CTA {
+  label: string
+  href: string
+  variant: "primary" | "secondary"
+}
 
 interface LandingPage {
   id: string
   name: string
   description: string
   route: string
+  ctas: CTA[]
 }
 
 const LANDING_PAGES: LandingPage[] = [
+  {
+    id: "product-engineer",
+    name: "Product Engineer",
+    description: "Full-time role landing page - design systems built in code",
+    route: "/landing-variants/product-engineer",
+    ctas: [
+      { label: "Let's talk", href: "/contact", variant: "primary" },
+      { label: "Learn More", href: "#approach", variant: "secondary" },
+    ],
+  },
   {
     id: "hire-for-projects",
     name: "Book a Project",
     description: "Freelance web development services for small businesses",
     route: "/landing-variants/book-a-project",
-  },
-  {
-    id: "delete-figma",
-    name: "Product Engineer",
-    description: "Full-time role landing page - design systems built in code",
-    route: "/landing-variants/delete-figma",
+    ctas: [
+      { label: "Get started", href: "/project-consultation", variant: "primary" },
+      { label: "View pricing", href: "/pricing", variant: "secondary" },
+    ],
   },
 ]
+
+/** Default landing page ID - first in the list */
+const DEFAULT_LANDING_PAGE_ID = LANDING_PAGES[0].id
 
 interface LandingPagesClientProps {
   activePage: string
 }
 
 export function LandingPagesClient({ activePage: initialActivePage }: LandingPagesClientProps) {
-  const [activePage, setActivePage] = useState(initialActivePage)
+  // Ensure we always have a valid landing page - fallback to first in list if null/undefined
+  const validatedInitialPage = initialActivePage && LANDING_PAGES.some(p => p.id === initialActivePage)
+    ? initialActivePage
+    : DEFAULT_LANDING_PAGE_ID
+
+  const [activePage, setActivePage] = useState(validatedInitialPage)
   const [updating, setUpdating] = useState<string | null>(null)
 
   const setActive = async (pageId: string) => {
@@ -99,7 +122,25 @@ export function LandingPagesClient({ activePage: initialActivePage }: LandingPag
                       )}
                     </CardTitle>
                     <CardDescription className="mt-1">{page.description}</CardDescription>
-                                    <code className="mt-2 block text-xs text-muted-foreground/70 font-mono">{page.route}</code>
+                    <code className="mt-2 block text-xs text-muted-foreground/70 font-mono">{page.route}</code>
+
+                    {/* CTAs */}
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {page.ctas.map((cta) => (
+                        <div
+                          key={cta.href}
+                          className={`inline-flex items-center gap-1.5 text-xs px-2 py-1 rounded-md ${
+                            cta.variant === "primary"
+                              ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                              : "bg-muted text-muted-foreground"
+                          }`}
+                        >
+                          <span className="font-medium">{cta.label}</span>
+                          <ArrowRight className="h-3 w-3" />
+                          <code className="text-[10px] opacity-70">{cta.href}</code>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
 

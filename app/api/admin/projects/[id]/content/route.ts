@@ -2,6 +2,16 @@ import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { isAdmin } from "@/lib/constants"
+import DOMPurify from "isomorphic-dompurify"
+
+// Sanitize HTML content to prevent XSS
+function sanitizeHtml(html: string): string {
+  return DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: ["p", "br", "strong", "em", "u", "h1", "h2", "h3", "h4", "h5", "h6", "ul", "ol", "li", "a", "img", "blockquote", "code", "pre", "span", "div"],
+    ALLOWED_ATTR: ["href", "src", "alt", "class", "style", "target", "rel"],
+    ALLOW_DATA_ATTR: false,
+  })
+}
 
 // GET - List all content blocks for a project
 export async function GET(
@@ -54,6 +64,9 @@ export async function POST(
     return NextResponse.json({ error: "Type and content are required" }, { status: 400 })
   }
 
+  // Sanitize HTML content to prevent XSS
+  const sanitizedContent = type === "html" || type === "text" ? sanitizeHtml(content) : content
+
   const adminSupabase = createAdminClient()
 
   // Get the max display_order for this project
@@ -72,7 +85,7 @@ export async function POST(
     .insert({
       project_id: projectId,
       type,
-      content,
+      content: sanitizedContent,
       image_alt,
       display_order: displayOrder,
       created_by: user.id,
@@ -119,13 +132,13 @@ export async function PATCH(
     return NextResponse.json({ success: true })
   }
 
-  // Update project metadata
+  // Update project metadata (with sanitization for HTML fields)
   const updates: Record<string, unknown> = {}
   if (public_title !== undefined) updates.public_title = public_title
-  if (public_description !== undefined) updates.public_description = public_description
+  if (public_description !== undefined) updates.public_description = sanitizeHtml(public_description)
   if (public_hero_image !== undefined) updates.public_hero_image = public_hero_image
   if (public_industry !== undefined) updates.public_industry = public_industry
-  if (public_content_html !== undefined) updates.public_content_html = public_content_html
+  if (public_content_html !== undefined) updates.public_content_html = sanitizeHtml(public_content_html)
   if (public_brand_color !== undefined) updates.public_brand_color = public_brand_color
   if (icon_url !== undefined) updates.icon_url = icon_url
 

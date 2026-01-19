@@ -4,9 +4,42 @@ import { createClient } from "@/lib/supabase/server"
 import { resend, EMAIL_FROM } from "@/lib/email/resend"
 import { ProjectSubmittedEmail } from "@/emails/project-submitted"
 import { PROJECT_TYPES, SITE_CONFIG, ADMIN_EMAILS } from "@/lib/constants"
+import { checkRateLimit, getClientIp } from "@/lib/ratelimit"
+
+// Proper email validation regex (RFC 5322 simplified)
+const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
+
+// Escape HTML to prevent XSS in email content
+function escapeHtml(text: string): string {
+  const map: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;',
+  }
+  return text.replace(/[&<>"']/g, (char) => map[char] || char)
+}
 
 export async function POST(request: Request) {
   try {
+    // Rate limit: 5 submissions per minute per IP
+    const clientIp = getClientIp(request)
+    const rateLimit = checkRateLimit(`submit:${clientIp}`, 5, 60 * 1000)
+
+    if (!rateLimit.success) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again later." },
+        {
+          status: 429,
+          headers: {
+            "X-RateLimit-Limit": rateLimit.limit.toString(),
+            "X-RateLimit-Remaining": rateLimit.remaining.toString(),
+            "X-RateLimit-Reset": rateLimit.reset.toString(),
+          },
+        }
+      )
+    }
     const body = await request.json()
     const { email, name, projectType, budget, timeline, description, isLoggedIn } = body
 
@@ -20,8 +53,8 @@ export async function POST(request: Request) {
       }
     }
 
-    // Validate required fields
-    if (!email || !email.includes("@")) {
+    // Validate email with proper regex
+    if (!email || typeof email !== "string" || !EMAIL_REGEX.test(email)) {
       return NextResponse.json(
         { error: "Valid email is required" },
         { status: 400 }
@@ -124,12 +157,18 @@ export async function POST(request: Request) {
       console.error("Error sending confirmation email:", emailError)
     }
 
-    // Send admin notification
+    // Send admin notification (escape all user-provided content to prevent XSS)
+    const safeCustomerName = escapeHtml(customerName)
+    const safeEmail = escapeHtml(email)
+    const safeDescription = escapeHtml(description.trim())
+    const safeBudget = escapeHtml(budget || "Not specified")
+    const safeTimeline = escapeHtml(timeline || "Flexible")
+
     try {
       await resend.emails.send({
         from: EMAIL_FROM,
         to: ADMIN_EMAILS[0],
-        subject: `New ${projectTypeName} Request from ${customerName}`,
+        subject: `New ${projectTypeName} Request from ${safeCustomerName}`,
         html: `
           <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
             <h1 style="font-size: 24px; font-weight: 600; margin-bottom: 24px;">New Project Request</h1>
@@ -137,7 +176,7 @@ export async function POST(request: Request) {
             <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
               <tr>
                 <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb; font-weight: 500;">Customer</td>
-                <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb;">${customerName} (${email})</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb;">${safeCustomerName} (${safeEmail})</td>
               </tr>
               <tr>
                 <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb; font-weight: 500;">Project Type</td>
@@ -145,11 +184,11 @@ export async function POST(request: Request) {
               </tr>
               <tr>
                 <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb; font-weight: 500;">Budget</td>
-                <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb;">${budget || "Not specified"}</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb;">${safeBudget}</td>
               </tr>
               <tr>
                 <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb; font-weight: 500;">Timeline</td>
-                <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb;">${timeline || "Flexible"}</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb;">${safeTimeline}</td>
               </tr>
               <tr>
                 <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb; font-weight: 500;">Has Account</td>
@@ -158,7 +197,7 @@ export async function POST(request: Request) {
             </table>
 
             <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 12px;">Project Description</h3>
-            <p style="font-size: 14px; line-height: 1.6; color: #374151; background: #f3f4f6; padding: 16px; border-radius: 8px; white-space: pre-wrap;">${description.trim()}</p>
+            <p style="font-size: 14px; line-height: 1.6; color: #374151; background: #f3f4f6; padding: 16px; border-radius: 8px; white-space: pre-wrap;">${safeDescription}</p>
 
             <div style="text-align: center; margin-top: 32px;">
               <a href="${SITE_CONFIG.url}/dashboard/admin/projects/${project.id}"

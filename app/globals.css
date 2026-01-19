@@ -118,7 +118,13 @@
     transform: scale(0.5);}
   50% {
     opacity: 1;
-    transform: scale(1);}}}
+    transform: scale(1);}}
+  --animate-spin3d: spin3d 8s linear infinite;
+  @keyframes spin3d {
+  0% {
+    transform: rotateX(0deg) rotateY(0deg);}
+  100% {
+    transform: rotateX(360deg) rotateY(360deg);}}}
 
 :root {
   --radius: 0.625rem;
