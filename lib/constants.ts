@@ -137,15 +137,6 @@ export const EXPERIENCE: ExperienceItem[] = [
     brandColor: "#F83E22", // Whop Red-Orange
   },
   {
-    company: "Saturday App",
-    role: "Product Designer",
-    location: "NYC",
-    startDate: "Jan 2023",
-    endDate: "Mar 2023",
-    logo: "/logos/saturday.png",
-    brandColor: "#4521B7", // Saturday Purple
-  },
-  {
     company: "ParkHub",
     role: "Product Designer",
     location: "DFW",

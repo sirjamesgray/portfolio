@@ -12,18 +12,21 @@ interface LandingPage {
   id: string
   name: string
   description: string
+  route: string
 }
 
 const LANDING_PAGES: LandingPage[] = [
   {
     id: "hire-for-projects",
-    name: "Hire for Projects",
-    description: "Original landing page focused on hiring me for web development projects",
+    name: "Book a Project",
+    description: "Freelance web development services for small businesses",
+    route: "/landing-variants/book-a-project",
   },
   {
     id: "delete-figma",
-    name: "Delete Figma",
-    description: "Code Is the Source of Truth - a manifesto for designers who ship code",
+    name: "Product Engineer",
+    description: "Full-time role landing page - design systems built in code",
+    route: "/landing-variants/delete-figma",
   },
 ]
 
@@ -96,12 +99,13 @@ export function LandingPagesClient({ activePage: initialActivePage }: LandingPag
                       )}
                     </CardTitle>
                     <CardDescription className="mt-1">{page.description}</CardDescription>
+                                    <code className="mt-2 block text-xs text-muted-foreground/70 font-mono">{page.route}</code>
                   </div>
                 </div>
 
                 {/* Action buttons - full width on mobile */}
                 <div className="flex items-center gap-2 sm:justify-end">
-                  <Link href={`/?preview=${page.id}`} className="flex-1 sm:flex-none">
+                  <Link href={page.route} className="flex-1 sm:flex-none">
                     <DashboardButton variant="outline" size="sm" className="gap-2 w-full sm:w-auto">
                       <Eye className="h-4 w-4" />
                       Preview
@@ -132,8 +136,8 @@ export function LandingPagesClient({ activePage: initialActivePage }: LandingPag
       <Card className="bg-muted/50">
         <CardContent className="py-4">
           <p className="text-sm text-muted-foreground">
-            The active landing page is displayed at <code className="text-xs bg-muted px-1 py-0.5 rounded">/</code> (the root URL).
-            Use the Preview button to see any landing page without changing the active one.
+            The active landing page is rendered at <code className="text-xs bg-muted px-1 py-0.5 rounded">/</code> (the root URL).
+            Each variant also has its own direct URL for previewing.
           </p>
         </CardContent>
       </Card>

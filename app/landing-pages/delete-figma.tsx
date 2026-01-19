@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight, Code, X, Check, GitBranch, Layers, Zap, Users, Target, Mail, LucideIcon, AlertTriangle, Lightbulb, Wrench, Heart, Palette, Briefcase } from "lucide-react";
+import { ArrowRight, Code, X, Check, GitBranch, Layers, Zap, Users, Target, Mail, LucideIcon, AlertTriangle, Lightbulb, Wrench, Heart, Palette, Briefcase, Building2 } from "lucide-react";
+import Image from "next/image";
 import { CursorGlow } from "@/components/ui/cursor-glow";
 import { LandingButton } from "@/components/ui/landing-button";
 import { BlurFade } from "@/components/ui/blur-fade";
@@ -10,7 +11,8 @@ import { SiteHeader } from "@/components/site-header";
 import { CursorGrid } from "@/components/cursor-grid";
 import { Footer } from "@/components/footer";
 import { CARD_INTERACTIVE_SOLID, CARD_FEATURED, CARD_DESTRUCTIVE, CARD_WARNING } from "@/lib/cards";
-import { PRODUCT_ENGINEER_CTA } from "@/lib/constants";
+import { PRODUCT_ENGINEER_CTA, EXPERIENCE } from "@/lib/constants";
+import { Marquee } from "@/components/ui/marquee";
 import { CrossedCornersCard } from "@/components/ui/crossed-corners-card";
 import { UIShowcase, type ShowcaseStyle } from "@/components/ui-showcase";
 import { UIStyleSwitcher } from "@/components/ui-style-switcher";
@@ -43,37 +45,37 @@ const approaches = [
   "UI consistency enforced by the system, not QA",
 ];
 
-// What I do items - framed as ongoing team contributions
-const deliverables: { Icon: LucideIcon; title: string; description: string }[] = [
+// Working principles - philosophy and approach
+const workingPrinciples: { Icon: LucideIcon; title: string; description: string }[] = [
   {
     Icon: Layers,
-    title: "Code-First Design System",
-    description: "I build and maintain your component library in production-ready React.",
+    title: "Code Is the Source of Truth",
+    description: "The component library is the design system. No Figma files to maintain, no drift between spec and reality.",
   },
   {
     Icon: GitBranch,
-    title: "Unified Tokens",
-    description: "I unify your tokens and components across the product. One source of truth.",
+    title: "One System, Zero Fragmentation",
+    description: "Tokens, spacing, typography, motion—all in version control. One change updates everywhere.",
   },
   {
     Icon: Code,
-    title: "Replace Mockups",
-    description: "I turn mockups into live, testable components that ship to production.",
+    title: "Real UI, Not Screenshots",
+    description: "Stakeholders review live components. No more 'this looks different in production' conversations.",
   },
   {
     Icon: Zap,
-    title: "Rapid Prototyping",
-    description: "I create tighter feedback loops with real, clickable UI for stakeholders.",
+    title: "Speed Through Precision",
+    description: "Production-ready prototypes mean faster validation. Less rework, more shipping.",
   },
   {
     Icon: Users,
-    title: "Unblock Teams",
-    description: "I ship the missing components that unblock your engineers.",
+    title: "Engineers Stay Unblocked",
+    description: "Missing component? It gets built and documented. The system serves velocity, not the other way around.",
   },
   {
     Icon: Target,
-    title: "Deterministic UI",
-    description: "I make UI deterministic so QA focuses on logic, not pixels.",
+    title: "Correctness by Default",
+    description: "Components work right out of the box. QA hunts logic bugs, not pixel mismatches.",
   },
 ];
 
@@ -85,14 +87,14 @@ const benefits = [
   "Engineers stop rebuilding the same components",
 ];
 
-// What I bring to your team - outcomes of hiring me long-term
-const whatIBring: { Icon: LucideIcon; title: string; description: string }[] = [
-  { Icon: Layers, title: "Unified Design System", description: "A single source of truth your whole team shares" },
-  { Icon: Check, title: "Fewer UI Bugs", description: "Components that work correctly by default" },
-  { Icon: Zap, title: "Faster Iteration", description: "Ship UI changes without waiting on handoffs" },
-  { Icon: Users, title: "Team Velocity", description: "Your engineers focus on product logic, not UI rebuilds" },
-  { Icon: Code, title: "Design in Code", description: "Real components in PRs, not Figma comment threads" },
-  { Icon: Target, title: "QA-Free UI", description: "The system enforces consistency automatically" },
+// Track record - what I've delivered on past teams
+const trackRecord: { Icon: LucideIcon; title: string; description: string }[] = [
+  { Icon: Layers, title: "Unified Design Systems", description: "Consolidated fragmented component libraries into single sources of truth" },
+  { Icon: Check, title: "Dramatic Bug Reduction", description: "Made UI correctness the default, not the exception" },
+  { Icon: Zap, title: "Zero Handoff Delays", description: "Eliminated the design-to-engineering translation layer entirely" },
+  { Icon: Users, title: "True Cross-Functional Work", description: "Embedded with engineering, product, and design—not siloed" },
+  { Icon: Code, title: "Production-First Design", description: "Shipped real components in PRs, not Figma comment threads" },
+  { Icon: Target, title: "Self-Enforcing Standards", description: "Built systems that maintain consistency automatically" },
 ];
 
 // Audience items - teams I want to join long-term
@@ -263,14 +265,14 @@ export function DeleteFigmaLanding({ customerDashboardEnabled }: DeleteFigmaLand
             <SectionHeader
               icon={Wrench}
               iconVariant="emerald"
-              title="What I Do"
-              subtitle="As your Product Engineer, I own the entire UI surface area."
+              title="How I Work"
+              subtitle="Principles I've refined over 8 years of shipping design systems."
             />
           </BlurFade>
 
           <BlurFade delay={0.2} inView>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {deliverables.map((item, idx) => {
+              {workingPrinciples.map((item, idx) => {
                 const Icon = item.Icon;
                 return (
                   <CursorGlow key={idx}>
@@ -326,13 +328,13 @@ export function DeleteFigmaLanding({ customerDashboardEnabled }: DeleteFigmaLand
               icon={Briefcase}
               iconVariant="emerald"
               title="What I Bring to Your Team"
-              subtitle="Hire me and get:"
+              subtitle="What I've delivered on past teams."
             />
           </BlurFade>
 
           <BlurFade delay={0.2} inView>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {whatIBring.map((item, idx) => {
+              {trackRecord.map((item, idx) => {
                 const Icon = item.Icon;
                 return (
                   <CursorGlow key={idx}>
@@ -380,6 +382,44 @@ export function DeleteFigmaLanding({ customerDashboardEnabled }: DeleteFigmaLand
             </CursorGlow>
           </BlurFade>
         </div>
+      </section>
+
+      {/* Experience Section */}
+      <section className="relative py-16 overflow-hidden">
+        <div className="mx-auto px-6 max-w-4xl">
+          <BlurFade delay={0.1} inView>
+            <SectionHeader
+              icon={Building2}
+              iconVariant="emerald"
+              title="Experience"
+              subtitle="Teams I've worked on in the past."
+            />
+          </BlurFade>
+        </div>
+
+        <BlurFade delay={0.2} inView>
+          <Link href="/experience" className="block group">
+            <Marquee pauseOnHover className="[--duration:30s]">
+              {EXPERIENCE.map((exp) => (
+                <div
+                  key={exp.company}
+                  className="flex items-center gap-3 px-6 py-3 rounded-lg bg-card/50 border border-border/50 group-hover:border-emerald-500/30 transition-colors"
+                >
+                  <Image
+                    src={exp.logo}
+                    alt={exp.company}
+                    width={32}
+                    height={32}
+                    className="rounded-md"
+                  />
+                  <span className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+                    {exp.company}
+                  </span>
+                </div>
+              ))}
+            </Marquee>
+          </Link>
+        </BlurFade>
       </section>
 
       {/* CTA Section - Let's Talk Focus */}
