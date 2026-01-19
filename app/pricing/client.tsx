@@ -6,7 +6,7 @@ import { Check, X, Zap, Rocket, Ship, ArrowRight, ArrowLeft, Calendar, RefreshCw
 import { LandingButton } from "@/components/ui/landing-button";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { SiteHeader } from "@/components/site-header";
-import { SITE_CONFIG, CTA_CONFIG } from "@/lib/constants";
+import { SITE_CONFIG, CTA_CONFIG, BOOK_PROJECT_CTA } from "@/lib/constants";
 import { CARD_SOLID, CARD_FEATURED, CARD_INTERACTIVE_SOLID } from "@/lib/cards";
 import { CrossedCornersCard } from "@/components/ui/crossed-corners-card";
 import { Footer } from "@/components/footer";
@@ -368,9 +368,9 @@ export function PricingPageClient({ customerDashboardEnabled }: PricingPageClien
       {/* Mobile Floating Footer - always visible */}
       <div className="md:hidden fixed bottom-6 left-4 right-4 z-50">
         <div className="flex items-center p-2 bg-white/70 dark:bg-black/50 backdrop-blur-2xl border border-white/20 dark:border-white/10 rounded-full shadow-[var(--shadow-elevation-md)]">
-          <Link href="/contact" className="flex-1">
+          <Link href={BOOK_PROJECT_CTA.primary.href} className="flex-1">
             <LandingButton variant="primary" className="w-full gap-2">
-              Get started
+              {BOOK_PROJECT_CTA.primary.text}
               <ArrowRight className="h-4 w-4" />
             </LandingButton>
           </Link>

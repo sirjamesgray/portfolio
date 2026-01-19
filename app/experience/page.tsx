@@ -11,7 +11,7 @@ import { LandingBackground } from "@/components/landing-background";
 import { LandingButton } from "@/components/ui/landing-button";
 import { CursorGlow } from "@/components/ui/cursor-glow";
 import { cn } from "@/lib/utils";
-import { EXPERIENCE } from "@/lib/constants";
+import { EXPERIENCE, PRODUCT_ENGINEER_CTA } from "@/lib/constants";
 import { CARD_INTERACTIVE_SOLID } from "@/lib/cards";
 
 /** Convert color string to rgba with specified opacity (supports HSL and hex) */
@@ -123,9 +123,9 @@ export default function ExperiencePage() {
               <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
                 I&apos;m available for product design and engineering roles. Let&apos;s connect.
               </p>
-              <Link href="/contact">
+              <Link href={PRODUCT_ENGINEER_CTA.primary.href}>
                 <LandingButton variant="primary" size="lg" className="gap-2">
-                  Get in touch
+                  {PRODUCT_ENGINEER_CTA.primary.text}
                   <ArrowRight className="h-4 w-4" />
                 </LandingButton>
               </Link>

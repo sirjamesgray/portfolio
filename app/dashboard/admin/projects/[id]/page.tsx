@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
+import { deleteFromStorage } from "@/lib/storage"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ProjectProgress } from "@/components/dashboard/project-progress"
 import { RichTextEditor } from "@/components/dashboard/rich-text-editor"
@@ -108,6 +109,9 @@ type Project = {
   // Design system link
   public_design_system_url: string | null
   show_design_system_link: boolean | null
+  design_system_image_url: string | null
+  // Design systems section visibility
+  show_in_design_systems_section: boolean | null
 }
 
 type ActivityLog = {
@@ -763,8 +767,15 @@ export default function ProjectDetailPage() {
       return
     }
 
+    const oldIconUrl = iconUrl
     setUploadingIcon(true)
+
     try {
+      // Delete old icon from storage if exists (cleanup)
+      if (oldIconUrl) {
+        await deleteFromStorage(oldIconUrl)
+      }
+
       const formData = new FormData()
       formData.append("file", file)
       formData.append("type", "image")
@@ -787,7 +798,12 @@ export default function ProjectDetailPage() {
       })
 
       if (saveResponse.ok) {
+        // Update local state immediately
         setIconUrl(asset.url)
+        // Also update project object for consistency
+        if (project) {
+          setProject({ ...project, icon_url: asset.url })
+        }
       }
     } catch (error) {
       console.error("Failed to upload icon:", error)
@@ -799,7 +815,14 @@ export default function ProjectDetailPage() {
   }
 
   async function handleRemoveIcon() {
+    const oldIconUrl = iconUrl
+
     try {
+      // Delete from storage first (cleanup)
+      if (oldIconUrl) {
+        await deleteFromStorage(oldIconUrl)
+      }
+
       const response = await fetch(`/api/admin/projects/${projectId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -808,6 +831,9 @@ export default function ProjectDetailPage() {
 
       if (response.ok) {
         setIconUrl("")
+        if (project) {
+          setProject({ ...project, icon_url: null })
+        }
       }
     } catch (error) {
       console.error("Failed to remove icon:", error)
@@ -1262,11 +1288,13 @@ export default function ProjectDetailPage() {
                 <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
               ) : iconUrl ? (
                 <Image
+                  key={iconUrl}
                   src={iconUrl}
                   alt="Project icon"
                   width={56}
                   height={56}
                   className="object-cover w-full h-full"
+                  unoptimized
                 />
               ) : (
                 <FolderKanban className="h-6 w-6 text-muted-foreground" />
@@ -2682,61 +2710,7 @@ export default function ProjectDetailPage() {
         projectId={projectId}
         metadata={{
           show_on_landing_page: project.show_on_landing_page,
-          customer_opted_out_of_landing_page: project.customer_opted_out_of_landing_page,
-          public_live_url: project.public_live_url,
-          show_live_link: project.show_live_link,
-          public_design_system_url: project.public_design_system_url,
-          show_design_system_link: project.show_design_system_link,
-        }}
-        onToggle={async (enabled) => {
-          const response = await fetch(`/api/admin/projects/${projectId}`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ show_on_landing_page: enabled }),
-          })
-          if (response.ok) {
-            fetchProject()
-          }
-        }}
-        onLiveLinkToggle={async (enabled) => {
-          const response = await fetch(`/api/admin/projects/${projectId}`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ show_live_link: enabled }),
-          })
-          if (response.ok) {
-            fetchProject()
-          }
-        }}
-        onLiveUrlChange={async (url) => {
-          const response = await fetch(`/api/admin/projects/${projectId}`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ public_live_url: url }),
-          })
-          if (response.ok) {
-            fetchProject()
-          }
-        }}
-        onDesignSystemLinkToggle={async (enabled) => {
-          const response = await fetch(`/api/admin/projects/${projectId}`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ show_design_system_link: enabled }),
-          })
-          if (response.ok) {
-            fetchProject()
-          }
-        }}
-        onDesignSystemUrlChange={async (url) => {
-          const response = await fetch(`/api/admin/projects/${projectId}`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ public_design_system_url: url }),
-          })
-          if (response.ok) {
-            fetchProject()
-          }
+          show_in_design_systems_section: project.show_in_design_systems_section,
         }}
       />
     </div>

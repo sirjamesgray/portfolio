@@ -9,7 +9,7 @@ import { SiteHeader } from "@/components/site-header";
 import { Footer } from "@/components/footer";
 import { LandingBackground } from "@/components/landing-background";
 import { ProjectCard, ProjectCardData } from "@/components/project-card";
-import { formatProjectType } from "@/lib/constants";
+import { formatProjectType, BOOK_PROJECT_CTA } from "@/lib/constants";
 import { CARD_GLASS, CARD_INTERACTIVE_SOLID } from "@/lib/cards";
 
 export default function ProjectsPage() {
@@ -122,9 +122,9 @@ export default function ProjectsPage() {
               <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
                 I build custom websites for small businesses. Let&apos;s chat about what you need.
               </p>
-              <Link href="/contact">
+              <Link href={BOOK_PROJECT_CTA.primary.href}>
                 <LandingButton variant="primary" size="lg" className="gap-2">
-                  Get in touch
+                  {BOOK_PROJECT_CTA.primary.text}
                   <ArrowRight className="h-4 w-4" />
                 </LandingButton>
               </Link>

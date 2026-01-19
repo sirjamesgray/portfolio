@@ -10,6 +10,7 @@ import { SectionHeader } from "@/components/ui/section-header";
 import { SiteHeader } from "@/components/site-header";
 import { CursorGrid } from "@/components/cursor-grid";
 import { Footer } from "@/components/footer";
+import { DesignSystemsSection } from "@/components/design-systems-section";
 import { CARD_INTERACTIVE_SOLID, CARD_FEATURED, CARD_DESTRUCTIVE, CARD_WARNING } from "@/lib/cards";
 import { PRODUCT_ENGINEER_CTA, EXPERIENCE } from "@/lib/constants";
 import { Marquee } from "@/components/ui/marquee";
@@ -191,10 +192,12 @@ export function ProductEngineerLanding({ customerDashboardEnabled }: ProductEngi
               <div className={`${CARD_DESTRUCTIVE.full} p-8`}>
                 <ul className="space-y-4">
                   {problems.map((problem, idx) => (
-                    <li key={idx} className="flex items-start gap-3 text-muted-foreground">
-                      <X className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
-                      <span>{problem}</span>
-                    </li>
+                    <BlurFade key={idx} delay={0.25 + idx * 0.05} inView>
+                      <li className="flex items-start gap-3 text-muted-foreground">
+                        <X className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
+                        <span>{problem}</span>
+                      </li>
+                    </BlurFade>
                   ))}
                 </ul>
               </div>
@@ -223,10 +226,12 @@ export function ProductEngineerLanding({ customerDashboardEnabled }: ProductEngi
               <div className={`${CARD_FEATURED.base} ${CARD_FEATURED.shadow} p-8`}>
                 <ul className="space-y-4">
                   {approaches.map((approach, idx) => (
-                    <li key={idx} className="flex items-start gap-3 text-muted-foreground">
-                      <Check className="h-5 w-5 text-emerald-500 mt-0.5 flex-shrink-0" />
-                      <span>{approach}</span>
-                    </li>
+                    <BlurFade key={idx} delay={0.25 + idx * 0.05} inView>
+                      <li className="flex items-start gap-3 text-muted-foreground">
+                        <Check className="h-5 w-5 text-emerald-500 mt-0.5 flex-shrink-0" />
+                        <span>{approach}</span>
+                      </li>
+                    </BlurFade>
                   ))}
                 </ul>
               </div>
@@ -271,12 +276,12 @@ export function ProductEngineerLanding({ customerDashboardEnabled }: ProductEngi
             />
           </BlurFade>
 
-          <BlurFade delay={0.2} inView>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {workingPrinciples.map((item, idx) => {
-                const Icon = item.Icon;
-                return (
-                  <CursorGlow key={idx}>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {workingPrinciples.map((item, idx) => {
+              const Icon = item.Icon;
+              return (
+                <BlurFade key={idx} delay={0.2 + idx * 0.05} inView>
+                  <CursorGlow>
                     <div className={`${CARD_INTERACTIVE_SOLID.full} p-6 h-full`}>
                       <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-500 ring-1 ring-emerald-500/20 mb-4">
                         <Icon className="h-6 w-6" />
@@ -285,12 +290,15 @@ export function ProductEngineerLanding({ customerDashboardEnabled }: ProductEngi
                       <p className="text-sm text-muted-foreground">{item.description}</p>
                     </div>
                   </CursorGlow>
-                );
-              })}
-            </div>
-          </BlurFade>
+                </BlurFade>
+              );
+            })}
+          </div>
         </div>
       </section>
+
+      {/* Design Systems I've Built */}
+      <DesignSystemsSection />
 
       {/* Why This Works Section */}
       <section className="relative px-6 py-16">
@@ -309,10 +317,12 @@ export function ProductEngineerLanding({ customerDashboardEnabled }: ProductEngi
               <div className={`${CARD_WARNING.full} p-8`}>
                 <ul className="space-y-4">
                   {benefits.map((benefit, idx) => (
-                    <li key={idx} className="flex items-start gap-3 text-foreground">
-                      <Zap className="h-5 w-5 text-yellow-500 mt-0.5 flex-shrink-0" />
-                      <span>{benefit}</span>
-                    </li>
+                    <BlurFade key={idx} delay={0.25 + idx * 0.05} inView>
+                      <li className="flex items-start gap-3 text-foreground">
+                        <Zap className="h-5 w-5 text-yellow-500 mt-0.5 flex-shrink-0" />
+                        <span>{benefit}</span>
+                      </li>
+                    </BlurFade>
                   ))}
                 </ul>
               </div>
@@ -333,12 +343,12 @@ export function ProductEngineerLanding({ customerDashboardEnabled }: ProductEngi
             />
           </BlurFade>
 
-          <BlurFade delay={0.2} inView>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {trackRecord.map((item, idx) => {
-                const Icon = item.Icon;
-                return (
-                  <CursorGlow key={idx}>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {trackRecord.map((item, idx) => {
+              const Icon = item.Icon;
+              return (
+                <BlurFade key={idx} delay={0.2 + idx * 0.05} inView>
+                  <CursorGlow>
                     <div className={`${CARD_INTERACTIVE_SOLID.full} p-5 flex items-start gap-4`}>
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-500 ring-1 ring-emerald-500/20">
                         <Icon className="h-5 w-5" />
@@ -349,10 +359,10 @@ export function ProductEngineerLanding({ customerDashboardEnabled }: ProductEngi
                       </div>
                     </div>
                   </CursorGlow>
-                );
-              })}
-            </div>
-          </BlurFade>
+                </BlurFade>
+              );
+            })}
+          </div>
         </div>
       </section>
 
@@ -373,10 +383,12 @@ export function ProductEngineerLanding({ customerDashboardEnabled }: ProductEngi
               <div className={`${CARD_INTERACTIVE_SOLID.full} p-8`}>
                 <ul className="space-y-4">
                   {audiences.map((audience, idx) => (
-                    <li key={idx} className="flex items-start gap-3 text-muted-foreground">
-                      <Check className="h-5 w-5 text-emerald-500 mt-0.5 flex-shrink-0" />
-                      <span>{audience}</span>
-                    </li>
+                    <BlurFade key={idx} delay={0.25 + idx * 0.05} inView>
+                      <li className="flex items-start gap-3 text-muted-foreground">
+                        <Check className="h-5 w-5 text-emerald-500 mt-0.5 flex-shrink-0" />
+                        <span>{audience}</span>
+                      </li>
+                    </BlurFade>
                   ))}
                 </ul>
               </div>
@@ -401,22 +413,23 @@ export function ProductEngineerLanding({ customerDashboardEnabled }: ProductEngi
         <BlurFade delay={0.2} inView>
           <Link href="/experience" className="block group">
             <Marquee pauseOnHover className="[--duration:30s]">
-              {EXPERIENCE.map((exp) => (
-                <div
-                  key={exp.company}
-                  className="flex items-center gap-3 pl-3 pr-6 py-3 rounded-lg bg-card/50 border border-border/50 group-hover:border-emerald-500/30 transition-colors"
-                >
-                  <Image
-                    src={exp.logo}
-                    alt={exp.company}
-                    width={32}
-                    height={32}
-                    className="rounded-md"
-                  />
-                  <span className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
-                    {exp.company}
-                  </span>
-                </div>
+              {EXPERIENCE.map((exp, idx) => (
+                <BlurFade key={exp.company} delay={0.25 + idx * 0.03} inView>
+                  <div
+                    className="flex items-center gap-3 pl-3 pr-6 py-3 rounded-lg bg-card/50 border border-border/50 group-hover:border-emerald-500/30 transition-colors"
+                  >
+                    <Image
+                      src={exp.logo}
+                      alt={exp.company}
+                      width={32}
+                      height={32}
+                      className="rounded-md"
+                    />
+                    <span className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+                      {exp.company}
+                    </span>
+                  </div>
+                </BlurFade>
               ))}
             </Marquee>
           </Link>

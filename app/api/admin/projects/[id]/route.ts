@@ -41,6 +41,7 @@ export async function GET(
       user_id,
       customer_opted_out_of_landing_page,
       show_on_landing_page,
+      show_in_design_systems_section,
       public_title,
       public_description,
       public_hero_image,
@@ -52,6 +53,8 @@ export async function GET(
       public_design_system_url,
       show_design_system_link,
       public_brand_color,
+      design_system_image_url,
+      design_system_description,
       contacts (
         name,
         email,
@@ -83,6 +86,7 @@ const ALLOWED_PROJECT_FIELDS = [
   "end_date",
   "meeting_time",
   "show_on_landing_page",
+  "show_in_design_systems_section",
   "public_title",
   "public_description",
   "public_hero_image",
@@ -94,6 +98,8 @@ const ALLOWED_PROJECT_FIELDS = [
   "public_design_system_url",
   "show_design_system_link",
   "public_brand_color",
+  "design_system_image_url",
+  "design_system_description",
   "customer_opted_out_of_landing_page",
 ] as const
 

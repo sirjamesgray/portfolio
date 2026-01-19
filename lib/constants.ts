@@ -16,24 +16,21 @@ export const SOCIALS = {
   github: "https://github.com/sirjamesgray",
 } as const;
 
-// CTA configuration - changes based on customer-dashboard feature flag
-// When dashboard enabled: "Start a project" -> /login
-// When dashboard disabled: "Get started" -> /project-consultation
-export const CTA_CONFIG = {
-  // When customer dashboard is enabled
-  dashboardEnabled: {
-    text: "Start a project",
-    href: "/login",
-  },
-  // When customer dashboard is disabled
-  dashboardDisabled: {
-    text: "Get started",
-    href: "/project-consultation",
-  },
-} as const;
+// =============================================================================
+// LANDING PAGE CTA CONFIGURATION
+// =============================================================================
+// All CTAs for landing pages are centrally defined here.
+// Change once, update everywhere.
 
-// Product Engineer landing page CTA configuration
-export const PRODUCT_ENGINEER_CTA = {
+export type LandingPageCTA = {
+  primary: { text: string; href: string };
+  secondary: { text: string; href: string };
+};
+
+/**
+ * Product Engineer landing page - focused on getting hired
+ */
+export const PRODUCT_ENGINEER_CTA: LandingPageCTA = {
   primary: {
     text: "Let's talk",
     href: "/contact",
@@ -41,6 +38,35 @@ export const PRODUCT_ENGINEER_CTA = {
   secondary: {
     text: "Learn More",
     href: "#approach",
+  },
+} as const;
+
+/**
+ * Book a Project (hire-for-projects) landing page - focused on client work
+ */
+export const BOOK_PROJECT_CTA: LandingPageCTA = {
+  primary: {
+    text: "Get started",
+    href: "/project-consultation",
+  },
+  secondary: {
+    text: "View pricing",
+    href: "/pricing",
+  },
+} as const;
+
+/**
+ * Legacy CTA config - kept for backwards compatibility
+ * @deprecated Use PRODUCT_ENGINEER_CTA or BOOK_PROJECT_CTA instead
+ */
+export const CTA_CONFIG = {
+  dashboardEnabled: {
+    text: "Start a project",
+    href: "/login",
+  },
+  dashboardDisabled: {
+    text: BOOK_PROJECT_CTA.primary.text,
+    href: BOOK_PROJECT_CTA.primary.href,
   },
 } as const;
 

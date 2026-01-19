@@ -28,6 +28,7 @@ const sections = [
   { id: "favicon", label: "Favicon" },
   { id: "form-controls", label: "Form Controls" },
   { id: "hero-section", label: "Hero Section" },
+  { id: "image-upload", label: "Image Upload" },
   { id: "layout-components", label: "Layout Components" },
   { id: "logo-rotating", label: "Logo (Rotating)" },
   { id: "logo-static", label: "Logo (Static)" },
@@ -77,6 +78,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ImageUpload } from "@/components/ui/image-upload";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
@@ -2659,6 +2661,105 @@ export default function DesignSystemPage() {
   {" "}website?
 </h1>`}
               </pre>
+            </div>
+          </div>
+        </section>
+
+        <section id="image-upload" className="mb-16">
+          <h2 className="text-2xl font-bold text-foreground mb-6">Image Upload</h2>
+          <p className="text-muted-foreground mb-6">
+            A polished image upload component with drag-and-drop, file picker, and URL input modes.
+            Features preview with remove button, loading states, and error handling.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <ComponentCard title="ImageUpload (Empty)" importPath="@/components/ui/image-upload" className="col-span-1">
+              <div className="w-full max-w-sm">
+                <ImageUpload
+                  value={null}
+                  onChange={(url) => console.log("Image changed:", url)}
+                  label="Upload Image"
+                  helperText="Supports PNG, JPG, GIF up to 5MB"
+                  allowUrl={true}
+                />
+              </div>
+            </ComponentCard>
+
+            <ComponentCard title="ImageUpload (With Image)" importPath="@/components/ui/image-upload" className="col-span-1">
+              <div className="w-full max-w-sm">
+                <ImageUpload
+                  value="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80"
+                  onChange={(url) => console.log("Image changed:", url)}
+                  label="Design System Screenshot"
+                  helperText="Hover to reveal remove button"
+                />
+              </div>
+            </ComponentCard>
+          </div>
+
+          {/* Props Documentation */}
+          <div className="rounded-xl border border-border bg-card/50 p-6 mt-6">
+            <h3 className="text-lg font-semibold text-foreground mb-4">ImageUpload Props</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border">
+                    <th className="text-left py-2 pr-4 font-medium text-foreground">Prop</th>
+                    <th className="text-left py-2 pr-4 font-medium text-foreground">Type</th>
+                    <th className="text-left py-2 pr-4 font-medium text-foreground">Default</th>
+                    <th className="text-left py-2 font-medium text-foreground">Description</th>
+                  </tr>
+                </thead>
+                <tbody className="text-muted-foreground">
+                  <tr className="border-b border-border/50">
+                    <td className="py-2 pr-4"><code>value</code></td>
+                    <td className="py-2 pr-4"><code>string | null</code></td>
+                    <td className="py-2 pr-4">-</td>
+                    <td className="py-2">Current image URL</td>
+                  </tr>
+                  <tr className="border-b border-border/50">
+                    <td className="py-2 pr-4"><code>onChange</code></td>
+                    <td className="py-2 pr-4"><code>(url: string | null) =&gt; void</code></td>
+                    <td className="py-2 pr-4">-</td>
+                    <td className="py-2">Called when image changes</td>
+                  </tr>
+                  <tr className="border-b border-border/50">
+                    <td className="py-2 pr-4"><code>uploadEndpoint</code></td>
+                    <td className="py-2 pr-4"><code>string</code></td>
+                    <td className="py-2 pr-4">/api/upload</td>
+                    <td className="py-2">API endpoint for file uploads</td>
+                  </tr>
+                  <tr className="border-b border-border/50">
+                    <td className="py-2 pr-4"><code>storagePath</code></td>
+                    <td className="py-2 pr-4"><code>string</code></td>
+                    <td className="py-2 pr-4">images</td>
+                    <td className="py-2">Folder path in storage bucket</td>
+                  </tr>
+                  <tr className="border-b border-border/50">
+                    <td className="py-2 pr-4"><code>aspectRatio</code></td>
+                    <td className="py-2 pr-4"><code>string</code></td>
+                    <td className="py-2 pr-4">16/10</td>
+                    <td className="py-2">Preview aspect ratio</td>
+                  </tr>
+                  <tr className="border-b border-border/50">
+                    <td className="py-2 pr-4"><code>maxSize</code></td>
+                    <td className="py-2 pr-4"><code>number</code></td>
+                    <td className="py-2 pr-4">5MB</td>
+                    <td className="py-2">Max file size in bytes</td>
+                  </tr>
+                  <tr className="border-b border-border/50">
+                    <td className="py-2 pr-4"><code>allowUrl</code></td>
+                    <td className="py-2 pr-4"><code>boolean</code></td>
+                    <td className="py-2 pr-4">true</td>
+                    <td className="py-2">Show URL input tab</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 pr-4"><code>label</code></td>
+                    <td className="py-2 pr-4"><code>string</code></td>
+                    <td className="py-2 pr-4">-</td>
+                    <td className="py-2">Label text above upload area</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </section>

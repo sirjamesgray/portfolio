@@ -116,7 +116,7 @@ export async function PATCH(
   }
 
   const body = await request.json()
-  const { public_title, public_description, public_hero_image, public_industry, public_content_html, public_brand_color, icon_url, reorder } = body
+  const { public_title, public_description, public_hero_image, public_industry, public_content_html, public_brand_color, icon_url, design_system_image_url, design_system_description, reorder } = body
 
   const adminSupabase = createAdminClient()
 
@@ -141,6 +141,8 @@ export async function PATCH(
   if (public_content_html !== undefined) updates.public_content_html = sanitizeHtml(public_content_html)
   if (public_brand_color !== undefined) updates.public_brand_color = public_brand_color
   if (icon_url !== undefined) updates.icon_url = icon_url
+  if (design_system_image_url !== undefined) updates.design_system_image_url = design_system_image_url
+  if (design_system_description !== undefined) updates.design_system_description = design_system_description
 
   if (Object.keys(updates).length === 0) {
     return NextResponse.json({ error: "No fields to update" }, { status: 400 })

@@ -90,9 +90,9 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
           {landingPage === "product-engineer" ? (
             // Product Engineer landing page: "Let's talk" focused CTAs
             <>
-              <Link href="/design-system">
+              <Link href={PRODUCT_ENGINEER_CTA.secondary.href}>
                 <LandingButton variant="secondary" size="sm">
-                  Design System
+                  {PRODUCT_ENGINEER_CTA.secondary.text}
                 </LandingButton>
               </Link>
               <Link href={PRODUCT_ENGINEER_CTA.primary.href}>
@@ -160,9 +160,9 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
           {landingPage === "product-engineer" ? (
             // Product Engineer landing page: "Let's talk" focused CTAs
             <>
-              <Link href="/design-system" className="flex-1">
+              <Link href={PRODUCT_ENGINEER_CTA.secondary.href} className="flex-1">
                 <LandingButton variant="secondary" className="w-full">
-                  Design System
+                  {PRODUCT_ENGINEER_CTA.secondary.text}
                 </LandingButton>
               </Link>
               <Link href={PRODUCT_ENGINEER_CTA.primary.href} className="flex-1">
