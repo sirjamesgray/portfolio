@@ -27,17 +27,17 @@ const LANDING_PAGES: LandingPage[] = [
     id: "product-engineer",
     name: "Product Engineer",
     description: "Full-time role landing page - design systems built in code",
-    route: "/landing-variants/product-engineer",
+    route: "/landing/product-engineer",
     ctas: [
       { label: "Let's talk", href: "/contact", variant: "primary" },
       { label: "Learn More", href: "#approach", variant: "secondary" },
     ],
   },
   {
-    id: "hire-for-projects",
+    id: "book-a-project",
     name: "Book a Project",
     description: "Freelance web development services for small businesses",
-    route: "/landing-variants/book-a-project",
+    route: "/landing/book-a-project",
     ctas: [
       { label: "Get started", href: "/project-consultation", variant: "primary" },
       { label: "View pricing", href: "/pricing", variant: "secondary" },
