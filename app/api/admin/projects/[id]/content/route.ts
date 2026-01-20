@@ -177,3 +177,5 @@ export async function PATCH(
   console.log("[content/PATCH] Successfully updated project", projectId)
   return NextResponse.json({ project })
 }
+
+// Force rebuild - v2
