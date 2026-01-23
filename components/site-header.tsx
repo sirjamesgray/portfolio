@@ -290,9 +290,9 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
               mass: 1,
             }}
           >
-            <div className="p-2 bg-white/70 dark:bg-black/50 backdrop-blur-2xl border border-white/20 dark:border-white/10 rounded-3xl shadow-[var(--shadow-elevation-md)]">
+            <div className="p-3 bg-white/70 dark:bg-black/50 backdrop-blur-2xl border border-white/20 dark:border-white/10 rounded-3xl shadow-[var(--shadow-elevation-md)]">
               {landingPage === "product-engineer" ? (
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-3">
                   <FloatingSectionNav sections={PRODUCT_ENGINEER_SECTIONS} />
                   <Link href={PRODUCT_ENGINEER_CTA.primary.href} className="block">
                     <LandingButton variant="primary" className="w-full">

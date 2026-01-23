@@ -89,19 +89,19 @@ export function FloatingSectionNav({ sections, className }: FloatingSectionNavPr
   return (
     <div
       ref={scrollContainerRef}
-      className={cn("overflow-x-auto scrollbar-hide", className)}
+      className={cn("overflow-x-auto scrollbar-hide rounded-2xl", className)}
     >
-      <div className="flex gap-1 px-1">
+      <div className="flex gap-2 px-1">
         {sections.map(({ id, label }) => (
           <button
             key={id}
             ref={setButtonRef(id)}
             onClick={() => scrollToSection(id)}
             className={cn(
-              "shrink-0 px-3 py-1.5 text-sm rounded-full transition-colors whitespace-nowrap",
+              "shrink-0 px-4 py-2 text-sm rounded-full transition-colors whitespace-nowrap",
               activeSection === id
-                ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-medium"
-                : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                ? "bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-medium"
+                : "text-foreground/60 hover:text-foreground"
             )}
           >
             {label}
