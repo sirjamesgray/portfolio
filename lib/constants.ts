@@ -37,7 +37,7 @@ export const PRODUCT_ENGINEER_CTA: LandingPageCTA = {
   },
   secondary: {
     text: "Learn More",
-    href: "#approach",
+    href: "#problem", // First content section after hero
   },
 } as const;
 

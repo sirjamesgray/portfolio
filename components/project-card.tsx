@@ -118,9 +118,9 @@ export function ProjectCard({
         />
 
         <div className="relative">
-          {/* Hero Image */}
-          {project.public_hero_image && (
-            <div className="relative w-full h-40 rounded-lg overflow-hidden mb-4 bg-white/5">
+          {/* Hero Image with Logo Overlay */}
+          <div className="relative w-full h-40 rounded-lg overflow-hidden mb-4 bg-white/5">
+            {project.public_hero_image ? (
               <Image
                 src={project.public_hero_image}
                 alt={displayTitle}
@@ -129,41 +129,41 @@ export function ProjectCard({
                 className="object-cover transition-transform duration-300 group-hover:scale-105"
                 priority={priority}
               />
-            </div>
-          )}
+            ) : (
+              <div className="absolute inset-0 bg-gradient-to-br from-muted/50 to-muted/20" />
+            )}
 
-          {/* Content row: Logo | Text | Arrow (simple) or just Logo | Text (detailed) */}
-          <div className="flex items-center gap-4">
-            {/* Logo */}
+            {/* Logo overlaid on image - bottom left */}
             <div
               className={cn(
-                "flex h-12 w-12 shrink-0 items-center justify-center rounded-xl transition-all duration-300 overflow-hidden",
-                hovered
-                  ? "bg-primary/20 text-primary"
-                  : "bg-white/10 text-muted-foreground"
+                "absolute bottom-3 left-3 flex h-10 w-10 items-center justify-center rounded-lg overflow-hidden transition-all duration-300",
+                "bg-black/50 backdrop-blur-sm shadow-lg"
               )}
             >
               {project.icon_url ? (
                 <Image
                   src={project.icon_url}
                   alt={displayTitle}
-                  width={48}
-                  height={48}
+                  width={40}
+                  height={40}
                   className="object-cover w-full h-full"
                 />
               ) : (
-                <Briefcase className="h-6 w-6" />
+                <Briefcase className="h-5 w-5 text-white/80" />
               )}
             </div>
+          </div>
 
+          {/* Content row: Text | Arrow */}
+          <div className="flex items-start gap-3">
             {/* Text content */}
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-lg text-foreground">
-                {displayTitle}
-              </h3>
               <p className="text-xs text-muted-foreground mb-1">
                 {displayIndustry}
               </p>
+              <h3 className="font-semibold text-lg text-foreground mb-1">
+                {displayTitle}
+              </h3>
               <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
                 {displayDescription}
               </p>
@@ -173,7 +173,7 @@ export function ProjectCard({
             {variant === "simple" && (
               <ArrowRight
                 className={cn(
-                  "h-5 w-5 shrink-0 transition-all duration-300",
+                  "h-5 w-5 shrink-0 mt-1 transition-all duration-300",
                   hovered ? "text-primary translate-x-1" : "text-muted-foreground"
                 )}
               />

@@ -34,7 +34,7 @@ export function ActionLinkCard({
       target={external ? "_blank" : undefined}
       rel={external ? "noopener noreferrer" : undefined}
       className={cn(
-        "group relative flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 p-6 rounded-xl border transition-all",
+        "group relative flex items-center gap-4 p-4 sm:p-6 rounded-xl border transition-all",
         primary
           ? "bg-emerald-600 hover:bg-emerald-700 border-emerald-600 text-white shadow-[var(--shadow-glow-emerald)] hover:shadow-[var(--shadow-glow-emerald-hover)]"
           : "bg-card hover:bg-muted/50 border-border shadow-[var(--shadow-elevation-md)] hover:shadow-[var(--shadow-elevation-md)]",
@@ -46,13 +46,13 @@ export function ActionLinkCard({
 
       <div
         className={cn(
-          "relative flex-shrink-0 p-3 rounded-lg w-fit",
+          "relative flex-shrink-0 p-2.5 sm:p-3 rounded-lg",
           primary ? "bg-white/20" : "bg-emerald-500/10"
         )}
       >
         <Icon
           className={cn(
-            "h-6 w-6",
+            "h-5 w-5 sm:h-6 sm:w-6",
             primary ? "text-white" : "text-emerald-600 dark:text-emerald-400"
           )}
         />
@@ -61,7 +61,7 @@ export function ActionLinkCard({
       <div className="relative flex-1 min-w-0">
         <h2
           className={cn(
-            "text-lg font-semibold",
+            "text-base sm:text-lg font-semibold",
             primary ? "text-white" : "text-foreground"
           )}
         >
@@ -70,7 +70,7 @@ export function ActionLinkCard({
         {description && (
           <p
             className={cn(
-              "text-sm",
+              "text-xs sm:text-sm mt-0.5",
               primary ? "text-white/80" : "text-muted-foreground"
             )}
           >
@@ -81,7 +81,7 @@ export function ActionLinkCard({
 
       <div
         className={cn(
-          "absolute right-6 top-1/2 -translate-y-1/2 sm:relative sm:right-auto sm:top-auto sm:translate-y-0 flex-shrink-0 transition-transform group-hover:translate-x-1",
+          "flex-shrink-0 transition-transform group-hover:translate-x-1",
           primary ? "text-white/80" : "text-muted-foreground"
         )}
       >

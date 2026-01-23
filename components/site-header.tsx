@@ -10,6 +10,20 @@ import { User, ArrowLeft, LogOut } from "lucide-react";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 import { Logo3DStatic } from "@/components/logo-3d";
 import { CTA_CONFIG, PRODUCT_ENGINEER_CTA } from "@/lib/constants";
+import { FloatingSectionNav, type SectionNavItem } from "@/components/ui/floating-section-nav";
+
+// Sections for product engineer landing page anchor navigation
+const PRODUCT_ENGINEER_SECTIONS: SectionNavItem[] = [
+  { id: "top", label: "Top" },
+  { id: "problem", label: "Problem" },
+  { id: "approach", label: "Approach" },
+  { id: "showcase", label: "UI Showcase" },
+  { id: "design-systems", label: "Design Systems" },
+  { id: "projects", label: "Projects" },
+  { id: "audience", label: "Who It's For" },
+  { id: "experience", label: "Experience" },
+  { id: "contact", label: "Contact" },
+];
 
 interface SiteHeaderProps {
   variant?: "default" | "back";
@@ -276,8 +290,21 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
               mass: 1,
             }}
           >
-            <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-2 p-2 bg-white/70 dark:bg-black/50 backdrop-blur-2xl border border-white/20 dark:border-white/10 rounded-3xl xs:rounded-full shadow-[var(--shadow-elevation-md)]">
-              <MobileNavItems />
+            <div className="p-2 bg-white/70 dark:bg-black/50 backdrop-blur-2xl border border-white/20 dark:border-white/10 rounded-3xl shadow-[var(--shadow-elevation-md)]">
+              {landingPage === "product-engineer" ? (
+                <div className="flex flex-col gap-2">
+                  <FloatingSectionNav sections={PRODUCT_ENGINEER_SECTIONS} />
+                  <Link href={PRODUCT_ENGINEER_CTA.primary.href} className="block">
+                    <LandingButton variant="primary" className="w-full">
+                      {PRODUCT_ENGINEER_CTA.primary.text}
+                    </LandingButton>
+                  </Link>
+                </div>
+              ) : (
+                <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-2">
+                  <MobileNavItems />
+                </div>
+              )}
             </div>
           </motion.div>
         )}

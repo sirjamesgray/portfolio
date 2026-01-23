@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight, Code, X, Check, GitBranch, Layers, Zap, Users, Target, Mail, LucideIcon, AlertTriangle, Lightbulb, Wrench, Heart, Palette, Briefcase, Building2 } from "lucide-react";
+import { ArrowRight, Code, Check, GitBranch, Layers, Zap, Users, Target, Mail, LucideIcon, AlertTriangle, Lightbulb, Wrench, Palette, Building2, RefreshCcw, FileX, GitFork, Shield, Unplug, Rocket, Blocks, FileCode, Database, ShieldCheck, Clock, MessageSquare } from "lucide-react";
 import Image from "next/image";
 import { CursorGlow } from "@/components/ui/cursor-glow";
 import { LandingButton } from "@/components/ui/landing-button";
@@ -11,12 +11,14 @@ import { SiteHeader } from "@/components/site-header";
 import { CursorGrid } from "@/components/cursor-grid";
 import { Footer } from "@/components/footer";
 import { DesignSystemsSection } from "@/components/design-systems-section";
-import { CARD_INTERACTIVE_SOLID, CARD_FEATURED, CARD_DESTRUCTIVE, CARD_WARNING } from "@/lib/cards";
+import { ProjectsSection } from "@/components/projects-section";
+import { CARD_INTERACTIVE_SOLID, CARD_FEATURED } from "@/lib/cards";
 import { PRODUCT_ENGINEER_CTA, EXPERIENCE } from "@/lib/constants";
 import { Marquee } from "@/components/ui/marquee";
-import { CrossedCornersCard } from "@/components/ui/crossed-corners-card";
 import { UIShowcase, type ShowcaseStyle } from "@/components/ui-showcase";
 import { UIStyleSwitcher } from "@/components/ui-style-switcher";
+import { FeatureCard } from "@/components/ui/feature-card";
+import { SectionCopyLink } from "@/components/ui/section-copy-link";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 
@@ -30,73 +32,23 @@ const Logo3D = dynamic(
 const SECTION_MAX_WIDTH = "max-w-4xl";
 
 // Problem items - inefficiencies in the design-to-code workflow
-const problems = [
-  "Designers iterate in Figma while engineers rebuild from scratch",
-  "Details get lost in translation, microinteractions get cut",
-  "Design systems drift from implementation",
-  "QA becomes the last line of defense for UI consistency",
-  "Iteration slows because design and code are disconnected",
+const problems: { Icon: LucideIcon; title: string; description: string }[] = [
+  { Icon: RefreshCcw, title: "Rebuild from Scratch", description: "Designers iterate in Figma while engineers rebuild from scratch" },
+  { Icon: FileX, title: "Lost in Translation", description: "Details get lost in translation, microinteractions get cut" },
+  { Icon: GitFork, title: "System Drift", description: "Design systems drift from implementation" },
+  { Icon: Shield, title: "QA as Last Defense", description: "QA becomes the last line of defense for UI consistency" },
+  { Icon: Unplug, title: "Disconnected Workflow", description: "Iteration slows because design and code are disconnected" },
+  { Icon: Clock, title: "Wasted Cycles", description: "Same components get rebuilt across teams, nobody owns the source of truth" },
 ];
 
 // Approach items
-const approaches = [
-  "Rapid prototyping with real working code, rather than Figma prototypes",
-  "Design system built directly in React",
-  "Components are the spec, not screenshots",
-  "Tokens, spacing, typography, motion live in code",
-  "UI consistency enforced by the system, not QA",
-];
-
-// Working principles - philosophy and approach
-const workingPrinciples: { Icon: LucideIcon; title: string; description: string }[] = [
-  {
-    Icon: Layers,
-    title: "Code Is the Source of Truth",
-    description: "The component library is the design system. No Figma files to maintain, no drift between spec and reality.",
-  },
-  {
-    Icon: GitBranch,
-    title: "One System, Zero Fragmentation",
-    description: "Tokens, spacing, typography, motion—all in version control. One change updates everywhere.",
-  },
-  {
-    Icon: Code,
-    title: "Real UI, Not Screenshots",
-    description: "Stakeholders review live components. No more 'this looks different in production' conversations.",
-  },
-  {
-    Icon: Zap,
-    title: "Speed Through Precision",
-    description: "Production-ready prototypes mean faster validation. Less rework, more shipping.",
-  },
-  {
-    Icon: Users,
-    title: "Engineers Stay Unblocked",
-    description: "Missing component? It gets built and documented. The system serves velocity, not the other way around.",
-  },
-  {
-    Icon: Target,
-    title: "Correctness by Default",
-    description: "Components work right out of the box. QA hunts logic bugs, not pixel mismatches.",
-  },
-];
-
-// Why it works items
-const benefits = [
-  "No translation layer between design and code",
-  "Feedback happens on real UI, not mockups",
-  "Motion and edge cases are first-class citizens",
-  "Engineers stop rebuilding the same components",
-];
-
-// Track record - what I've delivered on past teams
-const trackRecord: { Icon: LucideIcon; title: string; description: string }[] = [
-  { Icon: Layers, title: "Unified Design Systems", description: "Consolidated fragmented component libraries into single sources of truth" },
-  { Icon: Check, title: "Dramatic Bug Reduction", description: "Made UI correctness the default, not the exception" },
-  { Icon: Zap, title: "Zero Handoff Delays", description: "Eliminated the design-to-engineering translation layer entirely" },
-  { Icon: Users, title: "True Cross-Functional Work", description: "Embedded with engineering, product, and design—not siloed" },
-  { Icon: Code, title: "Production-First Design", description: "Shipped real components in PRs, not Figma comment threads" },
-  { Icon: Target, title: "Self-Enforcing Standards", description: "Built systems that maintain consistency automatically" },
+const approaches: { Icon: LucideIcon; title: string; description: string }[] = [
+  { Icon: Rocket, title: "Real Code Prototypes", description: "Rapid prototyping with real working code, rather than Figma prototypes" },
+  { Icon: Blocks, title: "React-Native Design System", description: "Design system built directly in React" },
+  { Icon: FileCode, title: "Components as Spec", description: "Components are the spec, not screenshots" },
+  { Icon: Database, title: "Tokens in Code", description: "Tokens, spacing, typography, motion live in code" },
+  { Icon: ShieldCheck, title: "System-Enforced Consistency", description: "UI consistency enforced by the system, not QA" },
+  { Icon: MessageSquare, title: "Instant Feedback", description: "Stakeholders review live UI, not static mockups—feedback is immediate and actionable" },
 ];
 
 // Audience items - teams I want to join long-term
@@ -154,14 +106,22 @@ export function ProductEngineerLanding({ customerDashboardEnabled }: ProductEngi
 
           <BlurFade delay={0.4}>
             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <Link href={PRODUCT_ENGINEER_CTA.secondary.href}>
-                <LandingButton variant="secondary" className="text-base font-semibold">
-                  <span className="flex items-center gap-2">
-                    {PRODUCT_ENGINEER_CTA.secondary.text}
-                    <ArrowRight className="h-4 w-4" />
-                  </span>
-                </LandingButton>
-              </Link>
+              <LandingButton
+                variant="secondary"
+                className="text-base font-semibold"
+                onClick={() => {
+                  // Find the first section with an id after the hero (scroll-mt-20 marks content sections)
+                  const sections = document.querySelectorAll("section[id].scroll-mt-20");
+                  if (sections.length > 0) {
+                    sections[0].scrollIntoView({ behavior: "smooth" });
+                  }
+                }}
+              >
+                <span className="flex items-center gap-2">
+                  {PRODUCT_ENGINEER_CTA.secondary.text}
+                  <ArrowRight className="h-4 w-4" />
+                </span>
+              </LandingButton>
               <Link href={PRODUCT_ENGINEER_CTA.primary.href}>
                 <LandingButton variant="primary" className="text-base font-semibold">
                   <span className="flex items-center gap-2">
@@ -176,7 +136,8 @@ export function ProductEngineerLanding({ customerDashboardEnabled }: ProductEngi
       </section>
 
       {/* The Problem Section */}
-      <section className="relative px-6 py-16">
+      <section id="problem" className="group relative px-6 py-16 scroll-mt-20">
+        <SectionCopyLink sectionId="problem" className="absolute top-4 right-4" />
         <div className={`mx-auto ${SECTION_MAX_WIDTH}`}>
           <BlurFade delay={0.1} inView>
             <SectionHeader
@@ -187,61 +148,52 @@ export function ProductEngineerLanding({ customerDashboardEnabled }: ProductEngi
             />
           </BlurFade>
 
-          <BlurFade delay={0.2} inView>
-            <CursorGlow color="hsl(0, 85%, 55%)">
-              <div className={`${CARD_DESTRUCTIVE.full} p-8`}>
-                <ul className="space-y-4">
-                  {problems.map((problem, idx) => (
-                    <BlurFade key={idx} delay={0.25 + idx * 0.05} inView>
-                      <li className="flex items-start gap-3 text-muted-foreground">
-                        <X className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
-                        <span>{problem}</span>
-                      </li>
-                    </BlurFade>
-                  ))}
-                </ul>
-              </div>
-            </CursorGlow>
-          </BlurFade>
+          <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {problems.map((item, idx) => (
+              <BlurFade key={idx} delay={0.2 + idx * 0.05} inView>
+                <FeatureCard
+                  icon={item.Icon}
+                  title={item.title}
+                  description={item.description}
+                  variant="red"
+                />
+              </BlurFade>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* My Approach Section */}
-      <section id="approach" className="relative px-6 py-16 scroll-mt-20">
+      <section id="approach" className="group relative px-6 py-16 scroll-mt-20">
+        <SectionCopyLink sectionId="approach" className="absolute top-4 right-4" />
         <div className={`mx-auto ${SECTION_MAX_WIDTH}`}>
           <BlurFade delay={0.1} inView>
             <SectionHeader
               icon={Lightbulb}
               iconVariant="emerald"
               title="My Approach"
-            >
-              <p className="mx-auto max-w-xl text-lg font-semibold text-emerald-600 dark:text-emerald-400 mt-3">
-                I delete the handoff. Design and code live together, always.
-              </p>
-            </SectionHeader>
+              subtitle="I delete the handoff. Design and code live together, always."
+            />
           </BlurFade>
 
-          <BlurFade delay={0.2} inView>
-            <CursorGlow>
-              <div className={`${CARD_FEATURED.base} ${CARD_FEATURED.shadow} p-8`}>
-                <ul className="space-y-4">
-                  {approaches.map((approach, idx) => (
-                    <BlurFade key={idx} delay={0.25 + idx * 0.05} inView>
-                      <li className="flex items-start gap-3 text-muted-foreground">
-                        <Check className="h-5 w-5 text-emerald-500 mt-0.5 flex-shrink-0" />
-                        <span>{approach}</span>
-                      </li>
-                    </BlurFade>
-                  ))}
-                </ul>
-              </div>
-            </CursorGlow>
-          </BlurFade>
+          <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {approaches.map((item, idx) => (
+              <BlurFade key={idx} delay={0.2 + idx * 0.05} inView>
+                <FeatureCard
+                  icon={item.Icon}
+                  title={item.title}
+                  description={item.description}
+                  variant="emerald"
+                />
+              </BlurFade>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* UI Showcase Section - Scaffolding Flexibility */}
-      <section className="relative py-16 overflow-hidden">
+      <section id="showcase" className="group relative py-16 overflow-hidden scroll-mt-20">
+        <SectionCopyLink sectionId="showcase" className="absolute top-4 right-4" />
         <div className={`mx-auto px-6 ${SECTION_MAX_WIDTH}`}>
           <BlurFade delay={0.1} inView>
             <SectionHeader
@@ -264,110 +216,15 @@ export function ProductEngineerLanding({ customerDashboardEnabled }: ProductEngi
         </BlurFade>
       </section>
 
-      {/* What I Actually Do Section */}
-      <section className="relative px-6 py-16">
-        <div className={`mx-auto ${SECTION_MAX_WIDTH}`}>
-          <BlurFade delay={0.1} inView>
-            <SectionHeader
-              icon={Wrench}
-              iconVariant="emerald"
-              title="How I Work"
-              subtitle="Principles I've refined over 8 years of shipping design systems."
-            />
-          </BlurFade>
-
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {workingPrinciples.map((item, idx) => {
-              const Icon = item.Icon;
-              return (
-                <BlurFade key={idx} delay={0.2 + idx * 0.05} inView>
-                  <CursorGlow>
-                    <div className={`${CARD_INTERACTIVE_SOLID.full} p-6 h-full`}>
-                      <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-500 ring-1 ring-emerald-500/20 mb-4">
-                        <Icon className="h-6 w-6" />
-                      </div>
-                      <h3 className="font-semibold text-foreground mb-2">{item.title}</h3>
-                      <p className="text-sm text-muted-foreground">{item.description}</p>
-                    </div>
-                  </CursorGlow>
-                </BlurFade>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
       {/* Design Systems I've Built */}
       <DesignSystemsSection />
 
-      {/* Why This Works Section */}
-      <section className="relative px-6 py-16">
-        <div className={`mx-auto ${SECTION_MAX_WIDTH}`}>
-          <BlurFade delay={0.1} inView>
-            <SectionHeader
-              icon={Zap}
-              iconVariant="yellow"
-              title="Why This Works"
-              subtitle="Iteration speed increases when design and code are unified."
-            />
-          </BlurFade>
-
-          <BlurFade delay={0.2} inView>
-            <CursorGlow color="hsl(45, 93%, 47%)">
-              <div className={`${CARD_WARNING.full} p-8`}>
-                <ul className="space-y-4">
-                  {benefits.map((benefit, idx) => (
-                    <BlurFade key={idx} delay={0.25 + idx * 0.05} inView>
-                      <li className="flex items-start gap-3 text-foreground">
-                        <Zap className="h-5 w-5 text-yellow-500 mt-0.5 flex-shrink-0" />
-                        <span>{benefit}</span>
-                      </li>
-                    </BlurFade>
-                  ))}
-                </ul>
-              </div>
-            </CursorGlow>
-          </BlurFade>
-        </div>
-      </section>
-
-      {/* What I Bring to Your Team Section */}
-      <section className="relative px-6 py-16">
-        <div className={`mx-auto ${SECTION_MAX_WIDTH}`}>
-          <BlurFade delay={0.1} inView>
-            <SectionHeader
-              icon={Briefcase}
-              iconVariant="emerald"
-              title="What I Bring to Your Team"
-              subtitle="What I've delivered on past teams."
-            />
-          </BlurFade>
-
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {trackRecord.map((item, idx) => {
-              const Icon = item.Icon;
-              return (
-                <BlurFade key={idx} delay={0.2 + idx * 0.05} inView className="h-full">
-                  <CursorGlow>
-                    <div className={`${CARD_INTERACTIVE_SOLID.full} p-5 flex items-start gap-4 h-full`}>
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-500 ring-1 ring-emerald-500/20">
-                        <Icon className="h-5 w-5" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-foreground text-sm">{item.title}</h3>
-                        <p className="text-xs text-muted-foreground mt-1">{item.description}</p>
-                      </div>
-                    </div>
-                  </CursorGlow>
-                </BlurFade>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+      {/* Projects I've Built */}
+      <ProjectsSection />
 
       {/* Who This Is For Section */}
-      <section className="relative px-6 py-16">
+      <section id="audience" className="group relative px-6 py-16 scroll-mt-20">
+        <SectionCopyLink sectionId="audience" className="absolute top-4 right-4" />
         <div className={`mx-auto ${SECTION_MAX_WIDTH}`}>
           <BlurFade delay={0.1} inView>
             <SectionHeader
@@ -398,7 +255,8 @@ export function ProductEngineerLanding({ customerDashboardEnabled }: ProductEngi
       </section>
 
       {/* Experience Section */}
-      <section className="relative py-16 overflow-hidden">
+      <section id="experience" className="group/section relative py-16 overflow-hidden scroll-mt-20">
+        <SectionCopyLink sectionId="experience" className="absolute top-4 right-4 group-hover/section:opacity-100" />
         <div className="mx-auto px-6 max-w-4xl">
           <BlurFade delay={0.1} inView>
             <SectionHeader
@@ -437,7 +295,8 @@ export function ProductEngineerLanding({ customerDashboardEnabled }: ProductEngi
       </section>
 
       {/* CTA Section - Let's Talk Focus */}
-      <section id="contact" className="relative px-6 py-16">
+      <section id="contact" className="group relative px-6 py-16 scroll-mt-20">
+        <SectionCopyLink sectionId="contact" className="absolute top-4 right-4" />
         <div className={`mx-auto ${SECTION_MAX_WIDTH}`}>
           <BlurFade delay={0.1} inView>
             <CursorGlow>

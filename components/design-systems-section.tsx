@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Palette, Loader2 } from "lucide-react";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { SectionHeader } from "@/components/ui/section-header";
+import { SectionCopyLink } from "@/components/ui/section-copy-link";
 import { DesignSystemCard, type DesignSystemCardData } from "@/components/design-system-card";
 
 const SECTION_MAX_WIDTH = "max-w-4xl";
@@ -35,7 +36,8 @@ export function DesignSystemsSection() {
   }
 
   return (
-    <section className="relative px-6 py-16">
+    <section id="design-systems" className="group relative px-6 py-16 scroll-mt-20">
+      <SectionCopyLink sectionId="design-systems" className="absolute top-4 right-4" />
       <div className={`mx-auto ${SECTION_MAX_WIDTH}`}>
         <BlurFade delay={0.1} inView>
           <SectionHeader
