@@ -5,6 +5,7 @@ import { resend, EMAIL_FROM } from "@/lib/email/resend"
 import { ProjectSubmittedEmail } from "@/emails/project-submitted"
 import { PROJECT_TYPES, SITE_CONFIG, ADMIN_EMAILS } from "@/lib/constants"
 import { checkRateLimit, getClientIp } from "@/lib/ratelimit"
+import { verifyTurnstileToken, getClientIP } from "@/lib/turnstile"
 
 // Proper email validation regex (RFC 5322 simplified)
 const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
@@ -41,7 +42,17 @@ export async function POST(request: Request) {
       )
     }
     const body = await request.json()
-    const { email, name, projectType, budget, timeline, description, isLoggedIn } = body
+    const { email, name, projectType, budget, timeline, description, isLoggedIn, turnstileToken } = body
+
+    // Verify Turnstile token
+    const ip = getClientIP(request.headers)
+    const turnstileResult = await verifyTurnstileToken(turnstileToken, ip)
+    if (!turnstileResult.success) {
+      return NextResponse.json(
+        { error: "Bot verification failed. Please try again." },
+        { status: 400 }
+      )
+    }
 
     // Check for authenticated user if isLoggedIn flag is set
     let userId: string | null = null

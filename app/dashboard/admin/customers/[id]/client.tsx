@@ -1,9 +1,21 @@
 "use client"
 
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DashboardButton } from "@/components/ui/button"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import {
   ArrowLeft,
   User,
@@ -14,6 +26,8 @@ import {
   Eye,
   MailCheck,
   MailX,
+  Trash2,
+  Loader2,
 } from "lucide-react"
 import { ProjectCard } from "@/components/dashboard/project-card"
 import { MobileBackButton } from "@/components/dashboard/mobile-back-button"
@@ -84,6 +98,28 @@ export function CustomerDetailClient({
   stats,
 }: CustomerDetailClientProps) {
   const router = useRouter()
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  async function deleteCustomer() {
+    setIsDeleting(true)
+    try {
+      const response = await fetch(`/api/admin/customers/${customer.id}`, {
+        method: "DELETE",
+      })
+
+      if (response.ok) {
+        router.push("/dashboard/admin/customers")
+        router.refresh()
+      } else {
+        const data = await response.json()
+        console.error("Error deleting customer:", data.error)
+        setIsDeleting(false)
+      }
+    } catch (error) {
+      console.error("Error deleting customer:", error)
+      setIsDeleting(false)
+    }
+  }
 
   async function mirrorAsUser() {
     try {
@@ -288,6 +324,52 @@ export function CustomerDetailClient({
                     Send Email
                   </DashboardButton>
                 </Link>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <DashboardButton
+                      variant="outline"
+                      className="w-full justify-start gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-950/50"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      Delete Customer
+                    </DashboardButton>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete {customer.name}?</AlertDialogTitle>
+                      <AlertDialogDescription className="space-y-2">
+                        <span className="block">
+                          This will permanently delete this customer and all their data:
+                        </span>
+                        <span className="block text-sm">
+                          • {stats.totalProjects} project{stats.totalProjects !== 1 ? "s" : ""}<br />
+                          • All quotes and invoices<br />
+                          • All messages and activity history
+                        </span>
+                        <span className="block font-medium text-red-600 dark:text-red-400">
+                          This action cannot be undone.
+                        </span>
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={deleteCustomer}
+                        disabled={isDeleting}
+                        className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
+                      >
+                        {isDeleting ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Deleting...
+                          </>
+                        ) : (
+                          "Delete Customer"
+                        )}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </CardContent>
             </Card>
         </div>

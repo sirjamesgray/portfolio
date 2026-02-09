@@ -30,5 +30,5 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules", "components/factory-os", "lib/factory-os", "app/factory-os"]
+  "exclude": ["node_modules", "components/factory-os", "lib/factory-os", "app/factory-os", "remotion"]
 }

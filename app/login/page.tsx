@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { DashboardButton } from "@/components/ui/button";
 import { Loader2, Mail, ArrowLeft } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/constants";
+import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 
 // Get the correct base URL for auth redirects
 // Always use window.location.origin to preserve the current context (localhost vs production)
@@ -26,6 +27,9 @@ function LoginContent() {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [turnstileError, setTurnstileError] = useState("");
+  const turnstileRef = useRef<TurnstileInstance>(null);
 
   const signInWithGoogle = async () => {
     const { createClient } = await import("@/lib/supabase/client");
@@ -44,7 +48,32 @@ function LoginContent() {
     if (!email) return;
 
     setIsLoading(true);
+    setTurnstileError("");
+
     try {
+      // Verify Turnstile token first
+      if (process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && !turnstileToken) {
+        setTurnstileError("Please complete the verification");
+        setIsLoading(false);
+        return;
+      }
+
+      if (turnstileToken) {
+        const verifyResponse = await fetch("/api/auth/verify-turnstile", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token: turnstileToken }),
+        });
+
+        if (!verifyResponse.ok) {
+          setTurnstileError("Verification failed. Please try again.");
+          turnstileRef.current?.reset();
+          setTurnstileToken(null);
+          setIsLoading(false);
+          return;
+        }
+      }
+
       const { createClient } = await import("@/lib/supabase/client");
       const supabase = createClient();
       const redirectUrl = getAuthRedirectUrl();
@@ -57,11 +86,15 @@ function LoginContent() {
 
       if (error) {
         console.error("Error sending magic link:", error);
+        turnstileRef.current?.reset();
+        setTurnstileToken(null);
       } else {
         setEmailSent(true);
       }
     } catch (err) {
       console.error("Error:", err);
+      turnstileRef.current?.reset();
+      setTurnstileToken(null);
     } finally {
       setIsLoading(false);
     }
@@ -123,6 +156,27 @@ function LoginContent() {
           required
           className="bg-card/50"
         />
+
+        {process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && (
+          <div className="flex justify-center">
+            <Turnstile
+              ref={turnstileRef}
+              siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+              onSuccess={setTurnstileToken}
+              onError={() => setTurnstileError("Verification failed")}
+              onExpire={() => setTurnstileToken(null)}
+              options={{
+                theme: "auto",
+                size: "flexible",
+              }}
+            />
+          </div>
+        )}
+
+        {turnstileError && (
+          <p className="text-sm text-red-500 text-center">{turnstileError}</p>
+        )}
+
         <DashboardButton
           type="submit"
           className="w-full bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600"

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, ArrowRight, Check, Loader2, X, Calendar, Zap, Rocket, Ship, HelpCircle } from "lucide-react";
 import { DashboardButton } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { BlurFade } from "@/components/ui/blur-fade";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { SITE_CONFIG } from "@/lib/constants";
+import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 
 const sprintTypes = [
   {
@@ -56,6 +57,8 @@ function StartProjectContent() {
     sprintType: "",
     description: "",
   });
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const turnstileRef = useRef<TurnstileInstance>(null);
 
   // Check for sprint query param and pre-select
   useEffect(() => {
@@ -120,6 +123,13 @@ function StartProjectContent() {
     setIsSubmitting(true);
     setSubmitError("");
 
+    // Check turnstile token if configured
+    if (process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && !turnstileToken) {
+      setSubmitError("Please complete the verification");
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       // Store form data for potential later use
       sessionStorage.setItem("projectQuestionnaire", JSON.stringify(formData));
@@ -136,11 +146,14 @@ function StartProjectContent() {
             budget: formData.sprintType === "1-week-mvp" ? "2500" : formData.sprintType === "2-week-build" ? "5000" : formData.sprintType === "3-week-ship" ? "9000" : "not-sure",
             description: formData.description,
             isLoggedIn: true,
+            turnstileToken,
           }),
         });
 
         if (!response.ok) {
           const data = await response.json();
+          turnstileRef.current?.reset();
+          setTurnstileToken(null);
           throw new Error(data.error || "Failed to submit");
         }
       }
@@ -288,6 +301,22 @@ function StartProjectContent() {
                   className="w-full rounded-xl border border-border bg-card/50 p-4 text-foreground placeholder:text-muted-foreground focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 min-h-[150px] resize-none"
                   autoFocus
                 />
+
+                {process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && (
+                  <div className="flex justify-center">
+                    <Turnstile
+                      ref={turnstileRef}
+                      siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+                      onSuccess={setTurnstileToken}
+                      onError={() => setSubmitError("Verification failed. Please try again.")}
+                      onExpire={() => setTurnstileToken(null)}
+                      options={{
+                        theme: "auto",
+                        size: "flexible",
+                      }}
+                    />
+                  </div>
+                )}
 
                 {submitError && (
                   <p className="text-sm text-red-500 text-center">{submitError}</p>

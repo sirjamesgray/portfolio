@@ -8,6 +8,7 @@ import {
   GitBranch,
   Flag,
   FileStack,
+  Video,
   LucideIcon,
 } from "lucide-react"
 
@@ -64,6 +65,11 @@ export const adminNavItems: NavItem[] = [
     name: "Landing Pages",
     href: "/dashboard/admin/landing-pages",
     icon: FileStack,
+  },
+  {
+    name: "Videos",
+    href: "/dashboard/admin/videos",
+    icon: Video,
   },
   {
     name: "Feature Flags",
