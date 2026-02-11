@@ -110,7 +110,7 @@ export function ProductEngineerLanding({ customerDashboardEnabled }: ProductEngi
                 variant="secondary"
                 className="text-base font-semibold"
                 onClick={() => {
-                  // Find the first section with an id after the hero (scroll-mt-20 marks content sections)
+                  // Scroll to first content section
                   const sections = document.querySelectorAll("section[id].scroll-mt-20");
                   if (sections.length > 0) {
                     sections[0].scrollIntoView({ behavior: "smooth" });
@@ -332,8 +332,8 @@ export function ProductEngineerLanding({ customerDashboardEnabled }: ProductEngi
         </BlurFade>
       </section>
 
-      {/* Footer */}
-      <div className="mb-24 md:mb-0">
+      {/* Footer - extra bottom padding on mobile for floating toolbar */}
+      <div className="mb-36 md:mb-0">
         <Footer />
       </div>
     </div>

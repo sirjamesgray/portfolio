@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { Copy, Check, ChevronDown, ArrowLeft, Calendar, Mail, MessageSquare, Linkedin, Zap, Heart } from "lucide-react";
+import { Copy, Check, ChevronDown, ArrowLeft, ArrowUp as ArrowUpIcon, Calendar, Mail, MessageSquare, Linkedin, Zap, Heart } from "lucide-react";
 import { ActionLinkCard } from "@/components/ui/action-link-card";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -45,6 +45,7 @@ const sections = [
 import { DashboardButton } from "@/components/ui/button";
 import { LandingButton } from "@/components/ui/landing-button";
 import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button";
+import { ScrollAwareButton } from "@/components/ui/scroll-aware-button";
 import { AnimatedGradientText } from "@/components/ui/animated-gradient-text";
 import { Marquee } from "@/components/ui/marquee";
 import { Ripple } from "@/components/ui/ripple";
@@ -899,6 +900,52 @@ export default function DesignSystemPage() {
 
             <ComponentCard title="InteractiveHoverButton" importPath="@/components/ui/interactive-hover-button">
               <InteractiveHoverButton>Hover Me</InteractiveHoverButton>
+            </ComponentCard>
+
+            {/* Button Transform Animation */}
+            <ComponentCard title="ScrollAwareButton (Transform Animation)" importPath="@/components/ui/scroll-aware-button" className="md:col-span-2 lg:col-span-3">
+              <div className="flex flex-col gap-4 w-full">
+                <p className="text-xs text-muted-foreground text-center">
+                  A button that transforms based on scroll position. Shows primary text at top, transforms to secondary text when scrolled down.
+                  Uses Framer Motion for smooth animated transitions between states.
+                </p>
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-wrap items-center justify-center gap-4">
+                    <div className="flex flex-col items-center gap-2">
+                      <span className="text-xs text-muted-foreground">At top of page</span>
+                      <LandingButton variant="secondary">
+                        <span className="flex items-center gap-2">
+                          Learn More
+                          <ArrowRightIcon className="h-4 w-4" />
+                        </span>
+                      </LandingButton>
+                    </div>
+                    <div className="flex items-center text-muted-foreground">
+                      <ArrowRightIcon className="h-4 w-4" />
+                    </div>
+                    <div className="flex flex-col items-center gap-2">
+                      <span className="text-xs text-muted-foreground">When scrolled</span>
+                      <LandingButton variant="secondary">
+                        <span className="flex items-center gap-2">
+                          Back to Top
+                          <ArrowUpIcon className="h-4 w-4" />
+                        </span>
+                      </LandingButton>
+                    </div>
+                  </div>
+                  <div className="bg-muted/50 rounded-lg p-4 text-xs font-mono text-muted-foreground">
+                    <pre className="whitespace-pre-wrap">{`<ScrollAwareButton
+  variant="secondary"
+  topText="Learn More"
+  scrolledText="Back to Top"
+/>`}</pre>
+                  </div>
+                  <p className="text-xs text-muted-foreground text-center">
+                    Props: <code className="bg-muted px-1 rounded">topText</code> (text at top), <code className="bg-muted px-1 rounded">scrolledText</code> (text when scrolled),
+                    <code className="bg-muted px-1 rounded">scrollThreshold</code> (px, default: 50% viewport), <code className="bg-muted px-1 rounded">scrollToSelector</code> (CSS selector for scroll target)
+                  </p>
+                </div>
+              </div>
             </ComponentCard>
           </div>
         </section>

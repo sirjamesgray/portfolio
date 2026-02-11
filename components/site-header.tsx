@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { DashboardButton } from "@/components/ui/button";
 import { LandingButton } from "@/components/ui/landing-button";
+import { ScrollAwareButton } from "@/components/ui/scroll-aware-button";
 import { User, ArrowLeft, LogOut } from "lucide-react";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 import { Logo3DStatic } from "@/components/logo-3d";
@@ -104,11 +105,12 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
           {landingPage === "product-engineer" ? (
             // Product Engineer landing page: "Let's talk" focused CTAs
             <>
-              <Link href={PRODUCT_ENGINEER_CTA.secondary.href}>
-                <LandingButton variant="secondary" size="sm">
-                  {PRODUCT_ENGINEER_CTA.secondary.text}
-                </LandingButton>
-              </Link>
+              <ScrollAwareButton
+                variant="secondary"
+                size="sm"
+                topText={PRODUCT_ENGINEER_CTA.secondary.text}
+                scrolledText="Back to Top"
+              />
               <Link href={PRODUCT_ENGINEER_CTA.primary.href}>
                 <LandingButton variant="primary" size="sm">
                   {PRODUCT_ENGINEER_CTA.primary.text}
@@ -174,11 +176,12 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
           {landingPage === "product-engineer" ? (
             // Product Engineer landing page: "Let's talk" focused CTAs
             <>
-              <Link href={PRODUCT_ENGINEER_CTA.secondary.href} className="flex-1">
-                <LandingButton variant="secondary" className="w-full">
-                  {PRODUCT_ENGINEER_CTA.secondary.text}
-                </LandingButton>
-              </Link>
+              <ScrollAwareButton
+                variant="secondary"
+                className="flex-1 w-full"
+                topText={PRODUCT_ENGINEER_CTA.secondary.text}
+                scrolledText="Back to Top"
+              />
               <Link href={PRODUCT_ENGINEER_CTA.primary.href} className="flex-1">
                 <LandingButton variant="primary" className="w-full">
                   {PRODUCT_ENGINEER_CTA.primary.text}
