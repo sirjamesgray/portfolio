@@ -1,15 +1,18 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { Suspense } from "react";
 import { Input } from "@/components/ui/input";
 import { DashboardButton } from "@/components/ui/button";
-import { Loader2, Mail, ArrowLeft } from "lucide-react";
+import { Loader2, Mail, ArrowLeft, Terminal } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/constants";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
+
+const isDev = process.env.NODE_ENV === "development";
+const devLoginEnabled = process.env.NEXT_PUBLIC_DEV_LOGIN_ENABLED === "true";
 
 // Get the correct base URL for auth redirects
 // Always use window.location.origin to preserve the current context (localhost vs production)
@@ -22,6 +25,7 @@ function getAuthRedirectUrl() {
 
 function LoginContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const error = searchParams.get("error");
   const message = searchParams.get("message");
   const [email, setEmail] = useState("");
@@ -30,6 +34,37 @@ function LoginContent() {
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [turnstileError, setTurnstileError] = useState("");
   const turnstileRef = useRef<TurnstileInstance>(null);
+  const [devEmail, setDevEmail] = useState("jamiegray2234@gmail.com");
+  const [devLoading, setDevLoading] = useState(false);
+  const [devError, setDevError] = useState("");
+
+  const handleDevLogin = async () => {
+    setDevLoading(true);
+    setDevError("");
+    try {
+      const response = await fetch("/api/auth/dev-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: devEmail }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setDevError(data.error || "Dev login failed");
+        return;
+      }
+
+      if (data.loginUrl) {
+        // Redirect to the magic link URL
+        window.location.href = data.loginUrl;
+      }
+    } catch (err) {
+      setDevError("Failed to generate dev login");
+    } finally {
+      setDevLoading(false);
+    }
+  };
 
   const signInWithGoogle = async () => {
     const { createClient } = await import("@/lib/supabase/client");
@@ -51,14 +86,14 @@ function LoginContent() {
     setTurnstileError("");
 
     try {
-      // Verify Turnstile token first
-      if (process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && !turnstileToken) {
+      // Verify Turnstile token first (skip in dev mode)
+      if (process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && !devLoginEnabled && !turnstileToken) {
         setTurnstileError("Please complete the verification");
         setIsLoading(false);
         return;
       }
 
-      if (turnstileToken) {
+      if (turnstileToken && !devLoginEnabled) {
         const verifyResponse = await fetch("/api/auth/verify-turnstile", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -157,7 +192,7 @@ function LoginContent() {
           className="bg-card/50"
         />
 
-        {process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && (
+        {process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && !devLoginEnabled && (
           <div className="flex justify-center">
             <Turnstile
               ref={turnstileRef}
@@ -240,6 +275,54 @@ function LoginContent() {
           Start a project
         </Link>
       </p>
+
+      {/* Dev Login - Only visible in development with env var enabled */}
+      {isDev && devLoginEnabled && (
+        <>
+          <div className="relative pt-4">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-dashed border-amber-500/30" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-amber-600 dark:text-amber-400">Dev Only</span>
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-4 space-y-3">
+            <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400">
+              <Terminal className="h-4 w-4" />
+              <span className="text-sm font-medium">Dev Login</span>
+            </div>
+            <Input
+              type="email"
+              placeholder="Email for dev login"
+              value={devEmail}
+              onChange={(e) => setDevEmail(e.target.value)}
+              className="bg-background/50 border-amber-500/30 text-sm"
+            />
+            {devError && (
+              <p className="text-xs text-red-500">{devError}</p>
+            )}
+            <DashboardButton
+              onClick={handleDevLogin}
+              disabled={devLoading || !devEmail}
+              className="w-full bg-amber-600 hover:bg-amber-700 text-sm"
+            >
+              {devLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Generating link...
+                </>
+              ) : (
+                "Instant Dev Login"
+              )}
+            </DashboardButton>
+            <p className="text-xs text-muted-foreground text-center">
+              Bypasses email verification for faster development
+            </p>
+          </div>
+        </>
+      )}
     </div>
   );
 }
