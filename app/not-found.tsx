@@ -5,7 +5,6 @@ import dynamic from "next/dynamic";
 import { ArrowLeft } from "lucide-react";
 import { LandingButton } from "@/components/ui/landing-button";
 import { BlurFade } from "@/components/ui/blur-fade";
-import { CursorGrid } from "@/components/cursor-grid";
 import { Logo3DStatic } from "@/components/logo-3d";
 
 // Dynamically import 3D logo to avoid SSR issues
@@ -16,9 +15,7 @@ const Logo3D = dynamic(
 
 export default function NotFound() {
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-background via-background to-blue-950/20 dark:to-blue-950/30 flex flex-col overflow-hidden">
-      <CursorGrid />
-
+    <div className="relative min-h-screen bg-background flex flex-col overflow-hidden">
       {/* Header */}
       <header className="relative z-10 flex items-center justify-between p-4 md:p-6">
         <Link href="/" className="flex items-center h-8 w-8">

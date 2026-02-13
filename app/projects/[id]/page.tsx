@@ -5,7 +5,6 @@ import { ArrowLeft, ArrowRight, Globe, Palette } from "lucide-react"
 import { BlurFade } from "@/components/ui/blur-fade"
 import { LandingButton } from "@/components/ui/landing-button"
 import { SiteHeader } from "@/components/site-header"
-import { CursorGrid } from "@/components/cursor-grid"
 import { formatProjectType, CTA_CONFIG } from "@/lib/constants"
 import { CMSContentRenderer } from "@/components/cms-content-renderer"
 import { isCustomerDashboardEnabled } from "@/lib/feature-flags"
@@ -54,8 +53,7 @@ export default async function PublicProjectPage({ params }: PageProps) {
   const displayIndustry = project.public_industry || formatProjectType(project.project_type)
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-background via-background to-blue-950/20 dark:to-blue-950/30">
-      <CursorGrid />
+    <div className="relative min-h-screen bg-background">
       <SiteHeader customerDashboardEnabled={dashboardEnabled} />
 
       <main className="relative z-10 px-6 pt-24 pb-12">

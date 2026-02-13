@@ -1,6 +1,3 @@
-"use client";
-
-import { CursorGrid } from "@/components/cursor-grid";
 import { cn } from "@/lib/utils";
 
 interface LandingBackgroundProps {
@@ -9,13 +6,11 @@ interface LandingBackgroundProps {
 }
 
 /**
- * Landing page background with gradient and animated cursor grid.
+ * Landing page background wrapper.
  *
- * Features:
- * - Subtle blue gradient in the bottom-right corner
- * - Animated dot grid that follows cursor
- * - Pulsing lines that travel across the grid
- * - Random sparkle effects on grid intersections
+ * Currently renders a solid black (dark) / white (light) background.
+ * Designed to support swappable background variants in the future
+ * (e.g., shader effects, gradients, patterns).
  *
  * Usage:
  * ```tsx
@@ -28,11 +23,10 @@ export function LandingBackground({ children, className }: LandingBackgroundProp
   return (
     <div
       className={cn(
-        "relative min-h-screen bg-gradient-to-br from-background via-background to-blue-950/20 dark:to-blue-950/30",
+        "relative min-h-screen bg-background",
         className
       )}
     >
-      <CursorGrid />
       {children}
     </div>
   );

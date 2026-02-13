@@ -3,9 +3,15 @@
 import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import { cn } from "@/lib/utils";
 
-interface CursorGridProps {
+/**
+ * @deprecated Archived background - use LandingBackground instead
+ * Animated sparkling grid with cursor tracking and pulsing lines.
+ */
+interface SparklingGridProps {
   className?: string;
   gridSize?: number;
+  /** When true, uses absolute positioning for container use instead of fixed viewport */
+  contained?: boolean;
 }
 
 // Only track actively animating dots (sparse representation)
@@ -36,9 +42,10 @@ const TOTAL_DURATION = FLASH_DURATION + SETTLE_DURATION + GREEN_HOLD_DURATION + 
 // Throttle animation updates to ~30fps instead of 60fps for better performance
 const ANIMATION_INTERVAL = 33;
 
-export function CursorGrid({ className, gridSize = 40 }: CursorGridProps) {
+export function SparklingGrid({ className, gridSize = 40, contained = false }: SparklingGridProps) {
   // Use a stable ID to avoid hydration mismatch (useId generates different IDs on server vs client)
   const id = "cursor-grid";
+  const containerRef = useRef<HTMLDivElement>(null);
   const [mousePosition, setMousePosition] = useState({ x: -1000, y: -1000 });
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [activeDots, setActiveDots] = useState<ActiveDot[]>([]);
@@ -55,7 +62,12 @@ export function CursorGrid({ className, gridSize = 40 }: CursorGridProps) {
 
   useEffect(() => {
     const updateDimensions = () => {
-      setDimensions({ width: window.innerWidth, height: window.innerHeight });
+      if (contained && containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        setDimensions({ width: rect.width, height: rect.height });
+      } else {
+        setDimensions({ width: window.innerWidth, height: window.innerHeight });
+      }
     };
 
     // Throttle mouse move updates
@@ -63,7 +75,12 @@ export function CursorGrid({ className, gridSize = 40 }: CursorGridProps) {
     const handleMouseMove = (e: MouseEvent) => {
       const now = Date.now();
       if (now - lastMoveTime > 16) { // ~60fps max for mouse
-        setMousePosition({ x: e.clientX, y: e.clientY });
+        if (contained && containerRef.current) {
+          const rect = containerRef.current.getBoundingClientRect();
+          setMousePosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+        } else {
+          setMousePosition({ x: e.clientX, y: e.clientY });
+        }
         lastMoveTime = now;
       }
     };
@@ -72,7 +89,12 @@ export function CursorGrid({ className, gridSize = 40 }: CursorGridProps) {
       if (e.touches[0]) {
         const now = Date.now();
         if (now - lastMoveTime > 16) {
-          setMousePosition({ x: e.touches[0].clientX, y: e.touches[0].clientY });
+          if (contained && containerRef.current) {
+            const rect = containerRef.current.getBoundingClientRect();
+            setMousePosition({ x: e.touches[0].clientX - rect.left, y: e.touches[0].clientY - rect.top });
+          } else {
+            setMousePosition({ x: e.touches[0].clientX, y: e.touches[0].clientY });
+          }
           lastMoveTime = now;
         }
       }
@@ -80,7 +102,12 @@ export function CursorGrid({ className, gridSize = 40 }: CursorGridProps) {
 
     const handleTouchStart = (e: TouchEvent) => {
       if (e.touches[0]) {
-        setMousePosition({ x: e.touches[0].clientX, y: e.touches[0].clientY });
+        if (contained && containerRef.current) {
+          const rect = containerRef.current.getBoundingClientRect();
+          setMousePosition({ x: e.touches[0].clientX - rect.left, y: e.touches[0].clientY - rect.top });
+        } else {
+          setMousePosition({ x: e.touches[0].clientX, y: e.touches[0].clientY });
+        }
       }
     };
 
@@ -96,7 +123,7 @@ export function CursorGrid({ className, gridSize = 40 }: CursorGridProps) {
       window.removeEventListener("touchmove", handleTouchMove);
       window.removeEventListener("touchstart", handleTouchStart);
     };
-  }, []);
+  }, [contained]);
 
   // Combined animation loop - handles both dots and pulses in one rAF
   useEffect(() => {
@@ -256,7 +283,7 @@ export function CursorGrid({ className, gridSize = 40 }: CursorGridProps) {
   }, [activeDots, gridDimensions.cols, gridSize, getDotAppearance, now]);
 
   return (
-    <div className={cn("pointer-events-none fixed inset-0 z-0", className)}>
+    <div ref={containerRef} className={cn("pointer-events-none inset-0 z-0", contained ? "absolute" : "fixed", className)}>
       <svg aria-hidden="true" className="absolute inset-0 h-full w-full">
         <defs>
           <pattern

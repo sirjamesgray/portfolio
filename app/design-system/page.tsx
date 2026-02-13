@@ -49,9 +49,12 @@ import { ScrollAwareButton } from "@/components/ui/scroll-aware-button";
 import { AnimatedGradientText } from "@/components/ui/animated-gradient-text";
 import { Marquee } from "@/components/ui/marquee";
 import { Ripple } from "@/components/ui/ripple";
-import { DotPattern } from "@/components/ui/dot-pattern";
-import { GridPattern } from "@/components/ui/grid-pattern";
 import { BentoCard, BentoGrid } from "@/components/ui/bento-grid";
+
+// Archived backgrounds
+import { SparklingGrid } from "@/components/backgrounds/_archive/sparkling-grid";
+import { DotPattern } from "@/components/backgrounds/_archive/dot-pattern";
+import { GridPattern } from "@/components/backgrounds/_archive/grid-pattern";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
@@ -89,7 +92,6 @@ import { FlipWords } from "@/components/ui/flip-words";
 import { ContainerTextFlip } from "@/components/ui/container-text-flip";
 import { Footer } from "@/components/footer";
 import { LandingBackground } from "@/components/landing-background";
-import { CursorGrid } from "@/components/cursor-grid";
 import { SectionHeader, IconStyle, IconVariant } from "@/components/ui/section-header";
 import { RotatingCubeIcon } from "@/components/ui/rotating-cube-icon";
 
@@ -633,12 +635,12 @@ export default function DesignSystemPage() {
               <ComponentCard title="LandingBackground" importPath="@/components/landing-background" className="md:col-span-2">
                 <div className="space-y-4">
                   <p className="text-sm text-muted-foreground">
-                    The primary wrapper component for all landing pages. Includes a subtle blue gradient and the interactive CursorGrid overlay.
+                    The primary wrapper component for all landing pages. Renders a solid black (dark) / white (light) background. Designed to support swappable background variants (shaders, gradients, patterns) in the future.
                   </p>
                   <div className="relative h-48 rounded-lg overflow-hidden border border-border">
                     <LandingBackground className="h-full w-full">
                       <div className="flex items-center justify-center h-full">
-                        <span className="text-sm text-muted-foreground">Hover to see cursor spotlight + watch for blinking dots</span>
+                        <span className="text-sm text-muted-foreground">Solid background - ready for shader variants</span>
                       </div>
                     </LandingBackground>
                   </div>
@@ -654,108 +656,44 @@ export default function DesignSystemPage() {
             </div>
           </div>
 
-          {/* CursorGrid - Interactive Grid System */}
+          {/* Archived Backgrounds */}
           <div className="mb-8">
-            <h3 className="text-lg font-semibold text-foreground mb-4">Cursor Grid (Interactive)</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <ComponentCard title="CursorGrid" importPath="@/components/cursor-grid" className="md:col-span-2 lg:col-span-2">
-                <div className="space-y-4">
-                  <p className="text-sm text-muted-foreground">
-                    The animated dot grid component with cursor-following spotlight, pulsing lines, and random blinking dots.
-                  </p>
-                  <div className="relative h-40 rounded-lg overflow-hidden border border-border bg-background">
-                    <CursorGrid />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-xs text-muted-foreground">Move cursor here &bull; Watch for emerald blinks</span>
-                    </div>
-                  </div>
-                </div>
-              </ComponentCard>
-
-              <ComponentCard title="CursorGrid Features" importPath="@/components/cursor-grid">
-                <div className="space-y-3 text-sm">
-                  <div className="flex gap-2 items-start">
-                    <span className="text-emerald-500 shrink-0 mt-0.5">●</span>
-                    <div>
-                      <span className="font-medium text-foreground">Cursor Spotlight</span>
-                      <p className="text-xs text-muted-foreground">300px radius glow follows mouse</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-2 items-start">
-                    <span className="text-emerald-500 shrink-0 mt-0.5">●</span>
-                    <div>
-                      <span className="font-medium text-foreground">Pulsing Lines</span>
-                      <p className="text-xs text-muted-foreground">Emerald lines travel along grid paths</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-2 items-start">
-                    <span className="text-emerald-500 shrink-0 mt-0.5">●</span>
-                    <div>
-                      <span className="font-medium text-foreground">Blinking Dots</span>
-                      <p className="text-xs text-muted-foreground">Random dots flash emerald every ~800ms</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-2 items-start">
-                    <span className="text-muted-foreground shrink-0 mt-0.5">○</span>
-                    <div>
-                      <span className="font-medium text-foreground">Grid Lines</span>
-                      <p className="text-xs text-muted-foreground">40px spacing, visible near cursor</p>
-                    </div>
-                  </div>
-                </div>
-              </ComponentCard>
-            </div>
-
-            {/* Blinking Dots Animation Details */}
-            <div className="mt-6 p-4 rounded-lg border border-emerald-500/30 bg-emerald-500/5">
-              <h4 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-                <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                Blinking Dots Animation
-              </h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-muted-foreground">
-                <div>
-                  <p className="font-medium text-foreground mb-1">Animation Phases:</p>
-                  <ol className="list-decimal list-inside space-y-1">
-                    <li><strong>Flash</strong> (150ms) - Dot expands with emerald color</li>
-                    <li><strong>Settle</strong> (300ms) - Bounces down to hold size</li>
-                    <li><strong>Hold</strong> (800ms) - Stays emerald at 1.3x scale</li>
-                    <li><strong>Deflate</strong> (600ms) - Fades back to grey</li>
-                  </ol>
-                </div>
-                <div>
-                  <p className="font-medium text-foreground mb-1">Behavior:</p>
-                  <ul className="list-disc list-inside space-y-1">
-                    <li>3-8 random dots triggered every ~800ms</li>
-                    <li>Each dot has random intensity (0.3-1.0)</li>
-                    <li>Sparse rendering - only active dots update</li>
-                    <li>Throttled to ~30fps for performance</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Decorative Patterns */}
-          <div className="mb-8">
-            <h3 className="text-lg font-semibold text-foreground mb-4">Decorative Patterns</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-4">Archived Backgrounds</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Static background patterns for cards, sections, or decorative use. Not used on landing pages (use LandingBackground instead).
+              Previous background implementations archived in <code className="text-xs bg-muted px-1.5 py-0.5 rounded">components/backgrounds/_archive/</code>
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <ComponentCard title="DotPattern" importPath="@/components/ui/dot-pattern">
-                <div className="relative h-32 w-full overflow-hidden rounded-lg border border-border">
-                  <DotPattern className="opacity-50" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-xs text-muted-foreground bg-background/80 px-2 py-1 rounded">Static dot grid</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <ComponentCard title="SparklingGrid" importPath="@/components/backgrounds/_archive/sparkling-grid" className="lg:col-span-2">
+                <div className="space-y-3">
+                  <Badge variant="outline">Archived</Badge>
+                  <p className="text-sm text-muted-foreground">
+                    Animated cursor-tracking grid with pulsing emerald lines and randomly blinking dots.
+                  </p>
+                  <div className="relative h-40 w-full overflow-hidden rounded-lg border border-border bg-background">
+                    <SparklingGrid contained />
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <span className="text-xs text-muted-foreground bg-background/80 px-2 py-1 rounded">Move cursor here</span>
+                    </div>
                   </div>
                 </div>
               </ComponentCard>
 
-              <ComponentCard title="GridPattern" importPath="@/components/ui/grid-pattern">
-                <div className="relative h-32 w-full overflow-hidden rounded-lg border border-border">
-                  <GridPattern className="opacity-30" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-xs text-muted-foreground bg-background/80 px-2 py-1 rounded">Static line grid</span>
+              <ComponentCard title="DotPattern" importPath="@/components/backgrounds/_archive/dot-pattern">
+                <div className="space-y-3">
+                  <Badge variant="outline">Archived</Badge>
+                  <p className="text-sm text-muted-foreground">Static dot grid pattern.</p>
+                  <div className="relative h-32 w-full overflow-hidden rounded-lg border border-border">
+                    <DotPattern className="opacity-50" />
+                  </div>
+                </div>
+              </ComponentCard>
+
+              <ComponentCard title="GridPattern" importPath="@/components/backgrounds/_archive/grid-pattern">
+                <div className="space-y-3">
+                  <Badge variant="outline">Archived</Badge>
+                  <p className="text-sm text-muted-foreground">Static line grid pattern.</p>
+                  <div className="relative h-32 w-full overflow-hidden rounded-lg border border-border">
+                    <GridPattern className="opacity-30" />
                   </div>
                 </div>
               </ComponentCard>
@@ -769,11 +707,11 @@ export default function DesignSystemPage() {
               <div className="space-y-2">
                 <div className="flex gap-2">
                   <span className="text-emerald-600 dark:text-emerald-400 shrink-0">✓</span>
-                  <span className="text-muted-foreground"><strong>LandingBackground:</strong> Home, Pricing, Projects, Experience, Contact, FAQ</span>
+                  <span className="text-muted-foreground"><strong>LandingBackground:</strong> All landing pages (Home, Pricing, Projects, etc.)</span>
                 </div>
                 <div className="flex gap-2">
                   <span className="text-emerald-600 dark:text-emerald-400 shrink-0">✓</span>
-                  <span className="text-muted-foreground"><strong>DotPattern/GridPattern:</strong> Card backgrounds, empty states</span>
+                  <span className="text-muted-foreground"><strong>bg-background:</strong> Dashboard pages, design system</span>
                 </div>
               </div>
               <div className="space-y-2">
@@ -2499,7 +2437,7 @@ export default function DesignSystemPage() {
               <div className="space-y-1">
                 <span className="font-medium text-foreground">Custom</span>
                 <p className="text-muted-foreground text-xs">
-                  CursorGrid, BeforeAfterSlider, Logo3D, ExperienceTimeline, LandingButton, etc.
+                  BeforeAfterSlider, Logo3D, ExperienceTimeline, LandingButton, etc.
                 </p>
               </div>
             </div>

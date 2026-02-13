@@ -16,6 +16,9 @@ export const SOCIALS = {
   github: "https://github.com/sirjamesgray",
 } as const;
 
+// Resume document path - upload your resume to public/documents/
+export const RESUME_PATH = "/documents/resume.pdf" as const;
+
 // =============================================================================
 // LANDING PAGE CTA CONFIGURATION
 // =============================================================================

@@ -1,19 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight, Code, Check, GitBranch, Layers, Zap, Users, Target, Mail, LucideIcon, AlertTriangle, Lightbulb, Wrench, Palette, Building2, RefreshCcw, FileX, GitFork, Shield, Unplug, Rocket, Blocks, FileCode, Database, ShieldCheck, Clock, MessageSquare } from "lucide-react";
+import { ArrowRight, Code, Check, GitBranch, Layers, Zap, Users, Target, Mail, LucideIcon, AlertTriangle, Lightbulb, Wrench, Palette, Building2, RefreshCcw, FileX, GitFork, Shield, Unplug, Rocket, Blocks, FileCode, Database, ShieldCheck, Clock, MessageSquare, FileText, Linkedin, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { CursorGlow } from "@/components/ui/cursor-glow";
 import { LandingButton } from "@/components/ui/landing-button";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { SectionHeader } from "@/components/ui/section-header";
 import { SiteHeader } from "@/components/site-header";
-import { CursorGrid } from "@/components/cursor-grid";
 import { Footer } from "@/components/footer";
 import { DesignSystemsSection } from "@/components/design-systems-section";
 import { ProjectsSection } from "@/components/projects-section";
 import { CARD_INTERACTIVE_SOLID, CARD_FEATURED } from "@/lib/cards";
-import { PRODUCT_ENGINEER_CTA, EXPERIENCE } from "@/lib/constants";
+import { PRODUCT_ENGINEER_CTA, EXPERIENCE, SOCIALS, RESUME_PATH } from "@/lib/constants";
 import { Marquee } from "@/components/ui/marquee";
 import { UIShowcase, type ShowcaseStyle } from "@/components/ui-showcase";
 import { UIStyleSwitcher } from "@/components/ui-style-switcher";
@@ -67,10 +66,7 @@ export function ProductEngineerLanding({ customerDashboardEnabled }: ProductEngi
   const [showcaseStyle, setShowcaseStyle] = useState<ShowcaseStyle>("paper");
 
   return (
-    <div id="top" className="relative min-h-screen overflow-x-hidden bg-gradient-to-br from-background via-background to-blue-950/20 dark:to-blue-950/30">
-      {/* Twinkling grid background */}
-      <CursorGrid />
-
+    <div id="top" className="relative min-h-screen overflow-x-hidden bg-background">
       {/* Header with "Let's talk" CTAs */}
       <SiteHeader landingPage="product-engineer" customerDashboardEnabled={customerDashboardEnabled} />
 
@@ -269,28 +265,60 @@ export function ProductEngineerLanding({ customerDashboardEnabled }: ProductEngi
         </div>
 
         <BlurFade delay={0.2} inView>
-          <Link href="/experience" className="block group">
-            <Marquee pauseOnHover className="[--duration:30s]">
-              {EXPERIENCE.map((exp, idx) => (
-                <BlurFade key={exp.company} delay={0.25 + idx * 0.03} inView>
-                  <div
-                    className="flex items-center gap-3 pl-3 pr-6 py-3 rounded-lg bg-card/50 border border-border/50 group-hover:border-emerald-500/30 transition-colors"
-                  >
-                    <Image
-                      src={exp.logo}
-                      alt={exp.company}
-                      width={32}
-                      height={32}
-                      className="rounded-md"
-                    />
-                    <span className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
-                      {exp.company}
-                    </span>
-                  </div>
-                </BlurFade>
-              ))}
-            </Marquee>
-          </Link>
+          <Marquee className="[--duration:30s]">
+            {EXPERIENCE.map((exp, idx) => (
+              <BlurFade key={exp.company} delay={0.25 + idx * 0.03} inView>
+                <div className="flex items-center gap-2 px-3 py-2">
+                  <Image
+                    src={exp.logo}
+                    alt={exp.company}
+                    width={24}
+                    height={24}
+                    className="rounded-lg"
+                  />
+                  <span className="text-sm text-muted-foreground">
+                    {exp.company}
+                  </span>
+                </div>
+              </BlurFade>
+            ))}
+          </Marquee>
+        </BlurFade>
+
+        {/* Resume & LinkedIn Actions */}
+        <BlurFade delay={0.3} inView>
+          <div className="flex flex-col gap-3 mt-10 px-6 max-w-md mx-auto">
+            <a
+              href={RESUME_PATH}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-4 p-4 rounded-xl bg-card/50 border border-border/50 hover:border-emerald-500/30 hover:bg-card/80 transition-all"
+            >
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ring-1 bg-emerald-500/10 text-emerald-500 ring-emerald-500/20">
+                <FileText className="h-5 w-5" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-medium text-foreground">View Resume</p>
+                <p className="text-sm text-muted-foreground">Download my full CV</p>
+              </div>
+              <ChevronRight className="h-5 w-5 text-muted-foreground shrink-0" />
+            </a>
+            <a
+              href={SOCIALS.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-4 p-4 rounded-xl bg-card/50 border border-border/50 hover:border-blue-500/30 hover:bg-card/80 transition-all"
+            >
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ring-1 bg-blue-500/10 text-blue-500 ring-blue-500/20">
+                <Linkedin className="h-5 w-5" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-medium text-foreground">Check Out My LinkedIn</p>
+                <p className="text-sm text-muted-foreground">Connect with me professionally</p>
+              </div>
+              <ChevronRight className="h-5 w-5 text-muted-foreground shrink-0" />
+            </a>
+          </div>
         </BlurFade>
       </section>
 

@@ -14,7 +14,6 @@ import { DashboardButton } from "@/components/ui/button";
 import { SiteHeader } from "@/components/site-header";
 import { ExperienceTimeline } from "@/components/experience-timeline";
 import { ProjectsShowcase } from "@/components/projects-showcase";
-import { CursorGrid } from "@/components/cursor-grid";
 import { Footer } from "@/components/footer";
 import { SITE_CONFIG, CTA_CONFIG } from "@/lib/constants";
 import { CARD_INTERACTIVE_SOLID, CARD_FEATURED } from "@/lib/cards";
@@ -154,10 +153,7 @@ export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
   const showDashboardLinks = customerDashboardEnabled && user;
 
   return (
-    <div id="top" className="relative min-h-screen bg-gradient-to-br from-background via-background to-blue-950/20 dark:to-blue-950/30">
-      {/* Twinkling grid background */}
-      <CursorGrid />
-
+    <div id="top" className="relative min-h-screen bg-background">
       {/* Header with login/signup */}
       <SiteHeader customerDashboardEnabled={customerDashboardEnabled} />
 
@@ -538,8 +534,8 @@ export function HomeClient({ customerDashboardEnabled }: HomeClientProps) {
         </div>
       </section>
 
-      {/* Footer */}
-      <div className="mb-24 md:mb-0">
+      {/* Footer - extra bottom padding on mobile for floating toolbar */}
+      <div className="mb-36 md:mb-0">
         <Footer />
       </div>
     </div>
