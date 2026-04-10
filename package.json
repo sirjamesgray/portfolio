@@ -58,7 +58,7 @@
     "recharts": "^3.6.0",
     "remotion": "^4.0.409",
     "resend": "^6.6.0",
-    "stripe": "^20.3.1",
+    "stripe": "^22.0.1",
     "tailwind-merge": "^3.4.0",
     "three": "^0.182.0",
     "vaul": "^1.1.2"
