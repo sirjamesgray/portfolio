@@ -8,8 +8,12 @@ import DOMPurify from "isomorphic-dompurify"
 function sanitizeHtml(html: string): string {
   return DOMPurify.sanitize(html, {
     ALLOWED_TAGS: ["p", "br", "strong", "em", "u", "h1", "h2", "h3", "h4", "h5", "h6", "ul", "ol", "li", "a", "img", "blockquote", "code", "pre", "span", "div"],
-    ALLOWED_ATTR: ["href", "src", "alt", "class", "style", "target", "rel"],
-    ALLOW_DATA_ATTR: false,
+    ALLOWED_ATTR: [
+      "href", "src", "alt", "class", "style", "target", "rel",
+      "data-before-after", "data-before", "data-after",
+      "data-before-label", "data-after-label",
+      "data-mode", "data-background-color",
+    ],
   })
 }
 
