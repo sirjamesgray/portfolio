@@ -1,0 +1,18 @@
+@page {
+  size: letter;
+  margin: 0;
+}
+
+.sheet {
+  width: 8.5in;
+  min-height: 11in;
+}
+
+@media print {
+  .sheet {
+    width: 100%;
+    min-height: auto;
+    box-shadow: none;
+  }
+}
+
