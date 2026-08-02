@@ -1,4 +1,6 @@
-# Agent Workflow Guidelines
+# Portfolio (jamiegray.net) — AI Agent Guide
+
+Portfolio. CRM. Design system. Payment platform. One codebase. Built end-to-end — from pixel-perfect UI to Stripe webhooks.
 
 ## Local commits on main
 
@@ -10,7 +12,30 @@
 - Before committing, review `git status` / `git diff` and stage only files that belong to the chunk.
 - Keep commits focused: one logical concern per commit.
 
+## CLI account routing
 
-## Session Context
+Use the normal `gh` and `vercel` commands with the default `sirjamesgray` profiles. This repo is not part of the Liberty Vercel team.
 
-This file serves as a reference for AI agents working on this codebase. Always check here for workflow preferences and project conventions.
+## Tech stack
+
+- **Framework**: Next.js (App Router)
+- **Language**: TypeScript
+- **UI**: Radix UI primitives, Tailwind CSS v4, `tw-animate-css`
+- **Payments**: Stripe
+- **Bot protection**: Cloudflare Turnstile (`@marsidev/react-turnstile`)
+- **Animation**: Number Flow (`@number-flow/react`), Paper Design shaders (`@paper-design/shaders-react`)
+- **Image processing**: Sharp
+
+## Development
+
+```bash
+npm run dev     # dev server
+npm run build   # production build
+npm run start   # production server
+npm run lint    # ESLint
+```
+
+## Safety
+
+- Never commit `.env*`, Stripe secret keys, Turnflare secrets, or credentials.
+- Stage files deliberately rather than using broad staging commands.
