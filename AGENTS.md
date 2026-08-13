@@ -2,6 +2,18 @@
 
 Portfolio. CRM. Design system. Payment platform. One codebase. Built end-to-end — from pixel-perfect UI to Stripe webhooks.
 
+## Writing standard (ASD-STE100)
+
+Use ASD-STE100 Simplified Technical English for code comments, documentation, commit messages, and API descriptions in this repo. Key rules:
+- Short sentences (max 20 words for instructions, 25 for descriptions).
+- One instruction per sentence. Imperative mood for steps.
+- Active voice, present tense.
+- Approved words only. No synonyms — one word per concept.
+- Use articles (a, an, the) before nouns.
+- No jargon, idioms, or colloquialisms.
+
+**Exception:** Marketing copy, landing pages, social posts, and promotional content must NOT use ASD-STE100. Use warm, natural, human language for those instead.
+
 ## Local commits on main
 
 - After each coherent chunk of completed work, create a **local** Git commit on `main`.
