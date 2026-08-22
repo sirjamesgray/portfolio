@@ -723,7 +723,7 @@ export default function RecruitersAdminPage() {
     <div className="space-y-8">
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Recruiters</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Protected Content</h1>
           <p className="text-muted-foreground">
             Manage password-protected areas and monitor visitor activity.
           </p>
