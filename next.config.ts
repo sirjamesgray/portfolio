@@ -17,7 +17,7 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
-        source: "/for-recruiters",
+        source: "/protected-content",
         destination: "/protected",
         permanent: true,
       },

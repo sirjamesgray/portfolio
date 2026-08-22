@@ -78,7 +78,7 @@ export const adminNavItems: NavItem[] = [
   },
   {
     name: "Recruiters",
-    href: "/dashboard/admin/recruiters",
+    href: "/dashboard/admin/protected-content",
     icon: UserCircle,
   },
 ]
