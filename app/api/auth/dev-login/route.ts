@@ -47,11 +47,21 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
-    // Return the magic link URL directly
+    // Supabase admin.generateLink builds the action_link URL with the
+    // Supabase project's configured Site URL as redirect_to, even when
+    // options.redirectTo is set. Replace redirect_to with our actual
+    // request origin so the magic link lands on localhost in dev.
+    let loginUrl = data.properties?.action_link
+    if (loginUrl) {
+      loginUrl = loginUrl.replace(
+        /redirect_to=[^&]+/,
+        `redirect_to=${encodeURIComponent(`${baseUrl}/auth/callback?next=/dashboard`)}`
+      )
+    }
+
     return NextResponse.json({
       success: true,
-      // The hashed_token can be used to construct the login URL
-      loginUrl: data.properties?.action_link,
+      loginUrl,
     })
   } catch (error) {
     console.error("Dev login error:", error)
