@@ -58,6 +58,7 @@ export async function POST(request: NextRequest) {
       ip_address: ip,
       user_agent: userAgent,
       referrer,
+      last_active_at: new Date().toISOString(),
     })
 
     // Create session token
