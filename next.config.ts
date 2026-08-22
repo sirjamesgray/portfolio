@@ -14,6 +14,20 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/for-recruiters",
+        destination: "/protected",
+        permanent: true,
+      },
+      {
+        source: "/creative-portfolio",
+        destination: "/protected",
+        permanent: true,
+      },
+    ]
+  },
 };
 
 export default nextConfig;
