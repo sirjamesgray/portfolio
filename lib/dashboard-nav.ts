@@ -76,6 +76,11 @@ export const adminNavItems: NavItem[] = [
     href: "/dashboard/admin/feature-flags",
     icon: Flag,
   },
+  {
+    name: "Recruiters",
+    href: "/dashboard/admin/recruiters",
+    icon: UserCircle,
+  },
 ]
 
 // Get nav items based on user type
