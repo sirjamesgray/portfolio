@@ -28,12 +28,17 @@ export async function POST(request: Request) {
 
     const adminSupabase = createAdminClient()
 
+    // Build redirect URL from the actual request URL
+    // In development: http://localhost:3103
+    // In production: https://jamiegray.net
+    const baseUrl = new URL(request.url).origin
+
     // Generate a magic link that we can return directly
     const { data, error } = await adminSupabase.auth.admin.generateLink({
       type: "magiclink",
       email,
       options: {
-        redirectTo: `${request.headers.get("origin")}/auth/callback?next=/dashboard`,
+        redirectTo: `${baseUrl}/auth/callback?next=/dashboard`,
       },
     })
 
