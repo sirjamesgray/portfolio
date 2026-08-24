@@ -1,8 +1,15 @@
+import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
-const PORTFOLIO_PASSWORD = process.env.PORTFOLIO_PASSWORD ?? "creative2026";
+function getPortfolioPassword(): string {
+  const pw = process.env.PORTFOLIO_PASSWORD ?? "";
+  if (!pw) {
+    throw new Error("PORTFOLIO_PASSWORD environment variable is required");
+  }
+  return pw;
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -11,9 +18,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ valid: false, error: "Missing password" }, { status: 400 });
     }
 
-    // Constant-time comparison to prevent timing attacks
-    const valid = body.password.length === PORTFOLIO_PASSWORD.length &&
-      body.password.split("").every((ch: string, i: number) => ch === PORTFOLIO_PASSWORD[i]);
+    const password = getPortfolioPassword();
+
+    // Timing-safe comparison using Node.js crypto
+    const valid =
+      body.password.length === password.length &&
+      crypto.timingSafeEqual(
+        Buffer.from(body.password, "utf8"),
+        Buffer.from(password, "utf8"),
+      );
 
     return NextResponse.json({ valid });
   } catch {

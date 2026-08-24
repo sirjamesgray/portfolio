@@ -3,10 +3,13 @@
 
 import crypto from "crypto"
 
-const SESSION_SECRET =
-  process.env.RECRUITER_SESSION_SECRET ||
-  process.env.SUPABASE_SERVICE_ROLE_KEY ||
-  "fallback-recruiter-secret-change-me"
+function getSessionSecret(): string {
+  const secret = process.env.RECRUITER_SESSION_SECRET ?? "";
+  if (!secret) {
+    throw new Error("RECRUITER_SESSION_SECRET environment variable is required");
+  }
+  return secret;
+}
 
 const SESSION_DURATION_MS = 24 * 60 * 60 * 1000 // 24 hours
 
@@ -37,7 +40,7 @@ interface RecruiterSessionPayload {
 export function createSessionToken(payload: Omit<RecruiterSessionPayload, "exp">): string {
   const exp = Date.now() + SESSION_DURATION_MS
   const data = JSON.stringify({ ...payload, exp })
-  const hmac = crypto.createHmac("sha256", SESSION_SECRET).update(data).digest("hex")
+  const hmac = crypto.createHmac("sha256", getSessionSecret()).update(data).digest("hex")
   const encoded = Buffer.from(data).toString("base64url")
   return `${encoded}.${hmac}`
 }
@@ -50,7 +53,7 @@ export function verifySessionToken(token: string): RecruiterSessionPayload | nul
 
   try {
     const data = Buffer.from(encoded, "base64url").toString("utf8")
-    const expected = crypto.createHmac("sha256", SESSION_SECRET).update(data).digest("hex")
+    const expected = crypto.createHmac("sha256", getSessionSecret()).update(data).digest("hex")
 
     if (!crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(hmac))) {
       return null
