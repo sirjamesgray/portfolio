@@ -29,7 +29,7 @@ const LANDING_PAGES: LandingPage[] = [
     description: "Full-time role landing page - design systems built in code",
     route: "/landing/product-engineer",
     ctas: [
-      { label: "Let's talk", href: "/contact", variant: "primary" },
+      { label: "Say hi", href: "/contact", variant: "primary" },
       { label: "Learn More", href: "#approach", variant: "secondary" },
     ],
   },

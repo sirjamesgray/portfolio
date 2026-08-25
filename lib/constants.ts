@@ -35,7 +35,7 @@ export type LandingPageCTA = {
  */
 export const PRODUCT_ENGINEER_CTA: LandingPageCTA = {
   primary: {
-    text: "Let's talk",
+    text: "Say hi",
     href: "/contact",
   },
   secondary: {

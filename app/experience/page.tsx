@@ -118,10 +118,10 @@ export default function ExperiencePage() {
           <BlurFade delay={0.3}>
             <div className={`${CARD_INTERACTIVE_SOLID.full} mt-12 p-8 text-center`}>
               <h2 className="text-2xl font-bold text-foreground mb-3">
-                Looking to hire?
+                Want to chat about product work?
               </h2>
               <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
-                I&apos;m available for product design and engineering roles. Let&apos;s connect.
+                I&apos;m currently employed as a Product Engineer, so I&apos;m not actively looking for a full-time role. Happy to chat—reach out to see what I&apos;ve shipped.
               </p>
               <Link href={PRODUCT_ENGINEER_CTA.primary.href}>
                 <LandingButton variant="primary" size="lg" className="gap-2">

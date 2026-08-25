@@ -6,7 +6,7 @@ import { HomeClient } from "./home-client";
 const LANDING_PAGE_METADATA: Record<string, Metadata> = {
   "product-engineer": {
     title: "Product Engineer | Jamie Gray",
-    description: "I collapse design and front-end engineering into a single role. Code is the source of truth. Looking for a full-time Product Engineer role.",
+    description: "I collapse design and front-end engineering into a single role. Code is the source of truth. I&apos;m currently employed—happy to chat about projects.",
     openGraph: {
       title: "Product Engineer | Jamie Gray",
       description: "I collapse design and front-end engineering into a single role. Code is the source of truth.",

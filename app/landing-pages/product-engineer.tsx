@@ -67,7 +67,7 @@ export function ProductEngineerLanding({ customerDashboardEnabled }: ProductEngi
 
   return (
     <div id="top" className="relative min-h-screen overflow-x-hidden bg-background">
-      {/* Header with "Let's talk" CTAs */}
+      {/* Header with "Say hi" CTAs */}
       <SiteHeader landingPage="product-engineer" customerDashboardEnabled={customerDashboardEnabled} />
 
       {/* Hero Section - Simplified */}
@@ -322,7 +322,7 @@ export function ProductEngineerLanding({ customerDashboardEnabled }: ProductEngi
         </BlurFade>
       </section>
 
-      {/* CTA Section - Let's Talk Focus */}
+      {/* CTA Section - Say hi Focus */}
       <section id="contact" className="group relative px-6 py-16 scroll-mt-20">
         <SectionCopyLink sectionId="contact" className="absolute top-4 right-4" />
         <div className={`mx-auto ${SECTION_MAX_WIDTH}`}>
@@ -333,7 +333,7 @@ export function ProductEngineerLanding({ customerDashboardEnabled }: ProductEngi
                   Let&apos;s Work Together
                 </h2>
                 <p className="mb-8 text-lg text-muted-foreground max-w-xl mx-auto">
-                  I&apos;m currently looking for a full-time Product Engineer role where I can own the design system and ship UI that works. I&apos;d love to chat!
+                  I&apos;m currently employed as a Product Engineer, so I&apos;m not actively looking for a full-time role. If you reach out, I&apos;d be happy to chat and show off some projects.
                 </p>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                   <Link href={PRODUCT_ENGINEER_CTA.primary.href}>

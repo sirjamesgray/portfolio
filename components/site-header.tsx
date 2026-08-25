@@ -103,7 +103,7 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
       {!loading && variant === "default" && (
         <>
           {landingPage === "product-engineer" ? (
-            // Product Engineer landing page: "Let's talk" focused CTAs
+            // Product Engineer landing page: "Say hi" focused CTAs
             <>
               <ScrollAwareButton
                 variant="secondary"
@@ -174,7 +174,7 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
       {!loading && variant === "default" && (
         <>
           {landingPage === "product-engineer" ? (
-            // Product Engineer landing page: "Let's talk" focused CTAs
+            // Product Engineer landing page: "Say hi" focused CTAs
             <>
               <ScrollAwareButton
                 variant="secondary"

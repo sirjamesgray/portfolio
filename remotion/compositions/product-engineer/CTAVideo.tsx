@@ -129,7 +129,7 @@ export const CTAVideo: React.FC<CTAVideoProps> = ({ orientation = "horizontal" }
               maxWidth: isVertical ? 450 : 800,
             }}
           >
-            Looking for full-time Product Engineer roles
+            I’m currently employed—happy to chat and show off projects
           </p>
         </div>
 
@@ -175,7 +175,7 @@ export const CTAVideo: React.FC<CTAVideoProps> = ({ orientation = "horizontal" }
               }}
             >
               <span style={{ fontSize: isVertical ? 24 : 32 }}>✉️</span>
-              Let&apos;s Talk
+              Say hi
             </div>
           </div>
         )}
