@@ -37,16 +37,15 @@ export default function ResumePage() {
   return (
     <main className="min-h-screen bg-zinc-100 px-4 py-8 text-zinc-900 print:bg-white print:p-0">
       <div className="mx-auto mb-4 flex max-w-[8.5in] items-center justify-between gap-4 print:hidden">
-        <div>
-          <p className="text-sm font-semibold">Generated résumé draft</p>
-          <p className="text-xs text-zinc-600">The original PDF is still available.</p>
-        </div>
+        <p className="text-xs text-zinc-600">
+          Download the PDF version at the link below.
+        </p>
         <div className="flex items-center gap-3">
           <Link
             href="/documents/resume.pdf"
             className="text-sm font-medium text-zinc-700 underline underline-offset-4"
           >
-            View old résumé
+            Download PDF
           </Link>
           <PrintButton />
         </div>

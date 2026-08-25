@@ -1,12 +1,12 @@
 export const SITE_CONFIG = {
   name: "Jamie Gray",
-  title: "Product Engineer",
+  title: "Creative Technologist — Product Engineer",
   email: "contact@jamiegray.net",
   phone: "8173680224",
   url: "https://www.jamiegray.net",
   calendly: "https://calendly.com/jamie-gray-tech/30min",
   description:
-    "Product Engineer offering software solutions with 8 years of UX design experience. Production-grade prototyping and UX-led systems design.",
+    "Creative Technologist and Product Engineer with 8+ years shipping web apps. Expert in LLM-powered agentic workflows, full-stack development, and UX design.",
 } as const;
 
 // Centralized social media links
@@ -120,6 +120,24 @@ export function formatProjectType(type: string | null): string {
 }
 
 export const EXPERIENCE: ExperienceItem[] = [
+  {
+    company: "Worx4u",
+    role: "Developer II — UI/UX (Product Engineer)",
+    location: "Fort Worth",
+    startDate: "Apr 2026",
+    endDate: getCurrentDate(),
+    logo: "",
+    brandColor: "#6366F1", // Indigo
+  },
+  {
+    company: "Lucent Wash",
+    role: "Co-Founder, Technical Director",
+    location: "Fort Worth",
+    startDate: "Oct 2025",
+    endDate: getCurrentDate(),
+    logo: "",
+    brandColor: "#0EA5E9", // Sky
+  },
   {
     company: "WeWrite",
     role: "Product Engineer",
