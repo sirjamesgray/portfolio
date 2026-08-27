@@ -47,6 +47,23 @@ npm run start   # production server
 npm run lint    # ESLint
 ```
 
+## Skills dispatch
+
+Load the matching skill for structured workflows:
+
+| Task type | Skill |
+|-----------|-------|
+| Bug fix / feature / investigation | `poteto-mode` |
+| Large change / migration planning | `figure-it-out` |
+| Autonomous runs / decision log | `show-me-your-work` |
+| Commit / PR / docs cleanup | `unslop` |
+| Code walkthrough / "how" | `codebase-exploration` |
+| Design rationale / "why" | `design-rationale` |
+| Blast radius | `blast-radius` |
+| Code review (pre-merge) | `code-review-and-quality` |
+| Multi-model adversarial review | `multi-model-code-review` |
+| Throwaway prototype / spike | `spike` |
+
 ## Safety
 
 - Never commit `.env*`, Stripe secret keys, Turnflare secrets, or credentials.
