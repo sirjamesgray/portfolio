@@ -1,5 +1,6 @@
 import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
+import { checkRateLimit, getClientIp } from "@/lib/ratelimit";
 
 export const dynamic = "force-dynamic";
 
@@ -13,6 +14,13 @@ function getPortfolioPassword(): string {
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limit password attempts: 5 per 15 minutes per IP.
+    const clientIp = getClientIp(request)
+    const rl = checkRateLimit(`creative-portfolio-verify:${clientIp}`, 5, 15 * 60 * 1000)
+    if (!rl.success) {
+      return NextResponse.json({ valid: false, error: "Too many attempts" }, { status: 429 });
+    }
+
     const body = await request.json().catch(() => null);
     if (!body || typeof body.password !== "string") {
       return NextResponse.json({ valid: false, error: "Missing password" }, { status: 400 });

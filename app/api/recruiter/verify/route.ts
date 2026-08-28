@@ -1,9 +1,21 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { verifyPassword, createSessionToken, getSessionFromCookies } from "@/lib/recruiter-auth"
+import { checkRateLimit, getClientIp } from "@/lib/ratelimit"
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limit password attempts: 5 per 15 minutes per IP.
+    // Protects the PBKDF2 hash against distributed brute force.
+    const clientIp = getClientIp(request)
+    const rl = checkRateLimit(`recruiter-verify:${clientIp}`, 5, 15 * 60 * 1000)
+    if (!rl.success) {
+      return NextResponse.json(
+        { error: "Too many attempts. Try again later." },
+        { status: 429 }
+      )
+    }
+
     const { password, name, company, message } = await request.json()
 
     if (!password || !name) {
