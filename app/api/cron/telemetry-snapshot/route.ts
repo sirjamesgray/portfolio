@@ -1,14 +1,18 @@
 /**
  * Cron route: Portfolio daily telemetry snapshot → Helm.
  *
- * Computes aggregate counts (showcased projects, inbound inquiries,
- * revenue) from the product database and POSTs them to Helm's telemetry
+ * Computes aggregate KPIs (visitors, projects showcased, contact form
+ * submissions) from the product database and POSTs them to Helm's telemetry
  * ingestion endpoint. Visitors come from the Vercel Web Analytics API.
  * Only counts cross the boundary — never PII.
  *
  * Auth: CRON_SECRET Bearer, same as the other cron routes. Vercel Cron
  * invokes the route with a GET request, which is why GET is exported.
+ * When CRON_SECRET is unset (local dev), the route is accessible without auth.
+ *
+ * Schedule: 0 6 * * * (daily at 06:00 UTC).
  */
+
 import { NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import {
@@ -22,7 +26,8 @@ export const dynamic = "force-dynamic"
 
 function authorized(request: Request) {
   const secret = process.env.CRON_SECRET
-  return Boolean(secret) && request.headers.get("authorization") === `Bearer ${secret}`
+  if (!secret) return process.env.NODE_ENV !== "production"
+  return request.headers.get("authorization") === `Bearer ${secret}`
 }
 
 /** Showcased projects: admin-enabled and not soft-deleted. Defensive. */
@@ -42,8 +47,8 @@ async function countShowcasedProjects(
   }
 }
 
-/** Inquiries: project submissions from the public form. Defensive. */
-async function countInquiries(
+/** Contact form submissions from the public start-project form. Defensive. */
+async function countContactFormSubmissions(
   supabase: ReturnType<typeof createAdminClient>,
 ): Promise<number> {
   try {
@@ -55,27 +60,6 @@ async function countInquiries(
     return count ?? 0
   } catch {
     return 0
-  }
-}
-
-/** Revenue from paid invoices (amount_paid column, stored in dollars). */
-async function revenuePaid(
-  supabase: ReturnType<typeof createAdminClient>,
-): Promise<{ cents: number; count: number }> {
-  try {
-    const { data, error } = await supabase
-      .from("invoices")
-      .select("amount_paid")
-      .eq("status", "paid")
-    if (error || !data) return { cents: 0, count: 0 }
-    return {
-      cents: Math.round(
-        data.reduce((sum, inv) => sum + (Number(inv.amount_paid) || 0), 0) * 100,
-      ),
-      count: data.length,
-    }
-  } catch {
-    return { cents: 0, count: 0 }
   }
 }
 
@@ -120,17 +104,16 @@ export async function GET(request: Request) {
   const supabase = createAdminClient()
   const windowKey = new Date().toISOString().slice(0, 10) // one snapshot per day
 
-  const [projectsShowcased, inquiries, payments, visitors] = await Promise.all([
+  const [projectsShowcased, submissions, visitors] = await Promise.all([
     countShowcasedProjects(supabase),
-    countInquiries(supabase),
-    revenuePaid(supabase),
+    countContactFormSubmissions(supabase),
     fetchVisitors(),
   ])
 
   const metrics: HelmMetric[] = [
     {
-      key: "portfolio_views",
-      label: "Portfolio views",
+      key: "visitors",
+      label: "Visitors",
       category: "growth",
       value: visitors,
       unit: "count",
@@ -147,31 +130,13 @@ export async function GET(request: Request) {
       source: "projects (show_on_landing_page=true)",
     },
     {
-      key: "inbound_inquiries",
-      label: "Inbound inquiries",
-      category: "revenue",
-      value: inquiries,
+      key: "contact_form_submissions",
+      label: "Contact form submissions",
+      category: "marketing",
+      value: submissions,
       unit: "count",
       period: "all_time",
-      source: "activity_log project_submitted",
-    },
-    {
-      key: "payments_collected",
-      label: "Payments collected",
-      category: "revenue",
-      value: payments.count,
-      unit: "count",
-      period: "all_time",
-      source: "invoices (status=paid)",
-    },
-    {
-      key: "revenue_collected_cents",
-      label: "Revenue collected",
-      category: "revenue",
-      value: payments.cents,
-      unit: "currency",
-      period: "all_time",
-      source: "invoices.amount_paid (status=paid)",
+      source: "activity_log (action=project_submitted)",
     },
   ]
 
@@ -180,11 +145,6 @@ export async function GET(request: Request) {
     requestId: telemetryRequestId("portfolio", windowKey),
     productId: "portfolio",
     sentAt: new Date().toISOString(),
-    heartbeat: {
-      status: "healthy",
-      environment: process.env.NODE_ENV ?? "production",
-      message: "Portfolio cron telemetry snapshot",
-    },
     metrics,
   }
 

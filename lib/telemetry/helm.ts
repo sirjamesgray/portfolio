@@ -17,8 +17,6 @@ import { createHash } from "node:crypto"
 const HELM_TELEMETRY_URL =
   process.env.HELM_TELEMETRY_URL ?? "https://jamies-mac-mini.tailac1b67.ts.net"
 
-const HELM_INGEST_TOKEN = process.env.HELM_INGEST_TOKEN ?? ""
-
 export type HelmMetric = {
   key: string
   label: string
@@ -51,7 +49,8 @@ export type HelmEnvelope = {
  * warning and returns false so callers can degrade gracefully.
  */
 export async function pushHelmTelemetry(envelope: HelmEnvelope): Promise<boolean> {
-  if (!HELM_INGEST_TOKEN) {
+  const ingestToken = process.env.HELM_INGEST_TOKEN ?? ""
+  if (!ingestToken) {
     console.warn("[helm-telemetry] HELM_INGEST_TOKEN not set; skipping push")
     return false
   }
@@ -60,7 +59,7 @@ export async function pushHelmTelemetry(envelope: HelmEnvelope): Promise<boolean
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${HELM_INGEST_TOKEN}`,
+        Authorization: `Bearer ${ingestToken}`,
       },
       body: JSON.stringify(envelope),
       signal: AbortSignal.timeout(10_000),
