@@ -28,6 +28,7 @@ export function LaptopFrame({ shot, priority = false, scroll = false }: FramePro
               width={shot.width}
               height={shot.height}
               priority={priority}
+              loading={priority || scroll ? undefined : "eager"}
               sizes="(min-width: 1024px) 720px, 100vw"
               className="h-auto w-full"
             />
@@ -59,6 +60,7 @@ export function PhoneFrame({ shot, priority = false }: FrameProps) {
             width={shot.width}
             height={shot.height}
             priority={priority}
+            loading={priority ? undefined : "eager"}
             sizes="200px"
             className="h-auto w-full"
           />
@@ -68,20 +70,21 @@ export function PhoneFrame({ shot, priority = false }: FrameProps) {
   );
 }
 
-/** Still frame for a tall case-study board. The board scrolls inside the frame. */
+/**
+ * Case-study thumbnail. A 3:2 crop from the top of the board,
+ * so the card shows the title and the first row of work.
+ */
 export function StudyFrame({ shot }: { shot: WorkShot }) {
   return (
-    <figure className="overflow-hidden rounded-md bg-zinc-100 ring-1 ring-black/10 dark:bg-zinc-900 dark:ring-white/10">
-      <div className="max-h-[420px] overflow-y-auto overflow-x-hidden sm:max-h-[480px]">
-        <Image
-          src={shot.src}
-          alt={shot.alt}
-          width={shot.width}
-          height={shot.height}
-          sizes="(min-width: 1024px) 360px, 100vw"
-          className="h-auto w-full"
-        />
-      </div>
+    <figure className="relative aspect-[3/2] overflow-hidden rounded-md bg-zinc-100 ring-1 ring-black/10 dark:bg-zinc-900 dark:ring-white/10">
+      <Image
+        src={shot.src}
+        alt={shot.alt}
+        fill
+        loading="eager"
+        sizes="(min-width: 1024px) 360px, 100vw"
+        className="object-cover object-top"
+      />
     </figure>
   );
 }

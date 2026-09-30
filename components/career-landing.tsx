@@ -28,9 +28,18 @@ function ProductBlock({ product, priority = false }: { product: PublicProduct; p
           <h2 className="mt-3 text-3xl font-semibold tracking-[-0.03em] text-foreground sm:text-4xl">
             {product.name}
           </h2>
-          <p className="mt-2 text-sm text-foreground">{product.role}</p>
+          {product.titles && product.titles.length > 0 ? (
+            <ul className="mt-2 space-y-1">
+              {product.titles.map((title) => (
+                <li key={title} className="text-sm text-foreground">{title}</li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-2 text-sm text-foreground">{product.role}</p>
+          )}
           <p className="mt-1 text-sm text-muted-foreground">
-            {product.place} · {product.dates}
+            {product.place}
+            {product.titles && product.titles.length > 0 ? "" : ` · ${product.dates}`}
           </p>
           <p className="mt-5 max-w-prose text-base leading-relaxed text-muted-foreground">
             {product.summary}
@@ -55,13 +64,17 @@ function ProductBlock({ product, priority = false }: { product: PublicProduct; p
         </div>
 
         {hasShots && (
-          <div className="grid items-end gap-6 sm:grid-cols-[minmax(0,1fr)_168px] sm:gap-5">
+          <div className="grid items-end gap-8 lg:grid-cols-[minmax(0,1fr)_180px] lg:gap-5">
             <div className="min-w-0 space-y-6">
               {product.desktop && <LaptopFrame shot={product.desktop} priority={priority} />}
-              {product.fullPage && <LaptopFrame shot={product.fullPage} scroll />}
+              {product.fullPage && (
+                <div className="hidden lg:block">
+                  <LaptopFrame shot={product.fullPage} scroll />
+                </div>
+              )}
             </div>
             {product.mobile && (
-              <div className="min-w-0 sm:pb-6">
+              <div className="min-w-0 lg:pb-6">
                 <PhoneFrame shot={product.mobile} priority={priority} />
               </div>
             )}

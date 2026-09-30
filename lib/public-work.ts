@@ -14,6 +14,8 @@ export type PublicProduct = {
   dates: string;
   href?: string;
   hrefLabel?: string;
+  /** Extra role lines when one job has more than one title. */
+  titles?: readonly string[];
   summary: string;
   points: readonly string[];
   desktop?: WorkShot;
@@ -99,12 +101,15 @@ export const PUBLIC_PRODUCTS: readonly PublicProduct[] = [
     index: "03",
     name: "Worx4u",
     role: "Full Stack Developer",
+    titles: [
+      "Full Stack Developer · Sep 2026 — Present",
+      "Developer II, UI/UX (Product Engineer) · Apr 2026 — Sep 2026",
+    ],
     place: "Fort Worth · formerly Thigbe",
     dates: "Apr 2026 — Present",
     summary:
       "Day job. A utility operations platform, described in text only. No screenshots of customer or internal systems.",
     points: [
-      "Full Stack Developer, Sep 2026 — present. Developer II, UI/UX (Product Engineer), Apr — Sep 2026.",
       "Production features used daily by customers and back-office agents, including Python services. AI-assisted development, with tests taken from real customer use.",
       "An interactive API platform for utility developers.",
       "Retail Electricity Provider signup flows in ORDS, APEX, and PL/SQL, and the move from APEX to React and Next.js.",
