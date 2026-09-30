@@ -87,11 +87,10 @@ export function isAdmin(email: string | null | undefined): boolean {
   return ADMIN_EMAILS.includes(email as typeof ADMIN_EMAILS[number]);
 }
 
-// Get current month and year for dynamic end date
-const getCurrentDate = () => {
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  const now = new Date();
-  return `${months[now.getMonth()]} ${now.getFullYear()}`;
+export type ExperiencePosition = {
+  title: string;
+  startDate: string;
+  endDate: string;
 };
 
 export type ExperienceItem = {
@@ -103,6 +102,8 @@ export type ExperienceItem = {
   logo: string;
   /** Brand color for glow/hover effects (HSL format for CursorGlow) */
   brandColor: string;
+  note?: string;
+  positions?: ExperiencePosition[];
 };
 
 // Project types for the onboarding flow and project display
@@ -122,30 +123,35 @@ export function formatProjectType(type: string | null): string {
 export const EXPERIENCE: ExperienceItem[] = [
   {
     company: "Worx4u",
-    role: "Developer II — UI/UX (Product Engineer)",
+    role: "Full Stack Developer",
     location: "Fort Worth",
     startDate: "Apr 2026",
-    endDate: getCurrentDate(),
+    endDate: "Present",
     logo: "",
-    brandColor: "#6366F1", // Indigo
+    brandColor: "#6366F1",
+    note: "Formerly Thigbe",
+    positions: [
+      { title: "Full Stack Developer", startDate: "Sep 2026", endDate: "Present" },
+      { title: "Developer II, UI/UX (Product Engineer)", startDate: "Apr 2026", endDate: "Sep 2026" },
+    ],
   },
   {
     company: "Lucent Wash",
     role: "Co-Founder, Technical Director",
     location: "Fort Worth",
     startDate: "Oct 2025",
-    endDate: getCurrentDate(),
+    endDate: "Present",
     logo: "",
-    brandColor: "#0EA5E9", // Sky
+    brandColor: "#0EA5E9",
   },
   {
     company: "WeWrite",
-    role: "Product Engineer",
-    location: "DFW",
-    startDate: "May 2025",
-    endDate: getCurrentDate(),
+    role: "Founder, Product Engineer",
+    location: "Fort Worth",
+    startDate: "Mar 2025",
+    endDate: "Present",
     logo: "/logos/wewrite.png",
-    brandColor: "#2599FF", // WeWrite Blue
+    brandColor: "#2599FF",
   },
   {
     company: "Turbo",
@@ -154,25 +160,8 @@ export const EXPERIENCE: ExperienceItem[] = [
     startDate: "Jun 2024",
     endDate: "May 2025",
     logo: "/logos/turbo.png",
-    brandColor: "#2E78F7", // Turbo Blue
-  },
-  {
-    company: "Ramp",
-    role: "Product Designer",
-    location: "NYC",
-    startDate: "Aug 2024",
-    endDate: "Mar 2025",
-    logo: "/logos/ramp.png",
-    brandColor: "#E1F03F", // Ramp Yellow-Green
-  },
-  {
-    company: "Vondy",
-    role: "Product Designer",
-    location: "NYC",
-    startDate: "Feb 2025",
-    endDate: "Apr 2025",
-    logo: "/logos/vondy.png",
-    brandColor: "#0E3DB9", // Vondy Blue
+    brandColor: "#2E78F7",
+    note: "Ramp travel, Vondy, Precision AI",
   },
   {
     company: "Whop",
@@ -181,15 +170,16 @@ export const EXPERIENCE: ExperienceItem[] = [
     startDate: "Jul 2023",
     endDate: "May 2024",
     logo: "/logos/whop.png",
-    brandColor: "#F83E22", // Whop Red-Orange
+    brandColor: "#F83E22",
   },
   {
     company: "ParkHub",
     role: "Product Designer",
-    location: "DFW",
+    location: "Dallas",
     startDate: "Jun 2017",
     endDate: "Jan 2023",
     logo: "/logos/parkhub.png",
-    brandColor: "#279B3C", // ParkHub Green
+    brandColor: "#279B3C",
+    note: "Acquired by JustPark",
   },
 ];

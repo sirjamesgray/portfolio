@@ -16,33 +16,12 @@ import {
   ArrowLeft,
   ChevronRight,
   Wrench,
-  Layers,
   Bot,
   Zap,
   Eye,
-  ShieldCheck,
-  FileDown,
 } from "lucide-react";
 
 const PORTFOLIO_ITEMS = [
-  {
-    title: "Helm — Mission Control",
-    tagline: "Product intelligence dashboard for a 10+ project portfolio",
-    description:
-      "Built a full-stack operating console that monitors products, social KPIs, infrastructure spending, and career pipeline. Uses agentic AI workflows throughout — the app itself demonstrates how AI can accelerate product engineering.",
-    highlights: [
-      "Drill-down navigation with breadcrumbs and animated transitions",
-      "Visual snapshot timeline with Playwright-based regression capture",
-      "Per-listing resume tailor pipeline using Claude Sonnet via OpenRouter",
-      "Server manager, telemetry, vault, tasks, and collateral pipeline",
-    ],
-    stack: ["Next.js", "TypeScript", "Tailwind v4", "SQLite", "OpenRouter API", "Playwright"],
-    links: [
-      { label: "GitHub", url: "https://github.com/sirjamesgray/helm" },
-      { label: "Live Demo", url: "http://localhost:3109" },
-    ],
-    icon: <Layers className="h-5 w-5" />,
-  },
   {
     title: "WeWrite — Social Writing Platform",
     tagline: "Founder-led product from idea to shipped platform",
@@ -62,21 +41,18 @@ const PORTFOLIO_ITEMS = [
     icon: <Globe className="h-5 w-5" />,
   },
   {
-    title: "ACP TX — Volunteer Management",
-    tagline: "Enterprise platform for a statewide nonprofit",
+    title: "Worx4u — Utility operations",
+    tagline: "Day job. Text only. No screenshots.",
     description:
-      "Full-featured platform for managing volunteers, events, tasks, and teams across Texas. Features include hierarchical team assignment, Google Calendar sync, email OTP login, media management, and automated email campaigns.",
+      "Full Stack Developer at Worx4u, formerly Thigbe. I ship features used daily by customers and back-office agents, an API platform for utility developers, and Retail Electricity Provider signup flows. Backend Mirror keeps git-versioned backend artifacts for AI context.",
     highlights: [
-      "Hierarchical team selector with parent-chain resolution",
-      "Google Calendar OAuth integration with automatic sync",
-      "Email login with OTP / magic-link authentication",
-      "Automated email campaigns via Resend for event communication",
+      "Full Stack Developer, Sep 2026 to present",
+      "Developer II, UI/UX (Product Engineer), Apr 2026 to Sep 2026",
+      "APEX to React and Next.js migration",
+      "SSO and deterministic local development",
     ],
-    stack: ["Next.js", "TypeScript", "Supabase", "Resend", "Google Calendar API", "Vercel"],
-    links: [
-      { label: "Website", url: "https://acptx.us" },
-      { label: "GitHub", url: "https://github.com/LIBERTYMAXXING/acp-tx" },
-    ],
+    stack: ["React", "Next.js", "TypeScript", "Python", "ORDS", "APEX"],
+    links: [],
     icon: <BriefcaseBusiness className="h-5 w-5" />,
   },
   {
@@ -96,22 +72,6 @@ const PORTFOLIO_ITEMS = [
       { label: "GitHub", url: "https://github.com/sirjamesgray" },
     ],
     icon: <Bot className="h-5 w-5" />,
-  },
-  {
-    title: "Car Freedom",
-    tagline: "Consumer auto-buying experience",
-    description:
-      "A Next.js application reimagining the car-buying experience. Built with Supabase backend and Tailwind CSS frontend, featuring user authentication, vehicle listings, and an intuitive browsing interface.",
-    highlights: [
-      "User authentication and profile management",
-      "Vehicle listing and search with filtering",
-      "Responsive design optimized for mobile-first browsing",
-    ],
-    stack: ["Next.js", "TypeScript", "Supabase", "Tailwind CSS", "Vercel"],
-    links: [
-      { label: "GitHub", url: "https://github.com/sirjamesgray/car-freedom" },
-    ],
-    icon: <Zap className="h-5 w-5" />,
   },
   {
     title: "Lucent Wash — Full Customer Platform",

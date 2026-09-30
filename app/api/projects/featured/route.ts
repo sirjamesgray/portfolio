@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/supabase/admin"
+import { textContainsForbiddenPublicName } from "@/lib/forbidden-public-names"
 
 export async function GET() {
   // Use admin client to bypass RLS - this is a public endpoint for featured projects
@@ -35,5 +36,17 @@ export async function GET() {
     return NextResponse.json({ error: "Failed to fetch projects" }, { status: 500 })
   }
 
-  return NextResponse.json({ projects: projects || [] })
+  const visible = (projects || []).filter(
+    (project) =>
+      !textContainsForbiddenPublicName([
+        project.title,
+        project.public_title,
+        project.public_description,
+        project.public_industry,
+        project.public_live_url,
+        project.public_content_html,
+      ]),
+  )
+
+  return NextResponse.json({ projects: visible })
 }

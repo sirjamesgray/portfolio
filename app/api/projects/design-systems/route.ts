@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/supabase/admin"
+import { textContainsForbiddenPublicName } from "@/lib/forbidden-public-names"
 
 export async function GET() {
   const supabase = createAdminClient()
@@ -26,5 +27,16 @@ export async function GET() {
     return NextResponse.json({ error: "Failed to fetch projects" }, { status: 500 })
   }
 
-  return NextResponse.json({ projects: projects || [] })
+  const visible = (projects || []).filter(
+    (project) =>
+      !textContainsForbiddenPublicName([
+        project.title,
+        project.public_title,
+        project.public_description,
+        project.design_system_description,
+        project.public_design_system_url,
+      ]),
+  )
+
+  return NextResponse.json({ projects: visible })
 }

@@ -73,12 +73,12 @@ export async function isCustomerDashboardEnabled(): Promise<boolean> {
 }
 
 /** Default landing page when none is set or on error */
-export const DEFAULT_LANDING_PAGE = "product-engineer"
+export const DEFAULT_LANDING_PAGE = "career"
 
 /**
  * Get the active landing page ID.
  * Returns the page ID stored in the description field of the active-landing-page flag.
- * Defaults to "product-engineer" if not set or null.
+ * Defaults to "career" if not set or null.
  */
 export async function getActiveLandingPage(): Promise<string> {
   try {

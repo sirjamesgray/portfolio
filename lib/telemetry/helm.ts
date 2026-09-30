@@ -4,10 +4,9 @@
  * Pushes aggregate product KPIs to Helm's ingestion endpoint
  * (POST /api/v1/telemetry). Only counts cross the boundary — no PII, no
  * credentials, no database dumps. The envelope schema matches Helm's
- * telemetry-ingestion spec (helm/docs/specs/telemetry-ingestion.md).
+ * telemetry-ingestion spec.
  *
- * This is the same webhook-push architecture as acp-tx and gallery-room:
- * the product computes its own metrics and POSTs them immediately.
+ * The product computes its own metrics and POSTs them immediately.
  * Fire-and-forget — never throws, so telemetry can never break a product
  * code path. Only counts cross the boundary — no PII, no credentials.
  */

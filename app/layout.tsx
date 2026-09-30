@@ -26,11 +26,16 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.jamiegray.net"),
-  title: "Need a new website? | Jamie Gray",
-  description: "Custom websites and admin tools for small businesses. I build fast, beautiful, modern websites that help you work smarter and grow faster.",
+  title: {
+    default: "Jamie Gray — Product Engineer & Design Engineer",
+    template: "%s",
+  },
+  description:
+    "I design in code and ship real products with AI agents. 8+ years across startups, agencies, and enterprise. Based in Fort Worth. Remote or DFW.",
   openGraph: {
-    title: "Need a new website? | Jamie Gray",
-    description: "Custom websites and admin tools for small businesses. I build fast, beautiful, modern websites that help you work smarter and grow faster.",
+    title: "Jamie Gray — Product Engineer & Design Engineer",
+    description:
+      "I design in code and ship real products with AI agents. 8+ years across startups, agencies, and enterprise. Based in Fort Worth. Remote or DFW.",
     url: "https://www.jamiegray.net",
     siteName: "Jamie Gray",
     locale: "en_US",
@@ -40,14 +45,15 @@ export const metadata: Metadata = {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "Need a fast website? | Jamie Gray - Product Engineer",
+        alt: "Jamie Gray, Product Engineer and Design Engineer",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Need a new website? | Jamie Gray",
-    description: "Custom websites and admin tools for small businesses. Fast, beautiful, modern websites.",
+    title: "Jamie Gray — Product Engineer & Design Engineer",
+    description:
+      "I design in code and ship real products with AI agents. Based in Fort Worth. Remote or DFW.",
     creator: "@jamiegraytech",
     images: ["/opengraph-image"],
   },
@@ -61,8 +67,9 @@ const jsonLd = {
       "@id": "https://www.jamiegray.net/#person",
       name: "Jamie Gray",
       url: "https://www.jamiegray.net",
-      jobTitle: "Product Engineer",
-      description: "Product Engineer offering software solutions with 8 years of UX design experience.",
+      jobTitle: "Product Engineer / Design Engineer",
+      description:
+        "Product engineer and design engineer who designs in code and ships real products with AI agents. Based in Fort Worth.",
       sameAs: [
         "https://x.com/jamiegraytech",
         "https://www.linkedin.com/in/jamiegraytech/",

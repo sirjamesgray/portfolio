@@ -84,19 +84,34 @@ export default function ResumePage() {
             <BriefcaseBusiness className="size-3.5" /> Experience
           </h2>
           <div className="mt-3 space-y-3">
-            {experience.map((job) => (
+            {experience.map((job) => {
+              const positions = "positions" in job ? job.positions : undefined;
+              return (
               <div key={`${job.company}-${job.startDate}`} className="break-inside-avoid">
                 <div className="flex items-baseline justify-between gap-5">
-                  <div className="flex items-baseline gap-2">
-                    <h3 className="text-[10.5px] font-bold">{job.role}</h3>
-                    <p className="text-[9.5px] font-medium text-emerald-800">
-                      {job.company}{job.context ? ` · ${job.context}` : ""}
-                    </p>
-                  </div>
-                  <p className="shrink-0 text-[8.5px] font-medium text-zinc-500">
-                    {job.startDate} – {job.endDate}
+                  <p className="text-[9.5px] font-medium text-emerald-800">
+                    {job.company}{job.context ? ` · ${job.context}` : ""}
                   </p>
+                  {!(positions && positions.length > 0) && (
+                    <p className="shrink-0 text-[8.5px] font-medium text-zinc-500">
+                      {job.startDate} – {job.endDate}
+                    </p>
+                  )}
                 </div>
+                {positions && positions.length > 0 ? (
+                  <div className="mt-1 space-y-0.5">
+                    {positions.map((position) => (
+                      <div key={position.title} className="flex items-baseline justify-between gap-5">
+                        <h3 className="text-[10.5px] font-bold">{position.title}</h3>
+                        <p className="shrink-0 text-[8.5px] font-medium text-zinc-500">
+                          {position.startDate} – {position.endDate}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <h3 className="text-[10.5px] font-bold">{job.role}</h3>
+                )}
                 <p className="mt-0.5 text-[8px] text-zinc-500">{job.location}</p>
                 {job.highlights.length > 0 && (
                   <ul className="mt-1.5 list-disc space-y-0.5 pl-3.5 text-[8.5px] leading-[1.4] text-zinc-700 marker:text-emerald-700">
@@ -104,7 +119,8 @@ export default function ResumePage() {
                   </ul>
                 )}
               </div>
-            ))}
+              );
+            })}
           </div>
         </section>
 

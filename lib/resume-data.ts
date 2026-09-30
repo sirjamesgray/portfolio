@@ -1,5 +1,11 @@
 import { SITE_CONFIG, SOCIALS } from "@/lib/constants";
 
+export type ResumePosition = {
+  title: string;
+  startDate: string;
+  endDate: string;
+};
+
 export type ResumeExperience = {
   company: string;
   role: string;
@@ -8,10 +14,11 @@ export type ResumeExperience = {
   startDate: string;
   endDate: string;
   highlights: readonly string[];
+  positions?: readonly ResumePosition[];
 };
 
 /**
- * Canonical content for the generated resume — matches the live Helm v31 resume.
+ * Canonical content for the generated resume. Matches resume v32.
  */
 export const RESUME_DATA = {
   basics: {
@@ -68,17 +75,29 @@ export const RESUME_DATA = {
   ],
   experience: [
     {
-      company: "Worx4u",
-      role: "Developer II — UI/UX (Product Engineer)",
+      company: "Worx4u (formerly Thigbe)",
+      role: "Full Stack Developer",
       context: "Enterprise",
       location: "Fort Worth",
       startDate: "Apr 2026",
       endDate: "Present",
+      positions: [
+        {
+          title: "Full Stack Developer",
+          startDate: "Sep 2026",
+          endDate: "Present",
+        },
+        {
+          title: "Developer II, UI/UX (Product Engineer)",
+          startDate: "Apr 2026",
+          endDate: "Sep 2026",
+        },
+      ],
       highlights: [
-        "Built internal tools and customer-facing UI for a utility operations management platform.",
+        "Ship front-end and back-end production features used daily by both customers and back-office agents, including Python services, using AI-assisted development with test workflows built from real customer use cases.",
         "Built an interactive API platform for external utility developers.",
         "Designed customer signup flows for a Retail Electricity Provider using ORDS, APEX, and PL/SQL.",
-        "Created APEX Mirror: a git-versioned backend artifact representation for AI context and traceability.",
+        "Created Backend Mirror: a git-versioned backend artifact representation for AI context and traceability.",
         "Drove identity management, SSO, and deterministic local dev environments across the product suite.",
       ],
     },

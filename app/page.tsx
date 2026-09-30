@@ -1,32 +1,46 @@
 import { Metadata } from "next";
-import { isCustomerDashboardEnabled, getActiveLandingPage } from "@/lib/feature-flags";
+import { isCustomerDashboardEnabled } from "@/lib/feature-flags";
+import { careerMetadata } from "@/lib/career-meta";
 import { HomeClient } from "./home-client";
 
-// Metadata for each landing page variant
-const LANDING_PAGE_METADATA: Record<string, Metadata> = {
+const CAREER_HOME = careerMetadata({
+  title: "Jamie Gray — Product Engineer & Design Engineer",
+  description:
+    "I design in code and ship real products with AI agents. 8+ years across startups, agencies, and enterprise. Based in Fort Worth. Remote or DFW.",
+});
+
+const PREVIEW_METADATA: Record<string, Metadata> = {
   "product-engineer": {
     title: "Product Engineer | Jamie Gray",
-    description: "I collapse design and front-end engineering into a single role. Code is the source of truth. I&apos;m currently employed—happy to chat about projects.",
+    description:
+      "I design in code and ship real products with AI agents. Open to senior product and design engineering conversations.",
     openGraph: {
       title: "Product Engineer | Jamie Gray",
-      description: "I collapse design and front-end engineering into a single role. Code is the source of truth.",
+      description: "I design in code and ship real products with AI agents.",
       url: "https://www.jamiegray.net",
     },
   },
   "book-a-project": {
-    title: "Need a new website? | Jamie Gray",
-    description: "Custom websites and admin tools for small businesses. I build fast, beautiful, modern websites that help you work smarter and grow faster.",
+    title: "Book a project | Jamie Gray",
+    description: "Custom websites and admin tools. The career page is the home page. This preview keeps the older project offer.",
     openGraph: {
-      title: "Need a new website? | Jamie Gray",
-      description: "Custom websites and admin tools for small businesses.",
+      title: "Book a project | Jamie Gray",
+      description: "Custom websites and admin tools.",
       url: "https://www.jamiegray.net",
     },
   },
 };
 
-export async function generateMetadata(): Promise<Metadata> {
-  const activeLandingPage = await getActiveLandingPage();
-  return LANDING_PAGE_METADATA[activeLandingPage] || LANDING_PAGE_METADATA["product-engineer"];
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{ preview?: string }>;
+}): Promise<Metadata> {
+  const params = await searchParams;
+  if (params.preview && PREVIEW_METADATA[params.preview]) {
+    return PREVIEW_METADATA[params.preview];
+  }
+  return CAREER_HOME;
 }
 
 export default async function Home({
@@ -35,17 +49,19 @@ export default async function Home({
   searchParams: Promise<{ preview?: string }>
 }) {
   const params = await searchParams;
-  const customerDashboardEnabled = await isCustomerDashboardEnabled();
 
-  // Allow preview override via query param, otherwise use active landing page
-  const activeLandingPage = params.preview || await getActiveLandingPage();
+  // The feature-flag picker stays for ?preview=. Home on this branch is the career page.
+  const preview = params.preview;
 
-  // Render the appropriate landing page
-  if (activeLandingPage === "product-engineer") {
-    const { ProductEngineerLanding } = await import("./landing-pages/product-engineer");
-    return <ProductEngineerLanding customerDashboardEnabled={customerDashboardEnabled} />;
+  if (preview === "product-engineer" || preview === "book-a-project") {
+    const customerDashboardEnabled = await isCustomerDashboardEnabled();
+    if (preview === "product-engineer") {
+      const { ProductEngineerLanding } = await import("./landing-pages/product-engineer");
+      return <ProductEngineerLanding customerDashboardEnabled={customerDashboardEnabled} />;
+    }
+    return <HomeClient customerDashboardEnabled={customerDashboardEnabled} />;
   }
 
-  // Default: Hire for Projects (current landing page)
-  return <HomeClient customerDashboardEnabled={customerDashboardEnabled} />;
+  const { CareerLanding } = await import("@/components/career-landing");
+  return <CareerLanding />;
 }

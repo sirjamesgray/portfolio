@@ -1,9 +1,9 @@
 "use client";
 
-import { Mail, Linkedin } from "lucide-react";
+import { FileText, Mail, Linkedin } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { BlurFade } from "@/components/ui/blur-fade";
-import { SITE_CONFIG, SOCIALS } from "@/lib/constants";
+import { RESUME_PATH, SITE_CONFIG, SOCIALS } from "@/lib/constants";
 import { Footer } from "@/components/footer";
 import { LandingBackground } from "@/components/landing-background";
 import { ActionLinkCard } from "@/components/ui/action-link-card";
@@ -22,9 +22,16 @@ const XIcon = ({ className }: { className?: string }) => (
 
 const contactOptions = [
   {
-    title: "Email me",
+    title: "Download resume",
+    icon: FileText,
+    href: RESUME_PATH,
+    external: false,
+    primary: false,
+  },
+  {
+    title: `Email ${SITE_CONFIG.email}`,
     icon: Mail,
-    href: `mailto:${SITE_CONFIG.email}?subject=Let's%20Chat`,
+    href: `mailto:${SITE_CONFIG.email}`,
     external: false,
     primary: true,
   },
@@ -56,7 +63,7 @@ export default function ContactPage() {
                 I&apos;d love to hear from you!
               </h1>
               <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-                Looking for a Product Engineer who can own your design system? Let&apos;s chat and see if we&apos;re a good fit.
+                Open to senior product & design engineering conversations — remote or DFW.
               </p>
             </div>
           </BlurFade>
@@ -77,7 +84,7 @@ export default function ContactPage() {
 
           <BlurFade delay={0.3}>
             <p className="text-center text-sm text-muted-foreground mt-8">
-              Based in Dallas, TX. Open to remote or hybrid roles.
+              Based in Fort Worth. Remote or DFW.
             </p>
           </BlurFade>
         </div>

@@ -24,6 +24,16 @@ interface LandingPage {
 
 const LANDING_PAGES: LandingPage[] = [
   {
+    id: "career",
+    name: "Career",
+    description: "Career landing page for product and design engineering roles",
+    route: "/",
+    ctas: [
+      { label: "Download resume", href: "/documents/resume.pdf", variant: "primary" },
+      { label: "Contact", href: "/contact", variant: "secondary" },
+    ],
+  },
+  {
     id: "product-engineer",
     name: "Product Engineer",
     description: "Full-time role landing page - design systems built in code",

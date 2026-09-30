@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
+    formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {
         protocol: "https",
@@ -44,6 +45,16 @@ const nextConfig: NextConfig = {
       {
         source: "/creative-portfolio",
         destination: "/protected",
+        permanent: true,
+      },
+      {
+        source: "/concepts",
+        destination: "/projects",
+        permanent: true,
+      },
+      {
+        source: "/photos",
+        destination: "/projects",
         permanent: true,
       },
     ]

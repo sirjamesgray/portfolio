@@ -80,12 +80,11 @@ function GateSection({
             <Lock className="h-7 w-7 text-emerald-500" />
           </div>
           <h1 className="text-3xl font-bold text-foreground">
-            Private Project Portfolio
+            Project notes
           </h1>
           <p className="text-muted-foreground max-w-md mx-auto leading-relaxed">
-            This area contains detailed project breakdowns for recruiters and
-            hiring managers. Enter the password sent to you, and introduce
-            yourself so I know who&apos;s stopping by.
+            Notes on public product work for recruiters. Enter the password
+            sent to you, and introduce yourself so I know who is here.
           </p>
         </div>
 
@@ -393,12 +392,11 @@ function ProjectsSection() {
         {/* Header */}
         <div className="text-center space-y-3">
           <h1 className="text-3xl font-bold text-foreground">
-            My Projects
+            Public product work
           </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Click any project to see the full breakdown — architecture decisions,
-            technical challenges, and real-world impact. These are the projects
-            I&apos;ve built end-to-end, from design through deployment.
+            WeWrite, Lucent Wash, Worx4u, and earlier design work. Open a
+            project for the architecture, the hard parts, and the result.
           </p>
         </div>
 

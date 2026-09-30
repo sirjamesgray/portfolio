@@ -9,6 +9,7 @@ import { formatProjectType, CTA_CONFIG } from "@/lib/constants"
 import { CMSContentRenderer } from "@/components/cms-content-renderer"
 import { isCustomerDashboardEnabled } from "@/lib/feature-flags"
 import { CARD_GLASS } from "@/lib/cards"
+import { textContainsForbiddenPublicName } from "@/lib/forbidden-public-names"
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -44,7 +45,19 @@ export default async function PublicProjectPage({ params }: PageProps) {
     .single()
 
   // Project not found or not enabled for landing page
-  if (error || !project) {
+  if (
+    error ||
+    !project ||
+    textContainsForbiddenPublicName([
+      project.title,
+      project.public_title,
+      project.public_description,
+      project.public_industry,
+      project.public_live_url,
+      project.public_content_html,
+      project.public_design_system_url,
+    ])
+  ) {
     notFound()
   }
 
@@ -152,7 +165,7 @@ export default async function PublicProjectPage({ params }: PageProps) {
                 Interested in a similar project?
               </h3>
               <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                Tell me about your vision and I'll bring it to life.
+                Tell me about your vision and I&apos;ll bring it to life.
               </p>
               <Link href={cta.href}>
                 <LandingButton variant="primary" size="lg" className="gap-2">

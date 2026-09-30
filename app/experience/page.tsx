@@ -57,7 +57,7 @@ export default function ExperiencePage() {
                 Experience
               </h1>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                8 years of designing and building products at high-growth startups.
+                8+ years across startups, agencies, and enterprise. Product engineering and design, remote or DFW.
               </p>
             </div>
           </BlurFade>
@@ -98,14 +98,30 @@ export default function ExperiencePage() {
                             <span>{job.location}</span>
                           </div>
                         </div>
-                        <p className="text-sm text-muted-foreground">
-                          {job.role}
-                        </p>
-                        <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
-                          <span className="rounded bg-muted px-2 py-0.5">{job.startDate}</span>
-                          <ArrowRight className="h-3 w-3 shrink-0" />
-                          <span className="rounded bg-muted px-2 py-0.5">{job.endDate}</span>
-                        </div>
+                        {job.note && (
+                          <p className="text-xs text-muted-foreground">{job.note}</p>
+                        )}
+                        {job.positions && job.positions.length > 0 ? (
+                          <ul className="mt-2 space-y-1">
+                            {job.positions.map((position) => (
+                              <li key={position.title} className="text-sm text-muted-foreground">
+                                {position.title}
+                                <span className="mt-0.5 block text-xs">{position.startDate} – {position.endDate}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <>
+                            <p className="text-sm text-muted-foreground">
+                              {job.role}
+                            </p>
+                            <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
+                              <span className="rounded bg-muted px-2 py-0.5">{job.startDate}</span>
+                              <ArrowRight className="h-3 w-3 shrink-0" />
+                              <span className="rounded bg-muted px-2 py-0.5">{job.endDate}</span>
+                            </div>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -118,10 +134,10 @@ export default function ExperiencePage() {
           <BlurFade delay={0.3}>
             <div className={`${CARD_INTERACTIVE_SOLID.full} mt-12 p-8 text-center`}>
               <h2 className="text-2xl font-bold text-foreground mb-3">
-                Want to chat about product work?
+                Open to senior product & design engineering conversations — remote or DFW
               </h2>
               <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
-                I&apos;m currently employed as a Product Engineer, so I&apos;m not actively looking for a full-time role. Happy to chat—reach out to see what I&apos;ve shipped.
+                Download the resume, or send a note. I read every message.
               </p>
               <Link href={PRODUCT_ENGINEER_CTA.primary.href}>
                 <LandingButton variant="primary" size="lg" className="gap-2">

@@ -32,7 +32,7 @@ interface SiteHeaderProps {
   backLabel?: string;
   customerDashboardEnabled?: boolean;
   /** Landing page context for different CTA styles */
-  landingPage?: "hire-for-projects" | "product-engineer";
+  landingPage?: "hire-for-projects" | "product-engineer" | "career";
 }
 
 export function SiteHeader({ variant = "default", backHref = "/", backLabel = "Back", customerDashboardEnabled = true, landingPage = "hire-for-projects" }: SiteHeaderProps) {
@@ -43,7 +43,7 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
 
   useEffect(() => {
     // Only check user if dashboard is enabled
-    if (!customerDashboardEnabled) {
+    if (!customerDashboardEnabled || landingPage === "career") {
       setLoading(false);
       return;
     }
@@ -61,7 +61,7 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
       }
     }
     checkUser();
-  }, [customerDashboardEnabled]);
+  }, [customerDashboardEnabled, landingPage]);
 
   // When dashboard is disabled, show Calendly flow instead
   const showDashboardLinks = customerDashboardEnabled && user;
@@ -102,7 +102,13 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
     <>
       {!loading && variant === "default" && (
         <>
-          {landingPage === "product-engineer" ? (
+          {landingPage === "career" ? (
+            <nav className="flex items-center gap-5 text-sm text-muted-foreground">
+              <Link href="/projects" className="hover:text-foreground">Work</Link>
+              <Link href="/experience" className="hover:text-foreground">Experience</Link>
+              <Link href="/contact" className="hover:text-foreground">Contact</Link>
+            </nav>
+          ) : landingPage === "product-engineer" ? (
             // Product Engineer landing page: "Say hi" focused CTAs
             <>
               <ScrollAwareButton
@@ -138,18 +144,11 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
               </Link>
             </>
           ) : (
-            <>
-              <Link href="/pricing">
-                <LandingButton variant="secondary" size="sm">
-                  View pricing
-                </LandingButton>
-              </Link>
-              <Link href={CTA_CONFIG.dashboardDisabled.href}>
-                <LandingButton variant="primary" size="sm">
-                  {CTA_CONFIG.dashboardDisabled.text}
-                </LandingButton>
-              </Link>
-            </>
+            <Link href={CTA_CONFIG.dashboardDisabled.href}>
+              <LandingButton variant="primary" size="sm">
+                {CTA_CONFIG.dashboardDisabled.text}
+              </LandingButton>
+            </Link>
           )}
         </>
       )}
@@ -220,18 +219,11 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
               </Link>
             </>
           ) : (
-            <>
-              <Link href="/pricing" className="flex-1">
-                <LandingButton variant="secondary" className="w-full">
-                  View pricing
-                </LandingButton>
-              </Link>
-              <Link href={CTA_CONFIG.dashboardDisabled.href} className="flex-1">
-                <LandingButton variant="primary" className="w-full">
-                  {CTA_CONFIG.dashboardDisabled.text}
-                </LandingButton>
-              </Link>
-            </>
+            <Link href={CTA_CONFIG.dashboardDisabled.href} className="flex-1">
+              <LandingButton variant="primary" className="w-full">
+                {CTA_CONFIG.dashboardDisabled.text}
+              </LandingButton>
+            </Link>
           )}
         </>
       )}
@@ -261,7 +253,7 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
       </header>
 
       {/* Mobile Header - top bar, visible on mobile only */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-40 flex items-center justify-between p-4 bg-background/80 backdrop-blur-sm border-b border-border/50">
+      <div className="md:hidden fixed top-0 left-0 right-0 z-40 flex items-center justify-between gap-2 overflow-hidden p-4 bg-background/80 backdrop-blur-sm border-b border-border/50">
         {variant === "back" ? (
           <Link
             href={backHref}
@@ -271,16 +263,23 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
             {backLabel}
           </Link>
         ) : (
-          <Link href="/" className="flex items-center justify-center h-11 w-11 -ml-1.5 active:opacity-70 transition-opacity">
+          <Link href="/" className="flex shrink-0 items-center justify-center h-11 w-11 -ml-1.5 active:opacity-70 transition-opacity">
             <Logo3DStatic size="sm" />
           </Link>
+        )}
+        {landingPage === "career" && variant === "default" && (
+          <nav className="flex min-w-0 flex-1 items-center justify-end gap-3 overflow-x-auto text-[13px] text-muted-foreground">
+            <Link href="/projects" className="shrink-0 hover:text-foreground">Work</Link>
+            <Link href="/experience" className="shrink-0 hover:text-foreground">Experience</Link>
+            <Link href="/contact" className="shrink-0 hover:text-foreground">Contact</Link>
+          </nav>
         )}
         <ThemeToggle />
       </div>
 
       {/* Mobile Floating Footer - hidden on desktop, appears after scrolling past hero, only on landing page, hides when styles section is visible */}
       <AnimatePresence>
-        {showMobileFooter && variant === "default" && !isStylesSectionVisible && (
+        {showMobileFooter && variant === "default" && landingPage !== "career" && !isStylesSectionVisible && (
           <motion.div
             className="md:hidden fixed bottom-6 left-4 right-4 z-50"
             initial={{ y: 100, opacity: 0 }}
