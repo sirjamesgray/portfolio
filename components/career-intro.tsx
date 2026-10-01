@@ -10,7 +10,7 @@ const NAME = "Jamie Gray";
 
 const BOOT_LINES = [
   "$ whoami",
-  "jamie gray: product + design engineer",
+  "jamie gray: full stack developer (prev. product designer)",
   "$ cat thesis.txt",
   "software that lets people earn from their own work",
   "$ ls ./shipped",

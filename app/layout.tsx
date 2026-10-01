@@ -66,9 +66,9 @@ const jsonLd = {
       "@id": "https://www.jamiegray.net/#person",
       name: "Jamie Gray",
       url: "https://www.jamiegray.net",
-      jobTitle: "Product Engineer / Design Engineer",
+      jobTitle: "Full Stack Developer",
       description:
-        "Product and design engineer who builds software that lets people earn from their own work. Writers on WeWrite. A local business on Lucent Wash. Based in Fort Worth.",
+        "Full Stack Developer, previously a Product Designer. Builds software that lets people earn from their own work. Writers on WeWrite. A local business on Lucent Wash. Based in Fort Worth.",
       sameAs: [
         "https://x.com/jamiegraytech",
         "https://www.linkedin.com/in/jamiegraytech/",
@@ -93,7 +93,7 @@ const jsonLd = {
       "@type": "ProfilePage",
       "@id": "https://www.jamiegray.net/#profilepage",
       url: "https://www.jamiegray.net",
-      name: "Jamie Gray | Product Engineer",
+      name: "Jamie Gray | Full Stack Developer",
       mainEntity: { "@id": "https://www.jamiegray.net/#person" },
     },
   ],
@@ -101,9 +101,8 @@ const jsonLd = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+  modal,
+}: LayoutProps<"/"> & { modal?: React.ReactNode }) {
   return (
     <html lang="en" className="dark scroll-smooth" style={{ colorScheme: "dark" }} suppressHydrationWarning>
       <head>
@@ -116,6 +115,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
+        {modal}
         {process.env.VERCEL ? <Analytics /> : null}
         {process.env.VERCEL ? <SpeedInsights /> : null}
         {process.env.NEXT_PUBLIC_GA_ID && (

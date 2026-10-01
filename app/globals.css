@@ -135,7 +135,7 @@
 
 :root,
 .dark {
-  --radius: 0.625rem;
+  --radius: 0rem;
   /* Radix green-dark 11 and blue-dark 11. Black surfaces. */
   --brand: #3dd68c;
   --brand-foreground: #0e1512;
@@ -219,4 +219,9 @@
     user-select: text;
     -webkit-user-select: text;
   }
+}
+
+/* Square corners. Device hardware keeps its real shape. */
+html :where(:not(.device-shell)) {
+  border-radius: 0 !important;
 }

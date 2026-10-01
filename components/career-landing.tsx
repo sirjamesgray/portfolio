@@ -9,18 +9,13 @@ import { BootSequence, HeroAtmosphere, ScrambleName } from "@/components/career-
 import { CareerCommand } from "@/components/career-command";
 import { HoverScramble } from "@/components/hover-scramble";
 import { BuilderLab } from "@/components/builder-lab";
-import { BoardLightbox } from "@/components/board-lightbox";
-import { LaptopFrame, PhoneFrame } from "@/components/device-frame";
+import { PhoneFrame } from "@/components/device-frame";
+import { WorkFocusRestore } from "@/components/work-modal";
+import { WorkGrid, WorkLink } from "@/components/work-card";
 import { EXPERIENCE, RESUME_PATH, SITE_CONFIG, SOCIALS } from "@/lib/constants";
 import { RESUME_DATA } from "@/lib/resume-data";
-import {
-  DESIGN_STUDIES,
-  PARKHUB_NOTE,
-  PUBLIC_PRODUCTS,
-  TURBO,
-  type BoardShot,
-  type PublicProduct,
-} from "@/lib/public-work";
+import { PUBLIC_PRODUCTS, TURBO } from "@/lib/public-work";
+import { workIn } from "@/lib/work-catalog";
 import styles from "./career-landing.module.css";
 
 const SOFT_CTA =
@@ -105,255 +100,36 @@ function CtaRow({ primary = false }: { primary?: boolean }) {
   );
 }
 
-function ProductChapter({ product, priority = false }: { product: PublicProduct; priority?: boolean }) {
-  if (!product.desktop) return null;
-
-  const blue = product.id === "lucent-wash";
-
-  return (
-    <article
-      id={product.id}
-      className={`scroll-mt-28 border-y bg-black py-16 transition-shadow sm:py-24 ${blue ? "border-[rgb(112_184_255/0.4)] hover:shadow-[inset_0_0_48px_rgb(112_184_255/0.12)]" : "border-border hover:shadow-[inset_0_0_48px_rgb(61_214_140/0.12)]"}`}
-    >
-      <div className="mx-auto grid w-full max-w-6xl items-start gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:gap-12">
-        <div className={`${styles.rise} lg:sticky lg:top-28`}>
-          <p className="font-mono text-xs tracking-[0.16em] text-muted-foreground">{product.index}</p>
-          <SectionHead
-            file={`${product.id}.tsx`}
-            title={product.name}
-            titleClass={`${styles.chapter} ${styles.glitch} font-semibold text-foreground`}
-          />
-          <p className="mt-3 text-sm text-foreground">{product.role}</p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {product.place} · {product.dates}
-          </p>
-          {product.earns ? (
-            <p className="mt-4 max-w-prose text-sm leading-relaxed text-foreground">
-              <span className={`font-mono text-xs ${blue ? "text-blue" : "text-brand"}`}>Who earns · </span>
-              {product.earns}
-            </p>
-          ) : null}
-          <p className="mt-5 max-w-prose text-base leading-relaxed text-muted-foreground">{product.summary}</p>
-          <ul className="mt-5 max-w-prose space-y-2 text-sm leading-relaxed text-foreground">
-            {product.points.map((point) => (
-              <li key={point}>{point}</li>
-            ))}
-          </ul>
-          {product.href && (
-            <a
-              href={product.href}
-              className={`mt-5 inline-block text-sm font-medium underline underline-offset-4 ${blue ? "text-blue decoration-blue/40" : "text-brand decoration-brand/40"}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {product.hrefLabel}
-            </a>
-          )}
-        </div>
-        <div className={`${styles.rise} ${styles.d2} relative pb-4 lg:pb-16`}>
-          <div className="w-full lg:w-[65%]">
-            <LaptopFrame shot={product.desktop} priority={priority} />
-          </div>
-          {product.mobile && (
-            <div className="mx-auto mt-6 w-[42%] max-w-[200px] lg:absolute lg:bottom-0 lg:left-[58%] lg:mx-0 lg:mt-0 lg:w-[27%]">
-              <PhoneFrame shot={product.mobile} priority={priority} />
-            </div>
-          )}
-        </div>
-      </div>
-    </article>
-  );
-}
-
-function WorxChapter() {
-  const product = PUBLIC_PRODUCTS.find((item) => item.id === "worx4u");
-  if (!product) return null;
-  const labels = ["Product", "API platform", "APEX to React", "Backend Mirror", "SSO and local dev"];
-
-  return (
-    <article id={product.id} className="scroll-mt-28 border-y border-border bg-black py-16 text-foreground transition-shadow hover:shadow-[inset_0_0_48px_rgb(61_214_140/0.12)] sm:py-24">
-      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-        <SectionHead
-          file="worx4u.ts"
-          title={product.name}
-          titleClass={`${styles.chapter} ${styles.glitch} font-semibold text-foreground`}
-        />
-        <p className="mt-3 font-mono text-xs tracking-[0.16em] text-muted-foreground">{product.index} · text only</p>
-        <ul className="mt-3 space-y-1 text-sm text-foreground">
-          {product.titles?.map((title) => (
-            <li key={title}>{title}</li>
-          ))}
-        </ul>
-        <p className="mt-1 text-sm text-muted-foreground">{product.place}</p>
-        <p className="mt-5 max-w-prose text-base leading-relaxed text-foreground">{product.summary}</p>
-        <ol className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-          {product.points.map((point, index) => (
-            <li key={point} className="rounded-lg border border-border bg-black p-4 transition-shadow hover:shadow-[0_0_24px_rgb(61_214_140/0.28)]">
-              <p className="font-mono text-[11px] tracking-[0.14em] text-muted-foreground">0{index + 1}</p>
-              <p className="mt-2 text-sm font-medium text-foreground">{labels[index]}</p>
-              <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{point}</p>
-            </li>
-          ))}
-        </ol>
-      </div>
-    </article>
-  );
-}
-
-/** Desktop Ramp preview is cropped. The lightbox still shows the full board. */
-function ClientBoard({ board, cap = false, tone = "green" }: { board: BoardShot; cap?: boolean; tone?: "green" | "blue" }) {
-  const frame =
-    tone === "blue"
-      ? "rounded-lg border border-[rgb(112_184_255/0.4)] bg-black p-2 transition-shadow hover:shadow-[0_0_28px_rgb(112_184_255/0.28)]"
-      : "rounded-lg border border-border bg-black p-2 transition-shadow hover:shadow-[0_0_28px_rgb(61_214_140/0.28)]";
-  const chip =
-    tone === "blue"
-      ? "border border-[rgb(112_184_255/0.45)]"
-      : "border border-[rgb(61_214_140/0.45)]";
-
-  return (
-    <div className="mt-5">
-      <BoardLightbox board={board}>
-        <div className={frame}>
-          <div className={cap ? "relative lg:h-[600px] lg:overflow-hidden" : undefined}>
-            <Image
-              src={board.src}
-              alt={board.alt}
-              width={board.width}
-              height={board.height}
-              sizes="(min-width: 1024px) 560px, 100vw"
-              className={
-                cap
-                  ? "h-auto w-full rounded-md lg:!h-[600px] lg:!w-full lg:!object-cover lg:!object-top"
-                  : "h-auto w-full rounded-md"
-              }
-            />
-            {cap ? (
-              <>
-                <div
-                  className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-32 bg-gradient-to-t from-black to-transparent lg:block"
-                  aria-hidden
-                />
-                <span className={`absolute bottom-3 left-3 hidden rounded-md bg-black px-2.5 py-1 font-mono text-xs text-[#e6e6e6] lg:inline ${chip}`}>
-                  View full board
-                </span>
-              </>
-            ) : null}
-          </div>
-        </div>
-      </BoardLightbox>
-      <p className={`mt-2 text-xs text-muted-foreground ${cap ? "lg:hidden" : ""}`}>Open the board</p>
-    </div>
-  );
-}
-
-function TurboChapter() {
-  const pictured = TURBO.clients.filter((client) => client.board);
-  const precision = TURBO.clients.find((client) => client.id === "precision-ai");
-
-  return (
-    <section id="turbo" className="scroll-mt-28 border-y border-[rgb(112_184_255/0.4)] bg-black py-16 transition-shadow hover:shadow-[inset_0_0_48px_rgb(112_184_255/0.1)] sm:py-24">
-      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-        <div className="flex items-center gap-3">
-          <Image src={TURBO.logo} alt="" width={36} height={36} className="size-9 rounded-md bg-white object-contain p-1" />
-          <p className="font-mono text-xs tracking-[0.16em] text-muted-foreground">Agency</p>
-        </div>
-        <SectionHead
-          file="turbo.tsx"
-          title={TURBO.name}
-          titleClass={`${styles.chapter} ${styles.glitch} font-semibold text-foreground`}
-        />
-        <p className="mt-3 text-sm text-foreground">
-          {TURBO.role} · {TURBO.place} · {TURBO.dates}
-        </p>
-        <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground">{TURBO.intro}</p>
-        <p className="mt-3 font-mono text-xs text-muted-foreground">{TURBO.tools}</p>
-
-        <div className="mt-12 grid gap-10 lg:grid-cols-2 lg:gap-8">
-          {pictured.map((client) => (
-            <article key={client.id} id={client.id} className="min-w-0">
-              <div className="flex items-center gap-3">
-                <Image
-                  src={client.logo}
-                  alt=""
-                  width={32}
-                  height={32}
-                  className="size-8 rounded-md bg-white object-contain p-0.5"
-                />
-                <h3 className="text-lg font-semibold tracking-[-0.02em] text-foreground">{client.label}</h3>
-              </div>
-              <p className="mt-3 text-sm text-foreground">{client.title}</p>
-              <p className="mt-1 font-mono text-xs text-muted-foreground">{client.dates}</p>
-              <p className="mt-4 text-sm leading-relaxed text-foreground">{client.summary}</p>
-              <div className="mt-3 space-y-2 text-sm leading-relaxed text-muted-foreground">
-                {client.supporting.map((line) => (
-                  <p key={line}>{line}</p>
-                ))}
-              </div>
-              {client.board && <ClientBoard board={client.board} cap={client.id === "ramp"} tone={client.id === "vondy" ? "blue" : "green"} />}
-            </article>
-          ))}
-        </div>
-
-        {precision && (
-          <p className="mt-10 border-t border-border pt-6 text-sm text-foreground">
-            <span className="font-medium">{precision.label}.</span> {precision.summary}
-          </p>
-        )}
-
-        <div className="mt-12 grid gap-8 lg:grid-cols-2">
-          {DESIGN_STUDIES.map((study, index) => (
-            <article key={study.id} className="min-w-0">
-              <h3 className="text-lg font-semibold tracking-[-0.02em]">{study.title}</h3>
-              <p className="mt-1 text-xs text-muted-foreground">{study.meta}</p>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{study.summary}</p>
-              {study.image && (
-                <div className="mt-4">
-                  <BoardLightbox board={study.image}>
-                    <div className={index % 2 === 0 ? "rounded-lg border border-border bg-black p-2 transition-shadow hover:shadow-[0_0_28px_rgb(61_214_140/0.28)]" : "rounded-lg border border-[rgb(112_184_255/0.4)] bg-black p-2 transition-shadow hover:shadow-[0_0_28px_rgb(112_184_255/0.28)]"}>
-                      <Image
-                        src={study.image.src}
-                        alt={study.image.alt}
-                        width={study.image.width}
-                        height={study.image.height}
-                        sizes="(min-width: 1024px) 560px, 100vw"
-                        className="h-auto w-full rounded-md"
-                      />
-                    </div>
-                  </BoardLightbox>
-                </div>
-              )}
-            </article>
-          ))}
-        </div>
-
-        <article className="mt-10 border-t border-border pt-6">
-          <h3 className="text-lg font-semibold tracking-[-0.02em]">{PARKHUB_NOTE.title}</h3>
-          <p className="mt-1 text-xs text-muted-foreground">{PARKHUB_NOTE.meta}</p>
-          <p className="mt-3 max-w-prose text-sm leading-relaxed text-muted-foreground">{PARKHUB_NOTE.summary}</p>
-        </article>
-      </div>
-    </section>
-  );
-}
-
 export function WorkAndDesign() {
-  const pictured = PUBLIC_PRODUCTS.filter((product) => product.desktop);
-
   return (
     <>
-      <div id="work" className="scroll-mt-28">
-        <div className="mx-auto w-full max-w-6xl px-4 pt-14 sm:px-6 sm:pt-20">
+      <div id="work" className="scroll-mt-28 border-y border-border bg-black py-16 sm:py-24">
+        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
           <p className="max-w-xl text-sm leading-relaxed text-foreground sm:text-base">
             A pattern across my work: tools that let people own and earn from what they make.
           </p>
+          <WorkGrid entries={workIn("work")} />
         </div>
-        {pictured.map((product, index) => (
-          <ProductChapter key={product.id} product={product} priority={index === 0} />
-        ))}
-        <WorxChapter />
       </div>
-      <TurboChapter />
+      <section id="turbo" className="scroll-mt-28 border-y border-[rgb(112_184_255/0.4)] bg-black py-16 sm:py-24">
+        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+          <div className="flex items-center gap-3">
+            <Image src={TURBO.logo} alt="" width={36} height={36} className="size-9 bg-white object-contain p-1" />
+            <p className="font-mono text-xs tracking-[0.16em] text-muted-foreground">Agency</p>
+          </div>
+          <SectionHead
+            file="turbo.tsx"
+            title={TURBO.name}
+            titleClass={`${styles.chapter} ${styles.glitch} font-semibold text-foreground`}
+          />
+          <p className="mt-3 text-sm text-foreground">
+            {TURBO.role} · {TURBO.place} · {TURBO.dates}
+          </p>
+          <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground">{TURBO.intro}</p>
+          <p className="mt-3 font-mono text-xs text-muted-foreground">{TURBO.tools}</p>
+          <WorkGrid entries={workIn("turbo")} />
+        </div>
+      </section>
     </>
   );
 }
@@ -362,6 +138,7 @@ export function CareerLanding() {
   return (
     <div className="min-h-screen overflow-x-clip bg-background pb-0 text-foreground md:pb-[calc(2.25rem+env(safe-area-inset-bottom))]">
       <SiteHeader landingPage="career" customerDashboardEnabled={false} />
+      <WorkFocusRestore />
       <main>
         <section className={`${styles.hero} ${styles.crt} relative flex items-start overflow-hidden pt-20 sm:items-center sm:pt-24`}>
           <div className={`${styles.grid} pointer-events-none absolute inset-0`} aria-hidden />
@@ -377,20 +154,20 @@ export function CareerLanding() {
               <ScrambleName className={`${styles.name} ${styles.rise} ${styles.d1} mt-2 font-semibold text-foreground sm:mt-4`} />
               <p className={`${styles.rise} ${styles.d2} mt-3 max-w-md text-base leading-snug text-foreground sm:mt-5 sm:text-lg`}>
                 I build software that lets people earn from their own work: writers on{" "}
-                <a href="#wewrite" className="text-brand underline decoration-brand/40 underline-offset-4">
+                <WorkLink slug="wewrite" className="text-brand underline decoration-brand/40 underline-offset-4">
                   WeWrite
-                </a>
+                </WorkLink>
                 , a local business on{" "}
-                <a href="#lucent-wash" className="text-blue underline decoration-blue/40 underline-offset-4">
+                <WorkLink slug="lucent-wash" className="text-blue underline decoration-blue/40 underline-offset-4">
                   Lucent Wash
-                </a>
+                </WorkLink>
                 .
               </p>
               <div className={`${styles.rise} ${styles.d3} mt-3 sm:mt-5`}>
                 <CtaRow primary />
               </div>
               <p className={`${styles.rise} ${styles.d4} mt-3 max-w-md text-sm leading-relaxed text-muted-foreground`}>
-                Product + design engineer. I design in code and ship with AI agents.
+                Full Stack Developer, previously a Product Designer. I design in code and ship with AI agents.
               </p>
               <p className={`${styles.rise} ${styles.d4} mt-2 max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base`}>
                 8+ years across startups, agencies, and enterprise. Based in Fort Worth. Working remote or DFW.
