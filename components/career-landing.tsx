@@ -5,6 +5,9 @@ import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { FloatingSectionNav } from "@/components/ui/floating-section-nav";
 import { CareerHeroStage } from "@/components/career-hero";
+import { BootSequence, ScrambleName } from "@/components/career-intro";
+import { CareerCommand } from "@/components/career-command";
+import { BuilderLab } from "@/components/builder-lab";
 import { BoardLightbox } from "@/components/board-lightbox";
 import { LaptopFrame, PhoneFrame } from "@/components/device-frame";
 import { EXPERIENCE, RESUME_PATH, SITE_CONFIG, SOCIALS } from "@/lib/constants";
@@ -24,9 +27,27 @@ const SOFT_CTA =
 const SECTIONS = [
   { id: "work", label: "Work" },
   { id: "turbo", label: "Turbo" },
+  { id: "lab", label: "Lab" },
   { id: "experience", label: "Experience" },
   { id: "contact", label: "Contact" },
 ];
+
+function FileTab({ file, onDark = false }: { file: string; onDark?: boolean }) {
+  return (
+    <div className="mb-3 flex items-end gap-2">
+      <span
+        className={
+          onDark
+            ? "rounded-t-md border border-b-0 border-white/15 px-2.5 py-1 font-mono text-[11px] text-zinc-400"
+            : "rounded-t-md border border-b-0 border-border bg-background px-2.5 py-1 font-mono text-[11px] text-muted-foreground"
+        }
+      >
+        {file}
+      </span>
+      <span className={`mb-px h-px flex-1 ${onDark ? "bg-white/15" : "bg-border"}`} />
+    </div>
+  );
+}
 
 function logoFor(company: string) {
   const match = EXPERIENCE.find((item) => company.startsWith(item.company) && item.logo);
@@ -63,7 +84,8 @@ function ProductChapter({ product, priority = false }: { product: PublicProduct;
       <div className="mx-auto grid w-full max-w-6xl items-start gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:gap-12">
         <div className={`${styles.rise} lg:sticky lg:top-28`}>
           <p className="font-mono text-xs tracking-[0.16em] text-muted-foreground">{product.index}</p>
-          <h2 className={`${styles.chapter} mt-3 font-semibold text-foreground`}>{product.name}</h2>
+          <FileTab file={`${product.id}.tsx`} />
+          <h2 className={`${styles.chapter} ${styles.glitch} font-semibold text-foreground`}>{product.name}</h2>
           <p className="mt-3 text-sm text-foreground">{product.role}</p>
           <p className="mt-1 text-sm text-muted-foreground">
             {product.place} · {product.dates}
@@ -108,8 +130,9 @@ function WorxChapter() {
   return (
     <article id={product.id} className="scroll-mt-28 bg-[#101114] py-16 text-zinc-100 sm:py-24">
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+        <FileTab file="worx4u.ts" onDark />
         <p className="font-mono text-xs tracking-[0.16em] text-zinc-400">{product.index} · text only</p>
-        <h2 className={`${styles.chapter} mt-3 font-semibold`}>{product.name}</h2>
+        <h2 className={`${styles.chapter} ${styles.glitch} mt-3 font-semibold`}>{product.name}</h2>
         <ul className="mt-3 space-y-1 text-sm text-zinc-300">
           {product.titles?.map((title) => (
             <li key={title}>{title}</li>
@@ -142,7 +165,8 @@ function TurboChapter() {
           <Image src={TURBO.logo} alt="" width={36} height={36} className="size-9 rounded-md bg-white object-contain p-1" />
           <p className="font-mono text-xs tracking-[0.16em] text-muted-foreground">Agency</p>
         </div>
-        <h2 className={`${styles.chapter} mt-4 font-semibold text-foreground`}>{TURBO.name}</h2>
+        <FileTab file="turbo.tsx" />
+        <h2 className={`${styles.chapter} ${styles.glitch} font-semibold text-foreground`}>{TURBO.name}</h2>
         <p className="mt-3 text-sm text-foreground">
           {TURBO.role} · {TURBO.place} · {TURBO.dates}
         </p>
@@ -248,17 +272,17 @@ export function CareerLanding() {
     <div className="min-h-screen overflow-x-clip bg-background text-foreground">
       <SiteHeader landingPage="career" customerDashboardEnabled={false} />
       <main>
-        <section className={`${styles.hero} relative flex items-center overflow-hidden pt-24`}>
+        <section className={`${styles.hero} ${styles.crt} relative flex items-center overflow-hidden pt-24`}>
+          <div className={`${styles.grid} pointer-events-none absolute inset-0`} aria-hidden />
           <div className={`${styles.glow} pointer-events-none absolute inset-0`} aria-hidden />
           <div className={styles.grain} aria-hidden />
-          <div className="relative mx-auto grid w-full max-w-6xl items-center gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:py-16">
+          <div className="relative mx-auto grid w-full max-w-6xl items-center gap-10 px-4 py-8 sm:px-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:py-16">
             <div>
               <p className={`${styles.rise} font-mono text-xs tracking-[0.16em] text-muted-foreground`}>
                 Fort Worth
               </p>
-              <h1 className={`${styles.name} ${styles.rise} ${styles.d1} mt-4 font-semibold text-foreground`}>
-                Jamie Gray
-              </h1>
+              <BootSequence />
+              <ScrambleName className={`${styles.name} ${styles.rise} ${styles.d1} mt-4 font-semibold text-foreground`} />
               <p className={`${styles.rise} ${styles.d2} mt-5 max-w-md text-lg leading-snug text-foreground sm:text-xl`}>
                 I design in code and ship real products with AI agents.
               </p>
@@ -286,17 +310,34 @@ export function CareerLanding() {
         </section>
 
         <div className="sticky top-14 z-30 border-b border-border/70 bg-background/85 backdrop-blur-sm">
-          <div className="mx-auto max-w-6xl px-4 py-2 sm:px-6">
-            <FloatingSectionNav sections={SECTIONS} />
+          <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-2 sm:px-6">
+            <div className="min-w-0 flex-1">
+              <FloatingSectionNav sections={SECTIONS} />
+            </div>
+            <CareerCommand />
           </div>
         </div>
 
         <WorkAndDesign />
 
+        <section id="lab" className="scroll-mt-28 border-t border-border py-16 sm:py-24">
+          <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+            <FileTab file="builder-log.tsx" />
+            <h2 className={`${styles.chapter} ${styles.glitch} font-semibold text-foreground`}>Builder log</h2>
+            <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted-foreground">
+              Small tools from the same work: toggles, a quiet ASCII field, the WeWrite type migration, and the path from prompt to ship. Draft notes stay marked TODO.
+            </p>
+            <BuilderLab />
+          </div>
+        </section>
+
         <section id="experience" className="scroll-mt-28 py-16 sm:py-24">
           <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
             <div className="flex items-end justify-between gap-4">
-              <h2 className="text-sm font-medium tracking-[0.14em] text-muted-foreground uppercase">Experience</h2>
+              <div>
+                <FileTab file="experience.ts" />
+                <h2 className={`${styles.glitch} text-sm font-medium tracking-[0.14em] text-muted-foreground uppercase`}>Experience</h2>
+              </div>
               <Link href="/experience" className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline">
                 Full timeline
               </Link>
@@ -354,7 +395,8 @@ export function CareerLanding() {
 
         <section id="contact" className="scroll-mt-28 border-t border-border py-16 sm:py-24">
           <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-            <h2 className="max-w-xl text-2xl font-semibold tracking-[-0.03em] sm:text-3xl">{SOFT_CTA}</h2>
+            <FileTab file="contact.md" />
+            <h2 className={`${styles.glitch} max-w-xl text-2xl font-semibold tracking-[-0.03em] sm:text-3xl`}>{SOFT_CTA}</h2>
             <div className="mt-6">
               <CtaRow />
             </div>
