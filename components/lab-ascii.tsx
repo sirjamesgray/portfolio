@@ -17,8 +17,16 @@ export function LabAscii() {
     if (!ctx) return;
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const pointer = { x: 0.5, y: 0.5 };
     let raf = 0;
     let running = false;
+
+    const onPointer = (event: PointerEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      pointer.x = (event.clientX - rect.left) / Math.max(1, rect.width);
+      pointer.y = (event.clientY - rect.top) / Math.max(1, rect.height);
+    };
+    canvas.addEventListener("pointermove", onPointer);
 
     const fit = () => {
       const width = canvas.clientWidth;
@@ -39,7 +47,10 @@ export function LabAscii() {
       const rows = Math.max(1, Math.floor(height / 13));
       for (let y = 0; y < rows; y += 1) {
         for (let x = 0; x < cols; x += 1) {
-          const wave = Math.sin(x * 0.32 + time * 0.0016) + Math.cos(y * 0.38 - time * 0.0012);
+          const dx = x / cols - pointer.x;
+          const dy = y / rows - pointer.y;
+          const ripple = Math.sin(Math.hypot(dx, dy) * 18 - time * 0.004);
+          const wave = Math.sin(x * 0.32 + time * 0.0016) + ripple;
           const index = Math.max(0, Math.min(GLYPHS.length - 1, Math.floor(((wave + 2) / 4) * (GLYPHS.length - 1))));
           ctx.fillText(GLYPHS[index], x * 9, y * 13 + 11);
         }
@@ -87,6 +98,7 @@ export function LabAscii() {
     return () => {
       stop();
       observer.disconnect();
+      canvas.removeEventListener("pointermove", onPointer);
       document.removeEventListener("visibilitychange", onHide);
     };
   }, []);

@@ -7,6 +7,7 @@ import { FloatingSectionNav } from "@/components/ui/floating-section-nav";
 import { CareerHeroStage } from "@/components/career-hero";
 import { BootSequence, ScrambleName } from "@/components/career-intro";
 import { CareerCommand } from "@/components/career-command";
+import { HoverScramble } from "@/components/hover-scramble";
 import { BuilderLab } from "@/components/builder-lab";
 import { BoardLightbox } from "@/components/board-lightbox";
 import { LaptopFrame, PhoneFrame } from "@/components/device-frame";
@@ -31,6 +32,37 @@ const SECTIONS = [
   { id: "experience", label: "Experience" },
   { id: "contact", label: "Contact" },
 ];
+
+function SectionHead({
+  file,
+  title,
+  titleClass,
+  onDark = false,
+}: {
+  file: string;
+  title: string;
+  titleClass: string;
+  onDark?: boolean;
+}) {
+  return (
+    <div className="flex gap-3">
+      <ol
+        className={`w-6 shrink-0 pt-1 text-right font-mono text-[10px] leading-5 ${onDark ? "text-zinc-500" : "text-muted-foreground/45"}`}
+        aria-hidden
+      >
+        <li>01</li>
+        <li>02</li>
+        <li>03</li>
+      </ol>
+      <div className="min-w-0 flex-1">
+        <FileTab file={file} onDark={onDark} />
+        <h2 className={titleClass}>
+          <HoverScramble text={title} />
+        </h2>
+      </div>
+    </div>
+  );
+}
 
 function FileTab({ file, onDark = false }: { file: string; onDark?: boolean }) {
   return (
@@ -84,8 +116,11 @@ function ProductChapter({ product, priority = false }: { product: PublicProduct;
       <div className="mx-auto grid w-full max-w-6xl items-start gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:gap-12">
         <div className={`${styles.rise} lg:sticky lg:top-28`}>
           <p className="font-mono text-xs tracking-[0.16em] text-muted-foreground">{product.index}</p>
-          <FileTab file={`${product.id}.tsx`} />
-          <h2 className={`${styles.chapter} ${styles.glitch} font-semibold text-foreground`}>{product.name}</h2>
+          <SectionHead
+            file={`${product.id}.tsx`}
+            title={product.name}
+            titleClass={`${styles.chapter} ${styles.glitch} font-semibold text-foreground`}
+          />
           <p className="mt-3 text-sm text-foreground">{product.role}</p>
           <p className="mt-1 text-sm text-muted-foreground">
             {product.place} · {product.dates}
@@ -130,9 +165,13 @@ function WorxChapter() {
   return (
     <article id={product.id} className="scroll-mt-28 bg-[#101114] py-16 text-zinc-100 sm:py-24">
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-        <FileTab file="worx4u.ts" onDark />
-        <p className="font-mono text-xs tracking-[0.16em] text-zinc-400">{product.index} · text only</p>
-        <h2 className={`${styles.chapter} ${styles.glitch} mt-3 font-semibold`}>{product.name}</h2>
+        <SectionHead
+          file="worx4u.ts"
+          title={product.name}
+          onDark
+          titleClass={`${styles.chapter} ${styles.glitch} font-semibold`}
+        />
+        <p className="mt-3 font-mono text-xs tracking-[0.16em] text-zinc-400">{product.index} · text only</p>
         <ul className="mt-3 space-y-1 text-sm text-zinc-300">
           {product.titles?.map((title) => (
             <li key={title}>{title}</li>
@@ -165,8 +204,11 @@ function TurboChapter() {
           <Image src={TURBO.logo} alt="" width={36} height={36} className="size-9 rounded-md bg-white object-contain p-1" />
           <p className="font-mono text-xs tracking-[0.16em] text-muted-foreground">Agency</p>
         </div>
-        <FileTab file="turbo.tsx" />
-        <h2 className={`${styles.chapter} ${styles.glitch} font-semibold text-foreground`}>{TURBO.name}</h2>
+        <SectionHead
+          file="turbo.tsx"
+          title={TURBO.name}
+          titleClass={`${styles.chapter} ${styles.glitch} font-semibold text-foreground`}
+        />
         <p className="mt-3 text-sm text-foreground">
           {TURBO.role} · {TURBO.place} · {TURBO.dates}
         </p>
@@ -269,29 +311,30 @@ export function WorkAndDesign() {
 
 export function CareerLanding() {
   return (
-    <div className="min-h-screen overflow-x-clip bg-background text-foreground">
+    <div className="min-h-screen overflow-x-clip bg-background pb-0 text-foreground md:pb-9">
       <SiteHeader landingPage="career" customerDashboardEnabled={false} />
       <main>
         <section className={`${styles.hero} ${styles.crt} relative flex items-center overflow-hidden pt-24`}>
           <div className={`${styles.grid} pointer-events-none absolute inset-0`} aria-hidden />
           <div className={`${styles.glow} pointer-events-none absolute inset-0`} aria-hidden />
           <div className={styles.grain} aria-hidden />
-          <div className="relative mx-auto grid w-full max-w-6xl items-center gap-10 px-4 py-8 sm:px-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:py-16">
-            <div>
+          <div className={styles.vignette} aria-hidden />
+          <div className="relative mx-auto grid w-full max-w-6xl items-center gap-8 px-4 py-4 sm:gap-10 sm:px-6 sm:py-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:py-16">
+            <div className="min-w-0">
               <p className={`${styles.rise} font-mono text-xs tracking-[0.16em] text-muted-foreground`}>
                 Fort Worth
               </p>
               <BootSequence />
               <ScrambleName className={`${styles.name} ${styles.rise} ${styles.d1} mt-4 font-semibold text-foreground`} />
-              <p className={`${styles.rise} ${styles.d2} mt-5 max-w-md text-lg leading-snug text-foreground sm:text-xl`}>
+              <p className={`${styles.rise} ${styles.d2} mt-4 max-w-md text-lg leading-snug text-foreground sm:mt-5 sm:text-xl`}>
                 I design in code and ship real products with AI agents.
               </p>
-              <p className={`${styles.rise} ${styles.d3} mt-3 max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base`}>
-                8+ years across startups, agencies, and enterprise. Based in Fort Worth. Working remote or DFW.
-              </p>
-              <div className={`${styles.rise} ${styles.d4} mt-8`}>
+              <div className={`${styles.rise} ${styles.d3} mt-4 sm:mt-6`}>
                 <CtaRow primary />
               </div>
+              <p className={`${styles.rise} ${styles.d4} mt-4 max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base`}>
+                8+ years across startups, agencies, and enterprise. Based in Fort Worth. Working remote or DFW.
+              </p>
               <p className={`${styles.rise} ${styles.d5} mt-6 max-w-md border-l-2 border-brand pl-4 text-sm leading-relaxed text-foreground`}>
                 {SOFT_CTA}
               </p>
@@ -322,8 +365,11 @@ export function CareerLanding() {
 
         <section id="lab" className="scroll-mt-28 border-t border-border py-16 sm:py-24">
           <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-            <FileTab file="builder-log.tsx" />
-            <h2 className={`${styles.chapter} ${styles.glitch} font-semibold text-foreground`}>Builder log</h2>
+            <SectionHead
+              file="builder-log.tsx"
+              title="Builder log"
+              titleClass={`${styles.chapter} ${styles.glitch} font-semibold text-foreground`}
+            />
             <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted-foreground">
               Small tools from the same work: toggles, a quiet ASCII field, the WeWrite type migration, and the path from prompt to ship. Draft notes stay marked TODO.
             </p>
@@ -334,10 +380,11 @@ export function CareerLanding() {
         <section id="experience" className="scroll-mt-28 py-16 sm:py-24">
           <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
             <div className="flex items-end justify-between gap-4">
-              <div>
-                <FileTab file="experience.ts" />
-                <h2 className={`${styles.glitch} text-sm font-medium tracking-[0.14em] text-muted-foreground uppercase`}>Experience</h2>
-              </div>
+              <SectionHead
+                file="experience.ts"
+                title="Experience"
+                titleClass={`${styles.glitch} text-sm font-medium tracking-[0.14em] text-muted-foreground uppercase`}
+              />
               <Link href="/experience" className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline">
                 Full timeline
               </Link>
@@ -395,8 +442,11 @@ export function CareerLanding() {
 
         <section id="contact" className="scroll-mt-28 border-t border-border py-16 sm:py-24">
           <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-            <FileTab file="contact.md" />
-            <h2 className={`${styles.glitch} max-w-xl text-2xl font-semibold tracking-[-0.03em] sm:text-3xl`}>{SOFT_CTA}</h2>
+            <SectionHead
+              file="contact.md"
+              title={SOFT_CTA}
+              titleClass={`${styles.glitch} max-w-xl text-2xl font-semibold tracking-[-0.03em] sm:text-3xl`}
+            />
             <div className="mt-6">
               <CtaRow />
             </div>

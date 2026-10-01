@@ -1,68 +1,111 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { RESUME_PATH } from "@/lib/constants";
 import styles from "./career-landing.module.css";
 
 const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const SESSION_KEY = "career-intro-seen";
+const NAME = "Jamie Gray";
+
+const BOOT_LINES = [
+  "$ whoami",
+  "jamie gray: product + design engineer",
+  "$ cat focus.txt",
+  "I design in code and ship real products with AI agents.",
+  "$ ls ./shipped",
+  "wewrite  lucent-wash  turbo/",
+];
 
 function motionOff() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
 /**
- * The name is in the first HTML paint.
- * The scramble runs after paint, then stops.
+ * The name stays in the first HTML paint.
+ * The RGB split is a class on top of that text.
  */
 export function ScrambleName({ className }: { className?: string }) {
-  const text = "Jamie Gray";
-  const [value, setValue] = useState(text);
-  const [done, setDone] = useState(false);
-  const [armed, setArmed] = useState(false);
+  const [value, setValue] = useState(NAME);
+  const [hot, setHot] = useState(false);
+  const [showSkip, setShowSkip] = useState(false);
 
   useEffect(() => {
-    if (motionOff() || sessionStorage.getItem(SESSION_KEY) === "1") return;
+    if (motionOff()) return;
+
+    let idle = 0;
+    const armIdle = () => {
+      const wait = 8000 + Math.random() * 4000;
+      idle = window.setTimeout(() => {
+        if (document.hidden) {
+          armIdle();
+          return;
+        }
+        setHot(true);
+        window.setTimeout(() => setHot(false), 150);
+        armIdle();
+      }, wait);
+    };
+
+    if (sessionStorage.getItem(SESSION_KEY) === "1") {
+      armIdle();
+      return () => window.clearTimeout(idle);
+    }
 
     const start = performance.now();
-    const duration = 900;
     let raf = 0;
-
     const tick = (now: number) => {
-      const t = Math.min(1, (now - start) / duration);
-      const reveal = Math.floor(t * text.length);
-      const next = text
-        .split("")
-        .map((char, index) => {
-          if (char === " " || index < reveal) return text[index];
-          return GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
-        })
-        .join("");
-      setValue(next);
-      setArmed(true);
+      const t = Math.min(1, (now - start) / 900);
+      const reveal = Math.floor(t * NAME.length);
+      setShowSkip(true);
+      setHot(true);
+      setValue(
+        NAME.split("")
+          .map((char, index) => {
+            if (char === " " || index < reveal) return NAME[index];
+            return GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+          })
+          .join("")
+      );
       if (t < 1) {
         raf = requestAnimationFrame(tick);
         return;
       }
-      setValue(text);
+      setValue(NAME);
+      setHot(false);
+      setShowSkip(false);
       sessionStorage.setItem(SESSION_KEY, "1");
-      setDone(true);
+      armIdle();
     };
-
     raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.clearTimeout(idle);
+    };
   }, []);
 
   return (
     <>
-      <h1 className={className}>{value}</h1>
-      {armed && !done ? (
+      <h1
+        data-text={NAME}
+        className={`${className ?? ""} ${hot ? styles.rgb : ""}`}
+        onMouseEnter={() => {
+          if (motionOff()) return;
+          setHot(true);
+          window.setTimeout(() => setHot(false), 280);
+        }}
+      >
+        {value}
+      </h1>
+      {showSkip ? (
         <button
           type="button"
           className="mt-2 font-mono text-xs text-muted-foreground underline-offset-4 hover:underline"
           onClick={() => {
-            setValue(text);
+            setValue(NAME);
+            setHot(false);
+            setShowSkip(false);
             sessionStorage.setItem(SESSION_KEY, "1");
-            setDone(true);
           }}
         >
           Skip intro
@@ -72,26 +115,54 @@ export function ScrambleName({ className }: { className?: string }) {
   );
 }
 
-/** Boot lines stay in the HTML. A caret moves across them once. */
+/** Boot lines are in the HTML. Typing starts only after paint. */
 export function BootSequence() {
   const [play, setPlay] = useState(false);
+  const [command, setCommand] = useState("");
+  const hired = command.trim() === "sudo hire";
 
   useEffect(() => {
     if (motionOff() || sessionStorage.getItem(SESSION_KEY) === "1") return;
     const frame = requestAnimationFrame(() => setPlay(true));
-    const timer = window.setTimeout(() => setPlay(false), 1600);
-    return () => {
-      cancelAnimationFrame(frame);
-      window.clearTimeout(timer);
-    };
+    return () => cancelAnimationFrame(frame);
   }, []);
 
   return (
-    <pre
-      className={`${styles.boot} ${play ? styles.bootPlay : ""} mt-4 max-w-md font-mono text-[11px] leading-relaxed text-muted-foreground sm:text-xs`}
-    >
-      <span className="block text-foreground">$ whoami</span>
-      <span className="block">jamie gray: product + design engineer</span>
-    </pre>
+    <div className="mt-4 max-w-full overflow-hidden rounded-md border border-border bg-background/80">
+      <p className="border-b border-border px-3 py-1 font-mono text-[10px] text-muted-foreground">terminal</p>
+      <pre
+        className={`${play ? styles.bootPlay : ""} max-w-full overflow-x-auto px-3 py-2 font-mono text-[11px] leading-relaxed text-muted-foreground`}
+      >
+        {BOOT_LINES.map((line, index) => (
+          <span key={line} className={styles.typeLine} style={{ animationDelay: `${index * 220}ms` }}>
+            {line}
+          </span>
+        ))}
+      </pre>
+      <form
+        className="flex items-center gap-2 border-t border-border px-3 py-1.5 font-mono text-[11px]"
+        onSubmit={(event) => event.preventDefault()}
+      >
+        <span className="text-foreground">$</span>
+        <input
+          value={command}
+          onChange={(event) => setCommand(event.target.value)}
+          aria-label="Terminal"
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
+          className="min-w-0 flex-1 bg-transparent text-foreground outline-none"
+        />
+        <span className={styles.caret} aria-hidden />
+      </form>
+      {hired ? (
+        <p className="border-t border-border px-3 py-2 font-mono text-[11px] text-foreground">
+          The resume is here.{" "}
+          <a href={RESUME_PATH} className="underline underline-offset-4">
+            Download resume
+          </a>
+        </p>
+      ) : null}
+    </div>
   );
 }

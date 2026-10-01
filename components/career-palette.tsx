@@ -46,6 +46,23 @@ export function CareerPalette({ open, onOpenChange }: Props) {
             </CommandItem>
           ))}
         </CommandGroup>
+        <CommandGroup heading="Keys">
+          <CommandItem value="g w Work" onSelect={() => go("work")}>
+            g w · Work
+          </CommandItem>
+          <CommandItem value="g t Turbo" onSelect={() => go("turbo")}>
+            g t · Turbo
+          </CommandItem>
+          <CommandItem
+            value="question shortcuts"
+            onSelect={() => {
+              close();
+              window.dispatchEvent(new Event("career-help"));
+            }}
+          >
+            ? · shortcut sheet
+          </CommandItem>
+        </CommandGroup>
         <CommandGroup heading="Actions">
           <CommandItem
             value="Download resume"

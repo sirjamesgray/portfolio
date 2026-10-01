@@ -1,4 +1,4 @@
-export type BuilderLabId = "toggles" | "ascii" | "diff" | "agent";
+export type BuilderLabId = "toggles" | "ascii" | "diff" | "agent" | "spring" | "swatch";
 
 export type BuilderNote = {
   id: string;
@@ -45,6 +45,20 @@ export const BUILDER_LOG: readonly BuilderEntry[] = [
     kind: "lab",
     title: "Agent workflow",
     file: "ship.ts",
+    draft: false,
+  },
+  {
+    id: "spring",
+    kind: "lab",
+    title: "Easing",
+    file: "ease.css",
+    draft: false,
+  },
+  {
+    id: "swatch",
+    kind: "lab",
+    title: "Tokens",
+    file: "tokens.css",
     draft: false,
   },
   {

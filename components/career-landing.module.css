@@ -83,13 +83,91 @@
   pointer-events: none;
   position: absolute;
   inset: 0;
+  opacity: 0.55;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0 2px,
+      color-mix(in oklab, var(--foreground) 8%, transparent) 2px 3px
+    ),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.35'/></svg>");
+  animation: crt-flicker 4.5s steps(2, end) infinite;
+}
+
+.vignette {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: radial-gradient(ellipse at center, transparent 42%, hsl(0 0% 0% / 0.45) 100%);
+}
+
+:global(.dark) .vignette {
+  opacity: 1;
+}
+
+.rgb {
+  position: relative;
+  animation: slice 0.28s steps(2, end) 1;
+  text-shadow: -3px 0 #e11d48, 3px 0 #2563eb;
+}
+
+.rgb::before,
+.rgb::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.rgb::before {
+  color: #e11d48;
+  transform: translate(-5px, 0);
+  clip-path: inset(8% 0 58% 0);
+}
+
+.rgb::after {
+  color: #2563eb;
+  transform: translate(5px, 1px);
+  clip-path: inset(62% 0 6% 0);
+}
+
+.typeLine {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.bootPlay .typeLine {
+  animation: type-line 0.55s steps(28, end) both;
+}
+
+.caret {
+  width: 0.55em;
+  height: 0.9em;
+  background: currentColor;
+  animation: caret-blink 1.05s steps(1, end) infinite;
+}
+
+.token {
+  position: absolute;
+  top: 0.35rem;
+  left: 0;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--brand);
+  animation: token-run 5s cubic-bezier(0.25, 0, 0.3, 1) infinite;
+}
+
+.logItem {
   opacity: 0.35;
-  background: repeating-linear-gradient(
-    to bottom,
-    transparent 0 3px,
-    color-mix(in oklab, var(--foreground) 6%, transparent) 3px 4px
-  );
-  animation: crt-flicker 5.5s steps(2, end) infinite;
+  animation: log-tick 5s linear infinite;
+}
+
+.delLine {
+  animation: fade-del 0.7s cubic-bezier(0.25, 0, 0.3, 1) both;
 }
 
 .glitch:hover {
@@ -143,6 +221,39 @@
   to { opacity: 1; }
 }
 
+@keyframes slice {
+  0% { transform: translateX(0); }
+  40% { transform: translateX(-3px); }
+  70% { transform: translateX(3px); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes type-line {
+  from { max-width: 0; }
+  to { max-width: 100%; }
+}
+
+@keyframes caret-blink {
+  50% { opacity: 0; }
+}
+
+@keyframes token-run {
+  from { left: 0; }
+  to { left: calc(100% - 0.5rem); }
+}
+
+@keyframes log-tick {
+  0%,
+  18% { opacity: 1; }
+  22%,
+  100% { opacity: 0.35; }
+}
+
+@keyframes fade-del {
+  from { opacity: 1; }
+  to { opacity: 0.45; }
+}
+
 .band {
   background: color-mix(in oklab, var(--chapter) 9%, var(--background));
 }
@@ -157,9 +268,31 @@
   .rise,
   .crt::after,
   .glitch:hover,
-  .bootPlay span:last-child,
+  .bootPlay .typeLine,
+  .caret,
   .pulse,
-  .flow li {
+  .flow li,
+  .rgb,
+  .rgb::before,
+  .rgb::after,
+  .token,
+  .logItem,
+  .delLine {
     animation: none;
+  }
+
+  .rgb {
+    text-shadow: none;
+  }
+
+  .typeLine,
+  .logItem,
+  .delLine {
+    max-width: 100%;
+    opacity: 1;
+  }
+
+  .token {
+    left: calc(100% - 0.5rem);
   }
 }
