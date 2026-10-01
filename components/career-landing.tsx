@@ -311,7 +311,7 @@ export function WorkAndDesign() {
 
 export function CareerLanding() {
   return (
-    <div className="min-h-screen overflow-x-clip bg-background pb-0 text-foreground md:pb-9">
+    <div className="min-h-screen overflow-x-clip bg-background pb-0 text-foreground md:pb-[calc(2.25rem+env(safe-area-inset-bottom))]">
       <SiteHeader landingPage="career" customerDashboardEnabled={false} />
       <main>
         <section className={`${styles.hero} ${styles.crt} relative flex items-center overflow-hidden pt-24`}>

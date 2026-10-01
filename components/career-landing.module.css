@@ -134,13 +134,9 @@
 
 .typeLine {
   display: block;
-  overflow: hidden;
-  white-space: nowrap;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
   max-width: 100%;
-}
-
-.bootPlay .typeLine {
-  animation: type-line 0.55s steps(28, end) both;
 }
 
 .caret {
@@ -226,11 +222,6 @@
   40% { transform: translateX(-3px); }
   70% { transform: translateX(3px); }
   100% { transform: translateX(0); }
-}
-
-@keyframes type-line {
-  from { max-width: 0; }
-  to { max-width: 100%; }
 }
 
 @keyframes caret-blink {

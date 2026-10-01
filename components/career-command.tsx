@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import dynamic from "next/dynamic";
 import { useTheme } from "next-themes";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
@@ -107,20 +108,37 @@ export function CareerCommand() {
         <span className="sr-only">Open the command palette</span>
       </button>
       {loaded ? <CareerPalette open={open} onOpenChange={setOpen} /> : null}
-      <div className="fixed inset-x-0 bottom-0 z-30 hidden h-9 items-center justify-between gap-3 border-t border-border bg-background px-4 font-mono text-[11px] text-muted-foreground md:flex">
-        <span className="truncate">career-landing</span>
-        <button type="button" onClick={showPalette} className="text-foreground">
-          ⌘K
-        </button>
-        <span className="truncate">{section}</span>
-        <button
-          type="button"
-          className="text-foreground"
-          onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-        >
-          {ready ? (resolvedTheme === "dark" ? "dark" : "light") : "theme"}
-        </button>
-      </div>
+      {ready
+        ? createPortal(
+            <div
+              className="hidden md:block"
+              style={{
+                position: "fixed",
+                left: 0,
+                right: 0,
+                bottom: 0,
+                zIndex: 30,
+                paddingBottom: "env(safe-area-inset-bottom)",
+              }}
+            >
+              <div className="flex h-9 items-center justify-between gap-3 border-t border-border bg-background px-4 font-mono text-[11px] text-muted-foreground">
+                <span className="truncate">career-landing</span>
+                <button type="button" onClick={showPalette} className="text-foreground">
+                  ⌘K
+                </button>
+                <span className="truncate">{section}</span>
+                <button
+                  type="button"
+                  className="text-foreground"
+                  onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+                >
+                  {resolvedTheme === "dark" ? "dark" : "light"}
+                </button>
+              </div>
+            </div>,
+            document.body
+          )
+        : null}
       <Dialog open={help} onOpenChange={setHelp}>
         <DialogContent className="sm:max-w-md">
           <DialogTitle>Shortcuts</DialogTitle>
