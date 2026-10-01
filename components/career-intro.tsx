@@ -176,7 +176,7 @@ export function BootSequence() {
 
   return (
     <div className={`${styles.terminal} mt-2 max-w-full overflow-hidden rounded-md border sm:mt-4`}>
-      <p className="border-b border-white/10 px-3 py-1 font-mono text-[10px] text-[#b4b4b4]">terminal</p>
+      <p className="border-b border-border px-3 py-1 font-mono text-[10px] text-[#b4b4b4]">terminal</p>
       <pre className={`${styles.phosphor} max-w-full overflow-x-hidden px-3 py-1.5 font-mono text-[11px] leading-snug sm:py-2 sm:leading-relaxed`}>
         {BOOT_LINES.map((line, index) => {
           const text = revealed === null ? line : lineSlice(index, revealed);
@@ -189,7 +189,7 @@ export function BootSequence() {
         })}
       </pre>
       <form
-        className="flex items-center gap-2 border-t border-white/10 px-3 py-1.5 font-mono text-[11px]"
+        className="flex items-center gap-2 border-t border-border px-3 py-1.5 font-mono text-[11px]"
         onSubmit={(event) => event.preventDefault()}
       >
         <span className="text-foreground">$</span>

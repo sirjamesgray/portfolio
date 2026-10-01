@@ -54,8 +54,8 @@ function TogglesCard() {
           accent {color.name}
         </button>
       </div>
-      <div className="overflow-hidden rounded-md border border-border bg-[#0e1512] text-[#e8e8e8]">
-        <div className="border-b border-white/10 px-3 py-1 font-mono text-[10px] text-[#b4b4b4]">preview.tsx</div>
+      <div className="overflow-hidden rounded-md border border-border bg-black text-[#e6e6e6]">
+        <div className="border-b border-border px-3 py-1 font-mono text-[10px] text-[#b4b4b4]">preview.tsx</div>
         <div className={dense ? "space-y-2 p-2" : "space-y-4 p-4"}>
           <p className={dense ? "text-sm font-medium" : "text-base font-medium"}>Write a page</p>
           <p className="text-xs text-[#b4b4b4]">A social wiki where every page is a fundraiser.</p>
@@ -102,7 +102,7 @@ function DiffCard() {
           return (
             <li
               key={line.text}
-              className={`whitespace-pre-wrap break-all rounded px-2 py-0.5 ${line.kind === "del" ? `${styles.delLine} bg-[#2a1219] text-[#ff8dcc]` : "bg-[#132d21] text-[#3dd68c]"}`}
+              className={`whitespace-pre-wrap break-all rounded border bg-black px-2 py-0.5 ${line.kind === "del" ? `${styles.delLine} border-[rgb(112_184_255/0.4)] text-[#70b8ff]` : "border-border text-[#3dd68c]"}`}
             >
               {line.kind === "del" ? "- " : "+ "}
               {shown}
@@ -236,10 +236,15 @@ function SwatchCard() {
   );
 }
 
-function CardShell({ file, title, children }: { file: string; title: string; children: React.ReactNode }) {
+function CardShell({ file, title, tone, children }: { file: string; title: string; tone: "green" | "blue"; children: React.ReactNode }) {
+  const edge =
+    tone === "blue"
+      ? "border-[rgb(112_184_255/0.4)] hover:shadow-[0_0_28px_rgb(112_184_255/0.28)] focus-within:shadow-[0_0_28px_rgb(112_184_255/0.28)]"
+      : "border-border hover:shadow-[0_0_28px_rgb(61_214_140/0.28)] focus-within:shadow-[0_0_28px_rgb(61_214_140/0.28)]";
+
   return (
-    <article className="flex min-w-0 flex-col overflow-hidden rounded-lg border border-border bg-card">
-      <div className="flex items-center justify-between gap-2 border-b border-border bg-muted/40 px-3 py-2">
+    <article className={`flex min-w-0 flex-col overflow-hidden rounded-lg border bg-black transition-shadow ${edge}`}>
+      <div className="flex items-center justify-between gap-2 border-b border-inherit bg-black px-3 py-2">
         <span className="font-mono text-xs text-muted-foreground">{file}</span>
         <span className="font-mono text-[11px] text-foreground">{title}</span>
       </div>
@@ -251,10 +256,10 @@ function CardShell({ file, title, children }: { file: string; title: string; chi
 export function BuilderLab() {
   return (
     <div className="mt-8 grid gap-4 md:grid-cols-2">
-      {BUILDER_LOG.map((entry) => {
+      {BUILDER_LOG.map((entry, index) => {
         if (entry.kind === "note") {
           return (
-            <article key={entry.id} className="rounded-lg border border-dashed border-border p-4">
+            <article key={entry.id} className="rounded-lg border border-dashed border-[rgb(112_184_255/0.45)] bg-black p-4 transition-shadow hover:shadow-[0_0_28px_rgb(112_184_255/0.28)]">
               <p className="font-mono text-[11px] tracking-[0.14em] text-foreground">TODO · draft</p>
               <h3 className="mt-2 font-mono text-sm text-foreground">{entry.title}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{entry.body}</p>
@@ -263,7 +268,7 @@ export function BuilderLab() {
         }
 
         return (
-          <CardShell key={entry.id} file={entry.file} title={entry.title}>
+          <CardShell key={entry.id} file={entry.file} title={entry.title} tone={index % 2 === 0 ? "green" : "blue"}>
             {entry.id === "toggles" ? <TogglesCard /> : null}
             {entry.id === "ascii" ? <LabAscii /> : null}
             {entry.id === "diff" ? <DiffCard /> : null}

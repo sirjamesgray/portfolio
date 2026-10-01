@@ -29,7 +29,7 @@ export function BoardLightbox({ board, children }: Props) {
           <DialogTitle className="pr-8 text-base">{board.alt}</DialogTitle>
           <div className="space-y-4">
             {frames.map((frame) => (
-              <div key={frame.src} className="rounded-md border border-border bg-[#0e1512] p-2">
+              <div key={frame.src} className="rounded-md border border-[rgb(112_184_255/0.4)] bg-black p-2">
                 <Image
                   src={frame.src}
                   alt={frame.alt}

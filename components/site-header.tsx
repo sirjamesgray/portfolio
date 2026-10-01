@@ -231,7 +231,7 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
   return (
     <>
       {/* Desktop Header - hidden on mobile */}
-      <header className="hidden md:flex fixed top-0 left-0 right-0 z-50 items-center justify-between p-4 bg-background/80 backdrop-blur-sm border-b border-border/50">
+      <header className="hidden md:flex fixed top-0 left-0 right-0 z-50 items-center justify-between p-4 bg-black border-b border-border">
         {variant === "back" ? (
           <Link
             href={backHref}
@@ -251,7 +251,7 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
       </header>
 
       {/* Mobile Header - top bar, visible on mobile only */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-40 flex items-center justify-between gap-2 overflow-hidden p-4 bg-background/80 backdrop-blur-sm border-b border-border/50">
+      <div className="md:hidden fixed top-0 left-0 right-0 z-40 flex items-center justify-between gap-2 overflow-hidden p-4 bg-black border-b border-border">
         {variant === "back" ? (
           <Link
             href={backHref}

@@ -71,13 +71,13 @@ function FileTab({ file, onDark = false }: { file: string; onDark?: boolean }) {
       <span
         className={
           onDark
-            ? "rounded-t-md border border-b-0 border-white/15 px-2.5 py-1 font-mono text-[11px] text-zinc-400"
-            : "rounded-t-md border border-b-0 border-border bg-background px-2.5 py-1 font-mono text-[11px] text-muted-foreground"
+            ? "rounded-t-md border border-b-0 border-[rgb(112_184_255/0.4)] bg-black px-2.5 py-1 font-mono text-[11px] text-muted-foreground"
+            : "rounded-t-md border border-b-0 border-border bg-black px-2.5 py-1 font-mono text-[11px] text-muted-foreground"
         }
       >
         {file}
       </span>
-      <span className={`mb-px h-px flex-1 ${onDark ? "bg-white/15" : "bg-border"}`} />
+      <span className={`mb-px h-px flex-1 ${onDark ? "bg-[rgb(112_184_255/0.4)]" : "bg-border"}`} />
     </div>
   );
 }
@@ -93,10 +93,10 @@ function CtaRow({ primary = false }: { primary?: boolean }) {
       <Button asChild size={primary ? "lg" : "default"}>
         <a href={RESUME_PATH}>Download resume</a>
       </Button>
-      <Button asChild variant="outline" size={primary ? "lg" : "default"}>
+      <Button asChild variant="outline" size={primary ? "lg" : "default"} className="border-[rgb(61_214_140/0.45)] bg-black text-foreground shadow-none hover:bg-black hover:text-foreground hover:shadow-[0_0_18px_rgb(61_214_140/0.28)]">
         <a href={`mailto:${SITE_CONFIG.email}`}>Email</a>
       </Button>
-      <Button asChild variant="ghost" size={primary ? "lg" : "default"}>
+      <Button asChild variant="ghost" size={primary ? "lg" : "default"} className="bg-transparent text-foreground hover:bg-transparent hover:text-blue hover:shadow-[0_0_18px_rgb(112_184_255/0.28)]">
         <a href={SOCIALS.linkedin} target="_blank" rel="noopener noreferrer">
           LinkedIn
         </a>
@@ -108,11 +108,12 @@ function CtaRow({ primary = false }: { primary?: boolean }) {
 function ProductChapter({ product, priority = false }: { product: PublicProduct; priority?: boolean }) {
   if (!product.desktop) return null;
 
+  const blue = product.id === "lucent-wash";
+
   return (
     <article
       id={product.id}
-      className={`${styles.band} scroll-mt-28 py-16 sm:py-24`}
-      style={{ ["--chapter" as string]: product.accent }}
+      className={`scroll-mt-28 border-y bg-black py-16 transition-shadow sm:py-24 ${blue ? "border-[rgb(112_184_255/0.4)] hover:shadow-[inset_0_0_48px_rgb(112_184_255/0.12)]" : "border-border hover:shadow-[inset_0_0_48px_rgb(61_214_140/0.12)]"}`}
     >
       <div className="mx-auto grid w-full max-w-6xl items-start gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:gap-12">
         <div className={`${styles.rise} lg:sticky lg:top-28`}>
@@ -128,7 +129,7 @@ function ProductChapter({ product, priority = false }: { product: PublicProduct;
           </p>
           {product.earns ? (
             <p className="mt-4 max-w-prose text-sm leading-relaxed text-foreground">
-              <span className="font-mono text-xs text-brand">Who earns · </span>
+              <span className={`font-mono text-xs ${blue ? "text-blue" : "text-brand"}`}>Who earns · </span>
               {product.earns}
             </p>
           ) : null}
@@ -141,7 +142,7 @@ function ProductChapter({ product, priority = false }: { product: PublicProduct;
           {product.href && (
             <a
               href={product.href}
-              className="mt-5 inline-block text-sm font-medium text-brand underline decoration-brand/40 underline-offset-4"
+              className={`mt-5 inline-block text-sm font-medium underline underline-offset-4 ${blue ? "text-blue decoration-blue/40" : "text-brand decoration-brand/40"}`}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -170,28 +171,27 @@ function WorxChapter() {
   const labels = ["Product", "API platform", "APEX to React", "Backend Mirror", "SSO and local dev"];
 
   return (
-    <article id={product.id} className="scroll-mt-28 border-y border-white/15 bg-[#101114] py-16 text-zinc-100 sm:py-24">
+    <article id={product.id} className="scroll-mt-28 border-y border-border bg-black py-16 text-foreground transition-shadow hover:shadow-[inset_0_0_48px_rgb(61_214_140/0.12)] sm:py-24">
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
         <SectionHead
           file="worx4u.ts"
           title={product.name}
-          onDark
-          titleClass={`${styles.chapter} ${styles.glitch} font-semibold`}
+          titleClass={`${styles.chapter} ${styles.glitch} font-semibold text-foreground`}
         />
-        <p className="mt-3 font-mono text-xs tracking-[0.16em] text-zinc-400">{product.index} · text only</p>
-        <ul className="mt-3 space-y-1 text-sm text-zinc-300">
+        <p className="mt-3 font-mono text-xs tracking-[0.16em] text-muted-foreground">{product.index} · text only</p>
+        <ul className="mt-3 space-y-1 text-sm text-foreground">
           {product.titles?.map((title) => (
             <li key={title}>{title}</li>
           ))}
         </ul>
-        <p className="mt-1 text-sm text-zinc-400">{product.place}</p>
-        <p className="mt-5 max-w-prose text-base leading-relaxed text-zinc-300">{product.summary}</p>
-        <ol className="mt-10 grid gap-px overflow-hidden rounded-xl border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-5">
+        <p className="mt-1 text-sm text-muted-foreground">{product.place}</p>
+        <p className="mt-5 max-w-prose text-base leading-relaxed text-foreground">{product.summary}</p>
+        <ol className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
           {product.points.map((point, index) => (
-            <li key={point} className="bg-[#101114] p-4">
-              <p className="font-mono text-[11px] tracking-[0.14em] text-zinc-400">0{index + 1}</p>
-              <p className="mt-2 text-sm font-medium text-zinc-50">{labels[index]}</p>
-              <p className="mt-2 text-xs leading-relaxed text-zinc-400">{point}</p>
+            <li key={point} className="rounded-lg border border-border bg-black p-4 transition-shadow hover:shadow-[0_0_24px_rgb(61_214_140/0.28)]">
+              <p className="font-mono text-[11px] tracking-[0.14em] text-muted-foreground">0{index + 1}</p>
+              <p className="mt-2 text-sm font-medium text-foreground">{labels[index]}</p>
+              <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{point}</p>
             </li>
           ))}
         </ol>
@@ -201,11 +201,20 @@ function WorxChapter() {
 }
 
 /** Desktop Ramp preview is cropped. The lightbox still shows the full board. */
-function ClientBoard({ board, cap = false }: { board: BoardShot; cap?: boolean }) {
+function ClientBoard({ board, cap = false, tone = "green" }: { board: BoardShot; cap?: boolean; tone?: "green" | "blue" }) {
+  const frame =
+    tone === "blue"
+      ? "rounded-lg border border-[rgb(112_184_255/0.4)] bg-black p-2 transition-shadow hover:shadow-[0_0_28px_rgb(112_184_255/0.28)]"
+      : "rounded-lg border border-border bg-black p-2 transition-shadow hover:shadow-[0_0_28px_rgb(61_214_140/0.28)]";
+  const chip =
+    tone === "blue"
+      ? "border border-[rgb(112_184_255/0.45)]"
+      : "border border-[rgb(61_214_140/0.45)]";
+
   return (
     <div className="mt-5">
       <BoardLightbox board={board}>
-        <div className="rounded-lg border border-border bg-[#0e1512] p-2">
+        <div className={frame}>
           <div className={cap ? "relative lg:h-[600px] lg:overflow-hidden" : undefined}>
             <Image
               src={board.src}
@@ -222,10 +231,10 @@ function ClientBoard({ board, cap = false }: { board: BoardShot; cap?: boolean }
             {cap ? (
               <>
                 <div
-                  className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-32 bg-gradient-to-t from-[#0e1512] to-transparent lg:block"
+                  className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-32 bg-gradient-to-t from-black to-transparent lg:block"
                   aria-hidden
                 />
-                <span className="absolute bottom-3 left-3 hidden rounded-md bg-[#0e1512] px-2.5 py-1 font-mono text-xs text-[#e8e8e8] ring-1 ring-white/20 lg:inline">
+                <span className={`absolute bottom-3 left-3 hidden rounded-md bg-black px-2.5 py-1 font-mono text-xs text-[#e6e6e6] lg:inline ${chip}`}>
                   View full board
                 </span>
               </>
@@ -243,7 +252,7 @@ function TurboChapter() {
   const precision = TURBO.clients.find((client) => client.id === "precision-ai");
 
   return (
-    <section id="turbo" className="scroll-mt-28 border-y border-border py-16 sm:py-24">
+    <section id="turbo" className="scroll-mt-28 border-y border-[rgb(112_184_255/0.4)] bg-black py-16 transition-shadow hover:shadow-[inset_0_0_48px_rgb(112_184_255/0.1)] sm:py-24">
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
         <div className="flex items-center gap-3">
           <Image src={TURBO.logo} alt="" width={36} height={36} className="size-9 rounded-md bg-white object-contain p-1" />
@@ -281,7 +290,7 @@ function TurboChapter() {
                   <p key={line}>{line}</p>
                 ))}
               </div>
-              {client.board && <ClientBoard board={client.board} cap={client.id === "ramp"} />}
+              {client.board && <ClientBoard board={client.board} cap={client.id === "ramp"} tone={client.id === "vondy" ? "blue" : "green"} />}
             </article>
           ))}
         </div>
@@ -293,7 +302,7 @@ function TurboChapter() {
         )}
 
         <div className="mt-12 grid gap-8 lg:grid-cols-2">
-          {DESIGN_STUDIES.map((study) => (
+          {DESIGN_STUDIES.map((study, index) => (
             <article key={study.id} className="min-w-0">
               <h3 className="text-lg font-semibold tracking-[-0.02em]">{study.title}</h3>
               <p className="mt-1 text-xs text-muted-foreground">{study.meta}</p>
@@ -301,7 +310,7 @@ function TurboChapter() {
               {study.image && (
                 <div className="mt-4">
                   <BoardLightbox board={study.image}>
-                    <div className="rounded-lg border border-border bg-[#0e1512] p-2">
+                    <div className={index % 2 === 0 ? "rounded-lg border border-border bg-black p-2 transition-shadow hover:shadow-[0_0_28px_rgb(61_214_140/0.28)]" : "rounded-lg border border-[rgb(112_184_255/0.4)] bg-black p-2 transition-shadow hover:shadow-[0_0_28px_rgb(112_184_255/0.28)]"}>
                       <Image
                         src={study.image.src}
                         alt={study.image.alt}
@@ -372,7 +381,7 @@ export function CareerLanding() {
                   WeWrite
                 </a>
                 , a local business on{" "}
-                <a href="#lucent-wash" className="text-brand underline decoration-brand/40 underline-offset-4">
+                <a href="#lucent-wash" className="text-blue underline decoration-blue/40 underline-offset-4">
                   Lucent Wash
                 </a>
                 .
@@ -403,7 +412,7 @@ export function CareerLanding() {
           </div>
         </section>
 
-        <div className="sticky top-14 z-30 border-b border-border/70 bg-background/85 backdrop-blur-sm">
+        <div className="sticky top-14 z-30 border-b border-border bg-black">
           <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-2 sm:px-6">
             <div className="min-w-0 flex-1">
               <FloatingSectionNav sections={SECTIONS} />
@@ -414,7 +423,7 @@ export function CareerLanding() {
 
         <WorkAndDesign />
 
-        <section id="lab" className="scroll-mt-28 border-t border-border py-16 sm:py-24">
+        <section id="lab" className="scroll-mt-28 border-y border-border bg-black py-16 sm:py-24">
           <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
             <SectionHead
               file="builder-log.tsx"
@@ -428,7 +437,7 @@ export function CareerLanding() {
           </div>
         </section>
 
-        <section id="experience" className="scroll-mt-28 py-16 sm:py-24">
+        <section id="experience" className="scroll-mt-28 border-y border-[rgb(112_184_255/0.4)] bg-black py-16 sm:py-24">
           <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
             <div className="flex items-end justify-between gap-4">
               <SectionHead
