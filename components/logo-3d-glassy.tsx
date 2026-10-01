@@ -6,7 +6,6 @@ import { MeshTransmissionMaterial, Float, RoundedBox } from "@react-three/drei"
 import * as THREE from "three"
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader.js"
 import { cn } from "@/lib/utils"
-import { useTheme } from "next-themes"
 import { getLogoColors, type Logo3DThemeColors } from "@/lib/logo-colors"
 
 interface Logo3DProps {
@@ -236,16 +235,7 @@ function LoadingFallback() {
  */
 export function Logo3D({ className, size = "md", static: isStatic = false }: Logo3DProps) {
   const containerClass = containerSizes[size]
-  const { resolvedTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
-
-  // Avoid hydration mismatch
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  // Get colors based on theme (default to light if not mounted)
-  const isDark = mounted && resolvedTheme === "dark"
+  const isDark = true
   const colors = getLogoColors(isDark)
 
   return (

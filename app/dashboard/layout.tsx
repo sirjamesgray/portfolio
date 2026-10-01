@@ -7,7 +7,6 @@ import Link from "next/link"
 import { DashboardButton } from "@/components/ui/button"
 import { MirrorBanner } from "@/components/dashboard/mirror-banner"
 import { LogoutButton } from "@/components/dashboard/logout-button"
-import { ThemeToggle } from "@/components/theme-toggle"
 import { DashboardLogo } from "@/components/dashboard/logo"
 import { SITE_CONFIG } from "@/lib/constants"
 import { getNavItems } from "@/lib/dashboard-nav"
@@ -111,9 +110,8 @@ export default async function DashboardLayout({
           </nav>
 
           <div className="border-t p-4">
-            <div className="flex items-center justify-between px-2 mb-2">
+            <div className="px-2 mb-2">
               <p className="text-sm text-muted-foreground truncate">{displayEmail}</p>
-              <ThemeToggle />
             </div>
             <LogoutButton />
           </div>

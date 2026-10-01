@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Beaker, Cpu, Flame, Droplets, Clock, Palette } from "lucide-react";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { Footer } from "@/components/footer";
 
 const experiments = [
@@ -87,7 +86,6 @@ export default function ExperimentsPage() {
             <ArrowLeft className="h-4 w-4" />
             Back to home
           </Link>
-          <ThemeToggle />
         </div>
       </header>
 

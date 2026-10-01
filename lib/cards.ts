@@ -94,8 +94,8 @@ export const CARD_SOLID = {
 export const CARD_INTERACTIVE_SOLID = {
   base: "rounded-2xl border border-white/10 bg-card/50 backdrop-blur-xl transition-all duration-300 cursor-pointer",
   shadow: "shadow-[var(--shadow-elevation-sm)] dark:shadow-[0_0_20px_rgba(16,185,129,0.08)]",
-  hover: "hover:border-primary/50 hover:shadow-[var(--shadow-elevation-md)] hover:bg-white/80 dark:hover:bg-card/80 dark:hover:shadow-[0_0_30px_rgba(16,185,129,0.15)]",
-  full: "rounded-2xl border border-white/10 bg-card/50 backdrop-blur-xl transition-all duration-300 cursor-pointer shadow-[var(--shadow-elevation-sm)] dark:shadow-[0_0_20px_rgba(16,185,129,0.08)] hover:border-primary/50 hover:shadow-[var(--shadow-elevation-md)] hover:bg-white/80 dark:hover:bg-card/80 dark:hover:shadow-[0_0_30px_rgba(16,185,129,0.15)]",
+  hover: "hover:border-brand/50 hover:shadow-[var(--shadow-elevation-md)] hover:bg-card/80",
+  full: "rounded-2xl border border-white/10 bg-card/50 backdrop-blur-xl transition-all duration-300 cursor-pointer shadow-[var(--shadow-elevation-sm)] hover:border-brand/50 hover:shadow-[var(--shadow-elevation-md)] hover:bg-card/80",
   color: "emerald" as CardColor,
 } as const;
 

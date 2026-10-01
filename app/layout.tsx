@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { GoogleAnalytics } from "@next/third-parties/google";
-import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 
 export const viewport: Viewport = {
@@ -12,6 +11,8 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: "cover",
+  colorScheme: "dark",
+  themeColor: "#000000",
 };
 
 const geistSans = Geist({
@@ -106,7 +107,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+    <html lang="en" className="dark scroll-smooth" style={{ colorScheme: "dark" }} suppressHydrationWarning>
       <head>
         <script
           type="application/ld+json"
@@ -116,14 +117,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
+        {children}
         {process.env.VERCEL ? <Analytics /> : null}
         {process.env.VERCEL ? <SpeedInsights /> : null}
         {process.env.NEXT_PUBLIC_GA_ID && (

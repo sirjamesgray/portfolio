@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { ArrowLeft, Clock } from "lucide-react";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { TimeMachine } from "@/components/time-machine";
 import { Footer } from "@/components/footer";
 
@@ -19,7 +18,6 @@ export default function TimeMachinePage() {
             <ArrowLeft className="h-4 w-4" />
             Back to experiments
           </Link>
-          <ThemeToggle />
         </div>
       </header>
 

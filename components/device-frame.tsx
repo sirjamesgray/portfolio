@@ -15,7 +15,7 @@ type FrameProps = {
 export function LaptopFrame({ shot, priority = false, sizes }: FrameProps) {
   return (
     <figure className={`${styles.device} w-full max-w-full`}>
-      <div className={`${styles.laptop} rounded-[1.05rem] bg-[#1a1a1c] p-[5px] pb-0`}>
+      <div className={`${styles.laptop} rounded-[1.05rem] bg-[#0c0c0e] p-[5px] pb-0`}>
         <div className="relative overflow-hidden rounded-t-[0.7rem] bg-black">
           <div className="absolute left-1/2 top-1.5 z-10 h-1 w-1 -translate-x-1/2 rounded-full bg-zinc-600" aria-hidden />
           <Image
@@ -40,7 +40,7 @@ export function LaptopFrame({ shot, priority = false, sizes }: FrameProps) {
 export function PhoneFrame({ shot, priority = false, sizes }: FrameProps) {
   return (
     <figure className={`${styles.device} w-full max-w-full`}>
-      <div className={`${styles.phone} rounded-[1.35rem] bg-[#1a1a1c] p-[5px]`}>
+      <div className={`${styles.phone} rounded-[1.35rem] bg-[#0c0c0e] p-[5px]`}>
         <div className="relative overflow-hidden rounded-[1.05rem] bg-black">
           <div className="absolute left-1/2 top-1.5 z-10 h-3 w-10 -translate-x-1/2 rounded-full bg-black" aria-hidden />
           <Image

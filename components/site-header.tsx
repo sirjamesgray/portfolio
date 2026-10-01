@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { DashboardButton } from "@/components/ui/button";
 import { LandingButton } from "@/components/ui/landing-button";
 import { ScrollAwareButton } from "@/components/ui/scroll-aware-button";
@@ -104,9 +103,9 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
         <>
           {landingPage === "career" ? (
             <nav className="flex items-center gap-5 text-sm text-muted-foreground">
-              <Link href="/projects" className="hover:text-foreground">Work</Link>
-              <Link href="/experience" className="hover:text-foreground">Experience</Link>
-              <Link href="/contact" className="hover:text-foreground">Contact</Link>
+              <Link href="/projects" className="hover:text-brand">Work</Link>
+              <Link href="/experience" className="hover:text-brand">Experience</Link>
+              <Link href="/contact" className="hover:text-brand">Contact</Link>
             </nav>
           ) : landingPage === "product-engineer" ? (
             // Product Engineer landing page: "Say hi" focused CTAs
@@ -152,7 +151,6 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
           )}
         </>
       )}
-      <ThemeToggle />
     </>
   );
 
@@ -269,12 +267,11 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
         )}
         {landingPage === "career" && variant === "default" && (
           <nav className="flex min-w-0 flex-1 items-center justify-end gap-3 overflow-x-auto text-[13px] text-muted-foreground">
-            <Link href="/projects" className="shrink-0 hover:text-foreground">Work</Link>
-            <Link href="/experience" className="shrink-0 hover:text-foreground">Experience</Link>
-            <Link href="/contact" className="shrink-0 hover:text-foreground">Contact</Link>
+            <Link href="/projects" className="shrink-0 hover:text-brand">Work</Link>
+            <Link href="/experience" className="shrink-0 hover:text-brand">Experience</Link>
+            <Link href="/contact" className="shrink-0 hover:text-brand">Contact</Link>
           </nav>
         )}
-        <ThemeToggle />
       </div>
 
       {/* Mobile Floating Footer - hidden on desktop, appears after scrolling past hero, only on landing page, hides when styles section is visible */}

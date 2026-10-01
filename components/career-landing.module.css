@@ -32,18 +32,16 @@
 .laptop,
 .phone {
   box-shadow:
-    0 1px 1px hsl(0 0% 0% / 0.075),
-    0 2px 2px hsl(0 0% 0% / 0.075),
-    0 4px 4px hsl(0 0% 0% / 0.075),
-    0 8px 8px hsl(0 0% 0% / 0.075),
-    0 16px 16px hsl(0 0% 0% / 0.075);
+    0 0 0 1px rgb(61 214 140 / 0.45),
+    0 0 28px rgb(61 214 140 / 0.22),
+    0 16px 36px rgb(0 0 0 / 0.55);
 }
 
 .glass {
   pointer-events: none;
   position: absolute;
   inset: 0;
-  background: linear-gradient(115deg, hsl(0 0% 100% / 0.16), transparent 42%);
+  background: linear-gradient(115deg, rgb(255 255 255 / 0.05), transparent 34%);
 }
 
 /* Utopia: 2.75rem at 320px to 7rem at 1440px. */
@@ -54,21 +52,28 @@
 }
 
 .hero {
-  min-height: 90svh;
+  min-height: 0;
+}
+
+@media (min-width: 1024px) {
+  .hero {
+    min-height: 90svh;
+  }
 }
 
 .glow {
   background:
-    radial-gradient(ellipse 55% 45% at 72% 42%, oklch(0.696 0.17 162.48 / 0.22), transparent 68%);
+    radial-gradient(ellipse 55% 45% at 72% 42%, rgb(61 214 140 / 0.28), transparent 68%);
 }
 
 .grain {
   pointer-events: none;
   position: absolute;
-  inset: 0;
-  opacity: 0.28;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.55'/></svg>");
+  inset: -20%;
+  opacity: 0.62;
+  mix-blend-mode: screen;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.9'/></svg>");
+  background-size: 180px 180px;
 }
 
 .grid {
@@ -83,33 +88,33 @@
   pointer-events: none;
   position: absolute;
   inset: 0;
-  opacity: 0.55;
-  background:
-    repeating-linear-gradient(
-      to bottom,
-      transparent 0 2px,
-      color-mix(in oklab, var(--foreground) 8%, transparent) 2px 3px
-    ),
-    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.35'/></svg>");
-  animation: crt-flicker 4.5s steps(2, end) infinite;
+  opacity: 0.9;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0 2px,
+    rgb(255 255 255 / 0.09) 2px 3px
+  );
+}
+
+.crt[data-live] .grain {
+  animation: grain-shift 0.42s steps(2, end) infinite;
+}
+
+.crt[data-live]::after {
+  animation: scan-drift 6s linear infinite;
 }
 
 .vignette {
   pointer-events: none;
   position: absolute;
   inset: 0;
-  opacity: 0;
-  background: radial-gradient(ellipse at center, transparent 42%, hsl(0 0% 0% / 0.45) 100%);
-}
-
-:global(.dark) .vignette {
-  opacity: 1;
+  background: radial-gradient(ellipse at center, transparent 46%, rgb(0 0 0 / 0.55) 100%);
 }
 
 .rgb {
   position: relative;
-  animation: slice 0.28s steps(2, end) 1;
-  text-shadow: -3px 0 #e11d48, 3px 0 #2563eb;
+  animation: name-flicker 0.16s steps(2, end) infinite;
+  text-shadow: -8px 0 #ff8dcc, 8px 0 #3dd68c;
 }
 
 .rgb::before,
@@ -121,15 +126,26 @@
 }
 
 .rgb::before {
-  color: #e11d48;
-  transform: translate(-5px, 0);
-  clip-path: inset(8% 0 58% 0);
+  color: #ff8dcc;
+  animation: slice-a 0.36s steps(2, end) infinite;
 }
 
 .rgb::after {
-  color: #2563eb;
-  transform: translate(5px, 1px);
-  clip-path: inset(62% 0 6% 0);
+  color: #3dd68c;
+  animation: slice-b 0.36s steps(2, end) infinite;
+}
+
+.terminal {
+  border-color: rgb(61 214 140 / 0.45);
+  background: #0e1512;
+  box-shadow:
+    0 0 0 1px rgb(61 214 140 / 0.28),
+    0 0 32px rgb(61 214 140 / 0.22);
+}
+
+.phosphor {
+  color: #b1f1cb;
+  text-shadow: 0 0 8px rgb(61 214 140 / 0.75);
 }
 
 .typeLine {
@@ -142,7 +158,8 @@
 .caret {
   width: 0.55em;
   height: 0.9em;
-  background: currentColor;
+  background: #3dd68c;
+  box-shadow: 0 0 8px #3dd68c;
   animation: caret-blink 1.05s steps(1, end) infinite;
 }
 
@@ -158,7 +175,7 @@
 }
 
 .logItem {
-  opacity: 0.35;
+  opacity: 1;
   animation: log-tick 5s linear infinite;
 }
 
@@ -190,10 +207,35 @@
   animation: flow-in 0.45s cubic-bezier(0.25, 0, 0.3, 1) both;
 }
 
-@keyframes crt-flicker {
+@keyframes grain-shift {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(-4%, 2%); }
+  100% { transform: translate(3%, -3%); }
+}
+
+@keyframes scan-drift {
+  from { background-position: 0 0; }
+  to { background-position: 0 9px; }
+}
+
+@keyframes name-flicker {
   0%,
-  100% { opacity: 0.28; }
-  50% { opacity: 0.42; }
+  100% { opacity: 1; }
+  40% { opacity: 0.62; }
+}
+
+@keyframes slice-a {
+  0% { transform: translate(-10px, 0); clip-path: inset(0 0 62% 0); }
+  35% { transform: translate(-14px, 1px); clip-path: inset(36% 0 24% 0); }
+  70% { transform: translate(-6px, -1px); clip-path: inset(14% 0 46% 0); }
+  100% { transform: translate(-11px, 0); clip-path: inset(8% 0 54% 0); }
+}
+
+@keyframes slice-b {
+  0% { transform: translate(10px, 1px); clip-path: inset(58% 0 6% 0); }
+  40% { transform: translate(14px, -1px); clip-path: inset(20% 0 42% 0); }
+  75% { transform: translate(7px, 1px); clip-path: inset(62% 0 8% 0); }
+  100% { transform: translate(11px, 0); clip-path: inset(48% 0 10% 0); }
 }
 
 @keyframes heading-glitch {
@@ -209,19 +251,12 @@
 }
 
 @keyframes lab-pulse {
-  50% { opacity: 0.35; }
+  50% { box-shadow: 0 0 0 4px rgb(61 214 140 / 0.35); }
 }
 
 @keyframes flow-in {
   from { opacity: 0.4; }
   to { opacity: 1; }
-}
-
-@keyframes slice {
-  0% { transform: translateX(0); }
-  40% { transform: translateX(-3px); }
-  70% { transform: translateX(3px); }
-  100% { transform: translateX(0); }
 }
 
 @keyframes caret-blink {
@@ -237,12 +272,13 @@
   0%,
   18% { opacity: 1; }
   22%,
-  100% { opacity: 0.35; }
+  100% { opacity: 0.85; }
 }
 
 @keyframes fade-del {
-  from { opacity: 1; }
-  to { opacity: 0.45; }
+  0% { opacity: 1; }
+  40% { opacity: 0.75; }
+  100% { opacity: 1; }
 }
 
 .band {
@@ -257,6 +293,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .rise,
+  .grain,
   .crt::after,
   .glitch:hover,
   .bootPlay .typeLine,
@@ -274,6 +311,12 @@
 
   .rgb {
     text-shadow: none;
+    opacity: 1;
+  }
+
+  .rgb::before,
+  .rgb::after {
+    content: none;
   }
 
   .typeLine,

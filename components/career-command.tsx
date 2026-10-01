@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import dynamic from "next/dynamic";
-import { useTheme } from "next-themes";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 
 const CareerPalette = dynamic(
@@ -26,7 +25,6 @@ export function CareerCommand() {
   const [help, setHelp] = useState(false);
   const [section, setSection] = useState("work");
   const [ready, setReady] = useState(false);
-  const { resolvedTheme, setTheme } = useTheme();
 
   const showPalette = () => {
     setLoaded(true);
@@ -126,14 +124,7 @@ export function CareerCommand() {
                 <button type="button" onClick={showPalette} className="text-foreground">
                   ⌘K
                 </button>
-                <span className="truncate">{section}</span>
-                <button
-                  type="button"
-                  className="text-foreground"
-                  onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-                >
-                  {resolvedTheme === "dark" ? "dark" : "light"}
-                </button>
+                <span className="truncate text-brand">{section}</span>
               </div>
             </div>,
             document.body

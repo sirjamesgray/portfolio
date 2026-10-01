@@ -6,8 +6,6 @@ import { Float } from "@react-three/drei"
 import * as THREE from "three"
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader.js"
 import { cn } from "@/lib/utils"
-import { useTheme } from "next-themes"
-
 interface Logo3DProps {
   className?: string
   size?: "sm" | "md" | "lg" | "xl" | "qa" | "hero"
@@ -554,14 +552,7 @@ const staticLogoStyles = {
 export function Logo3DStatic({ className, size = "md" }: Logo3DProps) {
   const containerClass = containerSizes[size]
   const styles = staticLogoStyles[size]
-  const { resolvedTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  const isDark = mounted && resolvedTheme === "dark"
+  const isDark = true
 
   return (
     <div className={cn(containerClass, "relative cursor-pointer", className)}>
@@ -599,15 +590,8 @@ export function Logo3DStatic({ className, size = "md" }: Logo3DProps) {
  */
 export function Logo3DRotating({ className, size = "qa" }: Logo3DProps) {
   const containerClass = containerSizes[size]
-  const { resolvedTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  const isDark = mounted && resolvedTheme === "dark"
-  const colors = isDark ? COLORS.dark : COLORS.light
+  const isDark = true
+  const colors = COLORS.dark
 
   return (
     <div className={cn(containerClass, "relative cursor-pointer", className)}>

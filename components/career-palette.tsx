@@ -1,6 +1,5 @@
 "use client";
 
-import { useTheme } from "next-themes";
 import { RESUME_PATH, SITE_CONFIG, SOCIALS } from "@/lib/constants";
 import {
   CommandDialog,
@@ -25,8 +24,6 @@ type Props = {
 };
 
 export function CareerPalette({ open, onOpenChange }: Props) {
-  const { setTheme, resolvedTheme } = useTheme();
-
   const close = () => onOpenChange(false);
 
   const go = (id: string) => {
@@ -36,7 +33,7 @@ export function CareerPalette({ open, onOpenChange }: Props) {
 
   return (
     <CommandDialog open={open} onOpenChange={onOpenChange} title="Command palette">
-      <CommandInput placeholder="Jump, write, or switch theme" />
+      <CommandInput placeholder="Jump or write" />
       <CommandList>
         <CommandEmpty>No matches.</CommandEmpty>
         <CommandGroup heading="Sections">
@@ -90,15 +87,6 @@ export function CareerPalette({ open, onOpenChange }: Props) {
             }}
           >
             LinkedIn
-          </CommandItem>
-          <CommandItem
-            value="Toggle theme"
-            onSelect={() => {
-              setTheme(resolvedTheme === "dark" ? "light" : "dark");
-              close();
-            }}
-          >
-            Toggle theme
           </CommandItem>
         </CommandGroup>
       </CommandList>

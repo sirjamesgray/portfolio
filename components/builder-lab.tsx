@@ -13,7 +13,7 @@ const LabAscii = dynamic(() => import("@/components/lab-ascii").then((mod) => mo
 const STEPS = ["prompt", "agent", "PR", "preview", "ship"] as const;
 
 const ACCENTS = [
-  { name: "brand", value: "oklch(0.696 0.17 162.48)" },
+  { name: "brand", value: "#3dd68c" },
   { name: "WeWrite", value: "#2599FF" },
   { name: "Lucent", value: "#0EA5E9" },
 ] as const;
@@ -36,19 +36,14 @@ function motionOff() {
 }
 
 function TogglesCard() {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
   const [dense, setDense] = useState(false);
   const [motion, setMotion] = useState(true);
   const [accent, setAccent] = useState(0);
   const color = ACCENTS[accent];
-  const dark = theme === "dark";
 
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap gap-1.5 font-mono text-[11px]">
-        <button type="button" className="rounded border border-border px-2 py-1" onClick={() => setTheme(dark ? "light" : "dark")}>
-          theme {theme}
-        </button>
         <button type="button" className="rounded border border-border px-2 py-1" onClick={() => setDense((value) => !value)}>
           density {dense ? "tight" : "roomy"}
         </button>
@@ -59,14 +54,14 @@ function TogglesCard() {
           accent {color.name}
         </button>
       </div>
-      <div className={`${dark ? "bg-zinc-950 text-zinc-100" : "bg-white text-zinc-900"} overflow-hidden rounded-md border border-border`}>
-        <div className="border-b border-current/10 px-3 py-1 font-mono text-[10px] opacity-60">preview.tsx</div>
+      <div className="overflow-hidden rounded-md border border-border bg-[#0e1512] text-[#e8e8e8]">
+        <div className="border-b border-white/10 px-3 py-1 font-mono text-[10px] text-[#b4b4b4]">preview.tsx</div>
         <div className={dense ? "space-y-2 p-2" : "space-y-4 p-4"}>
           <p className={dense ? "text-sm font-medium" : "text-base font-medium"}>Write a page</p>
-          <p className="text-xs opacity-70">A social wiki where every page is a fundraiser.</p>
+          <p className="text-xs text-[#b4b4b4]">A social wiki where every page is a fundraiser.</p>
           <button
             type="button"
-            className={`rounded-md px-3 py-1.5 text-xs font-medium text-white ${motion ? styles.pulse : ""}`}
+            className={`rounded-md px-3 py-1.5 text-xs font-medium text-[#0e1512] ${motion ? styles.pulse : ""}`}
             style={{ background: color.value }}
           >
             Write
@@ -107,7 +102,7 @@ function DiffCard() {
           return (
             <li
               key={line.text}
-              className={`whitespace-pre-wrap break-all rounded px-2 py-0.5 ${line.kind === "del" ? `${styles.delLine} bg-red-500/10` : "bg-emerald-500/10"}`}
+              className={`whitespace-pre-wrap break-all rounded px-2 py-0.5 ${line.kind === "del" ? `${styles.delLine} bg-[#2a1219] text-[#ff8dcc]` : "bg-[#132d21] text-[#3dd68c]"}`}
             >
               {line.kind === "del" ? "- " : "+ "}
               {shown}
@@ -243,7 +238,7 @@ function SwatchCard() {
 
 function CardShell({ file, title, children }: { file: string; title: string; children: React.ReactNode }) {
   return (
-    <article className="flex min-w-0 flex-col overflow-hidden rounded-lg border border-border bg-background">
+    <article className="flex min-w-0 flex-col overflow-hidden rounded-lg border border-border bg-card">
       <div className="flex items-center justify-between gap-2 border-b border-border bg-muted/40 px-3 py-2">
         <span className="font-mono text-xs text-muted-foreground">{file}</span>
         <span className="font-mono text-[11px] text-foreground">{title}</span>

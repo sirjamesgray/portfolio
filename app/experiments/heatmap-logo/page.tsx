@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { ArrowLeft, Flame } from "lucide-react";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { HeatmapLogo } from "@/components/heatmap-logo";
 import { Footer } from "@/components/footer";
 
@@ -19,7 +18,6 @@ export default function HeatmapLogoPage() {
             <ArrowLeft className="h-4 w-4" />
             Back to experiments
           </Link>
-          <ThemeToggle />
         </div>
       </header>
 

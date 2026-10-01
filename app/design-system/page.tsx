@@ -6,7 +6,6 @@ import Link from "next/link";
 import { Copy, Check, ChevronDown, ArrowLeft, ArrowUp as ArrowUpIcon, Calendar, Mail, MessageSquare, Linkedin, Zap, Heart } from "lucide-react";
 import { ActionLinkCard } from "@/components/ui/action-link-card";
 import { cn } from "@/lib/utils";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { CrossedCornersCard } from "@/components/ui/crossed-corners-card";
 import { CursorGlow, GLOW_COLORS } from "@/components/ui/cursor-glow";
 import { SparkleProvider, useSparkles } from "@/lib/sparkle-context";
@@ -322,8 +321,7 @@ export default function DesignSystemPage() {
       {/* Fixed Sidebar */}
       <aside className="hidden lg:block fixed left-0 top-0 h-screen w-56 border-r border-border bg-background/95 backdrop-blur-sm z-40">
         <nav className="h-full overflow-y-auto py-8 px-4">
-          {/* Back link and theme toggle */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="mb-6">
             <Link
               href="/"
               className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -331,7 +329,6 @@ export default function DesignSystemPage() {
               <ArrowLeft className="h-4 w-4" />
               Back to home
             </Link>
-            <ThemeToggle />
           </div>
 
           <ul className="space-y-1">
@@ -366,7 +363,7 @@ export default function DesignSystemPage() {
             Back
           </Link>
           <span className="text-sm font-medium text-foreground">Design System</span>
-          <ThemeToggle />
+          <span className="w-16" aria-hidden />
         </div>
         {/* Horizontal scrollable sections */}
         <div className="overflow-x-auto scrollbar-hide">
@@ -430,7 +427,7 @@ export default function DesignSystemPage() {
             <ComponentCard title="Accordion" importPath="@/components/ui/accordion" className="col-span-full">
               <div className="w-full max-w-lg">
                 <CursorGlow>
-                  <div className="rounded-2xl border border-white/10 bg-card/50 backdrop-blur-xl shadow-[var(--shadow-elevation-sm)] dark:shadow-[0_0_20px_rgba(16,185,129,0.08)] transition-all duration-300 cursor-pointer hover:border-primary/50 hover:shadow-[var(--shadow-elevation-md)] hover:bg-white/80 dark:hover:bg-card/80 dark:hover:shadow-[0_0_30px_rgba(16,185,129,0.15)]">
+                  <div className="rounded-2xl border border-white/10 bg-card/50 backdrop-blur-xl shadow-[var(--shadow-elevation-sm)] dark:shadow-[0_0_20px_rgba(16,185,129,0.08)] transition-all duration-300 cursor-pointer hover:border-primary/50 hover:shadow-[var(--shadow-elevation-md)] hover:bg-card/80 hover:shadow-[0_0_30px_rgba(61,214,140,0.15)]">
                     <Accordion type="single" collapsible className="w-full">
                       <AccordionItem value="item-1" className="px-5 border-b border-border">
                         <AccordionTrigger className="text-foreground font-semibold text-left hover:no-underline">

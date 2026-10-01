@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { RESUME_PATH } from "@/lib/constants";
 import styles from "./career-landing.module.css";
 
@@ -92,7 +92,7 @@ export function ScrambleName({ className }: { className?: string }) {
         onMouseEnter={() => {
           if (motionOff()) return;
           setHot(true);
-          window.setTimeout(() => setHot(false), 280);
+          window.setTimeout(() => setHot(false), 360);
         }}
       >
         {value}
@@ -123,6 +123,36 @@ function lineSlice(index: number, revealed: number) {
 }
 
 /** Boot lines are in the HTML. Typing starts only after paint. */
+/** Grain and scanlines move only while the hero is on screen. */
+export function HeroAtmosphere() {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const section = ref.current?.closest("section");
+    if (!section || motionOff()) return;
+    let seen = false;
+    const apply = () => {
+      section.toggleAttribute("data-live", seen && !document.hidden);
+    };
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        seen = Boolean(entry?.isIntersecting);
+        apply();
+      },
+      { threshold: 0.08 }
+    );
+    observer.observe(section);
+    document.addEventListener("visibilitychange", apply);
+    return () => {
+      observer.disconnect();
+      document.removeEventListener("visibilitychange", apply);
+      section.removeAttribute("data-live");
+    };
+  }, []);
+
+  return <div ref={ref} className={styles.grain} aria-hidden />;
+}
+
 export function BootSequence() {
   const [revealed, setRevealed] = useState<number | null>(null);
   const [command, setCommand] = useState("");
@@ -145,9 +175,9 @@ export function BootSequence() {
   }, []);
 
   return (
-    <div className="mt-4 max-w-full overflow-hidden rounded-md border border-border bg-background/80">
-      <p className="border-b border-border px-3 py-1 font-mono text-[10px] text-muted-foreground">terminal</p>
-      <pre className="max-w-full overflow-x-hidden px-3 py-2 font-mono text-[11px] leading-relaxed text-muted-foreground">
+    <div className={`${styles.terminal} mt-2 max-w-full overflow-hidden rounded-md border sm:mt-4`}>
+      <p className="border-b border-white/10 px-3 py-1 font-mono text-[10px] text-[#b4b4b4]">terminal</p>
+      <pre className={`${styles.phosphor} max-w-full overflow-x-hidden px-3 py-1.5 font-mono text-[11px] leading-snug sm:py-2 sm:leading-relaxed`}>
         {BOOT_LINES.map((line, index) => {
           const text = revealed === null ? line : lineSlice(index, revealed);
           if (!text) return null;
@@ -159,7 +189,7 @@ export function BootSequence() {
         })}
       </pre>
       <form
-        className="flex items-center gap-2 border-t border-border px-3 py-1.5 font-mono text-[11px]"
+        className="flex items-center gap-2 border-t border-white/10 px-3 py-1.5 font-mono text-[11px]"
         onSubmit={(event) => event.preventDefault()}
       >
         <span className="text-foreground">$</span>
@@ -170,14 +200,14 @@ export function BootSequence() {
           autoCapitalize="none"
           autoCorrect="off"
           spellCheck={false}
-          className="min-w-0 flex-1 bg-transparent text-foreground outline-none"
+          className={`${styles.phosphor} min-w-0 flex-1 bg-transparent outline-none`}
         />
         <span className={styles.caret} aria-hidden />
       </form>
       {hired ? (
         <p className="border-t border-border px-3 py-2 font-mono text-[11px] text-foreground">
           The resume is here.{" "}
-          <a href={RESUME_PATH} className="underline underline-offset-4">
+          <a href={RESUME_PATH} className="text-brand underline underline-offset-4">
             Download resume
           </a>
         </p>

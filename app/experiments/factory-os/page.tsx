@@ -32,7 +32,6 @@ import { MaterialsView, MaterialsMini } from '@/components/factory-os/MaterialsV
 import { AdCampaignView, AdSpendMini } from '@/components/factory-os/AdCampaignView';
 import { KanbanView } from '@/components/factory-os/KanbanView';
 import { ProductDetailDrawer } from '@/components/factory-os/ProductDetailDrawer';
-import { ThemeToggle } from '@/components/theme-toggle';
 import { PIPELINE_COLORS } from '@/lib/factory-os/colors';
 
 export default function HomeLabPage() {
@@ -246,9 +245,6 @@ export default function HomeLabPage() {
           </div>
 
           <div className="flex items-center gap-2">
-            {/* Theme Toggle */}
-            <ThemeToggle />
-
             {/* Reset */}
             <button
               onClick={reset}

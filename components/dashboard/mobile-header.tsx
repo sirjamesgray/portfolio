@@ -1,8 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { LogOut, Sun, Moon } from "lucide-react"
-import { useTheme } from "next-themes"
+import { LogOut } from "lucide-react"
 import { DashboardLogoSmall } from "@/components/dashboard/logo"
 import { SITE_CONFIG } from "@/lib/constants"
 import {
@@ -18,8 +17,6 @@ interface MobileHeaderProps {
 }
 
 export function MobileHeader({ userEmail }: MobileHeaderProps) {
-  const { theme, setTheme } = useTheme()
-
   const handleLogout = async () => {
     window.location.href = "/auth/signout"
   }
@@ -48,15 +45,6 @@ export function MobileHeader({ userEmail }: MobileHeaderProps) {
           <div className="px-2 py-1.5">
             <p className="text-sm font-medium truncate">{userEmail || "Not signed in"}</p>
           </div>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
-            {theme === "dark" ? (
-              <Sun className="mr-2 h-4 w-4" />
-            ) : (
-              <Moon className="mr-2 h-4 w-4" />
-            )}
-            {theme === "dark" ? "Light mode" : "Dark mode"}
-          </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={handleLogout} className="text-red-600 focus:text-red-600">
             <LogOut className="mr-2 h-4 w-4" />

@@ -5,7 +5,7 @@ import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { FloatingSectionNav } from "@/components/ui/floating-section-nav";
 import { CareerHeroStage } from "@/components/career-hero";
-import { BootSequence, ScrambleName } from "@/components/career-intro";
+import { BootSequence, HeroAtmosphere, ScrambleName } from "@/components/career-intro";
 import { CareerCommand } from "@/components/career-command";
 import { HoverScramble } from "@/components/hover-scramble";
 import { BuilderLab } from "@/components/builder-lab";
@@ -47,7 +47,7 @@ function SectionHead({
   return (
     <div className="flex gap-3">
       <ol
-        className={`w-6 shrink-0 pt-1 text-right font-mono text-[10px] leading-5 ${onDark ? "text-zinc-500" : "text-muted-foreground/45"}`}
+        className={`w-6 shrink-0 pt-1 text-right font-mono text-[10px] leading-5 ${onDark ? "text-zinc-400" : "text-muted-foreground"}`}
         aria-hidden
       >
         <li>01</li>
@@ -134,7 +134,7 @@ function ProductChapter({ product, priority = false }: { product: PublicProduct;
           {product.href && (
             <a
               href={product.href}
-              className="mt-5 inline-block text-sm font-medium text-foreground underline decoration-foreground/30 underline-offset-4"
+              className="mt-5 inline-block text-sm font-medium text-brand underline decoration-brand/40 underline-offset-4"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -163,7 +163,7 @@ function WorxChapter() {
   const labels = ["Product", "API platform", "APEX to React", "Backend Mirror", "SSO and local dev"];
 
   return (
-    <article id={product.id} className="scroll-mt-28 bg-[#101114] py-16 text-zinc-100 sm:py-24">
+    <article id={product.id} className="scroll-mt-28 border-y border-white/15 bg-[#101114] py-16 text-zinc-100 sm:py-24">
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
         <SectionHead
           file="worx4u.ts"
@@ -182,7 +182,7 @@ function WorxChapter() {
         <ol className="mt-10 grid gap-px overflow-hidden rounded-xl border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-5">
           {product.points.map((point, index) => (
             <li key={point} className="bg-[#101114] p-4">
-              <p className="font-mono text-[11px] tracking-[0.14em] text-zinc-500">0{index + 1}</p>
+              <p className="font-mono text-[11px] tracking-[0.14em] text-zinc-400">0{index + 1}</p>
               <p className="mt-2 text-sm font-medium text-zinc-50">{labels[index]}</p>
               <p className="mt-2 text-xs leading-relaxed text-zinc-400">{point}</p>
             </li>
@@ -239,14 +239,16 @@ function TurboChapter() {
               {client.board && (
                 <div className="mt-5">
                   <BoardLightbox board={client.board}>
-                    <Image
-                      src={client.board.src}
-                      alt={client.board.alt}
-                      width={client.board.width}
-                      height={client.board.height}
-                      sizes="(min-width: 1024px) 560px, 100vw"
-                      className="h-auto w-full rounded-lg border border-border"
-                    />
+                    <div className="rounded-lg border border-border bg-[#0e1512] p-2">
+                      <Image
+                        src={client.board.src}
+                        alt={client.board.alt}
+                        width={client.board.width}
+                        height={client.board.height}
+                        sizes="(min-width: 1024px) 560px, 100vw"
+                        className="h-auto w-full rounded-md"
+                      />
+                    </div>
                   </BoardLightbox>
                   <p className="mt-2 text-xs text-muted-foreground">Open the board</p>
                 </div>
@@ -270,14 +272,16 @@ function TurboChapter() {
               {study.image && (
                 <div className="mt-4">
                   <BoardLightbox board={study.image}>
-                    <Image
-                      src={study.image.src}
-                      alt={study.image.alt}
-                      width={study.image.width}
-                      height={study.image.height}
-                      sizes="(min-width: 1024px) 560px, 100vw"
-                      className="h-auto w-full rounded-lg border border-border"
-                    />
+                    <div className="rounded-lg border border-border bg-[#0e1512] p-2">
+                      <Image
+                        src={study.image.src}
+                        alt={study.image.alt}
+                        width={study.image.width}
+                        height={study.image.height}
+                        sizes="(min-width: 1024px) 560px, 100vw"
+                        className="h-auto w-full rounded-md"
+                      />
+                    </div>
                   </BoardLightbox>
                 </div>
               )}
@@ -314,22 +318,22 @@ export function CareerLanding() {
     <div className="min-h-screen overflow-x-clip bg-background pb-0 text-foreground md:pb-[calc(2.25rem+env(safe-area-inset-bottom))]">
       <SiteHeader landingPage="career" customerDashboardEnabled={false} />
       <main>
-        <section className={`${styles.hero} ${styles.crt} relative flex items-center overflow-hidden pt-24`}>
+        <section className={`${styles.hero} ${styles.crt} relative flex items-start overflow-hidden pt-20 sm:items-center sm:pt-24`}>
           <div className={`${styles.grid} pointer-events-none absolute inset-0`} aria-hidden />
           <div className={`${styles.glow} pointer-events-none absolute inset-0`} aria-hidden />
-          <div className={styles.grain} aria-hidden />
+          <HeroAtmosphere />
           <div className={styles.vignette} aria-hidden />
-          <div className="relative mx-auto grid w-full max-w-6xl items-center gap-8 px-4 py-4 sm:gap-10 sm:px-6 sm:py-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:py-16">
+          <div className="relative mx-auto grid w-full max-w-6xl items-center gap-6 px-4 py-2 sm:gap-10 sm:px-6 sm:py-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:py-16">
             <div className="min-w-0">
               <p className={`${styles.rise} font-mono text-xs tracking-[0.16em] text-muted-foreground`}>
                 Fort Worth
               </p>
               <BootSequence />
-              <ScrambleName className={`${styles.name} ${styles.rise} ${styles.d1} mt-4 font-semibold text-foreground`} />
+              <ScrambleName className={`${styles.name} ${styles.rise} ${styles.d1} mt-2 font-semibold text-foreground sm:mt-4`} />
               <p className={`${styles.rise} ${styles.d2} mt-4 max-w-md text-lg leading-snug text-foreground sm:mt-5 sm:text-xl`}>
                 I design in code and ship real products with AI agents.
               </p>
-              <div className={`${styles.rise} ${styles.d3} mt-4 sm:mt-6`}>
+              <div className={`${styles.rise} ${styles.d3} mt-3 sm:mt-6`}>
                 <CtaRow primary />
               </div>
               <p className={`${styles.rise} ${styles.d4} mt-4 max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base`}>
@@ -385,7 +389,7 @@ export function CareerLanding() {
                 title="Experience"
                 titleClass={`${styles.glitch} text-sm font-medium tracking-[0.14em] text-muted-foreground uppercase`}
               />
-              <Link href="/experience" className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline">
+              <Link href="/experience" className="text-sm text-brand underline-offset-4 hover:underline">
                 Full timeline
               </Link>
             </div>

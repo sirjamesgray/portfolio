@@ -100,8 +100,8 @@ export function FloatingSectionNav({ sections, className }: FloatingSectionNavPr
             className={cn(
               "shrink-0 px-4 py-2 text-sm rounded-full transition-colors whitespace-nowrap",
               activeSection === id
-                ? "bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-medium"
-                : "text-foreground/60 hover:text-foreground"
+                ? "bg-[#132d21] text-[#3dd68c] font-medium"
+                : "text-muted-foreground hover:text-foreground"
             )}
           >
             {label}

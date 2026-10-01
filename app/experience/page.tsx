@@ -78,13 +78,13 @@ export default function ExperiencePage() {
                   >
                     <div className="flex items-start gap-3">
                       {job.logo && (
-                        <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-white/5">
+                        <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-white p-1">
                           <Image
                             src={job.logo}
                             alt={`${job.company} logo`}
                             fill
                             sizes="48px"
-                            className="object-cover"
+                            className="object-contain p-1"
                           />
                         </div>
                       )}

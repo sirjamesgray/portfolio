@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Palette } from "lucide-react";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { UIShowcase, type ShowcaseStyle } from "@/components/ui-showcase";
 import { UIStyleSwitcher } from "@/components/ui-style-switcher";
 import { Footer } from "@/components/footer";
@@ -23,7 +22,6 @@ export default function UIShowcasePage() {
             <ArrowLeft className="h-4 w-4" />
             Back to experiments
           </Link>
-          <ThemeToggle />
         </div>
       </header>
 

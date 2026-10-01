@@ -29,15 +29,16 @@ export function BoardLightbox({ board, children }: Props) {
           <DialogTitle className="pr-8 text-base">{board.alt}</DialogTitle>
           <div className="space-y-4">
             {frames.map((frame) => (
-              <Image
-                key={frame.src}
-                src={frame.src}
-                alt={frame.alt}
-                width={frame.width}
-                height={frame.height}
-                sizes="(min-width: 1024px) 1100px, 96vw"
-                className="h-auto w-full rounded-md"
-              />
+              <div key={frame.src} className="rounded-md border border-border bg-[#0e1512] p-2">
+                <Image
+                  src={frame.src}
+                  alt={frame.alt}
+                  width={frame.width}
+                  height={frame.height}
+                  sizes="(min-width: 1024px) 1100px, 96vw"
+                  className="h-auto w-full rounded-sm"
+                />
+              </div>
             ))}
           </div>
         </DialogContent>
