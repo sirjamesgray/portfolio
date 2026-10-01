@@ -18,6 +18,7 @@ import {
   PARKHUB_NOTE,
   PUBLIC_PRODUCTS,
   TURBO,
+  type BoardShot,
   type PublicProduct,
 } from "@/lib/public-work";
 import styles from "./career-landing.module.css";
@@ -199,6 +200,44 @@ function WorxChapter() {
   );
 }
 
+/** Desktop Ramp preview is cropped. The lightbox still shows the full board. */
+function ClientBoard({ board, cap = false }: { board: BoardShot; cap?: boolean }) {
+  return (
+    <div className="mt-5">
+      <BoardLightbox board={board}>
+        <div className="rounded-lg border border-border bg-[#0e1512] p-2">
+          <div className={cap ? "relative lg:h-[600px] lg:overflow-hidden" : undefined}>
+            <Image
+              src={board.src}
+              alt={board.alt}
+              width={board.width}
+              height={board.height}
+              sizes="(min-width: 1024px) 560px, 100vw"
+              className={
+                cap
+                  ? "h-auto w-full rounded-md lg:!h-[600px] lg:!w-full lg:!object-cover lg:!object-top"
+                  : "h-auto w-full rounded-md"
+              }
+            />
+            {cap ? (
+              <>
+                <div
+                  className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-32 bg-gradient-to-t from-[#0e1512] to-transparent lg:block"
+                  aria-hidden
+                />
+                <span className="absolute bottom-3 left-3 hidden rounded-md bg-[#0e1512] px-2.5 py-1 font-mono text-xs text-[#e8e8e8] ring-1 ring-white/20 lg:inline">
+                  View full board
+                </span>
+              </>
+            ) : null}
+          </div>
+        </div>
+      </BoardLightbox>
+      <p className={`mt-2 text-xs text-muted-foreground ${cap ? "lg:hidden" : ""}`}>Open the board</p>
+    </div>
+  );
+}
+
 function TurboChapter() {
   const pictured = TURBO.clients.filter((client) => client.board);
   const precision = TURBO.clients.find((client) => client.id === "precision-ai");
@@ -242,23 +281,7 @@ function TurboChapter() {
                   <p key={line}>{line}</p>
                 ))}
               </div>
-              {client.board && (
-                <div className="mt-5">
-                  <BoardLightbox board={client.board}>
-                    <div className="rounded-lg border border-border bg-[#0e1512] p-2">
-                      <Image
-                        src={client.board.src}
-                        alt={client.board.alt}
-                        width={client.board.width}
-                        height={client.board.height}
-                        sizes="(min-width: 1024px) 560px, 100vw"
-                        className="h-auto w-full rounded-md"
-                      />
-                    </div>
-                  </BoardLightbox>
-                  <p className="mt-2 text-xs text-muted-foreground">Open the board</p>
-                </div>
-              )}
+              {client.board && <ClientBoard board={client.board} cap={client.id === "ramp"} />}
             </article>
           ))}
         </div>
