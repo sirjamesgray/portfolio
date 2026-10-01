@@ -125,6 +125,12 @@ function ProductChapter({ product, priority = false }: { product: PublicProduct;
           <p className="mt-1 text-sm text-muted-foreground">
             {product.place} · {product.dates}
           </p>
+          {product.earns ? (
+            <p className="mt-4 max-w-prose text-sm leading-relaxed text-foreground">
+              <span className="font-mono text-xs text-brand">Who earns · </span>
+              {product.earns}
+            </p>
+          ) : null}
           <p className="mt-5 max-w-prose text-base leading-relaxed text-muted-foreground">{product.summary}</p>
           <ul className="mt-5 max-w-prose space-y-2 text-sm leading-relaxed text-foreground">
             {product.points.map((point) => (
@@ -303,13 +309,20 @@ export function WorkAndDesign() {
   const pictured = PUBLIC_PRODUCTS.filter((product) => product.desktop);
 
   return (
-    <div id="work" className="scroll-mt-28">
-      {pictured.map((product, index) => (
-        <ProductChapter key={product.id} product={product} priority={index === 0} />
-      ))}
-      <WorxChapter />
+    <>
+      <div id="work" className="scroll-mt-28">
+        <div className="mx-auto w-full max-w-6xl px-4 pt-14 sm:px-6 sm:pt-20">
+          <p className="max-w-xl text-sm leading-relaxed text-foreground sm:text-base">
+            A pattern across my work: tools that let people own and earn from what they make.
+          </p>
+        </div>
+        {pictured.map((product, index) => (
+          <ProductChapter key={product.id} product={product} priority={index === 0} />
+        ))}
+        <WorxChapter />
+      </div>
       <TurboChapter />
-    </div>
+    </>
   );
 }
 
@@ -330,13 +343,24 @@ export function CareerLanding() {
               </p>
               <BootSequence />
               <ScrambleName className={`${styles.name} ${styles.rise} ${styles.d1} mt-2 font-semibold text-foreground sm:mt-4`} />
-              <p className={`${styles.rise} ${styles.d2} mt-4 max-w-md text-lg leading-snug text-foreground sm:mt-5 sm:text-xl`}>
-                I design in code and ship real products with AI agents.
+              <p className={`${styles.rise} ${styles.d2} mt-3 max-w-md text-base leading-snug text-foreground sm:mt-5 sm:text-lg`}>
+                I build software that lets people earn from their own work: writers on{" "}
+                <a href="#wewrite" className="text-brand underline decoration-brand/40 underline-offset-4">
+                  WeWrite
+                </a>
+                , a local business on{" "}
+                <a href="#lucent-wash" className="text-brand underline decoration-brand/40 underline-offset-4">
+                  Lucent Wash
+                </a>
+                .
               </p>
-              <div className={`${styles.rise} ${styles.d3} mt-3 sm:mt-6`}>
+              <div className={`${styles.rise} ${styles.d3} mt-3 sm:mt-5`}>
                 <CtaRow primary />
               </div>
-              <p className={`${styles.rise} ${styles.d4} mt-4 max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base`}>
+              <p className={`${styles.rise} ${styles.d4} mt-3 max-w-md text-sm leading-relaxed text-muted-foreground`}>
+                Product + design engineer. I design in code and ship with AI agents.
+              </p>
+              <p className={`${styles.rise} ${styles.d4} mt-2 max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base`}>
                 8+ years across startups, agencies, and enterprise. Based in Fort Worth. Working remote or DFW.
               </p>
               <p className={`${styles.rise} ${styles.d5} mt-6 max-w-md border-l-2 border-brand pl-4 text-sm leading-relaxed text-foreground`}>

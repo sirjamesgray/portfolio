@@ -12,6 +12,14 @@ const CareerPalette = dynamic(
 
 const SECTIONS = ["work", "turbo", "lab", "experience", "contact"];
 
+const SECTION_LABELS: Record<string, string> = {
+  work: "Work",
+  turbo: "Turbo",
+  lab: "Lab",
+  experience: "Experience",
+  contact: "Contact",
+};
+
 function typingTarget(target: EventTarget | null) {
   if (!(target instanceof HTMLElement)) return false;
   const tag = target.tagName;
@@ -74,12 +82,29 @@ export function CareerCommand() {
     window.addEventListener("keydown", onKey);
     window.addEventListener("career-help", onHelp);
 
+    const ratios = new Map<string, number>();
     const observer = new IntersectionObserver(
       (entries) => {
-        const visible = entries.find((entry) => entry.isIntersecting);
-        if (visible?.target.id) setSection(visible.target.id);
+        for (const entry of entries) {
+          const id = entry.target.id;
+          if (!id) continue;
+          ratios.set(id, entry.isIntersecting ? entry.intersectionRatio : 0);
+        }
+        let bestId = "";
+        let bestRatio = 0;
+        for (const id of SECTIONS) {
+          const ratio = ratios.get(id) ?? 0;
+          if (ratio > bestRatio) {
+            bestRatio = ratio;
+            bestId = id;
+          }
+        }
+        if (bestId) setSection(bestId);
       },
-      { rootMargin: "-40% 0px -45% 0px" }
+      {
+        rootMargin: "-35% 0px -40% 0px",
+        threshold: [0, 0.15, 0.35, 0.55, 0.75, 1],
+      }
     );
     SECTIONS.forEach((id) => {
       const node = document.getElementById(id);
@@ -124,7 +149,7 @@ export function CareerCommand() {
                 <button type="button" onClick={showPalette} className="text-foreground">
                   ⌘K
                 </button>
-                <span className="truncate text-brand">{section}</span>
+                <span className="truncate text-brand">{SECTION_LABELS[section] ?? section}</span>
               </div>
             </div>,
             document.body

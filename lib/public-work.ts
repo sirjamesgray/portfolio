@@ -17,6 +17,8 @@ export type PublicProduct = {
   /** Extra role lines when one job has more than one title. */
   titles?: readonly string[];
   summary: string;
+  /** One line on who earns, drawn from the chapter copy. */
+  earns?: string;
   points: readonly string[];
   /** Brand color for the chapter band. */
   accent?: string;
@@ -38,6 +40,7 @@ export const PUBLIC_PRODUCTS: readonly PublicProduct[] = [
     accent: "#2599FF",
     summary:
       "A social wiki where every page is a fundraiser. I design the product in code and ship it with AI coding agents, on the web and on iOS.",
+    earns: "Writers earn from readers. Every page is a fundraiser.",
     points: [
       "AI coding agents build the product with me, from interface to data layer.",
       "A unified color-token system and glass card components keep the UI consistent.",
@@ -75,6 +78,7 @@ export const PUBLIC_PRODUCTS: readonly PublicProduct[] = [
     accent: "#0EA5E9",
     summary:
       "The full digital system for a residential window-washing business. Customers book and pay. The crew runs the day from the same product.",
+    earns: "A local business runs bookings, deposits, and invoicing on its own system.",
     points: [
       "Booking and instant quote flows for homeowners.",
       "Crew and sales scheduling, dispatch, and job tracking.",

@@ -11,8 +11,8 @@ const NAME = "Jamie Gray";
 const BOOT_LINES = [
   "$ whoami",
   "jamie gray: product + design engineer",
-  "$ cat focus.txt",
-  "I design in code and ship real products with AI agents.",
+  "$ cat thesis.txt",
+  "software that lets people earn from their own work",
   "$ ls ./shipped",
   "wewrite  lucent-wash  turbo/",
 ];

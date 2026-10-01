@@ -83,7 +83,7 @@ function GateSection({
             Project notes
           </h1>
           <p className="text-muted-foreground max-w-md mx-auto leading-relaxed">
-            Notes on public product work for recruiters. Enter the password
+            I build software that lets people earn from their own work. Enter the password
             sent to you, and introduce yourself so I know who is here.
           </p>
         </div>
@@ -395,7 +395,7 @@ function ProjectsSection() {
             Public product work
           </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            WeWrite, Lucent Wash, Worx4u, and earlier design work. Open a
+            I build software that lets people earn from their own work. WeWrite, Lucent Wash, Worx4u, and earlier design work. Open a
             project for the architecture, the hard parts, and the result.
           </p>
         </div>

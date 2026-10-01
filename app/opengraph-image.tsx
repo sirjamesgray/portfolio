@@ -68,7 +68,7 @@ export default async function Image() {
                 color: "#e4e4e7",
               }}
             >
-              I design in code and ship real products with AI agents.
+              I build software that lets people earn from their own work.
             </div>
           </div>
           <div

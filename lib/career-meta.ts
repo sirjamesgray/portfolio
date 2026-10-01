@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
-export const CAREER_TITLE = "Jamie Gray — Product Engineer & Design Engineer";
+export const CAREER_TITLE = "Jamie Gray — Software that lets people earn from their own work";
 
 export const CAREER_DESCRIPTION =
-  "I design in code and ship real products with AI agents. 8+ years across startups, agencies, and enterprise. Based in Fort Worth. Remote or DFW.";
+  "I build software that lets people earn from their own work: writers on WeWrite, a local business on Lucent Wash. Product and design engineer in Fort Worth. Remote or DFW.";
 
 export const CAREER_OG_IMAGE = {
   url: "/opengraph-image",

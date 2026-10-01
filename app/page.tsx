@@ -1,12 +1,11 @@
 import { Metadata } from "next";
 import { isCustomerDashboardEnabled } from "@/lib/feature-flags";
-import { careerMetadata } from "@/lib/career-meta";
+import { CAREER_DESCRIPTION, CAREER_TITLE, careerMetadata } from "@/lib/career-meta";
 import { HomeClient } from "./home-client";
 
 const CAREER_HOME = careerMetadata({
-  title: "Jamie Gray — Product Engineer & Design Engineer",
-  description:
-    "I design in code and ship real products with AI agents. 8+ years across startups, agencies, and enterprise. Based in Fort Worth. Remote or DFW.",
+  title: CAREER_TITLE,
+  description: CAREER_DESCRIPTION,
 });
 
 const PREVIEW_METADATA: Record<string, Metadata> = {

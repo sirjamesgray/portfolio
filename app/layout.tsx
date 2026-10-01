@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { CAREER_DESCRIPTION, CAREER_OG_IMAGE, CAREER_TITLE } from "@/lib/career-meta";
 import "./globals.css";
 
 export const viewport: Viewport = {
@@ -28,33 +29,30 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.jamiegray.net"),
   title: {
-    default: "Jamie Gray — Product Engineer & Design Engineer",
+    default: CAREER_TITLE,
     template: "%s",
   },
-  description:
-    "I design in code and ship real products with AI agents. 8+ years across startups, agencies, and enterprise. Based in Fort Worth. Remote or DFW.",
+  description: CAREER_DESCRIPTION,
   openGraph: {
-    title: "Jamie Gray — Product Engineer & Design Engineer",
-    description:
-      "I design in code and ship real products with AI agents. 8+ years across startups, agencies, and enterprise. Based in Fort Worth. Remote or DFW.",
+    title: CAREER_TITLE,
+    description: CAREER_DESCRIPTION,
     url: "https://www.jamiegray.net",
     siteName: "Jamie Gray",
     locale: "en_US",
     type: "website",
     images: [
       {
-        url: "/opengraph-image",
-        width: 1200,
-        height: 630,
-        alt: "Jamie Gray, Product Engineer and Design Engineer",
+        url: CAREER_OG_IMAGE.url,
+        width: CAREER_OG_IMAGE.width,
+        height: CAREER_OG_IMAGE.height,
+        alt: CAREER_OG_IMAGE.alt,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Jamie Gray — Product Engineer & Design Engineer",
-    description:
-      "I design in code and ship real products with AI agents. Based in Fort Worth. Remote or DFW.",
+    title: CAREER_TITLE,
+    description: CAREER_DESCRIPTION,
     creator: "@jamiegraytech",
     images: ["/opengraph-image"],
   },
@@ -70,7 +68,7 @@ const jsonLd = {
       url: "https://www.jamiegray.net",
       jobTitle: "Product Engineer / Design Engineer",
       description:
-        "Product engineer and design engineer who designs in code and ships real products with AI agents. Based in Fort Worth.",
+        "Product and design engineer who builds software that lets people earn from their own work. Writers on WeWrite. A local business on Lucent Wash. Based in Fort Worth.",
       sameAs: [
         "https://x.com/jamiegraytech",
         "https://www.linkedin.com/in/jamiegraytech/",
