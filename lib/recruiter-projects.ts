@@ -81,26 +81,41 @@ export const RECRUITER_PROJECTS: RecruiterProjectDetail[] = [
     links: {},
   },
   {
-    id: "design-history",
-    title: "Design history",
-    subtitle: "Ramp travel, Vondy, Whop, and ParkHub",
-    timeline: "2017 – 2025",
-    role: "Product Designer",
-    tags: ["Figma", "Design systems", "iOS", "Prototypes"],
+    id: "turbo-design",
+    title: "Turbo Design Agency",
+    subtitle: "Ramp, Vondy, and Precision AI",
+    timeline: "Jun 2024 – May 2025",
+    role: "Product Designer · NYC",
+    tags: ["Figma", "Figma Prototypes", "Framer", "Origami"],
     description:
-      "Earlier product design, before the current engineering roles. At Turbo I designed Ramp travel (flights, hotels, and car rental) and Vondy engagement features. At Whop I built a design system and iOS and web flows. At ParkHub I designed operations software and an iOS point of sale.",
+      "Turbo is a design agency in New York City. I worked there for nearly a year as a Product Designer, with three clients: Ramp, Vondy, and Precision AI. Ramp: Improved hotel bookings, car rentals, and flight booking UX on the travel team for a corporate expense management platform. Vondy: Designed engagement-focused features and prototypes that supported an investor raise. Precision AI: Designed core UX flows for PE acquisition discovery.",
     challenges: [
-      "Ramp travel: make flight, hotel, and car rental booking clear inside an expense product",
+      "Ramp, via Turbo Design (Aug 2024 – Mar 2025): hotel, car rental, and flight booking UX on the travel team",
+      "Vondy, via Turbo Design (Feb 2025 – Apr 2025): engagement features and prototypes for an investor raise",
+      "Precision AI, via Turbo Design: core UX flows for PE acquisition discovery",
+    ],
+    architecture: ["Figma", "Figma Prototypes", "Framer", "Origami"],
+    impact: "Three client engagements at Turbo Design: Ramp, Vondy, and Precision AI.",
+    links: {},
+  },
+  {
+    id: "design-history",
+    title: "Whop and ParkHub",
+    subtitle: "Earlier product design",
+    timeline: "2017 – 2024",
+    role: "Product Designer",
+    tags: ["Figma", "Design systems", "iOS"],
+    description:
+      "At Whop I built a design system and iOS and web flows. At ParkHub I designed operations software and an iOS point of sale.",
+    challenges: [
       "Whop: turn a storefront into an engagement product and keep a theme-ready token system",
       "ParkHub: business intelligence, operations, and iOS point of sale for parking",
     ],
     architecture: [
-      "High-fidelity product design, flows, and prototypes",
       "Theme-ready color tokens at Whop",
       "Design-system reorganization at ParkHub, plus mentoring",
     ],
-    impact:
-      "Shipped design for products used by real customers, including a ParkHub acquisition by JustPark.",
+    impact: "ParkHub was acquired by JustPark.",
     links: {},
   },
 ]

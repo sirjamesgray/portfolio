@@ -1,90 +1,60 @@
 import Image from "next/image";
 import type { WorkShot } from "@/lib/public-work";
+import styles from "./career-landing.module.css";
 
 type FrameProps = {
   shot: WorkShot;
   priority?: boolean;
-  /** Let a tall capture scroll inside the screen. */
-  scroll?: boolean;
+  sizes?: string;
 };
 
 /**
  * Laptop bezel for a desktop screenshot.
- * The base stays inside the parent so the page does not scroll sideways.
+ * Open Props shadow-5 sits on the frame. A thin reflection sits on the glass.
  */
-export function LaptopFrame({ shot, priority = false, scroll = false }: FrameProps) {
+export function LaptopFrame({ shot, priority = false, sizes }: FrameProps) {
   return (
-    <figure className="w-full max-w-full">
-      <div className="rounded-t-xl bg-zinc-950 p-1.5 pb-0 shadow-[0_22px_40px_-28px_rgba(0,0,0,0.55)] ring-1 ring-black/40 dark:ring-white/15">
-        <div className="relative overflow-hidden rounded-t-[0.4rem] bg-black">
-          <div
-            className="absolute left-1/2 top-1.5 z-10 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-zinc-700"
-            aria-hidden
-          />
-          <div className={scroll ? "max-h-[min(52vh,420px)] overflow-y-auto overflow-x-hidden" : undefined}>
-            <Image
-              src={shot.src}
-              alt={shot.alt}
-              width={shot.width}
-              height={shot.height}
-              priority={priority}
-              loading={priority || scroll ? undefined : "eager"}
-              sizes="(min-width: 1024px) 720px, 100vw"
-              className="h-auto w-full"
-            />
-          </div>
-        </div>
-      </div>
-      <div className="h-2 rounded-b-md bg-zinc-800 ring-1 ring-black/40 dark:ring-white/10" />
-      <div className="mx-auto h-1.5 w-[72%] rounded-b-md bg-zinc-600" />
-    </figure>
-  );
-}
-
-/**
- * iPhone bezel for a mobile screenshot.
- * Width stays under the smallest phone viewport.
- */
-export function PhoneFrame({ shot, priority = false }: FrameProps) {
-  return (
-    <figure className="mx-auto w-full max-w-[200px]">
-      <div className="rounded-[1.7rem] bg-zinc-950 p-[7px] shadow-[0_18px_36px_-24px_rgba(0,0,0,0.55)] ring-1 ring-black/40 dark:ring-white/15">
-        <div className="relative overflow-hidden rounded-[1.25rem] bg-black">
-          <div
-            className="absolute left-1/2 top-1.5 z-10 h-3.5 w-12 -translate-x-1/2 rounded-full bg-black ring-1 ring-white/10"
-            aria-hidden
-          />
+    <figure className={`${styles.device} w-full max-w-full`}>
+      <div className={`${styles.laptop} rounded-[1.05rem] bg-[#1a1a1c] p-[5px] pb-0`}>
+        <div className="relative overflow-hidden rounded-t-[0.7rem] bg-black">
+          <div className="absolute left-1/2 top-1.5 z-10 h-1 w-1 -translate-x-1/2 rounded-full bg-zinc-600" aria-hidden />
           <Image
             src={shot.src}
             alt={shot.alt}
             width={shot.width}
             height={shot.height}
             priority={priority}
-            loading={priority ? undefined : "eager"}
-            sizes="200px"
+            sizes={sizes ?? "(min-width: 1024px) 960px, 100vw"}
             className="h-auto w-full"
           />
+          <div className={styles.glass} aria-hidden />
         </div>
       </div>
+      <div className="mx-auto h-2 w-[18%] rounded-b-md bg-[#2a2a2c]" />
+      <div className="mx-auto h-1 w-[32%] rounded-b-md bg-[#3a3a3c]" />
     </figure>
   );
 }
 
-/**
- * Case-study thumbnail. A 3:2 crop from the top of the board,
- * so the card shows the title and the first row of work.
- */
-export function StudyFrame({ shot }: { shot: WorkShot }) {
+/** iPhone bezel. The width comes from the parent. */
+export function PhoneFrame({ shot, priority = false, sizes }: FrameProps) {
   return (
-    <figure className="relative aspect-[3/2] overflow-hidden rounded-md bg-zinc-100 ring-1 ring-black/10 dark:bg-zinc-900 dark:ring-white/10">
-      <Image
-        src={shot.src}
-        alt={shot.alt}
-        fill
-        loading="eager"
-        sizes="(min-width: 1024px) 360px, 100vw"
-        className="object-cover object-top"
-      />
+    <figure className={`${styles.device} w-full max-w-full`}>
+      <div className={`${styles.phone} rounded-[1.35rem] bg-[#1a1a1c] p-[5px]`}>
+        <div className="relative overflow-hidden rounded-[1.05rem] bg-black">
+          <div className="absolute left-1/2 top-1.5 z-10 h-3 w-10 -translate-x-1/2 rounded-full bg-black" aria-hidden />
+          <Image
+            src={shot.src}
+            alt={shot.alt}
+            width={shot.width}
+            height={shot.height}
+            priority={priority}
+            sizes={sizes ?? "(min-width: 1024px) 220px, 42vw"}
+            className="h-auto w-full"
+          />
+          <div className={styles.glass} aria-hidden />
+        </div>
+      </div>
     </figure>
   );
 }

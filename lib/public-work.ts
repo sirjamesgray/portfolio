@@ -18,6 +18,8 @@ export type PublicProduct = {
   titles?: readonly string[];
   summary: string;
   points: readonly string[];
+  /** Brand color for the chapter band. */
+  accent?: string;
   desktop?: WorkShot;
   fullPage?: WorkShot;
   mobile?: WorkShot;
@@ -33,6 +35,7 @@ export const PUBLIC_PRODUCTS: readonly PublicProduct[] = [
     dates: "Mar 2025 — Present",
     href: "https://www.getwewrite.app",
     hrefLabel: "getwewrite.app",
+    accent: "#2599FF",
     summary:
       "A social wiki where every page is a fundraiser. I design the product in code and ship it with AI coding agents, on the web and on iOS.",
     points: [
@@ -69,6 +72,7 @@ export const PUBLIC_PRODUCTS: readonly PublicProduct[] = [
     dates: "Oct 2025 — Present",
     href: "https://lucentwash.com",
     hrefLabel: "lucentwash.com",
+    accent: "#0EA5E9",
     summary:
       "The full digital system for a residential window-washing business. Customers book and pay. The crew runs the day from the same product.",
     points: [
@@ -127,20 +131,123 @@ export type DesignStudy = {
   image?: WorkShot;
 };
 
-export const DESIGN_STUDIES: readonly DesignStudy[] = [
-  {
-    id: "ramp-vondy",
-    title: "Ramp travel and Vondy",
-    meta: "Turbo Design · 2024–2025",
-    summary:
-      "At Turbo I designed Ramp travel: flights, hotels, and car rental for a corporate expense product. At Vondy I designed engagement features and prototypes that supported an investor raise.",
-    image: {
-      src: "/work/case-ramp-vondy.webp",
-      width: 1200,
-      height: 810,
-      alt: "Case study board for Ramp travel and Vondy, September 2024",
+export type BoardShot = WorkShot & {
+  /** Extra frames shown inside the lightbox. */
+  details?: readonly WorkShot[];
+};
+
+export type TurboClient = {
+  id: string;
+  name: string;
+  label: string;
+  title: string;
+  dates: string;
+  logo: string;
+  accent: string;
+  summary: string;
+  supporting: readonly string[];
+  board?: BoardShot;
+};
+
+export const TURBO = {
+  id: "turbo",
+  name: "Turbo Design Agency",
+  role: "Product Designer",
+  place: "NYC",
+  dates: "Jun 2024 – May 2025",
+  logo: "/logos/turbo.png",
+  accent: "#2E78F7",
+  intro:
+    "Turbo is a design agency in New York City. I worked there for nearly a year as a Product Designer, with three clients: Ramp, Vondy, and Precision AI.",
+  tools: "Figma · Figma Prototypes · Framer · Origami",
+  clients: [
+    {
+      id: "ramp",
+      name: "Ramp",
+      label: "Ramp · via Turbo Design",
+      title: "Product Designer (Travel team), via Turbo Design · NYC",
+      dates: "Aug 2024 – Mar 2025",
+      logo: "/logos/ramp.png",
+      accent: "#E1F03F",
+      summary:
+        "Improved hotel bookings, car rentals, and flight booking UX on the travel team for a corporate expense management platform.",
+      supporting: [
+        "Ramp is a corporate card management company. On the Travel team, Jamie improved existing functionality and built new functionality.",
+        "Car Rentals: Ramp already had hotel and flight booking before Turbo was contracted. Jamie was asked to design car rentals: competitor research on popular car-rental booking flows, using Ramp's existing design system for a Ramp-native feel. Frames: list view v1 and suggestions, rental suggestions after booking a flight, map view, list view v2, and the success state.",
+        "Trip Builder: a simple wizard to increase product stickiness and reduce off-platform bookings. Buying a departure and return flight automatically creates a trip, then hotels and car rentals are suggested for the same dates.",
+      ],
+      board: {
+        src: "/work/case-ramp.webp",
+        width: 1600,
+        height: 2469,
+        alt: "Ramp travel design board: car rentals and trip builder",
+        details: [
+          {
+            src: "/work/case-ramp-car.webp",
+            width: 1100,
+            height: 3100,
+            alt: "Ramp car rentals frames",
+          },
+          {
+            src: "/work/case-ramp-trip.webp",
+            width: 1100,
+            height: 2983,
+            alt: "Ramp trip builder frames",
+          },
+        ],
+      },
     },
-  },
+    {
+      id: "vondy",
+      name: "Vondy",
+      label: "Vondy · via Turbo Design",
+      title: "Product Designer, via Turbo Design · NYC",
+      dates: "Feb 2025 – Apr 2025",
+      logo: "/logos/vondy.png",
+      accent: "#0E3DB9",
+      summary:
+        "Designed engagement-focused features and prototypes that supported an investor raise.",
+      supporting: [
+        "Vondy is a consumer AI website. Goals were to improve onboarding data collection and increase repeat visits by nudging users to invest time in projects instead of one-time chat generations.",
+        "Projects-based approach: all chats converted into projects so users keep adding new chats and generations to a project. The board shows the sidebar before and after.",
+        "Onboarding audit: explored grid, category selection, and Tinder-style cards for picking what the user likes. The team went with category selection, where background imagery changes with the selected category.",
+      ],
+      board: {
+        src: "/work/case-vondy.webp",
+        width: 2200,
+        height: 1300,
+        alt: "Vondy design board: onboarding audit and projects sidebar",
+        details: [
+          {
+            src: "/work/case-vondy-onboarding.webp",
+            width: 1800,
+            height: 1396,
+            alt: "Vondy onboarding audit",
+          },
+          {
+            src: "/work/case-vondy-projects.webp",
+            width: 1600,
+            height: 1816,
+            alt: "Vondy projects sidebar, before and after",
+          },
+        ],
+      },
+    },
+    {
+      id: "precision-ai",
+      name: "Precision AI",
+      label: "Precision AI · via Turbo Design",
+      title: "Product Designer, via Turbo Design",
+      dates: "Jun 2024 – May 2025",
+      logo: "/logos/turbo.png",
+      accent: "#2E78F7",
+      summary: "Designed core UX flows for PE acquisition discovery.",
+      supporting: [],
+    },
+  ] satisfies readonly TurboClient[],
+} as const;
+
+export const DESIGN_STUDIES: readonly DesignStudy[] = [
   {
     id: "whop",
     title: "Whop design system and iOS",

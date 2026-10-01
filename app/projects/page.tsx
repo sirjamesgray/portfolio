@@ -8,7 +8,7 @@ import { careerMetadata } from "@/lib/career-meta";
 export const metadata: Metadata = careerMetadata({
   title: "Product work | Jamie Gray",
   description:
-    "Public product work: WeWrite, Lucent Wash, Worx4u, and earlier design for Ramp, Vondy, Whop, and ParkHub.",
+    "Public product work: WeWrite, Lucent Wash, Worx4u, and Turbo Design Agency clients Ramp, Vondy, and Precision AI, plus Whop and ParkHub.",
   path: "/projects",
 });
 
@@ -24,10 +24,10 @@ export default function ProjectsPage() {
           Product work
         </h1>
         <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-          Products I design in code and ship. WeWrite and Lucent Wash are live. Worx4u is the day job, in text only. The design section is earlier product design.
+          Products I design in code and ship. WeWrite and Lucent Wash are live. Worx4u is the day job, in text only. Turbo Design Agency covers Ramp, Vondy, and Precision AI.
         </p>
         <div className="mt-12">
-          <WorkAndDesign heading="h2" />
+          <WorkAndDesign />
         </div>
       </main>
       <Footer />
