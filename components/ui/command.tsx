@@ -74,7 +74,7 @@ function CommandItem({ className, ...props }: React.ComponentProps<typeof Comman
   return (
     <CommandPrimitive.Item
       className={cn(
-        "relative flex cursor-pointer items-center gap-2 rounded-sm border border-transparent bg-transparent px-2 py-2 font-mono text-sm outline-none select-none data-[selected=true]:border-[rgb(112_184_255/0.45)] data-[selected=true]:bg-black data-[selected=true]:text-[#70b8ff] data-[selected=true]:shadow-[0_0_18px_rgb(112_184_255/0.28)]",
+        "relative flex cursor-pointer items-center gap-2 border border-transparent bg-black px-2 py-2 font-mono text-sm outline-none select-none data-[selected=true]:border-border data-[selected=true]:text-[#70b8ff]",
         className
       )}
       {...props}

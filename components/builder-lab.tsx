@@ -236,14 +236,9 @@ function SwatchCard() {
   );
 }
 
-function CardShell({ file, title, tone, children }: { file: string; title: string; tone: "green" | "blue"; children: React.ReactNode }) {
-  const edge =
-    tone === "blue"
-      ? "border-[rgb(112_184_255/0.4)] hover:shadow-[0_0_28px_rgb(112_184_255/0.28)] focus-within:shadow-[0_0_28px_rgb(112_184_255/0.28)]"
-      : "border-border hover:shadow-[0_0_28px_rgb(61_214_140/0.28)] focus-within:shadow-[0_0_28px_rgb(61_214_140/0.28)]";
-
+function CardShell({ file, title, children }: { file: string; title: string; tone?: "green" | "blue"; children: React.ReactNode }) {
   return (
-    <article className={`flex min-w-0 flex-col overflow-hidden rounded-lg border bg-black transition-shadow ${edge}`}>
+    <article className="flex min-w-0 flex-col overflow-hidden border border-border bg-black">
       <div className="flex items-center justify-between gap-2 border-b border-inherit bg-black px-3 py-2">
         <span className="font-mono text-xs text-muted-foreground">{file}</span>
         <span className="font-mono text-[11px] text-foreground">{title}</span>
@@ -259,7 +254,7 @@ export function BuilderLab() {
       {BUILDER_LOG.map((entry, index) => {
         if (entry.kind === "note") {
           return (
-            <article key={entry.id} className="rounded-lg border border-dashed border-[rgb(112_184_255/0.45)] bg-black p-4 transition-shadow hover:shadow-[0_0_28px_rgb(112_184_255/0.28)]">
+            <article key={entry.id} className="border border-border bg-black p-4">
               <p className="font-mono text-[11px] tracking-[0.14em] text-foreground">TODO · draft</p>
               <h3 className="mt-2 font-mono text-sm text-foreground">{entry.title}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{entry.body}</p>

@@ -61,7 +61,7 @@ export function Footer() {
 
           {/* Pages */}
           <div>
-            <h3 className="text-sm font-semibold text-foreground">Pages</h3>
+            <h2 className="text-sm font-semibold text-foreground">Pages</h2>
             <ul className="mt-4 space-y-3">
               {navigation.main.map((item) => (
                 <li key={item.name}>
@@ -80,7 +80,7 @@ export function Footer() {
           <div className="space-y-8">
             {/* Resources */}
             <div>
-              <h3 className="text-sm font-semibold text-foreground">Resources</h3>
+              <h2 className="text-sm font-semibold text-foreground">Resources</h2>
               <ul className="mt-4 space-y-3">
                 {navigation.resources.map((item) => (
                   <li key={item.name}>
@@ -97,7 +97,7 @@ export function Footer() {
 
             {/* Connect - under Resources on mobile */}
             <div className="md:hidden">
-              <h3 className="text-sm font-semibold text-foreground">Connect</h3>
+              <h2 className="text-sm font-semibold text-foreground">Connect</h2>
               <ul className="mt-4 space-y-3">
                 {navigation.social.map((item) => (
                   <li key={item.name}>
@@ -118,7 +118,7 @@ export function Footer() {
 
           {/* Social - separate column on desktop only */}
           <div className="hidden md:block">
-            <h3 className="text-sm font-semibold text-foreground">Connect</h3>
+            <h2 className="text-sm font-semibold text-foreground">Connect</h2>
             <ul className="mt-4 space-y-3">
               {navigation.social.map((item) => (
                 <li key={item.name}>

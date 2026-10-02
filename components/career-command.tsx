@@ -3,7 +3,9 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import dynamic from "next/dynamic";
+import { Command } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
+import { CareerButton } from "@/components/career-button";
 
 const CareerPalette = dynamic(
   () => import("@/components/career-palette").then((mod) => mod.CareerPalette),
@@ -122,18 +124,15 @@ export function CareerCommand() {
 
   return (
     <>
-      <button
-        type="button"
-        onClick={showPalette}
-        className="shrink-0 rounded-md border border-border bg-background px-2.5 py-1.5 font-mono text-xs text-foreground"
-      >
+      <CareerButton variant="ghost" size="sm" icon={Command} onClick={showPalette}>
         ⌘K
         <span className="sr-only">Open the command palette</span>
-      </button>
+      </CareerButton>
       {loaded ? <CareerPalette open={open} onOpenChange={setOpen} /> : null}
       {ready
         ? createPortal(
-            <div
+            <nav
+              aria-label="Page status"
               className="hidden md:block"
               style={{
                 position: "fixed",
@@ -146,12 +145,12 @@ export function CareerCommand() {
             >
               <div className="flex h-9 items-center justify-between gap-3 border-t border-border bg-background px-4 font-mono text-[11px] text-muted-foreground">
                 <span className="truncate">career-landing</span>
-                <button type="button" onClick={showPalette} className="text-foreground">
+                <CareerButton variant="ghost" size="sm" icon={Command} onClick={showPalette}>
                   ⌘K
-                </button>
+                </CareerButton>
                 <span className="truncate text-brand">{SECTION_LABELS[section] ?? section}</span>
               </div>
-            </div>,
+            </nav>,
             document.body
           )
         : null}

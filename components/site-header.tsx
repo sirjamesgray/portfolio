@@ -105,6 +105,7 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
             <nav className="flex items-center gap-5 text-sm text-muted-foreground">
               <Link href="/projects" className="hover:text-brand">Work</Link>
               <Link href="/experience" className="hover:text-brand">Experience</Link>
+              <Link href="/for-recruiters" className="hover:text-brand">Recruiters</Link>
               <Link href="/contact" className="hover:text-brand">Contact</Link>
             </nav>
           ) : landingPage === "product-engineer" ? (
@@ -241,7 +242,7 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
             {backLabel}
           </Link>
         ) : (
-          <Link href="/" className="flex items-center h-8 w-8">
+          <Link href="/" aria-label="Jamie Gray" className="flex items-center h-8 w-8">
             <Logo3DStatic size="sm" />
           </Link>
         )}
@@ -261,7 +262,7 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
             {backLabel}
           </Link>
         ) : (
-          <Link href="/" className="flex shrink-0 items-center justify-center h-11 w-11 -ml-1.5 active:opacity-70 transition-opacity">
+          <Link href="/" aria-label="Jamie Gray" className="flex shrink-0 items-center justify-center h-11 w-11 -ml-1.5 active:opacity-70 transition-opacity">
             <Logo3DStatic size="sm" />
           </Link>
         )}
@@ -269,6 +270,7 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
           <nav className="flex min-w-0 flex-1 items-center justify-end gap-3 overflow-x-auto text-[13px] text-muted-foreground">
             <Link href="/projects" className="shrink-0 hover:text-brand">Work</Link>
             <Link href="/experience" className="shrink-0 hover:text-brand">Experience</Link>
+            <Link href="/for-recruiters" className="shrink-0 hover:text-brand">Recruiters</Link>
             <Link href="/contact" className="shrink-0 hover:text-brand">Contact</Link>
           </nav>
         )}

@@ -2,16 +2,13 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { ArrowRight } from "lucide-react";
 import type { WorkEntry } from "@/lib/work-catalog";
+import { careerButtonClass } from "@/components/career-button";
+import styles from "./career-system.module.css";
 
 const FOCUS =
   "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3dd68c]";
-
-function borderFor(tone: WorkEntry["tone"]) {
-  return tone === "blue"
-    ? "border-[rgb(112_184_255/0.4)] hover:shadow-[0_0_28px_rgb(112_184_255/0.28)]"
-    : "border-[rgb(61_214_140/0.4)] hover:shadow-[0_0_28px_rgb(61_214_140/0.28)]";
-}
 
 function hardNavigate(slug: string) {
   return (event: React.MouseEvent<HTMLAnchorElement>) => {
@@ -39,17 +36,15 @@ export function WorkLink({
 }
 
 export function WorkCard({ entry }: { entry: WorkEntry }) {
-  const earnsTone = entry.tone === "blue" ? "text-blue" : "text-brand";
-
   return (
     <Link
       id={`work-card-${entry.slug}`}
       href={`/work/${entry.slug}`}
       scroll={false}
       onClick={hardNavigate(entry.slug)}
-      className={`flex h-full flex-col border bg-black p-3 text-left transition-shadow ${borderFor(entry.tone)} ${FOCUS}`}
+      className={`${styles.card} ${FOCUS}`}
     >
-      <div className="relative aspect-[16/10] overflow-hidden border border-inherit bg-black">
+      <div className={styles.cover}>
         {entry.cover ? (
           <Image
             src={entry.cover.src}
@@ -59,18 +54,26 @@ export function WorkCard({ entry }: { entry: WorkEntry }) {
             className="object-cover object-top"
           />
         ) : (
-          <p className="flex h-full items-center justify-center font-mono text-xs text-muted-foreground">Text only</p>
+          <p className={`${styles.kicker} flex h-full items-center justify-center`}>Text only</p>
         )}
       </div>
-      <h3 className="mt-3 text-lg font-semibold tracking-[-0.02em] text-foreground">{entry.name}</h3>
-      <p className="mt-1 line-clamp-1 text-sm text-foreground">{entry.line}</p>
-      <p className="mt-2 font-mono text-xs text-muted-foreground">{entry.dates}</p>
-      {entry.earns ? (
-        <p className="mt-3 text-sm leading-relaxed text-foreground">
-          <span className={`font-mono text-xs ${earnsTone}`}>Who earns · </span>
-          {entry.earns}
-        </p>
+      <p className={styles.kicker}>{entry.role}</p>
+      <h3 className="text-[length:var(--type-4)] font-semibold tracking-[-0.02em] text-foreground">{entry.name}</h3>
+      <p className={styles.small}>{entry.shipped}</p>
+      {entry.stack.length > 0 ? (
+        <ul className={styles.tags}>
+          {entry.stack.map((tool) => (
+            <li key={tool} className={styles.tag}>
+              {tool}
+            </li>
+          ))}
+        </ul>
       ) : null}
+      <p className={styles.kicker}>{entry.dates}</p>
+      <span className={careerButtonClass("secondary", "sm")}>
+        <ArrowRight aria-hidden />
+        Open
+      </span>
     </Link>
   );
 }

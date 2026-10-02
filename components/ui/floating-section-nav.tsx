@@ -101,8 +101,8 @@ export function FloatingSectionNav({ sections, className }: FloatingSectionNavPr
               "shrink-0 px-4 py-2 text-sm rounded-full transition-colors whitespace-nowrap",
               activeSection === id
                 ? id === "turbo" || id === "experience"
-                  ? "border border-[rgb(112_184_255/0.45)] bg-black font-medium text-[#70b8ff] shadow-[0_0_16px_rgb(112_184_255/0.28)]"
-                  : "border border-[rgb(61_214_140/0.45)] bg-black font-medium text-[#3dd68c] shadow-[0_0_16px_rgb(61_214_140/0.28)]"
+                  ? "border border-border bg-black font-medium text-[#70b8ff]"
+                  : "border border-border bg-black font-medium text-[#3dd68c]"
                 : "border border-transparent text-muted-foreground hover:text-foreground"
             )}
           >

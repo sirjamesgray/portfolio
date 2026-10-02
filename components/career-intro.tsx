@@ -1,18 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { RESUME_PATH } from "@/lib/constants";
 import styles from "./career-landing.module.css";
 
-const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const SESSION_KEY = "career-intro-seen";
 const NAME = "Jamie Gray";
 
 const BOOT_LINES = [
   "$ whoami",
   "jamie gray: full stack developer (prev. product designer)",
-  "$ cat thesis.txt",
-  "software that lets people earn from their own work",
   "$ ls ./shipped",
   "wewrite  lucent-wash  turbo/",
 ];
@@ -21,98 +18,9 @@ function motionOff() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-/**
- * The name stays in the first HTML paint.
- * The RGB split is a class on top of that text.
- */
+/** One plain name. No second outline and no scramble. */
 export function ScrambleName({ className }: { className?: string }) {
-  const [value, setValue] = useState(NAME);
-  const [hot, setHot] = useState(false);
-  const [showSkip, setShowSkip] = useState(false);
-
-  useEffect(() => {
-    if (motionOff()) return;
-
-    let idle = 0;
-    const armIdle = () => {
-      const wait = 8000 + Math.random() * 4000;
-      idle = window.setTimeout(() => {
-        if (document.hidden) {
-          armIdle();
-          return;
-        }
-        setHot(true);
-        window.setTimeout(() => setHot(false), 150);
-        armIdle();
-      }, wait);
-    };
-
-    if (sessionStorage.getItem(SESSION_KEY) === "1") {
-      armIdle();
-      return () => window.clearTimeout(idle);
-    }
-
-    const start = performance.now();
-    let raf = 0;
-    const tick = (now: number) => {
-      const t = Math.min(1, (now - start) / 900);
-      const reveal = Math.floor(t * NAME.length);
-      setShowSkip(true);
-      setHot(true);
-      setValue(
-        NAME.split("")
-          .map((char, index) => {
-            if (char === " " || index < reveal) return NAME[index];
-            return GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
-          })
-          .join("")
-      );
-      if (t < 1) {
-        raf = requestAnimationFrame(tick);
-        return;
-      }
-      setValue(NAME);
-      setHot(false);
-      setShowSkip(false);
-      sessionStorage.setItem(SESSION_KEY, "1");
-      armIdle();
-    };
-    raf = requestAnimationFrame(tick);
-    return () => {
-      cancelAnimationFrame(raf);
-      window.clearTimeout(idle);
-    };
-  }, []);
-
-  return (
-    <>
-      <h1
-        data-text={NAME}
-        className={`${className ?? ""} ${hot ? styles.rgb : ""}`}
-        onMouseEnter={() => {
-          if (motionOff()) return;
-          setHot(true);
-          window.setTimeout(() => setHot(false), 360);
-        }}
-      >
-        {value}
-      </h1>
-      {showSkip ? (
-        <button
-          type="button"
-          className="mt-2 font-mono text-xs text-muted-foreground underline-offset-4 hover:underline"
-          onClick={() => {
-            setValue(NAME);
-            setHot(false);
-            setShowSkip(false);
-            sessionStorage.setItem(SESSION_KEY, "1");
-          }}
-        >
-          Skip intro
-        </button>
-      ) : null}
-    </>
-  );
+  return <h1 className={className}>{NAME}</h1>;
 }
 
 function lineSlice(index: number, revealed: number) {
@@ -123,36 +31,6 @@ function lineSlice(index: number, revealed: number) {
 }
 
 /** Boot lines are in the HTML. Typing starts only after paint. */
-/** Grain and scanlines move only while the hero is on screen. */
-export function HeroAtmosphere() {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const section = ref.current?.closest("section");
-    if (!section || motionOff()) return;
-    let seen = false;
-    const apply = () => {
-      section.toggleAttribute("data-live", seen && !document.hidden);
-    };
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        seen = Boolean(entry?.isIntersecting);
-        apply();
-      },
-      { threshold: 0.08 }
-    );
-    observer.observe(section);
-    document.addEventListener("visibilitychange", apply);
-    return () => {
-      observer.disconnect();
-      document.removeEventListener("visibilitychange", apply);
-      section.removeAttribute("data-live");
-    };
-  }, []);
-
-  return <div ref={ref} className={styles.grain} aria-hidden />;
-}
-
 export function BootSequence() {
   const [revealed, setRevealed] = useState<number | null>(null);
   const [command, setCommand] = useState("");

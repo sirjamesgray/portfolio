@@ -164,3 +164,35 @@ export const RESUME_DATA = {
     },
   ] satisfies ResumeExperience[],
 } as const;
+
+/** Years phrase from RESUME_DATA.basics.summary. Resume v32. */
+export const RESUME_YEARS = "8+ years";
+
+/**
+ * Core tools copied from RESUME_DATA.tools.
+ * Resume v32. No tool is added.
+ */
+export const RESUME_CORE_STACK = [
+  "TypeScript",
+  "React",
+  "Next.js",
+  "Tailwind CSS",
+  "PostgreSQL",
+  "React Native",
+  "Expo",
+  "Supabase",
+  "Firebase",
+  "Stripe",
+] as const;
+
+/**
+ * Proof lines copied from RESUME_DATA.experience highlights.
+ * Resume v32.
+ */
+export const RESUME_PROOF = [
+  "Built and shipped product for a social writing platform where pages raise funds, using AI coding agents throughout.",
+  "Built the full customer platform — marketing site, booking, scheduling, auth, and SMS reminders.",
+  "Built an interactive API platform for external utility developers.",
+  "Ramp Business Corporation: Improved hotel bookings, car rentals, and flight booking UX on the travel team for a corporate expense management platform.",
+  "Designed BI, operations-management, and iOS POS applications for parking operations.",
+] as const;

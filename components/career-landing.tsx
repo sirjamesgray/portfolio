@@ -1,18 +1,19 @@
 import Image from "next/image";
-import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { Footer } from "@/components/footer";
-import { Button } from "@/components/ui/button";
 import { FloatingSectionNav } from "@/components/ui/floating-section-nav";
 import { CareerHeroStage } from "@/components/career-hero";
-import { BootSequence, HeroAtmosphere, ScrambleName } from "@/components/career-intro";
+import { BootSequence, ScrambleName } from "@/components/career-intro";
 import { CareerCommand } from "@/components/career-command";
-import { HoverScramble } from "@/components/hover-scramble";
 import { BuilderLab } from "@/components/builder-lab";
 import { PhoneFrame } from "@/components/device-frame";
 import { WorkFocusRestore } from "@/components/work-modal";
 import { WorkGrid, WorkLink } from "@/components/work-card";
-import { EXPERIENCE, RESUME_PATH, SITE_CONFIG, SOCIALS } from "@/lib/constants";
+import { AtAGlance, HireCta } from "@/components/hire-cta";
+import { SectionHead } from "@/components/section-head";
+import { CareerButton } from "@/components/career-button";
+import { EXPERIENCE } from "@/lib/constants";
 import { RESUME_DATA } from "@/lib/resume-data";
 import { PUBLIC_PRODUCTS, TURBO } from "@/lib/public-work";
 import { workIn } from "@/lib/work-catalog";
@@ -29,99 +30,29 @@ const SECTIONS = [
   { id: "contact", label: "Contact" },
 ];
 
-function SectionHead({
-  file,
-  title,
-  titleClass,
-  onDark = false,
-}: {
-  file: string;
-  title: string;
-  titleClass: string;
-  onDark?: boolean;
-}) {
-  return (
-    <div className="flex gap-3">
-      <ol
-        className={`w-6 shrink-0 pt-1 text-right font-mono text-[10px] leading-5 ${onDark ? "text-zinc-400" : "text-muted-foreground"}`}
-        aria-hidden
-      >
-        <li>01</li>
-        <li>02</li>
-        <li>03</li>
-      </ol>
-      <div className="min-w-0 flex-1">
-        <FileTab file={file} onDark={onDark} />
-        <h2 className={titleClass}>
-          <HoverScramble text={title} />
-        </h2>
-      </div>
-    </div>
-  );
-}
-
-function FileTab({ file, onDark = false }: { file: string; onDark?: boolean }) {
-  return (
-    <div className="mb-3 flex items-end gap-2">
-      <span
-        className={
-          onDark
-            ? "rounded-t-md border border-b-0 border-[rgb(112_184_255/0.4)] bg-black px-2.5 py-1 font-mono text-[11px] text-muted-foreground"
-            : "rounded-t-md border border-b-0 border-border bg-black px-2.5 py-1 font-mono text-[11px] text-muted-foreground"
-        }
-      >
-        {file}
-      </span>
-      <span className={`mb-px h-px flex-1 ${onDark ? "bg-[rgb(112_184_255/0.4)]" : "bg-border"}`} />
-    </div>
-  );
-}
-
 function logoFor(company: string) {
   const match = EXPERIENCE.find((item) => company.startsWith(item.company) && item.logo);
   return match?.logo ?? "";
 }
 
-function CtaRow({ primary = false }: { primary?: boolean }) {
-  return (
-    <div className="flex flex-wrap gap-2">
-      <Button asChild size={primary ? "lg" : "default"}>
-        <a href={RESUME_PATH}>Download resume</a>
-      </Button>
-      <Button asChild variant="outline" size={primary ? "lg" : "default"} className="border-[rgb(61_214_140/0.45)] bg-black text-foreground shadow-none hover:bg-black hover:text-foreground hover:shadow-[0_0_18px_rgb(61_214_140/0.28)]">
-        <a href={`mailto:${SITE_CONFIG.email}`}>Email</a>
-      </Button>
-      <Button asChild variant="ghost" size={primary ? "lg" : "default"} className="bg-transparent text-foreground hover:bg-transparent hover:text-blue hover:shadow-[0_0_18px_rgb(112_184_255/0.28)]">
-        <a href={SOCIALS.linkedin} target="_blank" rel="noopener noreferrer">
-          LinkedIn
-        </a>
-      </Button>
-    </div>
-  );
-}
-
 export function WorkAndDesign() {
   return (
     <>
-      <div id="work" className="scroll-mt-28 border-y border-border bg-black py-16 sm:py-24">
+      <div id="work" className="scroll-mt-28 border-t border-border bg-black py-12">
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-          <p className="max-w-xl text-sm leading-relaxed text-foreground sm:text-base">
+          <SectionHead index="01" title="Work" />
+          <p className="mt-4 max-w-xl text-base leading-relaxed text-foreground">
             A pattern across my work: tools that let people own and earn from what they make.
           </p>
           <WorkGrid entries={workIn("work")} />
         </div>
       </div>
-      <section id="turbo" className="scroll-mt-28 border-y border-[rgb(112_184_255/0.4)] bg-black py-16 sm:py-24">
+      <section id="turbo" className="scroll-mt-28 border-t border-border bg-black py-12">
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-          <div className="flex items-center gap-3">
-            <Image src={TURBO.logo} alt="" width={36} height={36} className="size-9 bg-white object-contain p-1" />
-            <p className="font-mono text-xs tracking-[0.16em] text-muted-foreground">Agency</p>
+          <div className="mb-4 flex items-center gap-3">
+            <Image src={TURBO.logo} alt="" width={36} height={36} className="size-9 border border-border bg-black object-contain p-1" />
           </div>
-          <SectionHead
-            file="turbo.tsx"
-            title={TURBO.name}
-            titleClass={`${styles.chapter} ${styles.glitch} font-semibold text-foreground`}
-          />
+          <SectionHead index="02" title={TURBO.name} />
           <p className="mt-3 text-sm text-foreground">
             {TURBO.role} · {TURBO.place} · {TURBO.dates}
           </p>
@@ -140,19 +71,12 @@ export function CareerLanding() {
       <SiteHeader landingPage="career" customerDashboardEnabled={false} />
       <WorkFocusRestore />
       <main>
-        <section className={`${styles.hero} ${styles.crt} relative flex items-start overflow-hidden pt-20 sm:items-center sm:pt-24`}>
+        <section className={`${styles.hero} relative flex items-start overflow-hidden bg-black pt-20 sm:pt-24`}>
           <div className={`${styles.grid} pointer-events-none absolute inset-0`} aria-hidden />
-          <div className={`${styles.glow} pointer-events-none absolute inset-0`} aria-hidden />
-          <HeroAtmosphere />
-          <div className={styles.vignette} aria-hidden />
-          <div className="relative mx-auto grid w-full max-w-6xl items-center gap-6 px-4 py-2 sm:gap-10 sm:px-6 sm:py-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:py-16">
+          <div className="relative mx-auto grid w-full max-w-6xl items-center gap-6 px-4 py-4 sm:px-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
             <div className="min-w-0">
-              <p className={`${styles.rise} font-mono text-xs tracking-[0.16em] text-muted-foreground`}>
-                Fort Worth
-              </p>
-              <BootSequence />
-              <ScrambleName className={`${styles.name} ${styles.rise} ${styles.d1} mt-2 font-semibold text-foreground sm:mt-4`} />
-              <p className={`${styles.rise} ${styles.d2} mt-3 max-w-md text-base leading-snug text-foreground sm:mt-5 sm:text-lg`}>
+              <ScrambleName className={`${styles.name} text-foreground`} />
+              <p className="mt-4 max-w-md text-base leading-snug text-foreground">
                 I build software that lets people earn from their own work: writers on{" "}
                 <WorkLink slug="wewrite" className="text-brand underline decoration-brand/40 underline-offset-4">
                   WeWrite
@@ -163,18 +87,19 @@ export function CareerLanding() {
                 </WorkLink>
                 .
               </p>
-              <div className={`${styles.rise} ${styles.d3} mt-3 sm:mt-5`}>
-                <CtaRow primary />
-              </div>
-              <p className={`${styles.rise} ${styles.d4} mt-3 max-w-md text-sm leading-relaxed text-muted-foreground`}>
+              <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
                 Full Stack Developer, previously a Product Designer. I design in code and ship with AI agents.
               </p>
-              <p className={`${styles.rise} ${styles.d4} mt-2 max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base`}>
-                8+ years across startups, agencies, and enterprise. Based in Fort Worth. Working remote or DFW.
-              </p>
-              <p className={`${styles.rise} ${styles.d5} mt-6 max-w-md border-l-2 border-brand pl-4 text-sm leading-relaxed text-foreground`}>
+              <div className="mt-4">
+                <HireCta />
+              </div>
+              <p className="mt-4 max-w-md border-l border-border pl-4 text-sm leading-relaxed text-foreground">
                 {SOFT_CTA}
               </p>
+              <div className="mt-4">
+                <AtAGlance />
+              </div>
+              <BootSequence />
             </div>
             <div className="hidden lg:block">
               <CareerHeroStage />
@@ -200,13 +125,9 @@ export function CareerLanding() {
 
         <WorkAndDesign />
 
-        <section id="lab" className="scroll-mt-28 border-y border-border bg-black py-16 sm:py-24">
+        <section id="lab" className="scroll-mt-28 border-t border-border bg-black py-12">
           <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-            <SectionHead
-              file="builder-log.tsx"
-              title="Builder log"
-              titleClass={`${styles.chapter} ${styles.glitch} font-semibold text-foreground`}
-            />
+            <SectionHead index="03" title="Builder log" />
             <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted-foreground">
               Small tools from the same work: toggles, a quiet ASCII field, the WeWrite type migration, and the path from prompt to ship. Draft notes stay marked TODO.
             </p>
@@ -214,17 +135,13 @@ export function CareerLanding() {
           </div>
         </section>
 
-        <section id="experience" className="scroll-mt-28 border-y border-[rgb(112_184_255/0.4)] bg-black py-16 sm:py-24">
+        <section id="experience" className="scroll-mt-28 border-t border-border bg-black py-12">
           <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
             <div className="flex items-end justify-between gap-4">
-              <SectionHead
-                file="experience.ts"
-                title="Experience"
-                titleClass={`${styles.glitch} text-sm font-medium tracking-[0.14em] text-muted-foreground uppercase`}
-              />
-              <Link href="/experience" className="text-sm text-brand underline-offset-4 hover:underline">
+              <SectionHead index="04" title="Experience" />
+              <CareerButton variant="ghost" icon={ArrowRight} href="/experience">
                 Full timeline
-              </Link>
+              </CareerButton>
             </div>
             <ol className="relative mt-10 space-y-8 border-l border-border pl-6">
               {RESUME_DATA.experience.map((job) => {
@@ -235,7 +152,7 @@ export function CareerLanding() {
                     <span className="absolute -left-[1.7rem] top-1.5 size-2.5 rounded-full bg-brand" aria-hidden />
                     <div className="flex items-start gap-3">
                       {logo ? (
-                        <Image src={logo} alt="" width={36} height={36} className="size-9 shrink-0 rounded-md bg-white object-contain p-1" />
+                        <Image src={logo} alt="" width={36} height={36} className="size-9 shrink-0 border border-border bg-black object-contain p-1" />
                       ) : null}
                       <div className="min-w-0">
                         <p className="font-medium text-foreground">
@@ -277,15 +194,12 @@ export function CareerLanding() {
           </div>
         </section>
 
-        <section id="contact" className="scroll-mt-28 border-t border-border py-16 sm:py-24">
+        <section id="contact" className="scroll-mt-28 border-t border-border bg-black py-12">
           <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-            <SectionHead
-              file="contact.md"
-              title={SOFT_CTA}
-              titleClass={`${styles.glitch} max-w-xl text-2xl font-semibold tracking-[-0.03em] sm:text-3xl`}
-            />
-            <div className="mt-6">
-              <CtaRow />
+            <SectionHead index="05" title="Contact" />
+            <p className="mt-4 max-w-xl text-base leading-relaxed text-foreground">{SOFT_CTA}</p>
+            <div className="mt-4">
+              <HireCta />
             </div>
           </div>
         </section>

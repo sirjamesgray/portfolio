@@ -2,9 +2,8 @@
 
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-
-const FOCUS =
-  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3dd68c]";
+import { ArrowLeft, X } from "lucide-react";
+import { CareerButton } from "@/components/career-button";
 
 function focusables(root: HTMLElement) {
   return [...root.querySelectorAll<HTMLElement>("a[href], button:not([disabled]), input, textarea, select, [tabindex]:not([tabindex='-1'])")].filter(
@@ -74,12 +73,12 @@ export function WorkModal({
             {title}
           </p>
           <div className="flex shrink-0 gap-2">
-            <button type="button" className={`border border-border bg-black px-3 py-1 text-sm text-foreground ${FOCUS}`} onClick={close}>
+            <CareerButton variant="ghost" icon={ArrowLeft} onClick={close}>
               Back
-            </button>
-            <button type="button" data-close className={`border border-[rgb(112_184_255/0.45)] bg-black px-3 py-1 text-sm text-[#70b8ff] ${FOCUS}`} onClick={close}>
+            </CareerButton>
+            <CareerButton variant="ghost" icon={X} data-close onClick={close}>
               Close
-            </button>
+            </CareerButton>
           </div>
         </div>
         <div className="min-h-0 flex-1 overflow-y-auto px-4 py-5 sm:px-6">{children}</div>
@@ -106,12 +105,12 @@ export function WorkPageChrome({ slug }: { slug: string }) {
 
   return (
     <div className="mb-6 flex items-center justify-between gap-3">
-      <a href={href} onClick={mark} className={`text-sm text-brand underline-offset-4 hover:underline ${FOCUS}`}>
+      <CareerButton variant="ghost" icon={ArrowLeft} href={href} onClick={mark}>
         Back
-      </a>
-      <a href={href} onClick={mark} className={`border border-[rgb(112_184_255/0.45)] px-3 py-1 text-sm text-[#70b8ff] ${FOCUS}`}>
+      </CareerButton>
+      <CareerButton variant="ghost" icon={X} href={href} onClick={mark}>
         Close
-      </a>
+      </CareerButton>
     </div>
   );
 }

@@ -1,6 +1,8 @@
 "use client";
 
+import { Download, Linkedin, Mail } from "lucide-react";
 import { RESUME_PATH, SITE_CONFIG, SOCIALS } from "@/lib/constants";
+import { careerButtonClass } from "@/components/career-button";
 import {
   CommandDialog,
   CommandEmpty,
@@ -62,30 +64,45 @@ export function CareerPalette({ open, onOpenChange }: Props) {
         </CommandGroup>
         <CommandGroup heading="Actions">
           <CommandItem
+            value="For recruiters"
+            onSelect={() => {
+              close();
+              window.location.assign("/for-recruiters");
+            }}
+          >
+            For recruiters
+          </CommandItem>
+          <CommandItem
+            className={careerButtonClass("primary", "sm")}
             value="Download resume"
             onSelect={() => {
               close();
               window.location.href = RESUME_PATH;
             }}
           >
+            <Download aria-hidden />
             Download resume
           </CommandItem>
           <CommandItem
+            className={careerButtonClass("secondary", "sm")}
             value="Email"
             onSelect={() => {
               close();
               window.location.href = `mailto:${SITE_CONFIG.email}`;
             }}
           >
+            <Mail aria-hidden />
             Email
           </CommandItem>
           <CommandItem
+            className={careerButtonClass("secondary", "sm")}
             value="LinkedIn"
             onSelect={() => {
               close();
               window.open(SOCIALS.linkedin, "_blank", "noopener,noreferrer");
             }}
           >
+            <Linkedin aria-hidden />
             LinkedIn
           </CommandItem>
         </CommandGroup>
