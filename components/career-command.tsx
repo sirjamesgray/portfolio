@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
 import dynamic from "next/dynamic";
 import { Command } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
@@ -12,29 +11,40 @@ const CareerPalette = dynamic(
   { ssr: false }
 );
 
-const SECTIONS = ["work", "turbo", "lab", "experience", "contact"];
-
-const SECTION_LABELS: Record<string, string> = {
-  work: "Work",
-  turbo: "Turbo",
-  lab: "Lab",
-  experience: "Experience",
-  contact: "Contact",
-};
-
 function typingTarget(target: EventTarget | null) {
   if (!(target instanceof HTMLElement)) return false;
   const tag = target.tagName;
   return tag === "INPUT" || tag === "TEXTAREA" || target.isContentEditable;
 }
 
-/** Command button, status bar, and keyboard jumps. */
+function jump(id: string) {
+  const node = document.getElementById(id);
+  if (node) {
+    node.scrollIntoView({ behavior: "smooth" });
+    return;
+  }
+  window.location.assign(`/#${id}`);
+}
+
+/** One command hint for the top nav. */
+export function CareerCommandButton() {
+  return (
+    <CareerButton
+      variant="ghost"
+      icon={Command}
+      aria-label="Open the command palette"
+      onClick={() => window.dispatchEvent(new Event("career-palette"))}
+    >
+      ⌘K
+    </CareerButton>
+  );
+}
+
+/** Keyboard jumps and the command palette. Render once. */
 export function CareerCommand() {
   const [open, setOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [help, setHelp] = useState(false);
-  const [section, setSection] = useState("work");
-  const [ready, setReady] = useState(false);
 
   const showPalette = () => {
     setLoaded(true);
@@ -42,13 +52,8 @@ export function CareerCommand() {
   };
 
   useEffect(() => {
-    const frame = requestAnimationFrame(() => setReady(true));
     let pending = false;
     let pendingTimer = 0;
-
-    const jump = (id: string) => {
-      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-    };
 
     const onKey = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
@@ -81,79 +86,22 @@ export function CareerCommand() {
     };
 
     const onHelp = () => setHelp(true);
+    const onPalette = () => showPalette();
     window.addEventListener("keydown", onKey);
     window.addEventListener("career-help", onHelp);
-
-    const ratios = new Map<string, number>();
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          const id = entry.target.id;
-          if (!id) continue;
-          ratios.set(id, entry.isIntersecting ? entry.intersectionRatio : 0);
-        }
-        let bestId = "";
-        let bestRatio = 0;
-        for (const id of SECTIONS) {
-          const ratio = ratios.get(id) ?? 0;
-          if (ratio > bestRatio) {
-            bestRatio = ratio;
-            bestId = id;
-          }
-        }
-        if (bestId) setSection(bestId);
-      },
-      {
-        rootMargin: "-35% 0px -40% 0px",
-        threshold: [0, 0.15, 0.35, 0.55, 0.75, 1],
-      }
-    );
-    SECTIONS.forEach((id) => {
-      const node = document.getElementById(id);
-      if (node) observer.observe(node);
-    });
+    window.addEventListener("career-palette", onPalette);
 
     return () => {
-      cancelAnimationFrame(frame);
       window.clearTimeout(pendingTimer);
       window.removeEventListener("keydown", onKey);
       window.removeEventListener("career-help", onHelp);
-      observer.disconnect();
+      window.removeEventListener("career-palette", onPalette);
     };
   }, []);
 
   return (
     <>
-      <CareerButton variant="ghost" size="sm" icon={Command} onClick={showPalette}>
-        ⌘K
-        <span className="sr-only">Open the command palette</span>
-      </CareerButton>
       {loaded ? <CareerPalette open={open} onOpenChange={setOpen} /> : null}
-      {ready
-        ? createPortal(
-            <nav
-              aria-label="Page status"
-              className="hidden md:block"
-              style={{
-                position: "fixed",
-                left: 0,
-                right: 0,
-                bottom: 0,
-                zIndex: 30,
-                paddingBottom: "env(safe-area-inset-bottom)",
-              }}
-            >
-              <div className="flex h-9 items-center justify-between gap-3 border-t border-border bg-background px-4 font-mono text-[11px] text-muted-foreground">
-                <span className="truncate">career-landing</span>
-                <CareerButton variant="ghost" size="sm" icon={Command} onClick={showPalette}>
-                  ⌘K
-                </CareerButton>
-                <span className="truncate text-brand">{SECTION_LABELS[section] ?? section}</span>
-              </div>
-            </nav>,
-            document.body
-          )
-        : null}
       <Dialog open={help} onOpenChange={setHelp}>
         <DialogContent className="sm:max-w-md">
           <DialogTitle>Shortcuts</DialogTitle>
@@ -163,7 +111,7 @@ export function CareerCommand() {
             <li>? · this sheet</li>
             <li>g then w · Work</li>
             <li>g then t · Turbo</li>
-            <li>terminal · sudo hire</li>
+            <li>terminal · resume</li>
           </ul>
         </DialogContent>
       </Dialog>

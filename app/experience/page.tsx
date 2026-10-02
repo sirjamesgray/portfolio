@@ -134,7 +134,7 @@ export default function ExperiencePage() {
           <BlurFade delay={0.3}>
             <div className={`${CARD_INTERACTIVE_SOLID.full} mt-12 p-8 text-center`}>
               <h2 className="text-2xl font-bold text-foreground mb-3">
-                Open to senior product & design engineering conversations — remote or DFW
+                Full Stack Developer, previously a Product Designer.
               </h2>
               <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
                 Download the resume, or send a note. I read every message.

@@ -9,7 +9,7 @@ export function AtAGlance() {
   return (
     <dl className={styles.glance}>
       <div>
-        <dt className={styles.kicker}>Role sought</dt>
+        <dt className={styles.kicker}>Focus</dt>
         <dd className={styles.small}>Senior Full-Stack / Product Engineer</dd>
       </div>
       <div>
@@ -22,7 +22,7 @@ export function AtAGlance() {
       </div>
       <div>
         <dt className={styles.kicker}>Availability</dt>
-        <dd className={styles.small}>Open to new roles</dd>
+        <dd className={styles.small}>Open to the right opportunity</dd>
       </div>
       <div className={styles.stackWide}>
         <dt className={styles.kicker}>Core stack</dt>
@@ -39,11 +39,18 @@ export function AtAGlance() {
 }
 
 /** Download is primary. Email and LinkedIn share one secondary style. */
-export function HireCta() {
+export function HireCta({ hero = false }: { hero?: boolean }) {
   return (
-    <div className={styles.row}>
-      <CareerButton variant="primary" icon={Download} href={RESUME_PATH}>
-        Download resume
+    <div className={hero ? styles.heroRow : styles.row}>
+      <CareerButton variant="primary" icon={Download} href={RESUME_PATH} aria-label="Download resume">
+        {hero ? (
+          <>
+            <span className={styles.shortLabel}>Resume</span>
+            <span className={styles.fullLabel}>Download resume</span>
+          </>
+        ) : (
+          "Download resume"
+        )}
       </CareerButton>
       <CareerButton variant="secondary" icon={Mail} href={`mailto:${SITE_CONFIG.email}`}>
         Email

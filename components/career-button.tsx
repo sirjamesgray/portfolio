@@ -32,6 +32,7 @@ type LinkProps = Shared & {
   href: string;
   target?: string;
   rel?: string;
+  "aria-label"?: string;
   onClick?: React.MouseEventHandler<HTMLAnchorElement>;
 };
 
@@ -47,7 +48,14 @@ export function CareerButton(props: ButtonProps | LinkProps) {
 
   if ("href" in props && props.href) {
     return (
-      <a href={props.href} target={props.target} rel={props.rel} onClick={props.onClick} className={classes}>
+      <a
+        href={props.href}
+        target={props.target}
+        rel={props.rel}
+        aria-label={props["aria-label"]}
+        onClick={props.onClick}
+        className={classes}
+      >
         {content}
       </a>
     );
@@ -58,6 +66,7 @@ export function CareerButton(props: ButtonProps | LinkProps) {
     <button
       type={buttonProps.type ?? "button"}
       onClick={buttonProps.onClick}
+      aria-label={buttonProps["aria-label"]}
       data-close={buttonProps["data-close"] ? "" : undefined}
       className={classes}
     >

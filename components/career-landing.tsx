@@ -2,10 +2,8 @@ import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { Footer } from "@/components/footer";
-import { FloatingSectionNav } from "@/components/ui/floating-section-nav";
 import { CareerHeroStage } from "@/components/career-hero";
 import { BootSequence, ScrambleName } from "@/components/career-intro";
-import { CareerCommand } from "@/components/career-command";
 import { BuilderLab } from "@/components/builder-lab";
 import { PhoneFrame } from "@/components/device-frame";
 import { WorkFocusRestore } from "@/components/work-modal";
@@ -18,17 +16,6 @@ import { RESUME_DATA } from "@/lib/resume-data";
 import { PUBLIC_PRODUCTS, TURBO } from "@/lib/public-work";
 import { workIn } from "@/lib/work-catalog";
 import styles from "./career-landing.module.css";
-
-const SOFT_CTA =
-  "Open to senior product & design engineering conversations — remote or DFW";
-
-const SECTIONS = [
-  { id: "work", label: "Work" },
-  { id: "turbo", label: "Turbo" },
-  { id: "lab", label: "Lab" },
-  { id: "experience", label: "Experience" },
-  { id: "contact", label: "Contact" },
-];
 
 function logoFor(company: string) {
   const match = EXPERIENCE.find((item) => company.startsWith(item.company) && item.logo);
@@ -67,7 +54,7 @@ export function WorkAndDesign() {
 
 export function CareerLanding() {
   return (
-    <div className="min-h-screen overflow-x-clip bg-background pb-0 text-foreground md:pb-[calc(2.25rem+env(safe-area-inset-bottom))]">
+    <div className="min-h-screen overflow-x-clip bg-background text-foreground">
       <SiteHeader landingPage="career" customerDashboardEnabled={false} />
       <WorkFocusRestore />
       <main>
@@ -91,11 +78,8 @@ export function CareerLanding() {
                 Full Stack Developer, previously a Product Designer. I design in code and ship with AI agents.
               </p>
               <div className="mt-4">
-                <HireCta />
+                <HireCta hero />
               </div>
-              <p className="mt-4 max-w-md border-l border-border pl-4 text-sm leading-relaxed text-foreground">
-                {SOFT_CTA}
-              </p>
               <div className="mt-4">
                 <AtAGlance />
               </div>
@@ -113,15 +97,6 @@ export function CareerLanding() {
             </div>
           </div>
         </section>
-
-        <div className="sticky top-14 z-30 border-b border-border bg-black">
-          <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-2 sm:px-6">
-            <div className="min-w-0 flex-1">
-              <FloatingSectionNav sections={SECTIONS} />
-            </div>
-            <CareerCommand />
-          </div>
-        </div>
 
         <WorkAndDesign />
 
@@ -197,7 +172,6 @@ export function CareerLanding() {
         <section id="contact" className="scroll-mt-28 border-t border-border bg-black py-12">
           <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
             <SectionHead index="05" title="Contact" />
-            <p className="mt-4 max-w-xl text-base leading-relaxed text-foreground">{SOFT_CTA}</p>
             <div className="mt-4">
               <HireCta />
             </div>

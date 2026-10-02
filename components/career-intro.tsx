@@ -34,7 +34,7 @@ function lineSlice(index: number, revealed: number) {
 export function BootSequence() {
   const [revealed, setRevealed] = useState<number | null>(null);
   const [command, setCommand] = useState("");
-  const hired = command.trim() === "sudo hire";
+  const showResume = command.trim() === "resume";
 
   useEffect(() => {
     if (motionOff() || sessionStorage.getItem(SESSION_KEY) === "1") return;
@@ -53,7 +53,7 @@ export function BootSequence() {
   }, []);
 
   return (
-    <div className={`${styles.terminal} mt-2 max-w-full overflow-hidden rounded-md border sm:mt-4`}>
+    <div className={`${styles.terminal} mt-2 max-w-full overflow-hidden border sm:mt-4`}>
       <p className="border-b border-border px-3 py-1 font-mono text-[10px] text-[#b4b4b4]">terminal</p>
       <pre className={`${styles.phosphor} max-w-full overflow-x-hidden px-3 py-1.5 font-mono text-[11px] leading-snug sm:py-2 sm:leading-relaxed`}>
         {BOOT_LINES.map((line, index) => {
@@ -82,7 +82,7 @@ export function BootSequence() {
         />
         <span className={styles.caret} aria-hidden />
       </form>
-      {hired ? (
+      {showResume ? (
         <p className="border-t border-border px-3 py-2 font-mono text-[11px] text-foreground">
           The resume is here.{" "}
           <a href={RESUME_PATH} className="text-brand underline underline-offset-4">

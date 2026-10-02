@@ -4,7 +4,7 @@ import { careerMetadata } from "@/lib/career-meta";
 export const metadata: Metadata = careerMetadata({
   title: "Contact | Jamie Gray",
   description:
-    "Open to senior product and design engineering conversations, remote or DFW. Email contact@jamiegray.net or connect on LinkedIn.",
+    "Email contact@jamiegray.net or connect on LinkedIn. Fort Worth, remote or DFW.",
   path: "/contact",
 });
 

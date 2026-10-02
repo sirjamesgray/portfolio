@@ -92,14 +92,16 @@
 .btn {
   display: inline-flex;
   align-items: center;
+  min-height: 44px;
   gap: var(--space-2);
   border: var(--line);
   background: #000;
-  padding: var(--space-2) var(--space-3);
+  padding: 0 var(--space-3);
   font-size: var(--type-2);
   font-weight: 500;
   line-height: 1.2;
   color: var(--foreground);
+  white-space: nowrap;
 }
 
 .btn svg {
@@ -114,9 +116,24 @@
 }
 
 .primary {
-  border-color: var(--primary);
-  background: var(--primary);
-  color: var(--primary-foreground);
+  border-color: #3dd68c;
+  background: #3dd68c;
+  color: #0a0a0a;
+}
+
+.primary svg {
+  color: #0a0a0a;
+}
+
+.primary:hover {
+  border-color: #30a46c;
+  background: #30a46c;
+  color: #0a0a0a;
+}
+
+.primary:focus-visible {
+  outline: 2px solid #70b8ff;
+  outline-offset: 2px;
 }
 
 .secondary {
@@ -125,14 +142,26 @@
   color: var(--foreground);
 }
 
+.secondary:hover {
+  border-color: #3dd68c;
+  background: #000;
+  color: #3dd68c;
+}
+
 .ghost {
   border-color: transparent;
   background: transparent;
   color: var(--foreground);
 }
 
+.ghost:hover {
+  background: transparent;
+  color: #3dd68c;
+}
+
 .sm {
-  padding: var(--space-1) var(--space-2);
+  min-height: 44px;
+  padding: 0 var(--space-2);
   font-size: var(--type-1);
 }
 
@@ -140,6 +169,56 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
+}
+
+.heroRow {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-2);
+}
+
+.heroRow > a {
+  justify-content: center;
+}
+
+.shortLabel {
+  display: inline;
+}
+
+.fullLabel {
+  display: none;
+}
+
+@media (min-width: 375px) {
+  .heroRow {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+  }
+
+  .heroRow > a {
+    flex: 1 1 0;
+    min-width: 0;
+    padding-left: var(--space-2);
+    padding-right: var(--space-2);
+  }
+}
+
+@media (min-width: 640px) {
+  .shortLabel {
+    display: none;
+  }
+
+  .fullLabel {
+    display: inline;
+  }
+
+  .heroRow > a {
+    flex: 0 0 auto;
+    padding-left: var(--space-3);
+    padding-right: var(--space-3);
+  }
 }
 
 .proof {

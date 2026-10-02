@@ -63,7 +63,7 @@ export default function ContactPage() {
                 I&apos;d love to hear from you!
               </h1>
               <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-                Open to senior product & design engineering conversations — remote or DFW.
+                Fort Worth, remote or DFW. Email or LinkedIn.
               </p>
             </div>
           </BlurFade>

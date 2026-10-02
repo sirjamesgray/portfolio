@@ -12,7 +12,7 @@ const PREVIEW_METADATA: Record<string, Metadata> = {
   "product-engineer": {
     title: "Product Engineer | Jamie Gray",
     description:
-      "I design in code and ship real products with AI agents. Open to senior product and design engineering conversations.",
+      "I design in code and ship real products with AI agents.",
     openGraph: {
       title: "Product Engineer | Jamie Gray",
       description: "I design in code and ship real products with AI agents.",

@@ -330,10 +330,10 @@ export function ProductEngineerLanding({ customerDashboardEnabled }: ProductEngi
             <CursorGlow>
               <div className={`${CARD_FEATURED.base} ${CARD_FEATURED.shadow} p-8 text-center sm:p-12`}>
                 <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                  Open to senior product & design engineering conversations — remote or DFW
+                  I design in code and ship real products with AI agents.
                 </h2>
                 <p className="mb-8 text-lg text-muted-foreground max-w-xl mx-auto">
-                  I design in code and ship real products with AI agents. Download the resume, or send a note.
+                  Download the resume, or send a note.
                 </p>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                   <Link href={PRODUCT_ENGINEER_CTA.primary.href}>

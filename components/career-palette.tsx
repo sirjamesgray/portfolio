@@ -30,7 +30,17 @@ export function CareerPalette({ open, onOpenChange }: Props) {
 
   const go = (id: string) => {
     close();
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    const node = document.getElementById(id);
+    if (node) {
+      node.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
+    window.location.assign(`/#${id}`);
+  };
+
+  const visit = (path: string) => {
+    close();
+    window.location.assign(path);
   };
 
   return (
@@ -62,16 +72,21 @@ export function CareerPalette({ open, onOpenChange }: Props) {
             ? · shortcut sheet
           </CommandItem>
         </CommandGroup>
-        <CommandGroup heading="Actions">
-          <CommandItem
-            value="For recruiters"
-            onSelect={() => {
-              close();
-              window.location.assign("/for-recruiters");
-            }}
-          >
+        <CommandGroup heading="Pages">
+          <CommandItem value="Projects" onSelect={() => visit("/projects")}>
+            Projects
+          </CommandItem>
+          <CommandItem value="Experience page" onSelect={() => visit("/experience")}>
+            Experience page
+          </CommandItem>
+          <CommandItem value="For recruiters" onSelect={() => visit("/for-recruiters")}>
             For recruiters
           </CommandItem>
+          <CommandItem value="Contact page" onSelect={() => visit("/contact")}>
+            Contact page
+          </CommandItem>
+        </CommandGroup>
+        <CommandGroup heading="Actions">
           <CommandItem
             className={careerButtonClass("primary", "sm")}
             value="Download resume"

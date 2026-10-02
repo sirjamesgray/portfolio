@@ -11,6 +11,7 @@ import type { User as SupabaseUser } from "@supabase/supabase-js";
 import { Logo3DStatic } from "@/components/logo-3d";
 import { CTA_CONFIG, PRODUCT_ENGINEER_CTA } from "@/lib/constants";
 import { FloatingSectionNav, type SectionNavItem } from "@/components/ui/floating-section-nav";
+import { CareerCommand, CareerCommandButton } from "@/components/career-command";
 
 // Sections for product engineer landing page anchor navigation
 const PRODUCT_ENGINEER_SECTIONS: SectionNavItem[] = [
@@ -102,11 +103,14 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
       {!loading && variant === "default" && (
         <>
           {landingPage === "career" ? (
-            <nav className="flex items-center gap-5 text-sm text-muted-foreground">
-              <Link href="/projects" className="hover:text-brand">Work</Link>
-              <Link href="/experience" className="hover:text-brand">Experience</Link>
-              <Link href="/for-recruiters" className="hover:text-brand">Recruiters</Link>
-              <Link href="/contact" className="hover:text-brand">Contact</Link>
+            <nav aria-label="Primary" className="flex items-center gap-4 text-sm text-muted-foreground">
+              <Link href="/#work" className="inline-flex h-11 items-center hover:text-brand">Work</Link>
+              <Link href="/#turbo" className="inline-flex h-11 items-center hover:text-brand">Turbo</Link>
+              <Link href="/#lab" className="inline-flex h-11 items-center hover:text-brand">Lab</Link>
+              <Link href="/experience" className="inline-flex h-11 items-center hover:text-brand">Experience</Link>
+              <Link href="/for-recruiters" className="inline-flex h-11 items-center hover:text-brand">Recruiters</Link>
+              <Link href="/#contact" className="inline-flex h-11 items-center hover:text-brand">Contact</Link>
+              <CareerCommandButton />
             </nav>
           ) : landingPage === "product-engineer" ? (
             // Product Engineer landing page: "Say hi" focused CTAs
@@ -267,14 +271,16 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
           </Link>
         )}
         {landingPage === "career" && variant === "default" && (
-          <nav className="flex min-w-0 flex-1 items-center justify-end gap-3 overflow-x-auto text-[13px] text-muted-foreground">
-            <Link href="/projects" className="shrink-0 hover:text-brand">Work</Link>
-            <Link href="/experience" className="shrink-0 hover:text-brand">Experience</Link>
-            <Link href="/for-recruiters" className="shrink-0 hover:text-brand">Recruiters</Link>
-            <Link href="/contact" className="shrink-0 hover:text-brand">Contact</Link>
+          <nav aria-label="Primary" className="flex min-w-0 flex-1 items-center justify-end gap-2 text-[12px] text-muted-foreground">
+            <Link href="/#work" className="inline-flex h-11 shrink-0 items-center hover:text-brand">Work</Link>
+            <Link href="/#turbo" className="hidden h-11 shrink-0 items-center hover:text-brand min-[380px]:inline-flex">Turbo</Link>
+            <Link href="/#lab" className="inline-flex h-11 shrink-0 items-center hover:text-brand">Lab</Link>
+            <Link href="/#contact" className="inline-flex h-11 shrink-0 items-center hover:text-brand">Contact</Link>
+            <CareerCommandButton />
           </nav>
         )}
       </div>
+      {landingPage === "career" ? <CareerCommand /> : null}
 
       {/* Mobile Floating Footer - hidden on desktop, appears after scrolling past hero, only on landing page, hides when styles section is visible */}
       <AnimatePresence>
