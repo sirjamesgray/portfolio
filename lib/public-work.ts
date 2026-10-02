@@ -56,7 +56,7 @@ export const PUBLIC_PRODUCTS: readonly PublicProduct[] = [
     fullPage: {
       src: "/work/wewrite-full.webp",
       width: 1280,
-      height: 9066,
+      height: 10199,
       alt: "Full WeWrite page inside a laptop screen",
     },
     mobile: {
@@ -94,7 +94,7 @@ export const PUBLIC_PRODUCTS: readonly PublicProduct[] = [
     fullPage: {
       src: "/work/lucent-full.webp",
       width: 1280,
-      height: 7897,
+      height: 8884,
       alt: "Full Lucent Wash page inside a laptop screen",
     },
     mobile: {

@@ -85,7 +85,7 @@ const LockOpenIcon = forwardRef<LockOpenIconHandle, LockOpenIconProps>(
           width={size}
           xmlns="http://www.w3.org/2000/svg"
         >
-          <rect height="11" rx="2" ry="2" width="18" x="3" y="11" />
+          <rect height="11" rx="0" ry="0" width="18" x="3" y="11" />
           <motion.path
             animate={controls}
             d="M7 11V7a5 5 0 0 1 10 0v4"

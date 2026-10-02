@@ -176,7 +176,7 @@
   left: 0;
   width: 0.5rem;
   height: 0.5rem;
-  border-radius: 999px;
+  border-radius: 0;
   background: var(--brand);
   animation: token-run 5s cubic-bezier(0.25, 0, 0.3, 1) infinite;
 }
