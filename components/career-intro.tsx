@@ -32,19 +32,27 @@ function lineSlice(index: number, revealed: number) {
 
 /** Boot lines are in the HTML. Typing starts only after paint. */
 export function BootSequence() {
-  const [revealed, setRevealed] = useState<number | null>(null);
+  const [phase, setPhase] = useState<"pending" | "type" | "done">("pending");
+  const [revealed, setRevealed] = useState(0);
   const [command, setCommand] = useState("");
+  const [focused, setFocused] = useState(false);
   const showResume = command.trim() === "resume";
+  const promptOpen = focused || command.length > 0;
 
   useEffect(() => {
-    if (motionOff() || sessionStorage.getItem(SESSION_KEY) === "1") return;
+    if (motionOff() || sessionStorage.getItem(SESSION_KEY) === "1") {
+      setPhase("done");
+      return;
+    }
     const total = BOOT_LINES.reduce((sum, line) => sum + line.length, 0);
     let count = 0;
+    setPhase("type");
     const timer = window.setInterval(() => {
       count += 2;
       if (count >= total) {
         window.clearInterval(timer);
-        setRevealed(null);
+        sessionStorage.setItem(SESSION_KEY, "1");
+        setPhase("done");
         return;
       }
       setRevealed(count);
@@ -53,11 +61,14 @@ export function BootSequence() {
   }, []);
 
   return (
-    <div className={`${styles.terminal} mt-2 max-w-full overflow-hidden border sm:mt-4`}>
+    <div
+      className={`${styles.terminal} mt-2 max-w-full overflow-hidden border sm:mt-4`}
+      data-boot={phase === "done" ? "done" : "run"}
+    >
       <p className="border-b border-border px-3 py-1 font-mono text-[10px] text-[#b4b4b4]">terminal</p>
       <pre className={`${styles.phosphor} max-w-full overflow-x-hidden px-3 py-1.5 font-mono text-[11px] leading-snug sm:py-2 sm:leading-relaxed`}>
         {BOOT_LINES.map((line, index) => {
-          const text = revealed === null ? line : lineSlice(index, revealed);
+          const text = phase === "type" ? lineSlice(index, revealed) : line;
           if (!text) return null;
           return (
             <span key={line} className={styles.typeLine}>
@@ -67,10 +78,16 @@ export function BootSequence() {
         })}
       </pre>
       <form
-        className="flex items-center gap-2 border-t border-border px-3 py-1.5 font-mono text-[11px]"
+        className={
+          promptOpen
+            ? "flex items-center gap-2 border-t border-border px-3 py-1.5 font-mono text-[11px]"
+            : styles.promptIdle
+        }
         onSubmit={(event) => event.preventDefault()}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
       >
-        <span className="text-foreground">$</span>
+        {promptOpen ? <span className="text-foreground">$</span> : null}
         <input
           value={command}
           onChange={(event) => setCommand(event.target.value)}
@@ -80,7 +97,7 @@ export function BootSequence() {
           spellCheck={false}
           className={`${styles.phosphor} min-w-0 flex-1 bg-transparent outline-none`}
         />
-        <span className={styles.caret} aria-hidden />
+        {promptOpen ? <span className={styles.caret} aria-hidden /> : null}
       </form>
       {showResume ? (
         <p className="border-t border-border px-3 py-2 font-mono text-[11px] text-foreground">

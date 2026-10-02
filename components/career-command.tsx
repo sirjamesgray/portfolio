@@ -32,10 +32,10 @@ export function CareerCommandButton() {
     <CareerButton
       variant="ghost"
       icon={Command}
-      aria-label="Open the command palette"
+      aria-label="Open command palette"
       onClick={() => window.dispatchEvent(new Event("career-palette"))}
     >
-      ⌘K
+      K
     </CareerButton>
   );
 }
