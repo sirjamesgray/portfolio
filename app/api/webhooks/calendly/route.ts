@@ -229,7 +229,7 @@ export async function POST(request: NextRequest) {
               <h1 style="font-size: 24px; font-weight: 600; margin: 0 0 24px; text-align: center;">Hey ${invitee.name.split(" ")[0]}!</h1>
 
               <p style="font-size: 16px; line-height: 1.6; color: #374151; margin: 0 0 16px;">
-                Thanks for booking a consultation. I'm looking forward to chatting with you on <strong>${consultationDate}</strong>.
+                Thanks for booking a consultation. We can talk on <strong>${consultationDate}</strong>.
               </p>
 
               <p style="font-size: 16px; line-height: 1.6; color: #374151; margin: 0 0 24px;">

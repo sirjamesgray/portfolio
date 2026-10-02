@@ -69,7 +69,7 @@ export function WelcomeEmail({ name, dashboardUrl }: WelcomeEmailProps) {
 
           {/* Signature */}
           <Section style={signatureSection}>
-            <Text style={signatureText}>Looking forward to working with you!</Text>
+            <Text style={signatureText}>Glad to work with you!</Text>
             <Text style={signatureName}>Jamie Gray</Text>
             <Text style={signatureTitle}>Product Engineer</Text>
           </Section>
