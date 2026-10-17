@@ -15,6 +15,7 @@ import { EXPERIENCE } from "@/lib/constants";
 import { RESUME_DATA } from "@/lib/resume-data";
 import { PUBLIC_PRODUCTS, TURBO } from "@/lib/public-work";
 import { workIn } from "@/lib/work-catalog";
+import { CareerTimeline } from "@/components/career-timeline";
 import { CareerBackdrop } from "@/components/career-backdrop";
 import styles from "./career-landing.module.css";
 
@@ -26,7 +27,7 @@ function logoFor(company: string) {
 export function WorkAndDesign() {
   return (
     <>
-      <div id="work" className="scroll-mt-28 border-t border-border py-12">
+      <div id="work" className="scroll-mt-28 border-t border-border py-12 md:py-20">
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
           <SectionHead index="01" title="Work" />
           <p className="mt-4 max-w-xl text-base leading-relaxed text-foreground">
@@ -35,7 +36,7 @@ export function WorkAndDesign() {
           <WorkGrid entries={workIn("work")} />
         </div>
       </div>
-      <section id="turbo" className="scroll-mt-28 border-t border-border py-12">
+      <section id="turbo" className="scroll-mt-28 border-t border-border py-12 md:py-20">
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
           <div className="mb-4 flex items-center gap-3">
             <Image src={TURBO.logo} alt="" width={36} height={36} className="size-9 border border-border bg-black object-contain p-1" />
@@ -63,6 +64,10 @@ export function CareerLanding() {
         <section className={`${styles.hero} relative flex items-start overflow-hidden pt-20 sm:pt-24`}>
           <div className="relative mx-auto grid w-full max-w-6xl items-center gap-6 px-4 py-4 sm:px-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
             <div className="min-w-0">
+              <p className={styles.eyebrow}>
+                <span className={styles.dot} aria-hidden />
+                Open to the right opportunity · Fort Worth
+              </p>
               <ScrambleName className={`${styles.name} text-foreground`} />
               <p className="mt-4 max-w-md text-base leading-snug text-foreground">
                 I build software that lets people earn from their own work: writers on{" "}
@@ -101,7 +106,7 @@ export function CareerLanding() {
 
         <WorkAndDesign />
 
-        <section id="lab" className="scroll-mt-28 border-t border-border py-12">
+        <section id="lab" className="scroll-mt-28 border-t border-border py-12 md:py-20">
           <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
             <SectionHead index="03" title="Builder log" />
             <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted-foreground">
@@ -111,66 +116,35 @@ export function CareerLanding() {
           </div>
         </section>
 
-        <section id="experience" className="scroll-mt-28 border-t border-border py-12">
+        <section id="experience" className="scroll-mt-28 border-t border-border py-12 md:py-20">
           <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-            <div className="flex items-end justify-between gap-4">
+            <div className="flex flex-wrap items-end justify-between gap-4">
               <SectionHead index="04" title="Experience" />
               <CareerButton variant="ghost" icon={ArrowRight} href="/experience">
                 Full timeline
               </CareerButton>
             </div>
-            <ol className="relative mt-10 space-y-8 border-l border-border pl-6">
-              {RESUME_DATA.experience.map((job) => {
-                const positions = "positions" in job ? job.positions : undefined;
-                const logo = logoFor(job.company);
-                return (
-                  <li key={job.company} className="relative">
-                    <span className="absolute -left-[1.7rem] top-1.5 size-2.5 rounded-full bg-brand" aria-hidden />
-                    <div className="flex items-start gap-3">
-                      {logo ? (
-                        <Image src={logo} alt="" width={36} height={36} className="size-9 shrink-0 border border-border bg-black object-contain p-1" />
-                      ) : null}
-                      <div className="min-w-0">
-                        <p className="font-medium text-foreground">
-                          {job.company}
-                          {job.context ? <span className="font-normal text-muted-foreground"> · {job.context}</span> : null}
-                        </p>
-                        {positions && positions.length > 0 ? (
-                          <ul className="mt-1 space-y-1">
-                            {positions.map((position) => (
-                              <li key={position.title} className="text-sm text-muted-foreground">
-                                {position.title}
-                                <span className="text-foreground/70"> · {position.startDate}–{position.endDate}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        ) : (
-                          <p className="text-sm text-muted-foreground">{job.role}</p>
-                        )}
-                        <p className="mt-1 font-mono text-xs text-muted-foreground">
-                          {job.startDate} – {job.endDate}
-                        </p>
-                        {job.company.startsWith("Turbo") && (
-                          <ul className="mt-4 space-y-3 border-l border-border pl-4">
-                            {TURBO.clients.map((client) => (
-                              <li key={client.id}>
-                                <p className="text-sm font-medium text-foreground">{client.label}</p>
-                                <p className="font-mono text-[11px] text-muted-foreground">{client.dates}</p>
-                                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{client.summary}</p>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-                    </div>
-                  </li>
-                );
-              })}
-            </ol>
+            <CareerTimeline
+              jobs={RESUME_DATA.experience}
+              logoFor={logoFor}
+              extra={(job) =>
+                job.company.startsWith("Turbo") ? (
+                  <ul className="mt-4 space-y-3 border-l border-border pl-4">
+                    {TURBO.clients.map((client) => (
+                      <li key={client.id}>
+                        <p className="text-sm font-medium text-foreground">{client.label}</p>
+                        <p className="font-mono text-[11px] text-muted-foreground">{client.dates}</p>
+                        <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{client.summary}</p>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null
+              }
+            />
           </div>
         </section>
 
-        <section id="contact" className="scroll-mt-28 border-t border-border py-12">
+        <section id="contact" className="scroll-mt-28 border-t border-border py-12 md:py-20">
           <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
             <SectionHead index="05" title="Contact" />
             <div className="mt-4">

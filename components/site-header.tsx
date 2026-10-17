@@ -6,7 +6,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { DashboardButton } from "@/components/ui/button";
 import { LandingButton } from "@/components/ui/landing-button";
 import { ScrollAwareButton } from "@/components/ui/scroll-aware-button";
-import { User, ArrowLeft, LogOut } from "lucide-react";
+import { User, ArrowLeft, LogOut, Briefcase, FlaskConical, History, Lock, Mail, Download, Menu, X } from "lucide-react";
+import { CareerButton } from "@/components/career-button";
+import { RESUME_PATH } from "@/lib/constants";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 import { Logo3DStatic } from "@/components/logo-3d";
 import { CTA_CONFIG, PRODUCT_ENGINEER_CTA } from "@/lib/constants";
@@ -26,6 +28,14 @@ const PRODUCT_ENGINEER_SECTIONS: SectionNavItem[] = [
   { id: "contact", label: "Contact" },
 ];
 
+const CAREER_NAV = [
+  { href: "/#work", label: "Work", icon: Briefcase },
+  { href: "/#lab", label: "Lab", icon: FlaskConical },
+  { href: "/#experience", label: "Experience", icon: History },
+  { href: "/for-recruiters", label: "Recruiters", icon: Lock },
+  { href: "/#contact", label: "Contact", icon: Mail },
+] as const;
+
 interface SiteHeaderProps {
   variant?: "default" | "back";
   backHref?: string;
@@ -40,6 +50,7 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
   const [loading, setLoading] = useState(true);
   const [showMobileFooter, setShowMobileFooter] = useState(false);
   const [isStylesSectionVisible, setIsStylesSectionVisible] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     // Only check user if dashboard is enabled
@@ -103,13 +114,16 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
       {!loading && variant === "default" && (
         <>
           {landingPage === "career" ? (
-            <nav aria-label="Primary" className="flex items-center gap-4 text-sm text-muted-foreground">
-              <Link href="/#work" className="inline-flex h-11 items-center hover:text-brand">Work</Link>
-              <Link href="/#lab" className="inline-flex h-11 items-center hover:text-brand">Lab</Link>
-              <Link href="/experience" className="inline-flex h-11 items-center hover:text-brand">Experience</Link>
-              <Link href="/for-recruiters" className="inline-flex h-11 items-center hover:text-brand">Recruiters</Link>
-              <Link href="/#contact" className="inline-flex h-11 items-center hover:text-brand">Contact</Link>
+            <nav aria-label="Primary" className="flex items-center gap-2">
+              {CAREER_NAV.map((item) => (
+                <CareerButton key={item.href} variant="secondary" size="sm" icon={item.icon} href={item.href}>
+                  {item.label}
+                </CareerButton>
+              ))}
               <CareerCommandButton />
+              <CareerButton variant="primary" size="sm" icon={Download} href={RESUME_PATH} aria-label="Download resume">
+                Resume
+              </CareerButton>
             </nav>
           ) : landingPage === "product-engineer" ? (
             // Product Engineer landing page: "Say hi" focused CTAs
@@ -245,7 +259,7 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
             {backLabel}
           </Link>
         ) : (
-          <Link href="/" aria-label="Jamie Gray" className="flex items-center h-8 w-8">
+          <Link href="/" aria-label="Jamie Gray" className="flex h-11 w-11 items-center justify-center">
             <Logo3DStatic size="sm" />
           </Link>
         )}
@@ -270,14 +284,42 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
           </Link>
         )}
         {landingPage === "career" && variant === "default" && (
-          <nav aria-label="Primary" className="flex min-w-0 flex-1 items-center justify-end gap-2 text-[12px] text-muted-foreground">
-            <Link href="/#work" className="inline-flex h-11 shrink-0 items-center hover:text-brand">Work</Link>
-            <Link href="/#lab" className="inline-flex h-11 shrink-0 items-center hover:text-brand">Lab</Link>
-            <Link href="/#contact" className="inline-flex h-11 shrink-0 items-center hover:text-brand">Contact</Link>
-            <CareerCommandButton />
-          </nav>
+          <div className="flex items-center gap-2">
+            <CareerButton variant="primary" size="sm" icon={Download} href={RESUME_PATH} aria-label="Download resume">
+              Resume
+            </CareerButton>
+            <CareerButton
+              variant="secondary"
+              size="sm"
+              icon={menuOpen ? X : Menu}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-menu"
+              onClick={() => setMenuOpen((open) => !open)}
+            >
+              Menu
+            </CareerButton>
+          </div>
         )}
       </div>
+      {landingPage === "career" && variant === "default" && menuOpen ? (
+        <nav
+          id="mobile-menu"
+          aria-label="Menu"
+          className="md:hidden fixed left-0 right-0 top-[77px] z-40 grid grid-cols-2 gap-2 border-b border-border bg-black p-4"
+        >
+          {CAREER_NAV.map((item) => (
+            <CareerButton
+              key={item.href}
+              variant="secondary"
+              icon={item.icon}
+              href={item.href}
+              onClick={() => setMenuOpen(false)}
+            >
+              {item.label}
+            </CareerButton>
+          ))}
+        </nav>
+      ) : null}
       {landingPage === "career" ? <CareerCommand /> : null}
 
       {/* Mobile Floating Footer - hidden on desktop, appears after scrolling past hero, only on landing page, hides when styles section is visible */}

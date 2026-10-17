@@ -67,6 +67,8 @@ export function CareerButton(props: ButtonProps | LinkProps) {
       type={buttonProps.type ?? "button"}
       onClick={buttonProps.onClick}
       aria-label={buttonProps["aria-label"]}
+      aria-expanded={buttonProps["aria-expanded"]}
+      aria-controls={buttonProps["aria-controls"]}
       data-close={buttonProps["data-close"] ? "" : undefined}
       className={classes}
     >

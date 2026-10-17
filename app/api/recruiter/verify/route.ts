@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/supabase/admin"
-import { verifyPassword, verifyEnvPassword, createSessionToken, getSessionFromCookies } from "@/lib/recruiter-auth"
+import { verifyPassword, verifyEnvPassword, isRecruiterConfigured, createSessionToken, getSessionFromCookies } from "@/lib/recruiter-auth"
 import { checkRateLimit, getClientIp } from "@/lib/ratelimit"
 
 export async function POST(request: NextRequest) {
@@ -16,7 +16,25 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { password, name, company, message } = await request.json()
+    if (!isRecruiterConfigured()) {
+      return NextResponse.json(
+        { error: "Recruiter access is not configured.", code: "not_configured" },
+        { status: 503 }
+      )
+    }
+
+    let body: { password?: unknown; name?: unknown; company?: unknown; message?: unknown }
+    try {
+      body = await request.json()
+    } catch {
+      return NextResponse.json({ error: "Invalid request." }, { status: 400 })
+    }
+    const { password, name, company, message } = body as {
+      password: string
+      name: string
+      company?: string
+      message?: string
+    }
 
     if (!password || !name) {
       return NextResponse.json(
@@ -60,8 +78,8 @@ export async function POST(request: NextRequest) {
     if (error) {
       console.error("Error fetching passwords:", error)
       return NextResponse.json(
-        { error: "Internal server error" },
-        { status: 500 }
+        { error: "Recruiter access is unavailable right now. Try again later.", code: "unavailable" },
+        { status: 503 }
       )
     }
 
@@ -127,8 +145,8 @@ export async function POST(request: NextRequest) {
   } catch (err) {
     console.error("Recruiter verify error:", err)
     return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
+      { error: "Recruiter access is unavailable right now. Try again later.", code: "unavailable" },
+      { status: 503 }
     )
   }
 }

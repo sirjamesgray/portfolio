@@ -1,0 +1,154 @@
+.rail {
+  position: relative;
+  margin-top: var(--space-5);
+  padding-left: var(--space-5);
+  border-left: 1px solid rgb(61 214 140 / 0.4);
+}
+
+.item {
+  position: relative;
+  padding-bottom: var(--space-5);
+}
+
+.item:last-child {
+  padding-bottom: 0;
+}
+
+.node {
+  position: absolute;
+  left: calc(-1 * var(--space-5) - 6px);
+  top: 6px;
+  width: 11px;
+  height: 11px;
+  background: #000;
+  border: 2px solid var(--blue);
+}
+
+.item[data-current="true"] .node {
+  background: var(--brand);
+  border-color: var(--brand);
+}
+
+/* A square ring grows from the current node and fades. Only transform and opacity change. */
+.item[data-current="true"] .node::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border: 1px solid var(--brand);
+  animation: ring 2.2s ease-out infinite;
+}
+
+@keyframes ring {
+  from { transform: scale(1); opacity: 0.9; }
+  to { transform: scale(2.6); opacity: 0; }
+}
+
+.head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.logo {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border: var(--line);
+  background: #000;
+  object-fit: contain;
+  padding: 4px;
+}
+
+.company {
+  font-size: var(--type-3);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--foreground);
+}
+
+.context {
+  font-weight: 400;
+  color: var(--muted-foreground);
+}
+
+.now {
+  margin-left: var(--space-2);
+  border: 1px solid var(--brand);
+  padding: 0 6px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--brand);
+  vertical-align: middle;
+}
+
+.role,
+.positions {
+  margin-top: var(--space-1);
+  font-size: var(--type-2);
+  color: var(--muted-foreground);
+}
+
+.positions li span {
+  color: var(--foreground);
+}
+
+.dates {
+  margin-top: var(--space-1);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: var(--type-1);
+  color: var(--blue);
+}
+
+.track {
+  position: relative;
+  margin-top: var(--space-2);
+  height: 6px;
+  width: min(100%, 360px);
+  border: 1px solid rgb(61 214 140 / 0.4);
+  background: #000;
+}
+
+.fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: var(--blue);
+}
+
+.item[data-current="true"] .fill {
+  background: var(--brand);
+}
+
+.highlights {
+  margin-top: var(--space-3);
+  list-style: square;
+  padding-left: var(--space-4);
+  font-size: var(--type-2);
+  line-height: 1.55;
+  color: var(--foreground);
+}
+
+.highlights li + li {
+  margin-top: var(--space-1);
+}
+
+@media (max-width: 480px) {
+  .rail {
+    padding-left: var(--space-4);
+  }
+  .node {
+    left: calc(-1 * var(--space-4) - 6px);
+  }
+  .head {
+    gap: var(--space-2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .item[data-current="true"] .node::after {
+    animation: none;
+    opacity: 0.5;
+    transform: scale(1.8);
+  }
+}

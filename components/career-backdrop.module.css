@@ -5,6 +5,7 @@
   overflow: hidden;
   pointer-events: none;
   background: #000;
+  contain: strict;
 }
 
 .grid {
@@ -71,5 +72,22 @@
   .glow {
     animation: none;
     will-change: auto;
+  }
+}
+
+/* Phones and touch screens get the cheap variant: a static faint grid and scanlines, no moving layers. */
+@media (max-width: 767px), (hover: none) and (pointer: coarse) {
+  .glow {
+    display: none;
+  }
+  .grid {
+    background-size: 48px 48px;
+    opacity: 0.8;
+  }
+}
+
+@media (prefers-reduced-data: reduce) {
+  .glow {
+    display: none;
   }
 }

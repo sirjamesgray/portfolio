@@ -25,7 +25,7 @@ export function AdminLink() {
 
   if (isLoading) {
     return (
-      <span className="text-xs text-muted-foreground">
+      <span className="inline-flex min-h-11 min-w-11 items-center justify-center text-xs text-muted-foreground">
         Admin
       </span>
     );
@@ -34,7 +34,7 @@ export function AdminLink() {
   return (
     <Link
       href={isLoggedIn ? "/dashboard" : "/login"}
-      className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+      className="inline-flex min-h-11 min-w-11 items-center justify-center text-xs text-muted-foreground hover:text-foreground transition-colors"
     >
       {isLoggedIn ? "Dashboard" : "Admin"}
     </Link>

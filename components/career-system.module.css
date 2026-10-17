@@ -12,7 +12,7 @@
 }
 
 .title {
-  font-size: var(--type-4);
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
   line-height: 1.2;
   font-weight: 600;
   letter-spacing: -0.02em;
@@ -91,6 +91,7 @@
 }
 
 .btn {
+  max-width: 100%;
   display: inline-flex;
   align-items: center;
   min-height: 44px;

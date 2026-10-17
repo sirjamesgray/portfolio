@@ -19,7 +19,10 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/recruiters/:path*",
-        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" }],
+        headers: [
+          { key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" },
+          { key: "Cache-Control", value: "private, no-store, max-age=0" },
+        ],
       },
       {
         source: "/api/recruiter/:path*",

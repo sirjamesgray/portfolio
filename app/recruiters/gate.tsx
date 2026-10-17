@@ -8,7 +8,7 @@ const field =
   "h-11 w-full border border-brand/40 bg-black px-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-brand focus:outline-none";
 
 /** Password form. The server checks the password and sets an httpOnly cookie. */
-export function RecruiterGate() {
+export function RecruiterGate({ configured = true }: { configured?: boolean }) {
   const router = useRouter();
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -63,10 +63,15 @@ export function RecruiterGate() {
           {error}
         </p>
       ) : null}
+      {!configured ? (
+        <p role="status" className="text-sm text-blue">
+          Recruiter access is not configured on this deployment.
+        </p>
+      ) : null}
       <button
         type="submit"
         disabled={busy}
-        className="h-11 w-full border border-brand bg-brand px-4 text-sm font-medium text-black hover:bg-[#30a46c] disabled:opacity-60"
+        className="min-h-11 w-full border border-brand bg-brand px-4 text-sm font-medium text-black hover:bg-[#30a46c] disabled:opacity-60"
       >
         {busy ? "Checking…" : "Unlock"}
       </button>

@@ -3,6 +3,11 @@
 
 import crypto from "crypto"
 
+/** True when the session secret is set. The recruiter area stays locked when it is not. */
+export function isRecruiterConfigured(): boolean {
+  return (process.env.RECRUITER_SESSION_SECRET ?? "").length >= 16
+}
+
 function getSessionSecret(): string {
   const secret = process.env.RECRUITER_SESSION_SECRET ?? "";
   if (!secret) {

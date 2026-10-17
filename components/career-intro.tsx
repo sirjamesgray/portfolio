@@ -80,7 +80,7 @@ export function BootSequence() {
       <form
         className={
           promptOpen
-            ? "flex items-center gap-2 border-t border-border px-3 py-1.5 font-mono text-[11px]"
+            ? "flex min-h-11 items-center gap-2 border-t border-border px-3 font-mono text-[11px]"
             : styles.promptIdle
         }
         onSubmit={(event) => event.preventDefault()}
@@ -95,7 +95,7 @@ export function BootSequence() {
           autoCapitalize="none"
           autoCorrect="off"
           spellCheck={false}
-          className={`${styles.phosphor} min-w-0 flex-1 bg-transparent outline-none`}
+          className={`${styles.phosphor} min-h-11 min-w-0 flex-1 bg-transparent outline-none`}
         />
         {promptOpen ? <span className={styles.caret} aria-hidden /> : null}
       </form>

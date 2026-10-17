@@ -62,12 +62,12 @@ export function Footer() {
           {/* Pages */}
           <div>
             <h2 className="text-sm font-semibold text-foreground">Pages</h2>
-            <ul className="mt-4 space-y-3">
+            <ul className="mt-2 space-y-0">
               {navigation.main.map((item) => (
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    className="inline-flex min-h-11 min-w-11 items-center text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {item.name}
                   </Link>
@@ -81,12 +81,12 @@ export function Footer() {
             {/* Resources */}
             <div>
               <h2 className="text-sm font-semibold text-foreground">Resources</h2>
-              <ul className="mt-4 space-y-3">
+              <ul className="mt-2 space-y-0">
                 {navigation.resources.map((item) => (
                   <li key={item.name}>
                     <Link
                       href={item.href}
-                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                      className="inline-flex min-h-11 min-w-11 items-center text-sm text-muted-foreground hover:text-foreground transition-colors"
                     >
                       {item.name}
                     </Link>
@@ -98,14 +98,14 @@ export function Footer() {
             {/* Connect - under Resources on mobile */}
             <div className="md:hidden">
               <h2 className="text-sm font-semibold text-foreground">Connect</h2>
-              <ul className="mt-4 space-y-3">
+              <ul className="mt-2 space-y-0">
                 {navigation.social.map((item) => (
                   <li key={item.name}>
                     <a
                       href={item.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                      className="flex min-h-11 items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
                     >
                       {item.icon}
                       {item.name}
@@ -119,14 +119,14 @@ export function Footer() {
           {/* Social - separate column on desktop only */}
           <div className="hidden md:block">
             <h2 className="text-sm font-semibold text-foreground">Connect</h2>
-            <ul className="mt-4 space-y-3">
+            <ul className="mt-2 space-y-0">
               {navigation.social.map((item) => (
                 <li key={item.name}>
                   <a
                     href={item.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    className="flex min-h-11 items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {item.icon}
                     {item.name}

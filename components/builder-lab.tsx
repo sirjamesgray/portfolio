@@ -44,13 +44,13 @@ function TogglesCard() {
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap gap-1.5 font-mono text-[11px]">
-        <button type="button" className="rounded border border-border px-2 py-1" onClick={() => setDense((value) => !value)}>
+        <button type="button" className="rounded border border-border min-h-11 px-3 py-1" onClick={() => setDense((value) => !value)}>
           density {dense ? "tight" : "roomy"}
         </button>
-        <button type="button" className="rounded border border-border px-2 py-1" onClick={() => setMotion((value) => !value)}>
+        <button type="button" className="rounded border border-border min-h-11 px-3 py-1" onClick={() => setMotion((value) => !value)}>
           motion {motion ? "on" : "off"}
         </button>
-        <button type="button" className="rounded border border-border px-2 py-1" onClick={() => setAccent((value) => (value + 1) % ACCENTS.length)}>
+        <button type="button" className="rounded border border-border min-h-11 px-3 py-1" onClick={() => setAccent((value) => (value + 1) % ACCENTS.length)}>
           accent {color.name}
         </button>
       </div>
@@ -61,7 +61,7 @@ function TogglesCard() {
           <p className="text-xs text-[#b4b4b4]">A social wiki where every page is a fundraiser.</p>
           <button
             type="button"
-            className={`rounded-md px-3 py-1.5 text-xs font-medium text-[#0e1512] ${motion ? styles.pulse : ""}`}
+            className={`rounded-md min-h-11 px-4 py-1.5 text-xs font-medium text-[#0e1512] ${motion ? styles.pulse : ""}`}
             style={{ background: color.value }}
           >
             Write
@@ -165,7 +165,7 @@ function SpringCard() {
           <button
             key={item.name}
             type="button"
-            className={`rounded border px-2 py-1 font-mono text-[11px] ${index === ease ? "border-foreground" : "border-border"}`}
+            className={`rounded border min-h-11 px-3 py-1 font-mono text-[11px] ${index === ease ? "border-foreground" : "border-border"}`}
             onClick={() => setEase(index)}
           >
             {item.name}
@@ -180,7 +180,7 @@ function SpringCard() {
           max={92}
           value={spot}
           onChange={(event) => setSpot(Number(event.target.value))}
-          className="mt-1 block w-full"
+          className="mt-1 block h-11 w-full"
         />
       </label>
       <svg viewBox="0 0 100 48" className="h-16 w-full text-foreground" aria-hidden>
@@ -220,7 +220,7 @@ function SwatchCard() {
           key={swatch.name}
           type="button"
           onClick={() => copy(swatch.value)}
-          className="flex w-full items-center gap-3 rounded-md border border-border px-2 py-2 text-left"
+          className="flex w-full items-center gap-3 min-h-11 rounded-md border border-border px-2 py-2 text-left"
         >
           <span className="size-8 shrink-0 rounded-md border border-border" style={{ background: swatch.value }} />
           <span className="min-w-0">

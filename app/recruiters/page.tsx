@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { SiteHeader } from "@/components/site-header";
 import { Footer } from "@/components/footer";
+import { CareerTimeline } from "@/components/career-timeline";
 import { CareerBackdrop } from "@/components/career-backdrop";
 import { SectionHead } from "@/components/section-head";
 import { CareerButton } from "@/components/career-button";
@@ -8,17 +9,21 @@ import { Download, Mail } from "lucide-react";
 import { RESUME_DATA } from "@/lib/resume-data";
 import { RECRUITER_PROJECTS } from "@/lib/recruiter-projects";
 import { RESUME_PATH, SITE_CONFIG } from "@/lib/constants";
-import { RECRUITER_COOKIE, verifySessionToken } from "@/lib/recruiter-auth";
+import { RECRUITER_COOKIE, verifySessionToken, isRecruiterConfigured } from "@/lib/recruiter-auth";
 import { RecruiterGate, RecruiterLock } from "./gate";
 import styles from "@/components/career-system.module.css";
 
 // The page reads the cookie, so it is never cached or prerendered.
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
 
+// Fail closed. Any error, or a missing secret, returns null and the page shows the lock.
 async function getSession() {
-  const token = (await cookies()).get(RECRUITER_COOKIE)?.value;
-  if (!token) return null;
   try {
+    if (!isRecruiterConfigured()) return null;
+    const token = (await cookies()).get(RECRUITER_COOKIE)?.value;
+    if (!token) return null;
     return verifySessionToken(token);
   } catch {
     return null;
@@ -27,6 +32,7 @@ async function getSession() {
 
 export default async function RecruitersPage() {
   const session = await getSession();
+  const configured = isRecruiterConfigured();
 
   return (
     <div className="relative min-h-screen bg-black text-foreground">
@@ -39,7 +45,7 @@ export default async function RecruitersPage() {
             <p className={`${styles.body} mt-4 max-w-xl`}>
               Fuller work history and project notes. Enter the password I sent you.
             </p>
-            <RecruiterGate />
+            <RecruiterGate configured={configured} />
           </>
         ) : (
           <Unlocked name={session.visitor_name} />
@@ -95,39 +101,13 @@ function Unlocked({ name }: { name: string }) {
 
       <section className="mt-12">
         <SectionHead index="02" title="Full work history" />
-        <ol className="mt-6 space-y-6">
-          {RESUME_DATA.experience.map((job) => (
-            <li key={job.company} className="border border-brand/40 bg-black p-4">
-              <p className="font-medium text-foreground">
-                {job.company}
-                {job.context ? <span className="font-normal text-muted-foreground"> · {job.context}</span> : null}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                {job.role} · {job.location}
-              </p>
-              <p className="font-mono text-xs text-blue">
-                {job.startDate} – {job.endDate}
-              </p>
-              {"positions" in job && job.positions ? (
-                <ul className="mt-2 space-y-1">
-                  {job.positions.map((p) => (
-                    <li key={p.title} className="text-sm text-muted-foreground">
-                      {p.title} <span className="text-foreground/70">· {p.startDate}–{p.endDate}</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
-              <ul className="mt-3 list-disc space-y-1 pl-5 text-sm leading-relaxed text-foreground">
-                {job.highlights.map((h) => (
-                  <li key={h}>{h}</li>
-                ))}
-              </ul>
-              <p className="mt-3 font-mono text-[11px] text-muted-foreground">
-                Reference contact: TODO (Jamie to confirm)
-              </p>
-            </li>
-          ))}
-        </ol>
+        <CareerTimeline
+          jobs={RESUME_DATA.experience}
+          detailed
+          extra={() => (
+            <p className="mt-3 font-mono text-[11px] text-muted-foreground">Reference contact: TODO (Jamie to confirm)</p>
+          )}
+        />
       </section>
 
       <section className="mt-12">
