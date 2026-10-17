@@ -23,7 +23,21 @@ export function hashPassword(password: string): { hash: string; salt: string } {
 
 export function verifyPassword(password: string, hash: string, salt: string): boolean {
   const derived = crypto.pbkdf2Sync(password, salt, 100000, 64, "sha512").toString("hex")
-  return derived === hash
+  const a = Buffer.from(derived, "hex")
+  const b = Buffer.from(hash, "hex")
+  return a.length === b.length && crypto.timingSafeEqual(a, b)
+}
+
+/**
+ * Optional shared password from the RECRUITER_PASSWORD environment variable.
+ * The compare uses SHA-256 digests, so the length never leaks and the compare takes constant time.
+ */
+export function verifyEnvPassword(password: string): boolean {
+  const expected = process.env.RECRUITER_PASSWORD ?? ""
+  if (!expected) return false
+  const a = crypto.createHash("sha256").update(password).digest()
+  const b = crypto.createHash("sha256").update(expected).digest()
+  return crypto.timingSafeEqual(a, b)
 }
 
 // --- Session Token ---
@@ -77,7 +91,7 @@ export function getSessionFromCookies(
   if (!cookieHeader) return null
 
   const cookies = Object.fromEntries(
-    cookieHeader.split("; ").map((c) => {
+    cookieHeader.split(/;\s*/).map((c) => {
       const eq = c.indexOf("=")
       return [c.slice(0, eq), c.slice(eq + 1)]
     })
@@ -88,3 +102,5 @@ export function getSessionFromCookies(
 
   return verifySessionToken(token)
 }
+
+export const RECRUITER_COOKIE = "recruiter_session"

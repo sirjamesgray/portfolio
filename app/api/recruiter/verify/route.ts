@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/supabase/admin"
-import { verifyPassword, createSessionToken, getSessionFromCookies } from "@/lib/recruiter-auth"
+import { verifyPassword, verifyEnvPassword, createSessionToken, getSessionFromCookies } from "@/lib/recruiter-auth"
 import { checkRateLimit, getClientIp } from "@/lib/ratelimit"
 
 export async function POST(request: NextRequest) {
@@ -23,6 +23,30 @@ export async function POST(request: NextRequest) {
         { error: "Password and name are required" },
         { status: 400 }
       )
+    }
+
+    if (typeof password !== "string" || password.length > 200) {
+      return NextResponse.json({ error: "Invalid password" }, { status: 401 })
+    }
+
+    // Optional env password (RECRUITER_PASSWORD). Used first, with no database call.
+    if (verifyEnvPassword(password)) {
+      const token = createSessionToken({
+        password_id: "env",
+        password_label: "Shared link",
+        visitor_name: String(name).slice(0, 120),
+        visitor_company: String(company || "").slice(0, 120),
+        visitor_message: "",
+      })
+      const res = NextResponse.json({ success: true })
+      res.cookies.set("recruiter_session", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        path: "/",
+        maxAge: 60 * 60 * 24,
+      })
+      return res
     }
 
     const adminClient = createAdminClient()
@@ -94,7 +118,7 @@ export async function POST(request: NextRequest) {
     response.cookies.set("recruiter_session", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      sameSite: "strict",
       path: "/",
       maxAge: 60 * 60 * 24, // 24 hours
     })

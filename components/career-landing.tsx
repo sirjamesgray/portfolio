@@ -15,6 +15,7 @@ import { EXPERIENCE } from "@/lib/constants";
 import { RESUME_DATA } from "@/lib/resume-data";
 import { PUBLIC_PRODUCTS, TURBO } from "@/lib/public-work";
 import { workIn } from "@/lib/work-catalog";
+import { CareerBackdrop } from "@/components/career-backdrop";
 import styles from "./career-landing.module.css";
 
 function logoFor(company: string) {
@@ -25,7 +26,7 @@ function logoFor(company: string) {
 export function WorkAndDesign() {
   return (
     <>
-      <div id="work" className="scroll-mt-28 border-t border-border bg-black py-12">
+      <div id="work" className="scroll-mt-28 border-t border-border py-12">
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
           <SectionHead index="01" title="Work" />
           <p className="mt-4 max-w-xl text-base leading-relaxed text-foreground">
@@ -34,7 +35,7 @@ export function WorkAndDesign() {
           <WorkGrid entries={workIn("work")} />
         </div>
       </div>
-      <section id="turbo" className="scroll-mt-28 border-t border-border bg-black py-12">
+      <section id="turbo" className="scroll-mt-28 border-t border-border py-12">
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
           <div className="mb-4 flex items-center gap-3">
             <Image src={TURBO.logo} alt="" width={36} height={36} className="size-9 border border-border bg-black object-contain p-1" />
@@ -54,12 +55,12 @@ export function WorkAndDesign() {
 
 export function CareerLanding() {
   return (
-    <div className="min-h-screen overflow-x-clip bg-background text-foreground">
+    <div className="relative min-h-screen overflow-x-clip bg-black text-foreground">
+      <CareerBackdrop />
       <SiteHeader landingPage="career" customerDashboardEnabled={false} />
       <WorkFocusRestore />
-      <main>
-        <section className={`${styles.hero} relative flex items-start overflow-hidden bg-black pt-20 sm:pt-24`}>
-          <div className={`${styles.grid} pointer-events-none absolute inset-0`} aria-hidden />
+      <main className="relative z-10">
+        <section className={`${styles.hero} relative flex items-start overflow-hidden pt-20 sm:pt-24`}>
           <div className="relative mx-auto grid w-full max-w-6xl items-center gap-6 px-4 py-4 sm:px-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
             <div className="min-w-0">
               <ScrambleName className={`${styles.name} text-foreground`} />
@@ -100,7 +101,7 @@ export function CareerLanding() {
 
         <WorkAndDesign />
 
-        <section id="lab" className="scroll-mt-28 border-t border-border bg-black py-12">
+        <section id="lab" className="scroll-mt-28 border-t border-border py-12">
           <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
             <SectionHead index="03" title="Builder log" />
             <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted-foreground">
@@ -110,7 +111,7 @@ export function CareerLanding() {
           </div>
         </section>
 
-        <section id="experience" className="scroll-mt-28 border-t border-border bg-black py-12">
+        <section id="experience" className="scroll-mt-28 border-t border-border py-12">
           <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
             <div className="flex items-end justify-between gap-4">
               <SectionHead index="04" title="Experience" />
@@ -169,7 +170,7 @@ export function CareerLanding() {
           </div>
         </section>
 
-        <section id="contact" className="scroll-mt-28 border-t border-border bg-black py-12">
+        <section id="contact" className="scroll-mt-28 border-t border-border py-12">
           <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
             <SectionHead index="05" title="Contact" />
             <div className="mt-4">
@@ -178,7 +179,7 @@ export function CareerLanding() {
           </div>
         </section>
       </main>
-      <Footer />
+      <div className="relative z-10"><Footer /></div>
     </div>
   );
 }

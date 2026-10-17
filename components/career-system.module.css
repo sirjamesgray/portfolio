@@ -43,6 +43,7 @@
 }
 
 .card {
+  transition: border-color 0.2s linear;
   display: flex;
   height: 100%;
   flex-direction: column;
@@ -231,5 +232,30 @@
 @media (min-width: 1024px) {
   .glance {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.card:hover {
+  border-color: var(--blue);
+}
+
+.index {
+  border: 1px solid rgb(61 214 140 / 0.4);
+  padding: 0 var(--space-2);
+}
+
+.title {
+  border-bottom: 2px solid var(--brand);
+  padding-bottom: var(--space-1);
+}
+
+.tag:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
   }
 }

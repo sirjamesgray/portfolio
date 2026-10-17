@@ -1,0 +1,75 @@
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: #000;
+}
+
+.grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgb(61 214 140 / 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(112 184 255 / 0.05) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+/* A larger layer of brighter grid lines. A radial mask shows one soft pool. The layer drifts slowly. */
+.glow {
+  position: absolute;
+  width: 140%;
+  height: 140%;
+  left: -20%;
+  top: -20%;
+  background-size: 64px 64px;
+  will-change: transform;
+}
+
+.glowGreen {
+  background-image:
+    linear-gradient(to right, rgb(61 214 140 / 0.38) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(61 214 140 / 0.38) 1px, transparent 1px);
+  -webkit-mask-image: radial-gradient(circle at 30% 35%, #000 0, transparent 28%);
+  mask-image: radial-gradient(circle at 30% 35%, #000 0, transparent 28%);
+  animation: drift-a 48s ease-in-out infinite alternate;
+}
+
+.glowBlue {
+  background-image:
+    linear-gradient(to right, rgb(112 184 255 / 0.34) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(112 184 255 / 0.34) 1px, transparent 1px);
+  -webkit-mask-image: radial-gradient(circle at 72% 62%, #000 0, transparent 26%);
+  mask-image: radial-gradient(circle at 72% 62%, #000 0, transparent 26%);
+  animation: drift-b 64s ease-in-out infinite alternate;
+}
+
+.scan {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgb(61 214 140 / 0.035) 0,
+    rgb(61 214 140 / 0.035) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+}
+
+@keyframes drift-a {
+  from { transform: translate(-6%, -4%); }
+  to { transform: translate(18%, 14%); }
+}
+
+@keyframes drift-b {
+  from { transform: translate(8%, 10%); }
+  to { transform: translate(-16%, -12%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glow {
+    animation: none;
+    will-change: auto;
+  }
+}

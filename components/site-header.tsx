@@ -105,7 +105,6 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
           {landingPage === "career" ? (
             <nav aria-label="Primary" className="flex items-center gap-4 text-sm text-muted-foreground">
               <Link href="/#work" className="inline-flex h-11 items-center hover:text-brand">Work</Link>
-              <Link href="/#turbo" className="inline-flex h-11 items-center hover:text-brand">Turbo</Link>
               <Link href="/#lab" className="inline-flex h-11 items-center hover:text-brand">Lab</Link>
               <Link href="/experience" className="inline-flex h-11 items-center hover:text-brand">Experience</Link>
               <Link href="/for-recruiters" className="inline-flex h-11 items-center hover:text-brand">Recruiters</Link>
@@ -273,7 +272,6 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
         {landingPage === "career" && variant === "default" && (
           <nav aria-label="Primary" className="flex min-w-0 flex-1 items-center justify-end gap-2 text-[12px] text-muted-foreground">
             <Link href="/#work" className="inline-flex h-11 shrink-0 items-center hover:text-brand">Work</Link>
-            <Link href="/#turbo" className="inline-flex h-11 shrink-0 items-center hover:text-brand">Turbo</Link>
             <Link href="/#lab" className="inline-flex h-11 shrink-0 items-center hover:text-brand">Lab</Link>
             <Link href="/#contact" className="inline-flex h-11 shrink-0 items-center hover:text-brand">Contact</Link>
             <CareerCommandButton />
