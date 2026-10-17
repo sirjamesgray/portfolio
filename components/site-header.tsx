@@ -7,6 +7,7 @@ import { DashboardButton } from "@/components/ui/button";
 import { LandingButton } from "@/components/ui/landing-button";
 import { ScrollAwareButton } from "@/components/ui/scroll-aware-button";
 import { User, ArrowLeft, LogOut, Briefcase, FlaskConical, History, Lock, Mail, Download, Menu, X } from "lucide-react";
+import anim from "@/components/motion.module.css";
 import { CareerButton } from "@/components/career-button";
 import { RESUME_PATH } from "@/lib/constants";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
@@ -279,7 +280,7 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
             {backLabel}
           </Link>
         ) : (
-          <Link href="/" aria-label="Jamie Gray" className="flex shrink-0 items-center justify-center h-11 w-11 -ml-1.5 active:opacity-70 transition-opacity">
+          <Link href="/" aria-label="Jamie Gray" className="flex shrink-0 items-center justify-center h-11 w-11 -ml-1.5 active:opacity-70 transition-opacity motion-reduce:transition-none">
             <Logo3DStatic size="sm" />
           </Link>
         )}
@@ -301,11 +302,13 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
           </div>
         )}
       </div>
-      {landingPage === "career" && variant === "default" && menuOpen ? (
+      {landingPage === "career" && variant === "default" ? (
         <nav
           id="mobile-menu"
           aria-label="Menu"
-          className="md:hidden fixed left-0 right-0 top-[77px] z-40 grid grid-cols-2 gap-2 border-b border-border bg-black p-4"
+          className={`${anim.menu} md:hidden fixed left-0 right-0 top-[77px] z-40 grid grid-cols-2 gap-2 border-b border-border bg-black p-4`}
+          data-open={menuOpen ? "true" : "false"}
+          inert={!menuOpen}
         >
           {CAREER_NAV.map((item) => (
             <CareerButton

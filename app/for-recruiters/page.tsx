@@ -1,5 +1,4 @@
-import { SiteHeader } from "@/components/site-header";
-import { Footer } from "@/components/footer";
+import { CareerShell } from "@/components/career-shell";
 import { AtAGlance, HireCta } from "@/components/hire-cta";
 import { SectionHead } from "@/components/section-head";
 import { RESUME_PROOF } from "@/lib/resume-data";
@@ -7,9 +6,7 @@ import styles from "@/components/career-system.module.css";
 
 export default function ForRecruitersPage() {
   return (
-    <div className="min-h-screen bg-black text-foreground">
-      <SiteHeader landingPage="career" customerDashboardEnabled={false} />
-      <main className="mx-auto w-full max-w-3xl px-4 pb-12 pt-24 sm:px-6">
+    <CareerShell width="max-w-3xl">
         <SectionHead index="01" title="For recruiters" as="h1" />
         <p className={`${styles.body} mt-4 max-w-xl text-foreground`}>
           Full Stack Developer, previously a Product Designer. I design in code and ship with AI agents.
@@ -27,8 +24,6 @@ export default function ForRecruitersPage() {
         <div className="mt-6">
           <HireCta />
         </div>
-      </main>
-      <Footer />
-    </div>
+    </CareerShell>
   );
 }

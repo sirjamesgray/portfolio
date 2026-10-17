@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SiteHeader } from "@/components/site-header";
-import { Footer } from "@/components/footer";
+import { CareerShell } from "@/components/career-shell";
 import { WorkAndDesign } from "@/components/career-landing";
 import { careerMetadata } from "@/lib/career-meta";
 
@@ -14,9 +13,7 @@ export const metadata: Metadata = careerMetadata({
 
 export default function ProjectsPage() {
   return (
-    <div className="min-h-screen overflow-x-clip bg-background text-foreground">
-      <SiteHeader landingPage="career" customerDashboardEnabled={false} />
-      <main className="mx-auto w-full max-w-6xl px-4 pb-16 pt-24 sm:px-6">
+    <CareerShell>
         <Link href="/" className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline">
           Back to home
         </Link>
@@ -29,8 +26,6 @@ export default function ProjectsPage() {
         <div className="mt-12">
           <WorkAndDesign />
         </div>
-      </main>
-      <Footer />
-    </div>
+    </CareerShell>
   );
 }

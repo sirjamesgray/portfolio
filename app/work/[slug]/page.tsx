@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Footer } from "@/components/footer";
-import { SiteHeader } from "@/components/site-header";
+import { CareerShell } from "@/components/career-shell";
 import { WorkDetail } from "@/components/work-detail";
 import { WorkPageChrome } from "@/components/work-modal";
 import { getWork, WORK_ENTRIES } from "@/lib/work-catalog";
@@ -43,13 +42,9 @@ export default async function WorkPage({ params }: { params: Promise<Params> }) 
   if (!work) notFound();
 
   return (
-    <div className="min-h-screen bg-black text-foreground">
-      <SiteHeader landingPage="career" customerDashboardEnabled={false} />
-      <main className="mx-auto w-full max-w-6xl px-4 pb-16 pt-24 sm:px-6">
-        <WorkPageChrome slug={slug} />
-        <WorkDetail slug={slug} />
-      </main>
-      <Footer />
-    </div>
+    <CareerShell>
+      <WorkPageChrome slug={slug} />
+      <WorkDetail slug={slug} />
+    </CareerShell>
   );
 }

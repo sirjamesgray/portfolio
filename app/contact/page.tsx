@@ -1,7 +1,8 @@
 "use client";
 
 import { FileText, Mail, Linkedin } from "lucide-react";
-import { SiteHeader } from "@/components/site-header";
+import { SectionHead } from "@/components/section-head";
+import { CareerShell } from "@/components/career-shell";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { RESUME_PATH, SITE_CONFIG, SOCIALS } from "@/lib/constants";
 import { Footer } from "@/components/footer";
@@ -53,17 +54,14 @@ const contactOptions = [
 
 export default function ContactPage() {
   return (
-    <LandingBackground className="flex flex-col">
-      <SiteHeader landingPage="product-engineer" />
-      <main className="flex-1 pt-24 pb-16">
-        <div className="container max-w-3xl mx-auto px-4">
+    <CareerShell width="max-w-3xl">
+      <div>
+        <div className="mx-auto max-w-3xl">
           <BlurFade delay={0.1}>
-            <div className="text-center mb-12">
-              <h1 className="text-4xl font-bold text-foreground mb-4">
-                I&apos;d love to hear from you!
-              </h1>
-              <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-                Fort Worth, remote or DFW. Email or LinkedIn.
+            <div className="mb-8">
+              <SectionHead index="05" title="Contact" as="h1" />
+              <p className="mt-4 max-w-xl text-base text-muted-foreground">
+                I&apos;d love to hear from you. Fort Worth, remote or DFW. Email or LinkedIn.
               </p>
             </div>
           </BlurFade>
@@ -88,9 +86,7 @@ export default function ContactPage() {
             </p>
           </BlurFade>
         </div>
-      </main>
-
-      <Footer />
-    </LandingBackground>
+      </div>
+    </CareerShell>
   );
 }

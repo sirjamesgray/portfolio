@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import styles from "./career-system.module.css";
@@ -47,6 +48,20 @@ export function CareerButton(props: ButtonProps | LinkProps) {
   );
 
   if ("href" in props && props.href) {
+    // Internal pages use client navigation, so route transitions run. Files and other hosts use a plain link.
+    const internal = props.href.startsWith("/") && !props.href.startsWith("/documents");
+    if (internal) {
+      return (
+        <Link
+          href={props.href}
+          aria-label={props["aria-label"]}
+          onClick={props.onClick}
+          className={classes}
+        >
+          {content}
+        </Link>
+      );
+    }
     return (
       <a
         href={props.href}

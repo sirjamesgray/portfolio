@@ -1,0 +1,82 @@
+/* Reveal. Opacity and transform only. */
+.hidden {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.shown {
+  opacity: 1;
+  transform: none;
+  transition: opacity 240ms ease-out, transform 240ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hidden,
+  .shown {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Mobile menu. Stays mounted. Opacity and transform change. */
+.menu {
+  opacity: 0;
+  transform: translateY(-8px);
+  visibility: hidden;
+  transition: opacity 200ms ease-out, transform 200ms ease-out, visibility 0s linear 200ms;
+}
+
+.menu[data-open="true"] {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+  transition: opacity 200ms ease-out, transform 200ms ease-out, visibility 0s;
+}
+
+/* Work modal. */
+.overlay {
+  animation: overlay-in 160ms ease-out both;
+}
+
+.panel {
+  animation: panel-in 220ms ease-out both;
+}
+
+.overlay[data-closing="true"] {
+  opacity: 0;
+  transition: opacity 150ms ease-out;
+}
+
+.overlay[data-closing="true"] .panel {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 150ms ease-out, transform 150ms ease-out;
+}
+
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes panel-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu,
+  .menu[data-open="true"] {
+    transform: none;
+    transition: opacity 0s, visibility 0s;
+  }
+  .overlay,
+  .panel {
+    animation: none;
+  }
+  .overlay[data-closing="true"],
+  .overlay[data-closing="true"] .panel {
+    transition: none;
+    transform: none;
+  }
+}

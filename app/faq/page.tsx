@@ -3,7 +3,8 @@ import Link from "next/link";
 import { ArrowRight, ArrowLeft } from "lucide-react";
 import { LandingButton } from "@/components/ui/landing-button";
 import { BlurFade } from "@/components/ui/blur-fade";
-import { SiteHeader } from "@/components/site-header";
+import { SectionHead } from "@/components/section-head";
+import { CareerShell } from "@/components/career-shell";
 import { FAQAccordion } from "@/components/faq-accordion";
 import { faqs } from "@/lib/faq-data";
 import { CTA_CONFIG } from "@/lib/constants";
@@ -23,11 +24,9 @@ export default async function FAQPage() {
   const cta = dashboardEnabled ? CTA_CONFIG.dashboardEnabled : CTA_CONFIG.dashboardDisabled;
 
   return (
-    <LandingBackground className="flex flex-col">
-      <SiteHeader customerDashboardEnabled={dashboardEnabled} />
-
-      <main className="flex-1 pt-20 pb-16">
-        <div className="mx-auto max-w-3xl px-6">
+    <CareerShell width="max-w-4xl">
+      <div>
+        <div className="mx-auto max-w-3xl">
           <BlurFade delay={0.1}>
             <Link
               href="/"
@@ -40,13 +39,9 @@ export default async function FAQPage() {
 
           {/* Header */}
           <BlurFade delay={0.15}>
-            <div className="text-center mb-12">
-              <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-                Frequently Asked Questions
-              </h1>
-              <p className="text-xl text-muted-foreground">
-                Everything you need to know about working together.
-              </p>
+            <div className="mb-8">
+              <SectionHead index="06" title="FAQ" as="h1" />
+              <p className="mt-4 max-w-xl text-base text-muted-foreground">Everything you need to know about working together.</p>
             </div>
           </BlurFade>
 
@@ -81,9 +76,7 @@ export default async function FAQPage() {
             </div>
           </BlurFade>
         </div>
-      </main>
-
-      <Footer />
-    </LandingBackground>
+      </div>
+    </CareerShell>
   );
 }

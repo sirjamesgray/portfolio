@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import anim from "@/components/motion.module.css";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, X } from "lucide-react";
 import { CareerButton } from "@/components/career-button";
@@ -23,7 +24,16 @@ export function WorkModal({
   const router = useRouter();
   const panel = useRef<HTMLDivElement>(null);
 
-  const close = () => router.back();
+  const [closing, setClosing] = useState(false);
+
+  const close = () => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      router.back();
+      return;
+    }
+    setClosing(true);
+    window.setTimeout(() => router.back(), 150);
+  };
 
   useEffect(() => {
     const previous = document.body.style.overflow;
@@ -33,7 +43,7 @@ export function WorkModal({
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.preventDefault();
-        router.back();
+        close();
         return;
       }
       if (event.key !== "Tab" || !panel.current) return;
@@ -56,16 +66,17 @@ export function WorkModal({
       document.removeEventListener("keydown", onKey);
       document.getElementById(`work-card-${slug}`)?.focus();
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router, slug]);
 
   return (
-    <div className="fixed inset-0 z-[60] bg-black/80" onClick={close}>
+    <div className={`${anim.overlay} fixed inset-0 z-[60] bg-black/80`} data-closing={closing ? "true" : "false"} onClick={close}>
       <div
         ref={panel}
         role="dialog"
         aria-modal="true"
         aria-labelledby={`work-dialog-${slug}`}
-        className="absolute inset-3 flex flex-col border border-[rgb(61_214_140/0.4)] bg-black sm:inset-6 lg:inset-10"
+        className={`${anim.panel} absolute inset-3 flex flex-col border border-[rgb(61_214_140/0.4)] bg-black sm:inset-6 lg:inset-10`}
         onClick={(event) => event.stopPropagation()}
       >
         <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3">

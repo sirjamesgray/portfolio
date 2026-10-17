@@ -15,6 +15,7 @@ import { EXPERIENCE } from "@/lib/constants";
 import { RESUME_DATA } from "@/lib/resume-data";
 import { PUBLIC_PRODUCTS, TURBO } from "@/lib/public-work";
 import { workIn } from "@/lib/work-catalog";
+import { Reveal } from "@/components/reveal";
 import { CareerTimeline } from "@/components/career-timeline";
 import { CareerBackdrop } from "@/components/career-backdrop";
 import styles from "./career-landing.module.css";
@@ -27,7 +28,7 @@ function logoFor(company: string) {
 export function WorkAndDesign() {
   return (
     <>
-      <div id="work" className="scroll-mt-28 border-t border-border py-12 md:py-20">
+      <Reveal id="work" className="scroll-mt-28 border-t border-border py-12 md:py-20">
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
           <SectionHead index="01" title="Work" />
           <p className="mt-4 max-w-xl text-base leading-relaxed text-foreground">
@@ -35,8 +36,8 @@ export function WorkAndDesign() {
           </p>
           <WorkGrid entries={workIn("work")} />
         </div>
-      </div>
-      <section id="turbo" className="scroll-mt-28 border-t border-border py-12 md:py-20">
+      </Reveal>
+      <Reveal as="section" id="turbo" className="scroll-mt-28 border-t border-border py-12 md:py-20">
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
           <div className="mb-4 flex items-center gap-3">
             <Image src={TURBO.logo} alt="" width={36} height={36} className="size-9 border border-border bg-black object-contain p-1" />
@@ -49,7 +50,7 @@ export function WorkAndDesign() {
           <p className="mt-3 font-mono text-xs text-muted-foreground">{TURBO.tools}</p>
           <WorkGrid entries={workIn("turbo")} />
         </div>
-      </section>
+      </Reveal>
     </>
   );
 }
@@ -106,7 +107,7 @@ export function CareerLanding() {
 
         <WorkAndDesign />
 
-        <section id="lab" className="scroll-mt-28 border-t border-border py-12 md:py-20">
+        <Reveal as="section" id="lab" className="scroll-mt-28 border-t border-border py-12 md:py-20">
           <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
             <SectionHead index="03" title="Builder log" />
             <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted-foreground">
@@ -114,9 +115,9 @@ export function CareerLanding() {
             </p>
             <BuilderLab />
           </div>
-        </section>
+        </Reveal>
 
-        <section id="experience" className="scroll-mt-28 border-t border-border py-12 md:py-20">
+        <Reveal as="section" id="experience" className="scroll-mt-28 border-t border-border py-12 md:py-20">
           <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <SectionHead index="04" title="Experience" />
@@ -142,16 +143,16 @@ export function CareerLanding() {
               }
             />
           </div>
-        </section>
+        </Reveal>
 
-        <section id="contact" className="scroll-mt-28 border-t border-border py-12 md:py-20">
+        <Reveal as="section" id="contact" className="scroll-mt-28 border-t border-border py-12 md:py-20">
           <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
             <SectionHead index="05" title="Contact" />
             <div className="mt-4">
               <HireCta />
             </div>
           </div>
-        </section>
+        </Reveal>
       </main>
       <div className="relative z-10"><Footer /></div>
     </div>

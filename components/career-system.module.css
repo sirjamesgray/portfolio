@@ -91,6 +91,7 @@
 }
 
 .btn {
+  transition: transform 150ms ease-out;
   max-width: 100%;
   display: inline-flex;
   align-items: center;
@@ -258,5 +259,39 @@
 @media (prefers-reduced-motion: reduce) {
   .card {
     transition: none;
+  }
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(1px) scale(0.98);
+  transition-duration: 80ms;
+}
+
+.card {
+  transition: transform 180ms ease-out;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+.card:active {
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .card {
+    transition: none;
+  }
+  .btn:hover,
+  .btn:active,
+  .card:hover,
+  .card:active {
+    transform: none;
   }
 }

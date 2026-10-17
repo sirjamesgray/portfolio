@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
+import { Reveal } from "@/components/reveal";
 import styles from "./career-timeline.module.css";
 
 type Job = {
@@ -43,13 +44,13 @@ export function CareerTimeline({
 
   return (
     <ol className={styles.rail}>
-      {jobs.map((job) => {
+      {jobs.map((job, index) => {
         const current = job.endDate === "Present";
         const from = ((monthIndex(job.startDate) - start) / total) * 100;
         const width = Math.max(((monthIndex(job.endDate) - monthIndex(job.startDate)) / total) * 100, 1.5);
         const logo = logoFor?.(job.company);
         return (
-          <li key={job.company} className={styles.item} data-current={current ? "true" : "false"}>
+          <Reveal as="li" key={job.company} delay={index * 60} className={styles.item} data-current={current ? "true" : "false"}>
             <span className={styles.node} aria-hidden />
             <div className={styles.head}>
               {logo ? (
@@ -96,7 +97,7 @@ export function CareerTimeline({
               </ul>
             ) : null}
             {extra?.(job)}
-          </li>
+          </Reveal>
         );
       })}
     </ol>

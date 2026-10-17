@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { LucideIcon, ChevronRight } from "lucide-react";
-import { TwinklingSparkles } from "@/components/twinkling-sparkles";
 import { cn } from "@/lib/utils";
 import { ComponentType } from "react";
 
@@ -34,26 +33,25 @@ export function ActionLinkCard({
       target={external ? "_blank" : undefined}
       rel={external ? "noopener noreferrer" : undefined}
       className={cn(
-        "group relative flex items-center gap-4 p-4 sm:p-6 rounded-xl border transition-all",
+        "group relative flex min-h-11 items-center gap-4 border p-4 sm:p-6",
         primary
-          ? "bg-emerald-600 hover:bg-emerald-700 border-emerald-600 text-white shadow-[var(--shadow-glow-emerald)] hover:shadow-[var(--shadow-glow-emerald-hover)]"
-          : "bg-card hover:bg-muted/50 border-border shadow-[var(--shadow-elevation-md)] hover:shadow-[var(--shadow-elevation-md)]",
+          ? "border-brand bg-brand text-black hover:bg-[#30a46c]"
+          : "border-[rgb(61_214_140/0.4)] bg-black hover:border-brand",
         className
       )}
     >
       {/* White sparkles for primary CTA */}
-      {primary && <TwinklingSparkles forceShow />}
 
       <div
         className={cn(
           "relative flex-shrink-0 p-2.5 sm:p-3 rounded-lg",
-          primary ? "bg-white/20" : "bg-emerald-500/10"
+          primary ? "border border-black/40" : "border border-[rgb(61_214_140/0.4)]"
         )}
       >
         <Icon
           className={cn(
             "h-5 w-5 sm:h-6 sm:w-6",
-            primary ? "text-white" : "text-emerald-600 dark:text-emerald-400"
+            primary ? "text-black" : "text-brand"
           )}
         />
       </div>
@@ -62,7 +60,7 @@ export function ActionLinkCard({
         <h2
           className={cn(
             "text-base sm:text-lg font-semibold",
-            primary ? "text-white" : "text-foreground"
+            primary ? "text-black" : "text-foreground"
           )}
         >
           {title}
@@ -71,7 +69,7 @@ export function ActionLinkCard({
           <p
             className={cn(
               "text-xs sm:text-sm mt-0.5",
-              primary ? "text-white/80" : "text-muted-foreground"
+              primary ? "text-black/80" : "text-muted-foreground"
             )}
           >
             {description}
@@ -82,7 +80,7 @@ export function ActionLinkCard({
       <div
         className={cn(
           "flex-shrink-0 transition-transform group-hover:translate-x-1",
-          primary ? "text-white/80" : "text-muted-foreground"
+          primary ? "text-black/80" : "text-muted-foreground"
         )}
       >
         <ChevronRight className="h-5 w-5" />
