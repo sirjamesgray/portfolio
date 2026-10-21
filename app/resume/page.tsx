@@ -38,11 +38,11 @@ export default function ResumePage() {
 
   return (
     <main className="min-h-screen bg-zinc-100 px-4 py-8 text-zinc-900 print:bg-white print:p-0">
-      <div className="mx-auto mb-4 flex max-w-[8.5in] items-center justify-between gap-4 print:hidden">
+      <div className="mx-auto mb-4 flex max-w-[8.5in] flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between print:hidden">
         <p className="text-xs text-zinc-600">
           Download the PDF version at the link below.
         </p>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <a
             href={RESUME_PATH}
             download="Jamie-Gray-Resume.pdf"
@@ -57,6 +57,7 @@ export default function ResumePage() {
         </div>
       </div>
 
+      <div className="max-w-full overflow-x-auto print:overflow-visible">
       <article
         className={`${styles.sheet} mx-auto overflow-hidden bg-white shadow-xl print:shadow-none`}
       >
@@ -150,6 +151,7 @@ export default function ResumePage() {
         </aside>
         </div>
       </article>
+      </div>
     </main>
   );
 }
