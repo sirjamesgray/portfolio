@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import {
   BriefcaseBusiness,
   Github,
@@ -10,7 +9,10 @@ import {
   Phone,
   Sparkles,
   Wrench,
+  Download,
 } from "lucide-react";
+import { careerButtonClass } from "@/components/career-button";
+import { RESUME_PATH } from "@/lib/constants";
 import { RESUME_DATA } from "@/lib/resume-data";
 import { PrintButton } from "./print-button";
 import styles from "./resume.module.css";
@@ -41,12 +43,16 @@ export default function ResumePage() {
           Download the PDF version at the link below.
         </p>
         <div className="flex items-center gap-3">
-          <Link
-            href="/documents/resume.pdf"
-            className="text-sm font-medium text-zinc-700 underline underline-offset-4"
+          <a
+            href={RESUME_PATH}
+            download="Jamie-Gray-Resume.pdf"
+            type="application/pdf"
+            aria-label="Download Jamie Gray's resume as a PDF"
+            className={careerButtonClass("secondary")}
           >
+            <Download aria-hidden className="text-brand" />
             Download PDF
-          </Link>
+          </a>
           <PrintButton />
         </div>
       </div>
