@@ -34,7 +34,7 @@ export function HeatmapLogo({
       style={{
         width: size,
         height: size,
-        borderRadius: 16,
+        borderRadius: 0,
         overflow: "hidden",
       }}
     >

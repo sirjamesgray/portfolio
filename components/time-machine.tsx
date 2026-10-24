@@ -73,8 +73,7 @@ export function TimeMachine() {
       return {
         zIndex: EXPERIENCE.length - absBase,
         transform: `
-          translateZ(${diff * 80}px)
-          translateY(${diff * 15}px)
+          translateY(${diff * 22}px)
           scale(${1 - absBase * 0.08})
         `,
         opacity: Math.max(0, 1 - absBase * 0.25),
@@ -92,7 +91,7 @@ export function TimeMachine() {
     // Current card
     return {
       zIndex: EXPERIENCE.length + 1,
-      transform: "translateZ(0) translateY(0) scale(1)",
+      transform: "translateY(0) scale(1)",
       opacity: 1,
       filter: "blur(0px)",
     };
@@ -115,7 +114,7 @@ export function TimeMachine() {
       <div
         ref={containerRef}
         className="relative h-[600px] overflow-hidden"
-        style={{ perspective: "1000px" }}
+        
       >
         {/* Space Background */}
         <div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-emerald-950/30 to-slate-950">
@@ -148,9 +147,9 @@ export function TimeMachine() {
         {/* Stacked Cards Container */}
         <div
           className="absolute inset-0 flex items-center justify-center"
-          style={{ transformStyle: "preserve-3d" }}
+          
         >
-          <div className="relative w-full max-w-lg px-6" style={{ transformStyle: "preserve-3d" }}>
+          <div className="relative w-full max-w-lg px-6" >
             {EXPERIENCE.map((job, idx) => {
               const style = getCardStyle(idx);
               return (
@@ -159,7 +158,7 @@ export function TimeMachine() {
                   className="absolute left-0 right-0 mx-6 cursor-pointer"
                   style={{
                     zIndex: style.zIndex,
-                    transformStyle: "preserve-3d",
+                    
                   }}
                   animate={{
                     transform: style.transform,

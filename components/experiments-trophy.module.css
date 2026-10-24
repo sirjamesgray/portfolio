@@ -1,0 +1,554 @@
+.pageHeader {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  border: 1px solid rgb(61 214 140 / 0.42);
+  background:
+    linear-gradient(135deg, rgb(61 214 140 / 0.08) 0%, transparent 46%, rgb(112 184 255 / 0.06) 100%),
+    #000000;
+  padding: var(--space-4);
+  box-shadow:
+    inset 0 1px 0 0 rgb(255 255 255 / 0.22),
+    inset 0 0 0 1px rgb(255 255 255 / 0.04);
+}
+
+.pageHeader::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    rgb(255 255 255 / 0.25) 0%,
+    #3dd68c 28%,
+    #70b8ff 72%,
+    rgb(255 255 255 / 0.2) 100%
+  );
+  pointer-events: none;
+}
+
+.headerTopRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.kickerBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgb(61 214 140 / 0.45);
+  background: rgb(61 214 140 / 0.08);
+  padding: 4px 10px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: var(--type-1);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #3dd68c;
+}
+
+.liveDot {
+  width: 7px;
+  height: 7px;
+  background: #3dd68c;
+  box-shadow: 0 0 8px #3dd68c;
+  flex-shrink: 0;
+}
+
+.telemetryStrip {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+  border-top: 1px solid rgb(61 214 140 / 0.28);
+  padding-top: var(--space-3);
+}
+
+@media (min-width: 768px) {
+  .telemetryStrip {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.telemetryCell {
+  border: 1px solid rgb(255 255 255 / 0.12);
+  background: rgb(6 12 10 / 0.72);
+  padding: 10px 12px;
+  min-width: 0;
+}
+
+.telemetryLabel {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+.telemetryValue {
+  margin-top: 2px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: var(--type-2);
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.filterBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.filterGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filterBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 14px;
+  border: 1px solid rgb(61 214 140 / 0.36);
+  background: #000000;
+  color: var(--muted-foreground);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: var(--type-1);
+  transition: transform 150ms ease-out, opacity 150ms ease-out;
+}
+
+.filterBtn:hover {
+  border-color: #70b8ff;
+  color: var(--foreground);
+  transform: translateY(-1px);
+}
+
+.filterBtnActive {
+  border-color: #3dd68c;
+  background: rgb(61 214 140 / 0.14);
+  color: #3dd68c;
+}
+
+.trophyGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 28px;
+}
+
+@media (min-width: 1024px) {
+  .trophyGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px;
+  }
+}
+
+/* Glassy Trophy Case / Vitrine Container */
+.trophyCase {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid rgb(61 214 140 / 0.48);
+  background:
+    linear-gradient(
+      180deg,
+      rgb(16 30 24 / 0.72) 0%,
+      rgb(6 12 10 / 0.86) 38%,
+      rgb(0 0 0 / 0.96) 100%
+    );
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow:
+    inset 0 1px 0 0 rgb(255 255 255 / 0.26),
+    inset 0 0 0 1px rgb(255 255 255 / 0.06),
+    inset 0 -28px 56px -16px rgb(61 214 140 / 0.07);
+  transition: transform 180ms ease-out, opacity 180ms ease-out;
+}
+
+/* Top specular glass rim highlight */
+.trophyCase::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    rgb(255 255 255 / 0.35) 0%,
+    #3dd68c 32%,
+    #70b8ff 68%,
+    rgb(255 255 255 / 0.25) 100%
+  );
+  pointer-events: none;
+  z-index: 30;
+}
+
+.trophyCase:hover {
+  border-color: #70b8ff;
+  transform: translateY(-2px);
+}
+
+/* Precision trophy-case corner brackets */
+.cornerTL,
+.cornerTR,
+.cornerBL,
+.cornerBR {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  pointer-events: none;
+  z-index: 31;
+}
+
+.cornerTL {
+  top: 6px;
+  left: 6px;
+  border-top: 2px solid #3dd68c;
+  border-left: 2px solid #3dd68c;
+}
+
+.cornerTR {
+  top: 6px;
+  right: 6px;
+  border-top: 2px solid #70b8ff;
+  border-right: 2px solid #70b8ff;
+}
+
+.cornerBL {
+  bottom: 6px;
+  left: 6px;
+  border-bottom: 2px solid #3dd68c;
+  border-left: 2px solid #3dd68c;
+}
+
+.cornerBR {
+  bottom: 6px;
+  right: 6px;
+  border-bottom: 2px solid #70b8ff;
+  border-right: 2px solid #70b8ff;
+}
+
+/* Top Vitrine Canopy / Rim Header */
+.caseCanopy {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-bottom: 1px solid rgb(61 214 140 / 0.32);
+  background:
+    linear-gradient(90deg, rgb(61 214 140 / 0.1) 0%, rgb(112 184 255 / 0.06) 100%),
+    rgb(3 7 6 / 0.92);
+  padding: 12px 16px;
+}
+
+.caseCodeGroup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.caseNumber {
+  border: 1px solid rgb(61 214 140 / 0.55);
+  background: rgb(61 214 140 / 0.14);
+  padding: 2px 8px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: #3dd68c;
+}
+
+.caseCategory {
+  border: 1px solid rgb(112 184 255 / 0.42);
+  background: rgb(112 184 255 / 0.1);
+  padding: 2px 8px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: #70b8ff;
+}
+
+.caseStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--foreground);
+}
+
+/* Recessed Glass Display Chamber */
+.vitrineChamber {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  padding: 10px;
+  background:
+    radial-gradient(circle at 50% 0%, rgb(61 214 140 / 0.12) 0%, transparent 65%),
+    linear-gradient(180deg, rgb(2 6 5 / 0.95) 0%, #000000 100%);
+  border-bottom: 1px solid rgb(61 214 140 / 0.35);
+}
+
+@media (min-width: 640px) {
+  .vitrineChamber {
+    padding: 16px;
+  }
+}
+
+/* Inner Glass Enclosure Box */
+.glassEnclosure {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 330px;
+  border: 1px solid rgb(255 255 255 / 0.22);
+  background:
+    linear-gradient(180deg, rgb(10 18 15 / 0.65) 0%, rgb(0 0 0 / 0.92) 100%);
+  box-shadow:
+    inset 0 1px 0 0 rgb(255 255 255 / 0.28),
+    inset 1px 0 0 0 rgb(255 255 255 / 0.1),
+    inset -1px 0 0 0 rgb(112 184 255 / 0.14),
+    inset 0 -14px 28px -8px rgb(61 214 140 / 0.1);
+  overflow: hidden;
+}
+
+/* Glass reflection & specular sheen overlay (pointer-events: none so specimen is live) */
+.glassPaneOverlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 20;
+  background:
+    linear-gradient(
+      122deg,
+      rgb(255 255 255 / 0.1) 0%,
+      rgb(255 255 255 / 0.03) 18%,
+      transparent 18.5%,
+      transparent 44%,
+      rgb(112 184 255 / 0.05) 44.5%,
+      rgb(61 214 140 / 0.03) 54%,
+      transparent 54.5%
+    );
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.08),
+    inset 0 2px 12px rgb(255 255 255 / 0.05);
+}
+
+.glassWatermark {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  pointer-events: none;
+  z-index: 21;
+  border: 1px solid rgb(255 255 255 / 0.16);
+  background: rgb(0 0 0 / 0.68);
+  padding: 2px 6px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgb(237 237 237 / 0.78);
+}
+
+/* Specimen Stage inside the Glass Enclosure */
+.specimenStage {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  padding: 12px;
+}
+
+@media (min-width: 640px) {
+  .specimenStage {
+    padding: 16px;
+  }
+}
+
+/* Illuminated Trophy Pedestal Shelf at Bottom of Glass Chamber */
+.pedestalShelf {
+  position: relative;
+  z-index: 22;
+  height: 6px;
+  width: 100%;
+  border-top: 1px solid rgb(61 214 140 / 0.65);
+  background: linear-gradient(
+    90deg,
+    rgb(61 214 140 / 0.12) 0%,
+    rgb(61 214 140 / 0.38) 35%,
+    rgb(112 184 255 / 0.38) 65%,
+    rgb(112 184 255 / 0.12) 100%
+  );
+  pointer-events: none;
+}
+
+/* Interactive Control Deck mounted on the Trophy Case Frame */
+.controlDeck {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-bottom: 1px solid rgb(61 214 140 / 0.28);
+  background: rgb(4 9 7 / 0.95);
+  padding: 10px 12px;
+}
+
+@media (min-width: 640px) {
+  .controlDeck {
+    padding: 10px 16px;
+  }
+}
+
+.controlDeckLabel {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+.controlBtnGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.caseCtrlBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 10px;
+  border: 1px solid rgb(61 214 140 / 0.36);
+  background: #000000;
+  color: var(--foreground);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 12px;
+  transition: transform 150ms ease-out, opacity 150ms ease-out;
+}
+
+.caseCtrlBtn:hover {
+  border-color: #70b8ff;
+  color: #70b8ff;
+  transform: translateY(-1px);
+}
+
+.caseCtrlBtn:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+.caseCtrlBtnActive {
+  border-color: #3dd68c;
+  background: rgb(61 214 140 / 0.16);
+  color: #3dd68c;
+}
+
+/* Engraved Trophy Plaque at Bottom of Case */
+.trophyPlaque {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  background: #000000;
+  padding: 16px;
+}
+
+@media (min-width: 640px) {
+  .trophyPlaque {
+    padding: 20px;
+  }
+}
+
+.plaqueHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.plaqueTitle {
+  font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--foreground);
+  border-bottom: 2px solid #3dd68c;
+  padding-bottom: 4px;
+}
+
+.plaqueId {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: var(--type-1);
+  color: #70b8ff;
+}
+
+.plaqueDesc {
+  font-size: var(--type-2);
+  line-height: 1.55;
+  color: var(--muted-foreground);
+}
+
+.plaqueFooter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 4px;
+  padding-top: 12px;
+  border-top: 1px solid rgb(255 255 255 / 0.1);
+}
+
+.tagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tagChip {
+  border: 1px solid rgb(61 214 140 / 0.35);
+  background: rgb(61 214 140 / 0.06);
+  padding: 2px 8px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--foreground);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .filterBtn,
+  .trophyCase,
+  .caseCtrlBtn {
+    transition: none;
+  }
+  .filterBtn:hover,
+  .trophyCase:hover,
+  .caseCtrlBtn:hover,
+  .caseCtrlBtn:active {
+    transform: none;
+  }
+}

@@ -21,6 +21,7 @@ type Shared = {
   icon: LucideIcon;
   children: React.ReactNode;
   className?: string;
+  "aria-current"?: React.AriaAttributes["aria-current"];
 };
 
 type ButtonProps = Shared &
@@ -55,6 +56,7 @@ export function CareerButton(props: ButtonProps | LinkProps) {
         <Link
           href={props.href}
           aria-label={props["aria-label"]}
+          aria-current={props["aria-current"]}
           onClick={props.onClick}
           className={classes}
         >
@@ -68,6 +70,7 @@ export function CareerButton(props: ButtonProps | LinkProps) {
         target={props.target}
         rel={props.rel}
         aria-label={props["aria-label"]}
+        aria-current={props["aria-current"]}
         onClick={props.onClick}
         className={classes}
       >
@@ -82,6 +85,7 @@ export function CareerButton(props: ButtonProps | LinkProps) {
       type={buttonProps.type ?? "button"}
       onClick={buttonProps.onClick}
       aria-label={buttonProps["aria-label"]}
+      aria-current={buttonProps["aria-current"]}
       aria-expanded={buttonProps["aria-expanded"]}
       aria-controls={buttonProps["aria-controls"]}
       data-close={buttonProps["data-close"] ? "" : undefined}

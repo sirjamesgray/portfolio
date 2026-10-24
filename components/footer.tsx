@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { SITE_CONFIG, SOCIALS } from "@/lib/constants";
 import { AdminLink } from "./admin-link";
 
@@ -44,7 +47,13 @@ const navigation = {
   ],
 };
 
+function isFooterLinkActive(pathname: string | null, href: string): boolean {
+  if (!pathname) return false;
+  return pathname === href || (href !== "/" && pathname.startsWith(`${href}/`));
+}
+
 export function Footer() {
+  const pathname = usePathname();
   return (
     <footer className="border-t border-brand/30 bg-background">
       <div className="mx-auto max-w-6xl px-6 py-12">
@@ -67,7 +76,12 @@ export function Footer() {
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="inline-flex min-h-11 min-w-11 items-center text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    aria-current={isFooterLinkActive(pathname, item.href) ? "page" : undefined}
+                    className={
+                      isFooterLinkActive(pathname, item.href)
+                        ? "inline-flex min-h-11 min-w-11 items-center text-sm font-medium text-brand transition-colors"
+                        : "inline-flex min-h-11 min-w-11 items-center text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    }
                   >
                     {item.name}
                   </Link>
@@ -86,7 +100,12 @@ export function Footer() {
                   <li key={item.name}>
                     <Link
                       href={item.href}
-                      className="inline-flex min-h-11 min-w-11 items-center text-sm text-muted-foreground hover:text-foreground transition-colors"
+                      aria-current={isFooterLinkActive(pathname, item.href) ? "page" : undefined}
+                      className={
+                        isFooterLinkActive(pathname, item.href)
+                          ? "inline-flex min-h-11 min-w-11 items-center text-sm font-medium text-brand transition-colors"
+                          : "inline-flex min-h-11 min-w-11 items-center text-sm text-muted-foreground hover:text-foreground transition-colors"
+                      }
                     >
                       {item.name}
                     </Link>

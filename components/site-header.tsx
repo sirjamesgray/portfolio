@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { DashboardButton } from "@/components/ui/button";
 import { LandingButton } from "@/components/ui/landing-button";
 import { ScrollAwareButton } from "@/components/ui/scroll-aware-button";
-import { User, ArrowLeft, LogOut, Briefcase, FlaskConical, History, Lock, Mail, Download, Menu, X } from "lucide-react";
+import { User, ArrowLeft, LogOut, Briefcase, FlaskConical, Beaker, History, Lock, Mail, Download, Menu, X } from "lucide-react";
 import anim from "@/components/motion.module.css";
 import { CareerButton } from "@/components/career-button";
 import { RESUME_PATH } from "@/lib/constants";
@@ -32,10 +33,22 @@ const PRODUCT_ENGINEER_SECTIONS: SectionNavItem[] = [
 const CAREER_NAV = [
   { href: "/#work", label: "Work", icon: Briefcase },
   { href: "/#lab", label: "Lab", icon: FlaskConical },
+  { href: "/experiments", label: "Experiments", icon: Beaker },
   { href: "/#experience", label: "Experience", icon: History },
   { href: "/for-recruiters", label: "Recruiters", icon: Lock },
   { href: "/#contact", label: "Contact", icon: Mail },
 ] as const;
+
+function isCareerNavActive(pathname: string | null, href: string): boolean {
+  if (!pathname) return false;
+  if (href === "/experiments") {
+    return pathname === "/experiments" || pathname.startsWith("/experiments/");
+  }
+  if (href === "/for-recruiters") {
+    return pathname === "/for-recruiters" || pathname.startsWith("/for-recruiters/");
+  }
+  return pathname === href;
+}
 
 interface SiteHeaderProps {
   variant?: "default" | "back";
@@ -47,6 +60,7 @@ interface SiteHeaderProps {
 }
 
 export function SiteHeader({ variant = "default", backHref = "/", backLabel = "Back", customerDashboardEnabled = true, landingPage = "hire-for-projects" }: SiteHeaderProps) {
+  const pathname = usePathname();
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [showMobileFooter, setShowMobileFooter] = useState(false);
@@ -117,7 +131,14 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
           {landingPage === "career" ? (
             <nav aria-label="Primary" className="flex items-center gap-2">
               {CAREER_NAV.map((item) => (
-                <CareerButton key={item.href} variant="secondary" size="sm" icon={item.icon} href={item.href}>
+                <CareerButton
+                  key={item.href}
+                  variant="secondary"
+                  size="sm"
+                  icon={item.icon}
+                  href={item.href}
+                  aria-current={isCareerNavActive(pathname, item.href) ? "page" : undefined}
+                >
                   {item.label}
                 </CareerButton>
               ))}
@@ -316,6 +337,7 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
               variant="secondary"
               icon={item.icon}
               href={item.href}
+              aria-current={isCareerNavActive(pathname, item.href) ? "page" : undefined}
               onClick={() => setMenuOpen(false)}
             >
               {item.label}

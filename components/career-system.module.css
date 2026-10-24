@@ -295,3 +295,9 @@
     transform: none;
   }
 }
+
+.secondary[aria-current="page"] {
+  border-color: #3dd68c;
+  background: rgb(61 214 140 / 0.14);
+  color: #3dd68c;
+}
