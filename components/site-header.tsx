@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { DashboardButton } from "@/components/ui/button";
 import { LandingButton } from "@/components/ui/landing-button";
 import { ScrollAwareButton } from "@/components/ui/scroll-aware-button";
-import { User, ArrowLeft, LogOut, Briefcase, FlaskConical, Beaker, History, Lock, Mail, Download, Menu, X } from "lucide-react";
+import { User, ArrowLeft, LogOut, Briefcase, FlaskConical, Beaker, History, Lock, Mail, Download, Menu, X, PenLine } from "lucide-react";
 import anim from "@/components/motion.module.css";
 import { CareerButton } from "@/components/career-button";
 import { RESUME_PATH } from "@/lib/constants";
@@ -35,6 +35,7 @@ const CAREER_NAV = [
   { href: "/#lab", label: "Lab", icon: FlaskConical },
   { href: "/experiments", label: "Experiments", icon: Beaker },
   { href: "/#experience", label: "Experience", icon: History },
+  { href: "/blog", label: "Blog", icon: PenLine },
   { href: "/for-recruiters", label: "Recruiters", icon: Lock },
   { href: "/#contact", label: "Contact", icon: Mail },
 ] as const;
@@ -43,6 +44,9 @@ function isCareerNavActive(pathname: string | null, href: string): boolean {
   if (!pathname) return false;
   if (href === "/experiments") {
     return pathname === "/experiments" || pathname.startsWith("/experiments/");
+  }
+  if (href === "/blog") {
+    return pathname === "/blog" || pathname.startsWith("/blog/");
   }
   if (href === "/for-recruiters") {
     return pathname === "/for-recruiters" || pathname.startsWith("/for-recruiters/");

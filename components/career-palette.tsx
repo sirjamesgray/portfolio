@@ -82,6 +82,9 @@ export function CareerPalette({ open, onOpenChange }: Props) {
           <CommandItem value="Experience page" onSelect={() => visit("/experience")}>
             Experience page
           </CommandItem>
+          <CommandItem value="Blog" onSelect={() => visit("/blog")}>
+            Blog
+          </CommandItem>
           <CommandItem value="For recruiters" onSelect={() => visit("/for-recruiters")}>
             For recruiters
           </CommandItem>

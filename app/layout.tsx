@@ -31,6 +31,9 @@ export const metadata: Metadata = {
     template: "%s",
   },
   description: CAREER_DESCRIPTION,
+  alternates: {
+    types: { "application/rss+xml": [{ url: "/blog/rss.xml", title: "Jamie Gray Blog" }] },
+  },
   openGraph: {
     title: CAREER_TITLE,
     description: CAREER_DESCRIPTION,
