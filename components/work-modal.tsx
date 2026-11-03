@@ -100,7 +100,7 @@ export function WorkModal({
 
 export function WorkPageChrome({ slug }: { slug: string }) {
   const router = useRouter();
-  const href = `/#work-card-${slug}`;
+  const href = `/work#work-card-${slug}`;
 
   const mark = () => sessionStorage.setItem("work-return-focus", slug);
 
@@ -108,7 +108,7 @@ export function WorkPageChrome({ slug }: { slug: string }) {
     const onKey = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
       sessionStorage.setItem("work-return-focus", slug);
-      router.push(`/#work-card-${slug}`);
+      router.push(`/work#work-card-${slug}`);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);

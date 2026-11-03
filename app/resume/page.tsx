@@ -12,15 +12,17 @@ import {
   Download,
 } from "lucide-react";
 import { careerButtonClass } from "@/components/career-button";
+import { careerMetadata } from "@/lib/career-meta";
 import { RESUME_PATH } from "@/lib/constants";
 import { RESUME_DATA } from "@/lib/resume-data";
 import { PrintButton } from "./print-button";
 import styles from "./resume.module.css";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = careerMetadata({
   title: "Resume | Jamie Gray",
   description: "Jamie Gray's product engineering and product design experience.",
-};
+  path: "/resume",
+});
 
 function displayUrl(value: string) {
   return value.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");

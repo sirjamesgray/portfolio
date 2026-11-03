@@ -1215,7 +1215,7 @@ export function ExperimentsTrophyGrid() {
             <div className={styles.trophyPlaque}>
               <div className={styles.plaqueHeader}>
                 <h2 className={styles.plaqueTitle}>ASCII Interference Field</h2>
-                <span className={styles.plaqueId}>SPECIMEN 06 · /#lab</span>
+                <span className={styles.plaqueId}>SPECIMEN 06 · /lab</span>
               </div>
               <p className={styles.plaqueDesc}>
                 Pointer-reactive 2D wave interference solver rendered in monospace glyphs. Move
@@ -1231,7 +1231,7 @@ export function ExperimentsTrophyGrid() {
                   variant="secondary"
                   size="sm"
                   icon={Cpu}
-                  href="/#lab"
+                  href="/lab"
                 >
                   Open Builder Log
                 </CareerButton>

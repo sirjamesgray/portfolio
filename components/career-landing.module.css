@@ -209,3 +209,41 @@
     transform: scale(1.8);
   }
 }
+
+.overviewCard {
+  outline-offset: -2px;
+  transition: background-color 150ms ease-out, color 150ms ease-out;
+}
+
+.overviewCard:hover,
+.overviewCard:focus-visible {
+  background: rgb(61 214 140 / 0.08);
+}
+
+.overviewCard:focus-visible {
+  outline: 2px solid #3dd68c;
+}
+
+.overviewCard:active {
+  background: rgb(112 184 255 / 0.12);
+}
+
+.overviewArrow {
+  color: #3dd68c;
+  transition: transform 150ms ease-out;
+}
+
+.overviewCard:hover .overviewArrow {
+  transform: translateX(3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overviewCard,
+  .overviewArrow {
+    transition: none;
+  }
+
+  .overviewCard:hover .overviewArrow {
+    transform: none;
+  }
+}

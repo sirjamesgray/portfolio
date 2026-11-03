@@ -11,6 +11,7 @@ declare global {
 /**
  * Route transition. The first load is never animated, so LCP is not delayed.
  * Later client navigations fade and rise for 180ms with the Web Animations API.
+ * Only <main> animates, so the fixed header stays put. Opacity and transform only, so nothing reflows.
  */
 export function PageTransition({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -21,7 +22,8 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
       return;
     }
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    ref.current?.animate(
+    const target = ref.current?.querySelector("main") ?? ref.current;
+    target?.animate(
       [
         { opacity: 0, transform: "translateY(6px)" },
         { opacity: 1, transform: "none" },

@@ -7,10 +7,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { DashboardButton } from "@/components/ui/button";
 import { LandingButton } from "@/components/ui/landing-button";
 import { ScrollAwareButton } from "@/components/ui/scroll-aware-button";
-import { User, ArrowLeft, LogOut, Briefcase, FlaskConical, Beaker, History, Lock, Mail, Download, Menu, X, PenLine } from "lucide-react";
+import { User, ArrowLeft, LogOut, Briefcase, FlaskConical, Beaker, History, Lock, Mail, Menu, X, PenLine, FileText } from "lucide-react";
 import anim from "@/components/motion.module.css";
 import { CareerButton } from "@/components/career-button";
-import { RESUME_PATH } from "@/lib/constants";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 import { Logo3DStatic } from "@/components/logo-3d";
 import { CTA_CONFIG, PRODUCT_ENGINEER_CTA } from "@/lib/constants";
@@ -31,17 +30,22 @@ const PRODUCT_ENGINEER_SECTIONS: SectionNavItem[] = [
 ];
 
 const CAREER_NAV = [
-  { href: "/#work", label: "Work", icon: Briefcase },
-  { href: "/#lab", label: "Lab", icon: FlaskConical },
+  { href: "/work", label: "Work", icon: Briefcase },
+  { href: "/lab", label: "Lab", icon: FlaskConical },
   { href: "/experiments", label: "Experiments", icon: Beaker },
-  { href: "/#experience", label: "Experience", icon: History },
+  { href: "/about", label: "About", icon: History },
   { href: "/blog", label: "Blog", icon: PenLine },
   { href: "/for-recruiters", label: "Recruiters", icon: Lock },
-  { href: "/#contact", label: "Contact", icon: Mail },
+  { href: "/contact", label: "Contact", icon: Mail },
 ] as const;
+
+/** Labels only until 2xl, so the row fits from 1024 up without crowding. */
+const NAV_COMPACT = "px-3 [&>svg]:hidden 2xl:[&>svg]:block";
 
 function isCareerNavActive(pathname: string | null, href: string): boolean {
   if (!pathname) return false;
+  if (href === "/about") return pathname === "/about" || pathname === "/experience";
+  if (href === "/work") return pathname === "/work" || pathname.startsWith("/work/");
   if (href === "/experiments") {
     return pathname === "/experiments" || pathname.startsWith("/experiments/");
   }
@@ -65,6 +69,7 @@ interface SiteHeaderProps {
 
 export function SiteHeader({ variant = "default", backHref = "/", backLabel = "Back", customerDashboardEnabled = true, landingPage = "hire-for-projects" }: SiteHeaderProps) {
   const pathname = usePathname();
+  const career = landingPage === "career";
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [showMobileFooter, setShowMobileFooter] = useState(false);
@@ -133,7 +138,7 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
       {!loading && variant === "default" && (
         <>
           {landingPage === "career" ? (
-            <nav aria-label="Primary" className="flex items-center gap-2">
+            <nav aria-label="Primary" className="flex items-center gap-1 xl:gap-1.5">
               {CAREER_NAV.map((item) => (
                 <CareerButton
                   key={item.href}
@@ -141,13 +146,14 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
                   size="sm"
                   icon={item.icon}
                   href={item.href}
+                  className={NAV_COMPACT}
                   aria-current={isCareerNavActive(pathname, item.href) ? "page" : undefined}
                 >
                   {item.label}
                 </CareerButton>
               ))}
               <CareerCommandButton />
-              <CareerButton variant="primary" size="sm" icon={Download} href={RESUME_PATH} aria-label="Download resume">
+              <CareerButton variant="primary" size="sm" icon={FileText} href="/resume" aria-current={pathname === "/resume" ? "page" : undefined}>
                 Resume
               </CareerButton>
             </nav>
@@ -275,7 +281,7 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
   return (
     <>
       {/* Desktop Header - hidden on mobile */}
-      <header className="hidden md:flex fixed top-0 left-0 right-0 z-50 items-center justify-between p-4 bg-black border-b border-border">
+      <header className={`${career ? "hidden lg:flex" : "hidden md:flex"} fixed top-0 left-0 right-0 z-50 items-center justify-between p-4 bg-black border-b border-border`}>
         {variant === "back" ? (
           <Link
             href={backHref}
@@ -295,7 +301,7 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
       </header>
 
       {/* Mobile Header - top bar, visible on mobile only */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-40 flex items-center justify-between gap-2 overflow-hidden p-4 bg-black border-b border-border">
+      <div className={`${career ? "lg:hidden" : "md:hidden"} fixed top-0 left-0 right-0 z-40 flex items-center justify-between gap-2 overflow-hidden p-4 bg-black border-b border-border`}>
         {variant === "back" ? (
           <Link
             href={backHref}
@@ -311,7 +317,7 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
         )}
         {landingPage === "career" && variant === "default" && (
           <div className="flex items-center gap-2">
-            <CareerButton variant="primary" size="sm" icon={Download} href={RESUME_PATH} aria-label="Download resume">
+            <CareerButton variant="primary" size="sm" icon={FileText} href="/resume" aria-current={pathname === "/resume" ? "page" : undefined}>
               Resume
             </CareerButton>
             <CareerButton
@@ -331,7 +337,7 @@ export function SiteHeader({ variant = "default", backHref = "/", backLabel = "B
         <nav
           id="mobile-menu"
           aria-label="Menu"
-          className={`${anim.menu} md:hidden fixed left-0 right-0 top-[77px] z-40 grid grid-cols-2 gap-2 border-b border-border bg-black p-4`}
+          className={`${anim.menu} lg:hidden fixed left-0 right-0 top-[77px] z-40 grid grid-cols-2 gap-2 border-b border-border bg-black p-4`}
           data-open={menuOpen ? "true" : "false"}
           inert={!menuOpen}
         >

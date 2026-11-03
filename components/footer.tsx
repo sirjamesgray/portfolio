@@ -7,9 +7,11 @@ import { AdminLink } from "./admin-link";
 
 const navigation = {
   main: [
-    { name: "Projects", href: "/projects" },
-    { name: "Experience", href: "/experience" },
+    { name: "Work", href: "/work" },
+    { name: "Lab", href: "/lab" },
+    { name: "About", href: "/about" },
     { name: "Blog", href: "/blog" },
+    { name: "Resume", href: "/resume" },
     { name: "Contact", href: "/contact" },
     { name: "FAQ", href: "/faq" },
   ],

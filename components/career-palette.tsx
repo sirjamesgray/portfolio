@@ -1,6 +1,8 @@
 "use client";
 
 import { Download, Linkedin, Mail } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { SECTION_ROUTES } from "@/lib/section-routes";
 import { RESUME_PATH, SITE_CONFIG, SOCIALS } from "@/lib/constants";
 import { careerButtonClass } from "@/components/career-button";
 import {
@@ -16,7 +18,10 @@ const SECTIONS = [
   { id: "work", label: "Work" },
   { id: "turbo", label: "Turbo" },
   { id: "lab", label: "Builder log" },
-  { id: "experience", label: "Experience" },
+  { id: "experiments", label: "Experiments" },
+  { id: "about", label: "About" },
+  { id: "blog", label: "Blog" },
+  { id: "resume", label: "Resume" },
   { id: "contact", label: "Contact" },
 ];
 
@@ -26,21 +31,17 @@ type Props = {
 };
 
 export function CareerPalette({ open, onOpenChange }: Props) {
+  const router = useRouter();
   const close = () => onOpenChange(false);
 
   const go = (id: string) => {
     close();
-    const node = document.getElementById(id);
-    if (node) {
-      node.scrollIntoView({ behavior: "smooth" });
-      return;
-    }
-    window.location.assign(`/#${id}`);
+    router.push(SECTION_ROUTES[id] ?? "/");
   };
 
   const visit = (path: string) => {
     close();
-    window.location.assign(path);
+    router.push(path);
   };
 
   return (
@@ -48,7 +49,10 @@ export function CareerPalette({ open, onOpenChange }: Props) {
       <CommandInput placeholder="Jump or write" />
       <CommandList>
         <CommandEmpty>No matches.</CommandEmpty>
-        <CommandGroup heading="Sections">
+        <CommandGroup heading="Pages">
+          <CommandItem value="Home" onSelect={() => visit("/")}>
+            Home
+          </CommandItem>
           {SECTIONS.map((section) => (
             <CommandItem key={section.id} value={section.label} onSelect={() => go(section.id)}>
               {section.label}
@@ -72,24 +76,15 @@ export function CareerPalette({ open, onOpenChange }: Props) {
             ? · shortcut sheet
           </CommandItem>
         </CommandGroup>
-        <CommandGroup heading="Pages">
+        <CommandGroup heading="More">
           <CommandItem value="Projects" onSelect={() => visit("/projects")}>
             Projects
-          </CommandItem>
-          <CommandItem value="Experiments" onSelect={() => visit("/experiments")}>
-            Experiments
           </CommandItem>
           <CommandItem value="Experience page" onSelect={() => visit("/experience")}>
             Experience page
           </CommandItem>
-          <CommandItem value="Blog" onSelect={() => visit("/blog")}>
-            Blog
-          </CommandItem>
           <CommandItem value="For recruiters" onSelect={() => visit("/for-recruiters")}>
             For recruiters
-          </CommandItem>
-          <CommandItem value="Contact page" onSelect={() => visit("/contact")}>
-            Contact page
           </CommandItem>
         </CommandGroup>
         <CommandGroup heading="Actions">

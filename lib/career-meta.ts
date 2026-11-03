@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-export const CAREER_TITLE = "Jamie Gray — Software that lets people earn from their own work";
+export const CAREER_TITLE = "Jamie Gray: Software that lets people earn from their own work";
 
 export const CAREER_DESCRIPTION =
   "I build software that lets people earn from their own work: writers on WeWrite, a local business on Lucent Wash. Full Stack Developer, previously a Product Designer, in Fort Worth. Remote or DFW.";

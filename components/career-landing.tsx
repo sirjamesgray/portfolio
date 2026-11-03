@@ -1,36 +1,28 @@
 import Image from "next/image";
-import { ArrowRight } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, Beaker, Briefcase, FileText, FlaskConical, History, Lock, Mail, PenLine } from "lucide-react";
+import { HashRedirect } from "@/components/hash-redirect";
 import { SiteHeader } from "@/components/site-header";
 import { Footer } from "@/components/footer";
 import { CareerHeroStage } from "@/components/career-hero";
 import { BootSequence, ScrambleName } from "@/components/career-intro";
 import { BuilderLab } from "@/components/builder-lab";
 import { PhoneFrame } from "@/components/device-frame";
-import { WorkFocusRestore } from "@/components/work-modal";
 import { WorkGrid, WorkLink } from "@/components/work-card";
 import { AtAGlance, HireCta } from "@/components/hire-cta";
 import { SectionHead } from "@/components/section-head";
-import { CareerButton } from "@/components/career-button";
-import { EXPERIENCE } from "@/lib/constants";
-import { RESUME_DATA } from "@/lib/resume-data";
 import { PUBLIC_PRODUCTS, TURBO } from "@/lib/public-work";
 import { workIn } from "@/lib/work-catalog";
 import { Reveal } from "@/components/reveal";
-import { CareerTimeline } from "@/components/career-timeline";
 import { CareerBackdrop } from "@/components/career-backdrop";
 import styles from "./career-landing.module.css";
 
-function logoFor(company: string) {
-  const match = EXPERIENCE.find((item) => company.startsWith(item.company) && item.logo);
-  return match?.logo ?? "";
-}
-
-export function WorkAndDesign() {
+export function WorkAndDesign({ page = false }: { page?: boolean }) {
   return (
     <>
       <Reveal id="work" className="scroll-mt-28 border-t border-border py-12 md:py-20">
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-          <SectionHead index="01" title="Work" />
+          <SectionHead index="01" title="Work" as={page ? "h1" : undefined} />
           <p className="mt-4 max-w-xl text-base leading-relaxed text-foreground">
             A pattern across my work: tools that let people own and earn from what they make.
           </p>
@@ -55,12 +47,66 @@ export function WorkAndDesign() {
   );
 }
 
+export function LabSection() {
+  return (
+    <Reveal as="section" id="lab" className="scroll-mt-28 border-t border-border py-12 md:py-20">
+      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+        <SectionHead index="03" title="Builder log" as="h1" />
+        <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted-foreground">
+          Small tools from the same work: toggles, a quiet ASCII field, the WeWrite type migration, and the path from prompt to ship. Draft notes stay marked TODO.
+        </p>
+        <BuilderLab />
+      </div>
+    </Reveal>
+  );
+}
+
+const OVERVIEW = [
+  { href: "/work", index: "01", title: "Work", body: "WeWrite, Lucent Wash, and client work from Turbo.", icon: Briefcase },
+  { href: "/lab", index: "02", title: "Lab", body: "Builder log: small tools, migrations, and notes.", icon: FlaskConical },
+  { href: "/experiments", index: "03", title: "Experiments", body: "Interactive pieces made to test an idea.", icon: Beaker },
+  { href: "/about", index: "04", title: "About", body: "8+ years across startups, agencies, and enterprise.", icon: History },
+  { href: "/blog", index: "05", title: "Blog", body: "Notes on building, design in code, and shipping.", icon: PenLine },
+  { href: "/resume", index: "06", title: "Resume", body: "One page, printable, with a PDF download.", icon: FileText },
+  { href: "/contact", index: "07", title: "Contact", body: "Email or LinkedIn. I read every message.", icon: Mail },
+  { href: "/for-recruiters", index: "08", title: "Recruiters", body: "A short brief for hiring teams.", icon: Lock },
+] as const;
+
+function Overview() {
+  return (
+    <section aria-labelledby="overview-title" className="border-t border-border py-12 md:py-16">
+      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+        <h2 id="overview-title" className="sr-only">
+          Pages
+        </h2>
+        <ul className="grid gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
+          {OVERVIEW.map((item) => (
+            <li key={item.href} className="bg-black">
+              <Link href={item.href} className={`${styles.overviewCard} group flex h-full min-h-[44px] flex-col gap-2 p-5`}>
+                <span className="flex items-center justify-between font-mono text-xs text-muted-foreground">
+                  <span>{item.index}</span>
+                  <item.icon aria-hidden className="size-4" />
+                </span>
+                <span className="flex items-center gap-2 text-lg font-semibold tracking-[-0.02em] text-foreground">
+                  {item.title}
+                  <ArrowRight aria-hidden className={`${styles.overviewArrow} size-4`} />
+                </span>
+                <span className="text-sm leading-relaxed text-muted-foreground">{item.body}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
 export function CareerLanding() {
   return (
     <div className="relative min-h-screen overflow-x-clip bg-black text-foreground">
       <CareerBackdrop />
       <SiteHeader landingPage="career" customerDashboardEnabled={false} />
-      <WorkFocusRestore />
+      <HashRedirect />
       <main className="relative z-10">
         <section className={`${styles.hero} relative flex items-start overflow-hidden pt-20 sm:pt-24`}>
           <div className="relative mx-auto grid w-full max-w-6xl items-center gap-6 px-4 py-4 sm:px-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
@@ -105,54 +151,7 @@ export function CareerLanding() {
           </div>
         </section>
 
-        <WorkAndDesign />
-
-        <Reveal as="section" id="lab" className="scroll-mt-28 border-t border-border py-12 md:py-20">
-          <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-            <SectionHead index="03" title="Builder log" />
-            <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted-foreground">
-              Small tools from the same work: toggles, a quiet ASCII field, the WeWrite type migration, and the path from prompt to ship. Draft notes stay marked TODO.
-            </p>
-            <BuilderLab />
-          </div>
-        </Reveal>
-
-        <Reveal as="section" id="experience" className="scroll-mt-28 border-t border-border py-12 md:py-20">
-          <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-            <div className="flex flex-wrap items-end justify-between gap-4">
-              <SectionHead index="04" title="Experience" />
-              <CareerButton variant="ghost" icon={ArrowRight} href="/experience">
-                Full timeline
-              </CareerButton>
-            </div>
-            <CareerTimeline
-              jobs={RESUME_DATA.experience}
-              logoFor={logoFor}
-              extra={(job) =>
-                job.company.startsWith("Turbo") ? (
-                  <ul className="mt-4 space-y-3 border-l border-border pl-4">
-                    {TURBO.clients.map((client) => (
-                      <li key={client.id}>
-                        <p className="text-sm font-medium text-foreground">{client.label}</p>
-                        <p className="font-mono text-[11px] text-muted-foreground">{client.dates}</p>
-                        <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{client.summary}</p>
-                      </li>
-                    ))}
-                  </ul>
-                ) : null
-              }
-            />
-          </div>
-        </Reveal>
-
-        <Reveal as="section" id="contact" className="scroll-mt-28 border-t border-border py-12 md:py-20">
-          <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-            <SectionHead index="05" title="Contact" />
-            <div className="mt-4">
-              <HireCta />
-            </div>
-          </div>
-        </Reveal>
+        <Overview />
       </main>
       <div className="relative z-10"><Footer /></div>
     </div>

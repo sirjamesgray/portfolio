@@ -1,4 +1,5 @@
 "use client";
+import { SECTION_ROUTES } from "@/lib/section-routes";
 
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
@@ -23,7 +24,7 @@ function jump(id: string) {
     node.scrollIntoView({ behavior: "smooth" });
     return;
   }
-  window.location.assign(`/#${id}`);
+  window.location.assign(SECTION_ROUTES[id] ?? "/");
 }
 
 /** One command hint for the top nav. */
