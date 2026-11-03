@@ -51,9 +51,63 @@ export function slugifyHeading(text: string): string {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
-export function renderMarkdown(markdown: string): string {
+export type ImageBlock = { type: "image"; src: string; alt: string; caption?: string; width: number; height: number };
+export type Block = { type: "html"; html: string } | ImageBlock;
+export type ImageSize = { width: number; height: number };
+
+const IMAGE_LINE = /^!\[([^\]]*)\]\((\S+?)(?:\s+"([^"]*)")?(?:\s+=?(\d+)x(\d+))?\)$/;
+
+/** Parse one image line: ![alt](src "caption") or ![alt](src "caption" =1600x1000). */
+export function parseImageLine(line: string): Omit<ImageBlock, "type" | "width" | "height"> & Partial<ImageSize> | null {
+  const m = IMAGE_LINE.exec(line.trim());
+  if (!m) return null;
+  return {
+    alt: m[1],
+    src: m[2],
+    caption: m[3] || undefined,
+    width: m[4] ? Number(m[4]) : undefined,
+    height: m[5] ? Number(m[5]) : undefined,
+  };
+}
+
+/** Read the width and height from a PNG or JPEG file header. */
+export function imageSizeFromBuffer(buf: Uint8Array): ImageSize | null {
+  if (buf.length > 24 && buf[0] === 0x89 && buf[1] === 0x50) {
+    const v = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+    return { width: v.getUint32(16), height: v.getUint32(20) };
+  }
+  if (buf[0] === 0xff && buf[1] === 0xd8) {
+    let i = 2;
+    while (i + 9 < buf.length) {
+      if (buf[i] !== 0xff) return null;
+      const marker = buf[i + 1];
+      const len = (buf[i + 2] << 8) | buf[i + 3];
+      if (marker >= 0xc0 && marker <= 0xcf && ![0xc4, 0xc8, 0xcc].includes(marker)) {
+        return { height: (buf[i + 5] << 8) | buf[i + 6], width: (buf[i + 7] << 8) | buf[i + 8] };
+      }
+      i += 2 + len;
+    }
+  }
+  return null;
+}
+
+function figureHtml(img: ImageBlock): string {
+  const cap = img.caption ? `<figcaption>${inline(img.caption)}</figcaption>` : "";
+  return `<figure><img src="${escapeHtml(img.src)}" alt="${escapeHtml(img.alt)}" width="${img.width}" height="${img.height}" />${cap}</figure>`;
+}
+
+export function renderMarkdown(markdown: string, sizeOf?: (src: string) => ImageSize | null): string {
+  return renderBlocks(markdown, sizeOf).map((b) => (b.type === "html" ? b.html : figureHtml(b))).join("\n");
+}
+
+/**
+ * Render Markdown to blocks. Image lines become image blocks.
+ * An image needs an explicit size (=WxH) or a size from sizeOf. Else the function throws.
+ */
+export function renderBlocks(markdown: string, sizeOf?: (src: string) => ImageSize | null): Block[] {
   const lines = markdown.replace(/\r\n/g, "\n").split("\n");
-  const html: string[] = [];
+  const blocks: Block[] = [];
+  const html = { push: (h: string) => blocks.push({ type: "html", html: h }) };
   let i = 0;
   while (i < lines.length) {
     const line = lines[i];
@@ -94,11 +148,19 @@ export function renderMarkdown(markdown: string): string {
       continue;
     }
     if (/^(-{3,}|\*{3,})$/.test(line.trim())) { html.push("<hr />"); i++; continue; }
+    const image = parseImageLine(line);
+    if (image) {
+      const size = image.width && image.height ? { width: image.width, height: image.height } : sizeOf?.(image.src);
+      if (!size) throw new Error(`Image "${image.src}" needs a width and height. Add =WIDTHxHEIGHT or use a local PNG or JPEG.`);
+      blocks.push({ type: "image", src: image.src, alt: image.alt, caption: image.caption, ...size });
+      i++;
+      continue;
+    }
     const buf: string[] = [];
-    while (i < lines.length && lines[i].trim() && !/^(#{1,4}\s|```|>|\s*([-*]|\d+\.)\s)/.test(lines[i])) buf.push(lines[i++]);
+    while (i < lines.length && lines[i].trim() && !/^(#{1,4}\s|```|>|\s*([-*]|\d+\.)\s)/.test(lines[i]) && !parseImageLine(lines[i])) buf.push(lines[i++]);
     html.push(`<p>${inline(buf.join(" "))}</p>`);
   }
-  return html.join("\n");
+  return blocks;
 }
 
 /** Decide if draft posts are visible. Drafts show outside production, or when BLOG_SHOW_DRAFTS is "true". */

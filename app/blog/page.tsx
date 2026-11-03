@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { Rss } from "lucide-react";
 import { CareerShell } from "@/components/career-shell";
@@ -33,6 +34,9 @@ export default function BlogIndex() {
           {posts.map((post) => (
             <li key={post.slug}>
               <Link href={`/blog/${post.slug}`} className={styles.item}>
+                {post.cover ? (
+                  <Image src={post.cover.src} alt="" width={post.cover.width} height={post.cover.height} sizes="(max-width: 768px) 100vw, 720px" className={styles.cardCover} />
+                ) : null}
                 <span className={styles.meta}>
                   <time dateTime={post.date}>{formatDate(post.date)}</time>
                   <span>{post.minutes} min read</span>

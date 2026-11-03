@@ -3,6 +3,8 @@ title: "From product designer to builder"
 description: "Example draft: a placeholder outline for a post about moving from product design to full stack development."
 date: "2026-10-27"
 draft: true
+cover: "/blog/from-product-designer-to-builder/cover.png"
+coverAlt: "Placeholder cover image for an example draft post"
 tags: "career, design, engineering"
 ---
 
@@ -19,6 +21,8 @@ Placeholder text about the first steps into writing code. Topics to cover:
 1. Example point about learning the basics.
 2. Example point about shipping a first small project.
 3. Example point about how design habits carry over.
+
+![Placeholder diagram of a design to code flow](/blog/from-product-designer-to-builder/figure-1.png "Placeholder: an example design to code flow.")
 
 ## What stays the same
 

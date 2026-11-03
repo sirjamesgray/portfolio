@@ -38,3 +38,25 @@ test("posts have no em dashes and starter posts are drafts", () => {
     assert.equal(mod.parseFrontmatter(src).data.draft, true);
   }
 });
+
+test("parses image lines with captions and sizes", () => {
+  assert.deepEqual(mod.parseImageLine('![A cat](/a.png "A caption")'), { alt: "A cat", src: "/a.png", caption: "A caption", width: undefined, height: undefined });
+  assert.deepEqual(mod.parseImageLine('![x](/b.jpg "Cap" =1600x900)'), { alt: "x", src: "/b.jpg", caption: "Cap", width: 1600, height: 900 });
+  assert.equal(mod.parseImageLine("![x](/c.png)").caption, undefined);
+  assert.equal(mod.parseImageLine("Text ![x](/c.png)"), null);
+});
+
+test("renders images as figures and requires a size", () => {
+  const blocks = mod.renderBlocks('Intro\n![Alt](/a.png "Cap <b>")\nMore', () => ({ width: 10, height: 20 }));
+  assert.equal(blocks.length, 3);
+  assert.deepEqual(blocks[1], { type: "image", src: "/a.png", alt: "Alt", caption: "Cap <b>", width: 10, height: 20 });
+  const html = mod.renderMarkdown('![A "q"](/a.png "Cap")', () => ({ width: 4, height: 3 }));
+  assert.match(html, /<figure><img src="\/a.png" alt="A &quot;q&quot;" width="4" height="3" \/><figcaption>Cap<\/figcaption><\/figure>/);
+  assert.throws(() => mod.renderBlocks("![x](https://e.com/a.png)", () => null), /width and height/);
+  assert.equal(mod.renderBlocks("![x](https://e.com/a.png =8x6)")[0].width, 8);
+});
+
+test("reads PNG sizes from the placeholder files", () => {
+  const size = mod.imageSizeFromBuffer(readFileSync("public/blog/design-to-code-teardown/cover.png"));
+  assert.deepEqual(size, { width: 1200, height: 630 });
+});

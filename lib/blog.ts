@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { parseFrontmatter, readingMinutes, renderMarkdown, shouldShowDrafts } from "@/lib/blog-markdown";
+import { imageSizeFromBuffer, parseFrontmatter, readingMinutes, renderBlocks, shouldShowDrafts, type Block, type ImageSize } from "@/lib/blog-markdown";
 
 export const BLOG_DIR = path.join(process.cwd(), "content", "blog");
 export const SITE_URL = "https://www.jamiegray.net";
@@ -13,8 +13,17 @@ export type BlogPost = {
   draft: boolean;
   tags: string[];
   minutes: number;
-  html: string;
+  blocks: Block[];
+  cover?: { src: string; alt: string } & ImageSize;
 };
+
+/** Read the size of a local image in /public. Return null for remote images. */
+export function localImageSize(src: string): ImageSize | null {
+  if (!src.startsWith("/")) return null;
+  const file = path.join(process.cwd(), "public", src);
+  if (!fs.existsSync(file)) throw new Error(`Blog image not found: ${src}`);
+  return imageSizeFromBuffer(fs.readFileSync(file));
+}
 
 function load(file: string): BlogPost {
   const source = fs.readFileSync(path.join(BLOG_DIR, file), "utf8");
@@ -28,8 +37,16 @@ function load(file: string): BlogPost {
     draft: data.draft === true,
     tags: String(data.tags ?? "").split(",").map((t) => t.trim()).filter(Boolean),
     minutes: readingMinutes(body),
-    html: renderMarkdown(body),
+    blocks: renderBlocks(body, localImageSize),
+    cover: loadCover(data.cover, data.coverAlt, slug),
   };
+}
+
+function loadCover(src: unknown, alt: unknown, slug: string): BlogPost["cover"] {
+  if (typeof src !== "string" || !src) return undefined;
+  const size = localImageSize(src);
+  if (!size) throw new Error(`Cover for "${slug}" must be a local PNG or JPEG in /public.`);
+  return { src, alt: typeof alt === "string" ? alt : "", ...size };
 }
 
 export function draftsVisible(): boolean {
