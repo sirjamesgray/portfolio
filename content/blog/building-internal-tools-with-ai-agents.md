@@ -4,7 +4,7 @@ description: "Example draft: a placeholder outline for a post about using AI age
 date: "2026-11-03"
 draft: true
 cover: "/blog/building-internal-tools-with-ai-agents/cover.png"
-coverAlt: "Placeholder cover image for an example draft post"
+coverAlt: "Dark dashboard with agent terminal logs and server, ports, and CI panels"
 tags: "AI agents, internal tools"
 ---
 
@@ -14,7 +14,7 @@ tags: "AI agents, internal tools"
 
 This section will explain the problem that internal tools solve for a team. Placeholder text goes here until the real story is written.
 
-![Placeholder diagram of an example agent workflow](/blog/building-internal-tools-with-ai-agents/figure-1.png "Placeholder: an example workflow diagram.")
+![Workflow from agents through specs to internal tools](/blog/building-internal-tools-with-ai-agents/figure-1.png "Agents read specs, then drive internal tools.")
 
 ## How the work could be structured
 
@@ -29,7 +29,7 @@ This section will explain the problem that internal tools solve for a team. Plac
 type Task = { id: string; status: "open" | "done" };
 ```
 
-![Placeholder screen of an example internal tool](/blog/building-internal-tools-with-ai-agents/figure-2.png "Placeholder: an example tool screen. Click to see it full size.")
+![Server Manager table of local services with ports and status](/blog/building-internal-tools-with-ai-agents/figure-2.png "A Server Manager view of local services. Click to see it full size.")
 
 ## What comes next
 

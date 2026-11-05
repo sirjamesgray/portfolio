@@ -4,7 +4,7 @@ description: "Example draft: a placeholder walkthrough that takes one interface 
 date: "2026-10-20"
 draft: true
 cover: "/blog/design-to-code-teardown/cover.png"
-coverAlt: "Placeholder cover image for an example draft post"
+coverAlt: "Split view of a design-tool card frame beside the same card in code"
 tags: "design, frontend"
 ---
 
@@ -18,7 +18,7 @@ Placeholder text that introduces one example component, such as a card or a nav 
 
 Example text about spacing, type, color tokens and states in the design file.
 
-![Placeholder of an example component in a design file](/blog/design-to-code-teardown/figure-1.png "Placeholder: the example component in the design file.")
+![Card component selected in a design file with spacing tokens](/blog/design-to-code-teardown/figure-1.png "The card in the design file with spacing tokens.")
 
 ## Step 2: Build the structure
 
@@ -29,7 +29,7 @@ export function Card({ title }: { title: string }) {
 }
 ```
 
-![Placeholder of the example component built in code](/blog/design-to-code-teardown/figure-2.png "Placeholder: the same example component in code.")
+![Code editor beside the rendered card component](/blog/design-to-code-teardown/figure-2.png "The same card built in code. Click to see it full size.")
 
 ## Step 3: Add states and motion
 

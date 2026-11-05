@@ -4,7 +4,7 @@ description: "Example draft: a placeholder outline for a post about moving from 
 date: "2026-10-27"
 draft: true
 cover: "/blog/from-product-designer-to-builder/cover.png"
-coverAlt: "Placeholder cover image for an example draft post"
+coverAlt: "Design canvas on the left flowing into code and a built UI grid on the right"
 tags: "career, design, engineering"
 ---
 
@@ -22,7 +22,7 @@ Placeholder text about the first steps into writing code. Topics to cover:
 2. Example point about shipping a first small project.
 3. Example point about how design habits carry over.
 
-![Placeholder diagram of a design to code flow](/blog/from-product-designer-to-builder/figure-1.png "Placeholder: an example design to code flow.")
+![Flow from design to prototype to ship to lead](/blog/from-product-designer-to-builder/figure-1.png "Design → prototype → ship → lead.")
 
 ## What stays the same
 
